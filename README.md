@@ -1,7 +1,7 @@
 # CMake Modules Collection
 
 <p align="center">
-<strong>A collection a CMake for a more practical use of CMake.</strong>
+<strong>A collection of modules for a more practical use of CMake.</strong>
 </p>
 
 <p align="center">
