@@ -1,0 +1,77 @@
+include(cmake_test/cmake_test)
+
+ct_add_test(NAME [[test_cpp_map_has_key]])
+function("${CMAKETEST_TEST}")
+    include(cmakepp_lang/map/map)
+
+    ct_add_section(NAME [[test_signature]])
+    function("${CMAKETEST_SECTION}")
+        set(CMAKEPP_LANG_DEBUG_MODE ON)
+
+        cpp_map_ctor(a_map)
+
+        ct_add_section(NAME [[first_arg_map]] EXPECTFAIL)
+        function("${CMAKETEST_SECTION}")
+            cpp_map_has_key(TRUE result foo)
+        endfunction()
+
+        ct_add_section(NAME [[second_arg_desc]] EXPECTFAIL)
+        function("${CMAKETEST_SECTION}")
+            cpp_map_has_key("${a_map}" TRUE foo)
+        endfunction()
+
+        ct_add_section(NAME [[takes_three_args]] EXPECTFAIL)
+        function("${CMAKETEST_SECTION}")
+            cpp_map_has_key("${a_map}" result foo hello)
+        endfunction()
+    endfunction()
+
+    ct_add_section(NAME [[has_single_key]])
+    function("${CMAKETEST_SECTION}")
+        cpp_map_ctor(a_map foo bar)
+
+        ct_add_section(NAME [[has_requested_key]])
+        function("${CMAKETEST_SECTION}")
+            cpp_map_has_key("${a_map}" result foo)
+            ct_assert_equal(result TRUE)
+        endfunction()
+
+        ct_add_section(NAME [[does_not_have_key]])
+        function("${CMAKETEST_SECTION}")
+            cpp_map_has_key("${a_map}" result not_a_key)
+            ct_assert_equal(result FALSE)
+        endfunction()
+    endfunction()
+
+    ct_add_section(NAME [[has_multi_key]])
+    function("${CMAKETEST_SECTION}")
+        cpp_map_ctor(a_map foo bar hello world a_number 42)
+
+        ct_add_section(NAME [[has_key]])
+        function("${CMAKETEST_SECTION}")
+            ct_add_section(NAME [[foo]])
+            function("${CMAKETEST_SECTION}")
+                cpp_map_has_key("${a_map}" result foo)
+                ct_assert_equal(result TRUE)
+            endfunction()
+
+            ct_add_section(NAME [[hello]])
+            function("${CMAKETEST_SECTION}")
+                cpp_map_has_key("${a_map}" result hello)
+                ct_assert_equal(result TRUE)
+            endfunction()
+
+            ct_add_section(NAME [[a_number]])
+            function("${CMAKETEST_SECTION}")
+                cpp_map_has_key("${a_map}" result a_number)
+                ct_assert_equal(result TRUE)
+            endfunction()
+        endfunction()
+
+        ct_add_section(NAME [[does_not_have_key]])
+        function("${CMAKETEST_SECTION}")
+            cpp_map_has_key("${a_map}" result not_a_key)
+            ct_assert_equal(result FALSE)
+        endfunction()
+    endfunction()
+endfunction()

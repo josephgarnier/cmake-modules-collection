@@ -1,0 +1,66 @@
+include(cmake_test/cmake_test)
+
+ct_add_test(NAME [[test_cpp_map_get]])
+function("${CMAKETEST_TEST}")
+    include(cmakepp_lang/map/map)
+
+    cpp_map_ctor(a_map)
+
+    ct_add_section(NAME [[test_signature]])
+    function("${CMAKETEST_SECTION}")
+        set(CMAKEPP_LANG_DEBUG_MODE ON)
+
+        ct_add_section(NAME [[first_arg_map]] EXPECTFAIL)
+        function("${CMAKETEST_SECTION}")
+            cpp_map_get(TRUE result key)
+        endfunction()
+
+        ct_add_section(NAME [[second_arg_desc]] EXPECTFAIL)
+        function("${CMAKETEST_SECTION}")
+            cpp_map_get("${a_map}" TRUE key)
+        endfunction()
+
+        ct_add_section(NAME [[takes_three_args]] EXPECTFAIL)
+        function("${CMAKETEST_SECTION}")
+            cpp_map_get("${a_map}" result key hello)
+        endfunction()
+    endfunction()
+
+    ct_add_section(NAME [[get_empty_val]])
+    function("${CMAKETEST_SECTION}")
+        cpp_map_set("${a_map}" foo "")
+        cpp_map_get("${a_map}" result foo)
+        ct_assert_equal(result "")
+    endfunction()
+
+    ct_add_section(NAME [[get_normal_val]])
+    function("${CMAKETEST_SECTION}")
+        cpp_map_set("${a_map}" foo bar)
+        cpp_map_get("${a_map}" result foo)
+        ct_assert_equal(result bar)
+    endfunction()
+
+    ct_add_section(NAME [[get_val_with_space]])
+    function("${CMAKETEST_SECTION}")
+        cpp_map_set("${a_map}" foo "hello world")
+        cpp_map_get("${a_map}" result foo)
+        ct_assert_equal(result "hello world")
+    endfunction()
+
+    ct_add_section(NAME [[get_list_val]])
+    function("${CMAKETEST_SECTION}")
+        include(cmakepp_lang/utilities/compare_lists)
+        set(corr hello world)
+        cpp_map_set("${a_map}" foo "${corr}")
+        cpp_map_get("${a_map}" value foo)
+        cpp_compare_lists(result value corr)
+        ct_assert_equal(result TRUE)
+    endfunction()
+
+    ct_add_section(NAME [[get_nonexistant_val]])
+    function("${CMAKETEST_SECTION}")
+        cpp_map_get("${a_map}" result not_a_key)
+        ct_assert_equal(result "")
+    endfunction()
+endfunction()
+

@@ -1,0 +1,51 @@
+include(cmake_test/cmake_test)
+
+ct_add_test(NAME [[test_cpp_map_set]])
+function("${CMAKETEST_TEST}")
+    include(cmakepp_lang/map/map)
+
+    cpp_map_ctor(a_map)
+
+    ct_add_section(NAME [[test_signature]])
+    function("${CMAKETEST_SECTION}")
+        set(CMAKEPP_LANG_DEBUG_MODE ON)
+
+        ct_add_section(NAME [[first_arg_map]] EXPECTFAIL)
+        function("${CMAKETEST_SECTION}")
+            cpp_map_set(TRUE key value)
+        endfunction()
+
+    endfunction()
+
+    ct_add_section(NAME [[set_empty_string]])
+    function("${CMAKETEST_SECTION}")
+        cpp_map_set("${a_map}" foo "")
+        cpp_map_get("${a_map}" result foo)
+        ct_assert_equal(result "")
+    endfunction()
+
+    ct_add_section(NAME [[set_val]])
+    function("${CMAKETEST_SECTION}")
+        cpp_map_set("${a_map}" foo bar)
+        cpp_map_get("${a_map}" result foo)
+        ct_assert_equal(result bar)
+    endfunction()
+
+    ct_add_section(NAME [[set_list]])
+    function("${CMAKETEST_SECTION}")
+        include(cmakepp_lang/utilities/compare_lists)
+        set(corr hello world)
+        cpp_map_set("${a_map}" foo "${corr}")
+        cpp_map_get("${a_map}" value foo)
+        cpp_compare_lists(result value corr)
+        ct_assert_equal(result TRUE)
+    endfunction()
+
+    ct_add_section(NAME [[override_existing]])
+    function("${CMAKETEST_SECTION}")
+        cpp_map_set("${a_map}" foo bar)
+        cpp_map_set("${a_map}" foo 42)
+        cpp_map_get("${a_map}" result foo)
+        ct_assert_equal(result 42)
+    endfunction()
+endfunction()

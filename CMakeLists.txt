@@ -8,7 +8,7 @@
 # -------------
 # See README file in the root directory of this source tree.
 
-cmake_minimum_required (VERSION 3.20)
+cmake_minimum_required (VERSION 4.0.1 FATAL_ERROR)
 
 ####################### Declare project metadata ##############################
 set(PROJECT_NAME                    "cmake-modules-collection")
@@ -26,29 +26,12 @@ project("${PARAM_PROJECT_NAME}"
 	LANGUAGES CXX)
 	
 ####################### Define and check project structure ####################
-set(${PROJECT_NAME}_PROJECT_DIR          "${CMAKE_CURRENT_SOURCE_DIR}")
-set(${PROJECT_NAME}_BUILD_DIR            "${CMAKE_CURRENT_BINARY_DIR}")
-set(${PROJECT_NAME}_CMAKE_DIR            "${${PROJECT_NAME}_PROJECT_DIR}/cmake")
-set(${PROJECT_NAME}_CMAKE_MODULES_DIR    "${${PROJECT_NAME}_CMAKE_DIR}/modules")
+set(${PROJECT_NAME}_PROJECT_DIR            "${CMAKE_CURRENT_SOURCE_DIR}")
+set(${PROJECT_NAME}_BUILD_DIR              "${CMAKE_CURRENT_BINARY_DIR}")
+set(${PROJECT_NAME}_CMAKE_DIR              "${${PROJECT_NAME}_PROJECT_DIR}/cmake")
 set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}"
-	"${${PROJECT_NAME}_CMAKE_MODULES_DIR}")
-	
-####################### Import CMake functions and macros #####################
+	"${${PROJECT_NAME}_CMAKE_DIR}")
 
-# CMake modules
-# include(CMakePackageConfigHelpers)
-# include(FetchContent)
-# include(GenerateExportHeader)
-# include(GNUInstallDirs)
-
-# Local modules
-# include(BundleBinTarget)
-# include(FuncDebug)
-# include(FuncDependency)
-# include(FuncDirectory)
-# include(FuncFileManip)
-# include(FuncPrint)
-# include(FuncStringManip)
-
-####################### Configure the tests of modules ########################
+####################### Add modules tests #####################################
+set(BUILD_TESTING on)
 add_subdirectory(tests)
