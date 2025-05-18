@@ -1,0 +1,182 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Project: Clean",
+      "detail": "Clean bin and build directories",
+      "type": "shell",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "linux": {
+        "command": "./clean-cmake.sh"
+      },
+      "windows": {
+        "command": "clean-cmake.bat"
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Project: Generate",
+      "detail": "Configure and generate CMake project",
+      "type": "shell",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "linux": {
+        "command": "./run-cmake.sh"
+      },
+      "windows": {
+        "command": "run-cmake.bat"
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Project: Clean and Generate",
+      "detail": "Clean, configure and generate CMake project",
+      "type": "shell",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "linux": {
+        "command": "./clean-cmake.sh && echo \"\" && ./run-cmake.sh"
+      },
+      "windows": {
+        "command": "clean-cmake.bat && echo. && run-cmake.bat"
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "CMake: Clean",
+      "detail": "Call CMake clean target",
+      "type": "cmake",
+      "options": {
+        "cwd": "${workspaceFolder}/build"
+      },
+      "command": "clean",
+      "preset": "${command:cmake.activeBuildPresetName}",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "CMake: Compile",
+      "detail": "Call CMake all target",
+      "type": "cmake",
+      "options": {
+        "cwd": "${workspaceFolder}/build"
+      },
+      "command": "build",
+      "targets": [
+        "all"
+      ],
+      "preset": "${command:cmake.activeBuildPresetName}",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "CMake: Compile with Clean",
+      "detail": "Call CMake all and clean targets",
+      "type": "cmake",
+      "options": {
+        "cwd": "${workspaceFolder}/build"
+      },
+      "command": "cleanRebuild",
+      "targets": [
+        "all"
+      ],
+      "preset": "${command:cmake.activeBuildPresetName}",
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "CMake: Test",
+      "detail": "Call CMake custom test target",
+      "type": "cmake",
+      "options": {
+        "cwd": "${workspaceFolder}/build"
+      },
+      "command": "test",
+      "preset": "${command:cmake.activeBuildPresetName}",
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "CMake: Doc",
+      "detail": "Call CMake doc target",
+      "type": "shell",
+      "options": {
+        "cwd": "${workspaceFolder}/build"
+      },
+      "command": "cmake --build . --target doc",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "problemMatcher": []
+    }
+  ]
+}
