@@ -82,7 +82,6 @@ include(cmake_test/cmake_test)
 message(CHECK_START "Building tests")
 list(APPEND CMAKE_MESSAGE_INDENT "  ")
 
-include(CTest)
 ct_set_print_length("${CT_DEFAULT_PRINT_LENGTH}")
 ct_add_dir("./" CT_DEBUG_MODE_ON)
 

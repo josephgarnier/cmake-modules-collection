@@ -29,9 +29,29 @@ project("${PARAM_PROJECT_NAME}"
 set(${PROJECT_NAME}_PROJECT_DIR            "${CMAKE_CURRENT_SOURCE_DIR}")
 set(${PROJECT_NAME}_BUILD_DIR              "${CMAKE_CURRENT_BINARY_DIR}")
 set(${PROJECT_NAME}_CMAKE_DIR              "${${PROJECT_NAME}_PROJECT_DIR}/cmake")
-set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}"
-	"${${PROJECT_NAME}_CMAKE_DIR}")
+set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${${PROJECT_NAME}_CMAKE_DIR}")
+set(${PROJECT_NAME}_DOC_DIR                "${${PROJECT_NAME}_PROJECT_DIR}/doc")
+set(${PROJECT_NAME}_TESTS_DIR              "${${PROJECT_NAME}_PROJECT_DIR}/tests")
+set(${PROJECT_NAME}_VENDORS_DIR            "${${PROJECT_NAME}_PROJECT_DIR}/vendors")
 
-####################### Add modules tests #####################################
+list(APPEND ${PROJECT_NAME}_PROJECT_DIRS
+	"${${PROJECT_NAME}_BUILD_DIR}"
+	"${${PROJECT_NAME}_CMAKE_DIR}"
+	"${${PROJECT_NAME}_DOC_DIR}"
+	"${${PROJECT_NAME}_TESTS_DIR}"
+	"${${PROJECT_NAME}_VENDORS_DIR}")
+
+foreach(folder IN ITEMS ${${PROJECT_NAME}_PROJECT_DIRS})
+	if((NOT EXISTS "${folder}") OR (NOT IS_DIRECTORY "${folder}"))
+		message(FATAL_ERROR "Missing directory: ${folder}!")
+	endif()
+endforeach()
+
+####################### Add module test #######################################
 set(BUILD_TESTING on)
+include(CTest)
 add_subdirectory(tests)
+
+####################### Add module doc ########################################
+set(BUILD_DOC on)
+# add_subdirectory(doc)
