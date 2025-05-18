@@ -1,0 +1,3 @@
+[submodule "vendors/CMakeTest"]
+	path = vendors/CMakeTest
+	url = https://github.com/josephgarnier/CMakeTest.git
