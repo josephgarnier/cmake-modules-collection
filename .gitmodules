@@ -1,3 +1,9 @@
 [submodule "vendors/CMakeTest"]
 	path = vendors/CMakeTest
 	url = https://github.com/josephgarnier/CMakeTest.git
+[submodule "vendors/CMaize"]
+	path = vendors/CMaize
+	url = https://github.com/josephgarnier/CMaize.git
+[submodule "vendors/CMakePPLang"]
+	path = vendors/CMakePPLang
+	url = https://github.com/josephgarnier/CMakePPLang.git
