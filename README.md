@@ -16,7 +16,7 @@ This collection of CMake modules provides macros and functions that extend offic
 <a href="#-requirements">Requirements</a> &nbsp;&bull;&nbsp;
 <a href="#-module-overview">Module overview</a> &nbsp;&bull;&nbsp;
 <a href="#-integration">Integration</a> &nbsp;&bull;&nbsp;
-<a href="#️-usag">Usage</a> &nbsp;&bull;&nbsp;
+<a href="#️-usage-and-commands">Usage</a> &nbsp;&bull;&nbsp;
 <a href="#-resources">Resources</a> &nbsp;&bull;&nbsp;
 <a href="#️-license">License</a>
 
@@ -29,10 +29,20 @@ This collection of CMake modules provides macros and functions that extend offic
 
 ## ⚓ Requirements
 
-The following dependencies are **required** for development and must be installed:
+The following dependencies are **required** to execute the modules and must be installed:
 
-- **CMake v3.20+** - can be found [here](https://cmake.org/).
+- **CMake v4.0.1+** - can be found [here](https://cmake.org/).
 - **C++ compiler** (any version) - e.g., [GCC v15.2+](https://gcc.gnu.org/), [Clang C++ v19.1.3+](https://clang.llvm.org/cxx_status.html) or [MSVC](https://visualstudio.microsoft.com). The project is developed with the GCC compiler, and its dependencies are provided pre-compiled with GCC.
+
+Optional dependencies:
+
+- **Python 3.12.9+** (for doc generation).
+- **Sphinx 8.2.3+** (for doc generation) - can be found [here](https://www.sphinx-doc.org/en/master/usage/installation.html) or use `requirements.txt` in `doc/` folder.
+- **doc8** (for doc style checking) - can be found [here ](https://github.com/PyCQA/doc8) or use `requirements.txt` in `doc/` folder.
+- For **Visual Studio Code users**, these extensions are commanded:
+  - [ms-vscode.cpptools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools) (for C/C++ support)
+  - [ms-vscode.cmake-tools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools) (for CMake support)
+  - [lextudio.restructuredtext](https://marketplace.visualstudio.com/items?itemName=lextudio.restructuredtext) (for reStrcturedText support)
 
 ## 💫 Module overview
 
@@ -99,7 +109,9 @@ To integrate the CMake module collection into a development project using CMake 
 
 4. (Optional) Delete the downloaded repository and extracted files if they are no longer needed.
 
-## ⚙️ Usage
+## ⚙️ Usage and Commands
+
+### Use a module in a C++/CMake project
 
 This procedure explains how to configure a C++/CMake project to use the previously integrated modules.
 
@@ -126,6 +138,40 @@ To use the modules in a C++/CMake project, follow these steps:
     ```cmake
     include(<module-name>)
     ```
+
+### Commands
+
+Several *commands* and *scripts* are available for developing this project, including generating and cleaning the buildsystem, generating documentation, compiling the project and running tests.
+
+These commands are written as **Visual Studio Code tasks** in `.vscode/tasks.json` and can be launched from the [command palette](https://code.visualstudio.com/docs/editor/tasks)
+
+The available scripts are listed below. They have to be executed from the root of the project.
+
+To **clean** the buildsystem (remove content of `build/`, `doc/` and `bin/`):
+
+```bash
+# On Linux/MacOS
+./clean-cmake.sh
+
+# On Windows
+clean-cmake.bat
+```
+
+To **generate** the buildsystem (call the `cmake` command):
+
+```bash
+# On Linux/MacOS
+./run-cmake.sh
+
+# On Windows
+run-cmake.bat
+
+# a useful command for listing what targets has been generated
+cmake --build ./build/ --target help
+
+# a useful command for listing variables in the cache and their descriptions
+cmake -LAH ./build/
+```
 
 ## 📚 Resources
 
