@@ -5,7 +5,7 @@
   "tasks": [
     {
       "label": "Project: Clean",
-      "detail": "Clean bin and build directories",
+      "detail": "Clean bin, build and doc directories",
       "type": "shell",
       "options": {
         "cwd": "${workspaceFolder}"
@@ -28,7 +28,7 @@
     },
     {
       "label": "Project: Generate",
-      "detail": "Configure and generate CMake project",
+      "detail": "Configure and generate the CMake project",
       "type": "shell",
       "options": {
         "cwd": "${workspaceFolder}"
@@ -51,7 +51,7 @@
     },
     {
       "label": "Project: Clean and Generate",
-      "detail": "Clean, configure and generate CMake project",
+      "detail": "Clean, configure and generate the CMake project",
       "type": "shell",
       "options": {
         "cwd": "${workspaceFolder}"
@@ -74,7 +74,7 @@
     },
     {
       "label": "CMake: Clean",
-      "detail": "Call CMake clean target",
+      "detail": "Clean bin, build and doc directories",
       "type": "cmake",
       "options": {
         "cwd": "${workspaceFolder}/build"
@@ -92,8 +92,8 @@
       "problemMatcher": []
     },
     {
-      "label": "CMake: Compile",
-      "detail": "Call CMake all target",
+      "label": "CMake: Build all",
+      "detail": "Build CMake default targets (all)",
       "type": "cmake",
       "options": {
         "cwd": "${workspaceFolder}/build"
@@ -118,8 +118,8 @@
       "problemMatcher": []
     },
     {
-      "label": "CMake: Compile with Clean",
-      "detail": "Call CMake all and clean targets",
+      "label": "CMake: Clean and Rebuild all",
+      "detail": "Clean and rebuild CMake default targets (all)",
       "type": "cmake",
       "options": {
         "cwd": "${workspaceFolder}/build"
@@ -142,13 +142,13 @@
     },
     {
       "label": "CMake: Test",
-      "detail": "Call CMake custom test target",
+      "detail": "Run module tests",
       "type": "cmake",
       "options": {
         "cwd": "${workspaceFolder}/build"
       },
       "command": "test",
-      "preset": "${command:cmake.activeBuildPresetName}",
+      "preset": "${command:cmake.activeTestPresetName}",
       "group": "test",
       "presentation": {
         "echo": true,
@@ -162,12 +162,31 @@
     },
     {
       "label": "CMake: Doc",
-      "detail": "Call CMake doc target",
+      "detail": "Generate modules doc",
       "type": "shell",
+      "options": {
+        "cwd": "${workspaceFolder}/build/x64-Debug-Win-GCC"
+      },
+      "command": "cmake --build . --target doc",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "CMake: Workflow",
+      "detail": "Builld default targets (all) and run module tests",
+      "type": "cmake",
       "options": {
         "cwd": "${workspaceFolder}/build"
       },
-      "command": "cmake --build . --target doc",
+      "command": "workflow",
+      "preset": "${command:cmake.activeWorkflowPresetName}",
       "presentation": {
         "echo": true,
         "reveal": "always",
