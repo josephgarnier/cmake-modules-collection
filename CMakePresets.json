@@ -454,6 +454,24 @@
     }
   ],
   "packagePresets": [],
-  "workflowPresets": [],
+  "workflowPresets": [
+    {
+      "name": "x64-Release-Win-GCC",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "x64-Release-Win-GCC"
+        },
+        {
+          "type": "build",
+          "name": "x64-Release-Win-GCC"
+        },
+        {
+          "type": "test",
+          "name": "x64-Release-Win-GCC"
+        }
+      ]
+    }
+  ],
   "vendor": {}
 }
