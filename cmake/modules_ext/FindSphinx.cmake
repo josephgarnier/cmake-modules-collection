@@ -14,34 +14,25 @@ Finds the Sphinx software.
 Imported Targets
 ^^^^^^^^^^^^^^^^
 
-This module provides the following imported targets, if found:
+This module provides the following executable, if found:
 
-``Foo::Foo``
-  The Foo library
+``sphinx-build`` or ``sphinx-build`.exe``
+  The Sphinx documentation generator
 
 Result Variables
 ^^^^^^^^^^^^^^^^
 
 This will define the following variables:
 
-``Foo_FOUND``
-  True if the system has the Foo library.
-``Foo_VERSION``
-  The version of the Foo library which was found.
-``Foo_INCLUDE_DIRS``
-  Include directories needed to use Foo.
-``Foo_LIBRARIES``
-  Libraries needed to link to Foo.
+``SPHINX_EXECUTABLE``
+  The full path to the ``sphinx-build`` executable.
+``Sphinx_FOUND``
+  True if the system has the Sphinx executable.
 
 Cache Variables
 ^^^^^^^^^^^^^^^
 
-The following cache variables may also be set:
-
-``Foo_INCLUDE_DIR``
-  The directory containing ``foo.h``.
-``Foo_LIBRARY``
-  The path to the Foo library.
+None
 
 #]=======================================================================]
 include_guard()
@@ -55,7 +46,6 @@ if(Python_Interpreter_FOUND)
 		"${PYTHON_ROOT_DIR}"
 		"${PYTHON_ROOT_DIR}/bin"
 		"${PYTHON_ROOT_DIR}/Scripts")
-		
 	find_program(
 		SPHINX_EXECUTABLE
 		NAMES "sphinx-build" "sphinx-build.exe"
