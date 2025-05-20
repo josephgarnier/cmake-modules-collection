@@ -28,8 +28,14 @@ project("${PARAM_PROJECT_NAME}"
 ####################### Define and check project structure ####################
 set(${PROJECT_NAME}_PROJECT_DIR            "${CMAKE_CURRENT_SOURCE_DIR}")
 set(${PROJECT_NAME}_BUILD_DIR              "${CMAKE_CURRENT_BINARY_DIR}")
-set(${PROJECT_NAME}_CMAKE_DIR              "${${PROJECT_NAME}_PROJECT_DIR}/cmake")
-set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${${PROJECT_NAME}_CMAKE_DIR}")
+set(${PROJECT_NAME}_CMAKE_DIR               "${${PROJECT_NAME}_PROJECT_DIR}/cmake")
+set(${PROJECT_NAME}_CMAKE_MODULES_DIR       "${${PROJECT_NAME}_CMAKE_DIR}/modules")
+set(${PROJECT_NAME}_CMAKE_MODULES_EXT_DIR         "${${PROJECT_NAME}_CMAKE_DIR}/modules_ext")
+set(${PROJECT_NAME}_CMAKE_TOOLCHAINS_DIR         "${${PROJECT_NAME}_CMAKE_DIR}/toolchains")
+set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}"
+	"${${PROJECT_NAME}_CMAKE_MODULES_DIR}"
+	"${${PROJECT_NAME}_CMAKE_MODULES_EXT_DIR}"
+	"${${PROJECT_NAME}_CMAKE_TOOLCHAINS_DIR}")
 set(${PROJECT_NAME}_DOC_DIR                "${${PROJECT_NAME}_PROJECT_DIR}/doc")
 set(${PROJECT_NAME}_TESTS_DIR              "${${PROJECT_NAME}_PROJECT_DIR}/tests")
 set(${PROJECT_NAME}_VENDORS_DIR            "${${PROJECT_NAME}_PROJECT_DIR}/vendors")
@@ -37,6 +43,9 @@ set(${PROJECT_NAME}_VENDORS_DIR            "${${PROJECT_NAME}_PROJECT_DIR}/vendo
 list(APPEND ${PROJECT_NAME}_PROJECT_DIRS
 	"${${PROJECT_NAME}_BUILD_DIR}"
 	"${${PROJECT_NAME}_CMAKE_DIR}"
+	"${${PROJECT_NAME}_CMAKE_MODULES_DIR}"
+	"${${PROJECT_NAME}_CMAKE_MODULES_EXT_DIR}"
+	"${${PROJECT_NAME}_CMAKE_TOOLCHAINS_DIR}"
 	"${${PROJECT_NAME}_DOC_DIR}"
 	"${${PROJECT_NAME}_TESTS_DIR}"
 	"${${PROJECT_NAME}_VENDORS_DIR}")
@@ -54,4 +63,4 @@ add_subdirectory(tests)
 
 ####################### Add module doc ########################################
 set(BUILD_DOC on)
-# add_subdirectory(doc)
+add_subdirectory(doc)
