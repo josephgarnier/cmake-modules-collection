@@ -34,15 +34,20 @@ The following dependencies are **required** to execute the modules and must be i
 - **CMake v4.0.1+** - can be found [here](https://cmake.org/).
 - **C++ compiler** (any version) - e.g., [GCC v15.2+](https://gcc.gnu.org/), [Clang C++ v19.1.3+](https://clang.llvm.org/cxx_status.html) or [MSVC](https://visualstudio.microsoft.com). The project is developed with the GCC compiler, and its dependencies are provided pre-compiled with GCC.
 
-Optional dependencies:
+These *optional dependencies* are only required to contribute to this project or to run it in standalone mode:
 
 - **Python 3.12.9+** (for doc generation).
 - **Sphinx 8.2.3+** (for doc generation) - can be found [here](https://www.sphinx-doc.org/en/master/usage/installation.html) or use `requirements.txt` in `doc/` folder.
+- **Sphinx Domain for Modern CMake** (for doc generation) - can be found [here](https://github.com/scikit-build/moderncmakedomain) or use `requirements.txt` in `doc/` folder.
 - **doc8** (for doc style checking) - can be found [here ](https://github.com/PyCQA/doc8) or use `requirements.txt` in `doc/` folder.
 - For **Visual Studio Code users**, these extensions are commanded:
   - [ms-vscode.cpptools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools) (for C/C++ support)
   - [ms-vscode.cmake-tools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools) (for CMake support)
   - [lextudio.restructuredtext](https://marketplace.visualstudio.com/items?itemName=lextudio.restructuredtext) (for reStrcturedText support)
+
+The following dependencies are *used by the project*, but already delivered with it:
+
+- [CMakeTest](https://github.com/CMakePP/CMakeTest) (for unit tests).
 
 ## 💫 Module overview
 
