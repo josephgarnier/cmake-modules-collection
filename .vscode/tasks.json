@@ -165,7 +165,7 @@
       "detail": "Generate modules doc",
       "type": "shell",
       "options": {
-        "cwd": "${workspaceFolder}/build/x64-Debug-Win-GCC"
+        "cwd": "${workspaceFolder}/build/x64-Release-Win-GCC"
       },
       "command": "cmake --build . --target doc",
       "presentation": {
