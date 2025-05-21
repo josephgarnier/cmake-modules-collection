@@ -9,4 +9,4 @@
 	url = https://github.com/josephgarnier/CMakePPLang.git
 [submodule "vendors/ModernCMakeSphinxDomain"]
 	path = vendors/ModernCMakeSphinxDomain
-	url = https://github.com/scikit-build/moderncmakedomain
+	url = https://github.com/josephgarnier/moderncmakedomain
