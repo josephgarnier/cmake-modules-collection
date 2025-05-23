@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Print &mdash; CMake Modules Collection</title>
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3862c66" />
+    <link rel="stylesheet" type="text/css" href="../_static/cmake.css?v=4d06bd55" />
+    
+    <script src="../_static/documentation_options.js?v=977c7dfd"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../_static/cmake-favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="StringManip" href="FuncStringManip.html" />
+    <link rel="prev" title="FileManip" href="FuncFileManip.html" />
+ 
+
+  </head><body>
+    <input id="sidebar-check" type="checkbox" />
+    <label id="sidebar-overlay" for="sidebar-check"></label>
+
+
+
+    <div class="related relbar1" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="FuncStringManip.html" title="StringManip"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="FuncFileManip.html" title="FileManip"
+             accesskey="P">previous</a> |</li>
+  <li>
+    <label class="sidebar-toggle" for="sidebar-check"></label>
+  </li>
+  <li class="rootlink">
+    <img src="../_static/cmake-logo-16.png" width="16" height="16" alt=""/>
+    <a href="https://cmake.org/">CMake 4.0.1</a>
+    <span class="reldelim1"> &#187;</span>
+  </li>
+  <li>
+    <a href="../index.html">Documentation</a> &#187;
+  </li>
+
+        <li class="nav-item nav-item-this"><a href="">Print</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="print">
+<span id="module:FuncPrint"></span><h1>Print<a class="headerlink" href="#print" title="Link to this heading">¶</a></h1>
+<p>Log a message. It requires CMake 3.20 or newer.</p>
+<section id="synopsis">
+<h2>Synopsis<a class="headerlink" href="#synopsis" title="Link to this heading">¶</a></h2>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="err">`</span><span class="nb">print</span><span class="err">`</span><span class="nf">_(</span><span class="p">[</span><span class="nv">&lt;mode&gt;</span><span class="p">]</span><span class="w"> </span><span class="s">&quot;message with format text&quot;</span><span class="w"> </span><span class="nv">&lt;argument&gt;...</span><span class="nf">)</span>
+<span class="err">`</span><span class="nb">print</span><span class="err">`</span><span class="nf">_(</span><span class="p">[</span><span class="nv">&lt;mode&gt;</span><span class="p">]</span><span class="w"> </span><span class="no">PATHS</span><span class="w"> </span><span class="nv">&lt;file_list&gt;...</span><span class="w"> </span><span class="p">[</span><span class="no">INDENT</span><span class="p">]</span><span class="nf">)</span>
+<span class="err">`</span><span class="nb">print</span><span class="err">`</span><span class="nf">_(</span><span class="p">[</span><span class="nv">&lt;mode&gt;</span><span class="p">]</span><span class="w"> </span><span class="no">LISTS</span><span class="w"> </span><span class="nv">&lt;string_list&gt;...</span><span class="w"> </span><span class="p">[</span><span class="no">INDENT</span><span class="p">]</span><span class="nf">)</span>
+</pre></div>
+</div>
+</section>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h2>
+<div class="highlight-cmake notranslate" id="id7"><div class="highlight"><pre><span></span><span class="nf">print(</span><span class="p">[</span><span class="nv">&lt;mode&gt;</span><span class="p">]</span><span class="w"> </span><span class="s">&quot;message with format text&quot;</span><span class="w"> </span><span class="nv">&lt;argument&gt;...</span><span class="nf">)</span>
+</pre></div>
+</div>
+<p>Record the specified message text in the log. This command is inspired by
+<cite>message()</cite> from CMake and <cite>printf()</cite> from C (see <a class="reference external" href="https://linux.die.net/man/3/printf">https://linux.die.net/man/3/printf</a>).
+The optional <code class="docutils literal notranslate"><span class="pre">&lt;mode&gt;</span></code> keyword determines the type of message like in CMake
+(see <a class="reference external" href="https://cmake.org/cmake/help/latest/command/message.html#general-messages">https://cmake.org/cmake/help/latest/command/message.html#general-messages</a>).
+The format string is composed of zero or more directives: ordinary characters
+(not &#64;), which are copied unchanged to the output stream; and conversion
+specifications, each of which results in fetching zero or more subsequent arguments.
+Each conversion specification is boxed by the character &#64;, and contain a conversion specifier.
+Conversion specifier is one of:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="err">@</span><span class="nb">ap</span><span class="err">@</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">The</span><span class="w"> </span><span class="nb">given</span><span class="w"> </span><span class="nb">path</span><span class="w"> </span><span class="nb">will</span><span class="w"> </span><span class="nb">be</span><span class="w"> </span><span class="nb">convert</span><span class="w"> </span><span class="nb">into</span><span class="w"> </span><span class="nb">an</span><span class="w"> </span><span class="nb">absolute</span><span class="w"> </span><span class="nb">path</span>
+<span class="err">@</span><span class="nb">rp</span><span class="err">@</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">The</span><span class="w"> </span><span class="nb">given</span><span class="w"> </span><span class="nb">path</span><span class="w"> </span><span class="nb">will</span><span class="w"> </span><span class="nb">be</span><span class="w"> </span><span class="nb">convert</span><span class="w"> </span><span class="nb">into</span><span class="w"> </span><span class="nb">an</span><span class="w"> </span><span class="nb">relative</span><span class="w"> </span><span class="nb">path</span><span class="w"> </span><span class="nb">to</span><span class="w"> </span><span class="err">`</span><span class="no">PRINT_BASE_DIR</span><span class="err">`</span>
+</pre></div>
+</div>
+<div class="highlight-cmake notranslate" id="id8"><div class="highlight"><pre><span></span><span class="nf">print(</span><span class="p">[</span><span class="nv">&lt;mode&gt;</span><span class="p">]</span><span class="w"> </span><span class="no">PATHS</span><span class="w"> </span><span class="nv">&lt;file_list&gt;...</span><span class="w"> </span><span class="p">[</span><span class="no">INDENT</span><span class="p">]</span><span class="nf">)</span>
+</pre></div>
+</div>
+<p>Record each file of the list of <code class="docutils literal notranslate"><span class="pre">&lt;file_list&gt;</span></code> in the log after having computed
+their relative path to <code class="docutils literal notranslate"><span class="pre">PRINT_BASE_DIR</span></code>. The message is indented if <code class="docutils literal notranslate"><span class="pre">INDENT</span></code>
+is set. This command is inspired by <cite>message()</cite> from CMake.
+The optional <code class="docutils literal notranslate"><span class="pre">&lt;mode&gt;</span></code> keyword determines the type of message like in CMake
+(see <a class="reference external" href="https://cmake.org/cmake/help/latest/command/message.html#general-messages">https://cmake.org/cmake/help/latest/command/message.html#general-messages</a>).</p>
+<div class="highlight-cmake notranslate" id="id9"><div class="highlight"><pre><span></span><span class="nf">print(</span><span class="p">[</span><span class="nv">&lt;mode&gt;</span><span class="p">]</span><span class="w"> </span><span class="no">LISTS</span><span class="w"> </span><span class="nv">&lt;string_list&gt;...</span><span class="w"> </span><span class="p">[</span><span class="no">INDENT</span><span class="p">]</span><span class="nf">)</span>
+</pre></div>
+</div>
+<p>Record each string of the list of <code class="docutils literal notranslate"><span class="pre">&lt;file_list&gt;</span></code> in the log. The message is indented
+if <code class="docutils literal notranslate"><span class="pre">INDENT</span></code> is set. This command is inspired by <cite>message()</cite> from CMake.
+The optional <code class="docutils literal notranslate"><span class="pre">&lt;mode&gt;</span></code> keyword determines the type of message like in CMake
+(see <a class="reference external" href="https://cmake.org/cmake/help/latest/command/message.html#general-messages">https://cmake.org/cmake/help/latest/command/message.html#general-messages</a>).</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3>Table of Contents</h3>
+    <ul>
+<li><a class="reference internal" href="#">Print</a><ul>
+<li><a class="reference internal" href="#synopsis">Synopsis</a></li>
+<li><a class="reference internal" href="#usage">Usage</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="FuncFileManip.html"
+                          title="previous chapter">FileManip</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="FuncStringManip.html"
+                          title="next chapter">StringManip</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/module/FuncPrint.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="FuncStringManip.html" title="StringManip"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="FuncFileManip.html" title="FileManip"
+             >previous</a> |</li>
+  <li>
+    <label class="sidebar-toggle" for="sidebar-check"></label>
+  </li>
+  <li class="rootlink">
+    <img src="../_static/cmake-logo-16.png" width="16" height="16" alt=""/>
+    <a href="https://cmake.org/">CMake 4.0.1</a>
+    <span class="reldelim1"> &#187;</span>
+  </li>
+  <li>
+    <a href="../index.html">Documentation</a> &#187;
+  </li>
+
+        <li class="nav-item nav-item-this"><a href="">Print</a></li> 
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025, Joseph Garnier.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+<script type="text/javascript">
+(function() {
+  "use strict";
+  const hide = () => document.getElementById("sidebar-check").checked = false;
+  addEventListener("keydown", e => (e.key === "Escape") && hide());
+  addEventListener("click", e => (e.target.tagName === "A") && hide());
+  addEventListener("hashchange", hide)
+})();
+</script>
+  </body>
+</html>

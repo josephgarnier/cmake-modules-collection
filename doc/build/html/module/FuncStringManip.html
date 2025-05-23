@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>StringManip &mdash; CMake Modules Collection</title>
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3862c66" />
+    <link rel="stylesheet" type="text/css" href="../_static/cmake.css?v=4d06bd55" />
+    
+    <script src="../_static/documentation_options.js?v=977c7dfd"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../_static/cmake-favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="BinTarget" href="BundleBinTarget.html" />
+    <link rel="prev" title="Print" href="FuncPrint.html" />
+ 
+
+  </head><body>
+    <input id="sidebar-check" type="checkbox" />
+    <label id="sidebar-overlay" for="sidebar-check"></label>
+
+
+
+    <div class="related relbar1" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="BundleBinTarget.html" title="BinTarget"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="FuncPrint.html" title="Print"
+             accesskey="P">previous</a> |</li>
+  <li>
+    <label class="sidebar-toggle" for="sidebar-check"></label>
+  </li>
+  <li class="rootlink">
+    <img src="../_static/cmake-logo-16.png" width="16" height="16" alt=""/>
+    <a href="https://cmake.org/">CMake 4.0.1</a>
+    <span class="reldelim1"> &#187;</span>
+  </li>
+  <li>
+    <a href="../index.html">Documentation</a> &#187;
+  </li>
+
+        <li class="nav-item nav-item-this"><a href="">StringManip</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="stringmanip">
+<span id="module:FuncStringManip"></span><h1>StringManip<a class="headerlink" href="#stringmanip" title="Link to this heading">¶</a></h1>
+<p>Operations on strings. It requires CMake 3.20 or newer.</p>
+<section id="synopsis">
+<h2>Synopsis<a class="headerlink" href="#synopsis" title="Link to this heading">¶</a></h2>
+<pre class="literal-block">string_manip(<a class="reference internal" href="#split">SPLIT</a> &lt;string&gt; &lt;output_list_var&gt;)
+string_manip(<a href="#id2"><span class="problematic" id="id3">`TRANSFORM`_</span></a> &lt;string_var&gt; &lt;ACTION&gt; [OUTPUT_VARIABLE &lt;output_var&gt;])
+string_manip(<a class="reference internal" href="#strip-interfaces">STRIP_INTERFACES</a> &lt;string_var&gt; [OUTPUT_VARIABLE &lt;output_var&gt;])
+string_manip(<a class="reference internal" href="#extract-interface">EXTRACT_INTERFACE</a> &lt;string_var&gt; &lt;BUILD|INSTALL&gt; [OUTPUT_VARIABLE &lt;output_var&gt;])</pre>
+</section>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h2>
+<dl class="cmake signature">
+<dt class="sig sig-object cmake" id="split">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">string_manip(</span></span><span class="no"><span class="pre">SPLIT</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;string&gt;</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;output_list_var&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#split" title="Link to this definition">¶</a></dt>
+<dd><p>Splits the input string into a list of substrings based on specific
+pattern rules.</p>
+<p>This command analyzes the given <code class="docutils literal notranslate"><span class="pre">&lt;string&gt;</span></code> and splits it into components
+using the following criteria:</p>
+<ul class="simple">
+<li><p>Transitions between lowercase and uppercase letters
+(e.g., <code class="docutils literal notranslate"><span class="pre">MyValue</span></code> → <code class="docutils literal notranslate"><span class="pre">My;Value</span></code>).</p></li>
+<li><p>Non-alphanumeric characters, as defined by the <a class="reference external" href="https://cmake.org/cmake/help/latest/command/string.html#make-c-identifier">string(MAKE_C_IDENTIFIER)</a>
+transformation in CMake.</p></li>
+</ul>
+<p>The resulting list is stored in <code class="docutils literal notranslate"><span class="pre">&lt;output_list_var&gt;</span></code>.</p>
+<p>If no split point is detected, the original string is returned as a
+single-element list.</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="c"># No split point detected</span>
+<span class="nf">string_manip(</span><span class="no">SPLIT</span><span class="w"> </span><span class="s">&quot;mystringtosplit&quot;</span><span class="w"> </span><span class="nb">output</span><span class="nf">)</span>
+<span class="c"># output is &quot;mystringtosplit&quot;</span>
+<span class="nf">string_manip(</span><span class="no">SPLIT</span><span class="w"> </span><span class="s">&quot;my1string2to3split&quot;</span><span class="w"> </span><span class="nb">output</span><span class="nf">)</span>
+<span class="c"># output is &quot;my1string2to3split&quot;</span>
+
+<span class="c"># Split on uppercase</span>
+<span class="nf">string_manip(</span><span class="no">SPLIT</span><span class="w"> </span><span class="s">&quot;myStringToSplit&quot;</span><span class="w"> </span><span class="nb">output</span><span class="nf">)</span>
+<span class="c"># output is &quot;my;String;To;Split&quot;</span>
+
+<span class="c"># Split on non-alphanumeric</span>
+<span class="nf">string_manip(</span><span class="no">SPLIT</span><span class="w"> </span><span class="s">&quot;my-string/to*split&quot;</span><span class="w"> </span><span class="nb">output</span><span class="nf">)</span>
+<span class="c"># output is &quot;my;string;to;split&quot;</span>
+
+<span class="c"># Split on multiple criteria</span>
+<span class="nf">string_manip(</span><span class="no">SPLIT</span><span class="w"> </span><span class="s">&quot;myString_to*Split&quot;</span><span class="w"> </span><span class="nb">output</span><span class="nf">)</span>
+<span class="c"># output is &quot;my;String;to;Split&quot;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="cmake signature">
+<dt class="sig sig-object cmake" id="split-transform">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">string_manip(</span></span><span class="no"><span class="pre">SPLIT_TRANSFORM</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;string_var&gt;</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;ACTION&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">[</span></span><span class="no"><span class="pre">OUTPUT_VARIABLE</span></span><span class="nbsp"> </span><span class="nv"><span class="pre">&lt;output_var&gt;</span></span><span class="p"><span class="pre">]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#split-transform" title="Link to this definition">¶</a></dt>
+<dd><p>Applies the <span class="target" id="index-0-command:string_manip"></span><a class="reference internal" href="#split" title="string_manip(split)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">string_manip(SPLIT)</span></code></a> operation to the value stored in <code class="docutils literal notranslate"><span class="pre">&lt;string_var&gt;</span></code>,
+transforms each resulting element according to the specified <code class="docutils literal notranslate"><span class="pre">&lt;ACTION&gt;</span></code>,
+then joins the list into a single string.</p>
+<p>The final result is either stored back in <code class="docutils literal notranslate"><span class="pre">&lt;string_var&gt;</span></code>, or in <code class="docutils literal notranslate"><span class="pre">&lt;output_var&gt;</span></code> if the
+<code class="docutils literal notranslate"><span class="pre">OUTPUT_VARIABLE</span></code> option is provided.</p>
+<p>The available values for <code class="docutils literal notranslate"><span class="pre">&lt;ACTION&gt;</span></code> are:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">START_CASE</span></code></dt><dd><p>Converts each word to Start Case (first letter uppercase, others lowercase).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">C_IDENTIFIER_UPPER</span></code></dt><dd><p>Applies a transformation inspired by <a class="reference external" href="https://cmake.org/cmake/help/latest/command/string.html#make-c-identifier">string(MAKE_C_IDENTIFIER)</a>:
+each word is converted to uppercase and suffixed with an underscore.
+If the first character is a digit, an underscore is also prepended to the result.</p>
+</dd>
+</dl>
+<p>Example transformations:</p>
+<ul class="simple">
+<li><p>Input: <code class="docutils literal notranslate"><span class="pre">&quot;myVariableName&quot;</span></code>
+Action: <code class="docutils literal notranslate"><span class="pre">START_CASE</span></code> → <code class="docutils literal notranslate"><span class="pre">&quot;MyVariableName&quot;</span></code></p></li>
+<li><p>Input: <code class="docutils literal notranslate"><span class="pre">&quot;myVariableName&quot;</span></code>
+Action: <code class="docutils literal notranslate"><span class="pre">C_IDENTIFIER_UPPER</span></code> → <code class="docutils literal notranslate"><span class="pre">&quot;MY_VARIABLE_NAME_&quot;</span></code> (joined string)</p></li>
+</ul>
+<p>If no split points are detected, the input is treated as a single-element list and transformed accordingly.</p>
+</dd></dl>
+
+<div class="highlight-cmake notranslate" id="strip-interfaces"><div class="highlight"><pre><span></span><span class="nf">string_manip(</span><span class="no">STRIP_INTERFACES</span><span class="w"> </span><span class="nv">&lt;string_var&gt;</span><span class="w"> </span><span class="p">[</span><span class="no">OUTPUT_VARIABLE</span><span class="w"> </span><span class="nv">&lt;output_var&gt;</span><span class="p">]</span><span class="nf">)</span>
+</pre></div>
+</div>
+<p>Strip BUILD_INTERFACE and INSTALL_INTERFACE generator expressions from the input
+<code class="docutils literal notranslate"><span class="pre">&lt;string_var&gt;</span></code> and store the result in place or in the specified <code class="docutils literal notranslate"><span class="pre">&lt;output_var&gt;</span></code>.</p>
+<div class="highlight-cmake notranslate" id="extract-interface"><div class="highlight"><pre><span></span><span class="nf">string_manip(</span><span class="no">EXTRACT_INTERFACE</span><span class="w"> </span><span class="nv">&lt;string_var&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="no">BUILD</span><span class="p">|</span><span class="no">INSTALL</span><span class="o">&gt;</span><span class="w"> </span><span class="p">[</span><span class="no">OUTPUT_VARIABLE</span><span class="w"> </span><span class="nv">&lt;output_var&gt;</span><span class="p">]</span><span class="nf">)</span>
+</pre></div>
+</div>
+<p>Extract the content in BUILD_INTERFACE or INSTALL_INTERFACE generator expressions from the input
+<code class="docutils literal notranslate"><span class="pre">&lt;string_var&gt;</span></code> and store the result as a string in place or in the specified <code class="docutils literal notranslate"><span class="pre">&lt;output_var&gt;</span></code>.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3>Table of Contents</h3>
+    <ul>
+<li><a class="reference internal" href="#">StringManip</a><ul>
+<li><a class="reference internal" href="#synopsis">Synopsis</a></li>
+<li><a class="reference internal" href="#usage">Usage</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="FuncPrint.html"
+                          title="previous chapter">Print</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="BundleBinTarget.html"
+                          title="next chapter">BinTarget</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/module/FuncStringManip.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="BundleBinTarget.html" title="BinTarget"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="FuncPrint.html" title="Print"
+             >previous</a> |</li>
+  <li>
+    <label class="sidebar-toggle" for="sidebar-check"></label>
+  </li>
+  <li class="rootlink">
+    <img src="../_static/cmake-logo-16.png" width="16" height="16" alt=""/>
+    <a href="https://cmake.org/">CMake 4.0.1</a>
+    <span class="reldelim1"> &#187;</span>
+  </li>
+  <li>
+    <a href="../index.html">Documentation</a> &#187;
+  </li>
+
+        <li class="nav-item nav-item-this"><a href="">StringManip</a></li> 
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025, Joseph Garnier.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+<script type="text/javascript">
+(function() {
+  "use strict";
+  const hide = () => document.getElementById("sidebar-check").checked = false;
+  addEventListener("keydown", e => (e.key === "Escape") && hide());
+  addEventListener("click", e => (e.target.tagName === "A") && hide());
+  addEventListener("hashchange", hide)
+})();
+</script>
+  </body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Dependency &mdash; CMake Modules Collection</title>
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3862c66" />
+    <link rel="stylesheet" type="text/css" href="../_static/cmake.css?v=4d06bd55" />
+    
+    <script src="../_static/documentation_options.js?v=977c7dfd"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../_static/cmake-favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Directory" href="FuncDirectory.html" />
+    <link rel="prev" title="Debug" href="FuncDebug.html" />
+ 
+
+  </head><body>
+    <input id="sidebar-check" type="checkbox" />
+    <label id="sidebar-overlay" for="sidebar-check"></label>
+
+
+
+    <div class="related relbar1" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="FuncDirectory.html" title="Directory"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="FuncDebug.html" title="Debug"
+             accesskey="P">previous</a> |</li>
+  <li>
+    <label class="sidebar-toggle" for="sidebar-check"></label>
+  </li>
+  <li class="rootlink">
+    <img src="../_static/cmake-logo-16.png" width="16" height="16" alt=""/>
+    <a href="https://cmake.org/">CMake 4.0.1</a>
+    <span class="reldelim1"> &#187;</span>
+  </li>
+  <li>
+    <a href="../index.html">Documentation</a> &#187;
+  </li>
+
+        <li class="nav-item nav-item-this"><a href="">Dependency</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="dependency">
+<span id="module:FuncDependency"></span><h1>Dependency<a class="headerlink" href="#dependency" title="Link to this heading">¶</a></h1>
+<p>Operations to manipule dependencies. It requires CMake 3.20 or newer.</p>
+<section id="synopsis">
+<h2>Synopsis<a class="headerlink" href="#synopsis" title="Link to this heading">¶</a></h2>
+<pre class="literal-block">dependency(<a class="reference internal" href="#import">IMPORT</a> &lt;lib_name&gt; &lt;STATIC|SHARED&gt; [RELEASE_NAME &lt;raw_filename&gt;] [DEBUG_NAME &lt;raw_filename&gt;] ROOT_DIR &lt;directory_path&gt; INCLUDE_DIR &lt;directory_path&gt;)
+dependency(<a class="reference internal" href="#export">EXPORT</a> &lt;lib_name&gt; &lt;BUILD_TREE|INSTALL_TREE&gt; [APPEND] OUTPUT_FILE &lt;file_path&gt;)
+dependency(<a class="reference internal" href="#include-directories">INCLUDE_DIRECTORIES</a> &lt;lib_name&gt; &lt;SET|APPEND&gt; PUBLIC &lt;item_list&gt;...)
+dependency(<a class="reference internal" href="#imported-location">IMPORTED_LOCATION</a> &lt;lib_name&gt; [CONFIGURATION &lt;build_type&gt;] PUBLIC &lt;item&gt;...)</pre>
+</section>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h2>
+<div class="highlight-cmake notranslate" id="import"><div class="highlight"><pre><span></span><span class="nf">dependency(</span><span class="no">IMPORT</span><span class="w"> </span><span class="nv">&lt;lib_name&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="no">STATIC</span><span class="p">|</span><span class="no">SHARED</span><span class="o">&gt;</span><span class="w"> </span><span class="p">[</span><span class="no">RELEASE_NAME</span><span class="w"> </span><span class="nv">&lt;raw_filename&gt;</span><span class="p">]</span><span class="w"> </span><span class="p">[</span><span class="no">DEBUG_NAME</span><span class="w"> </span><span class="nv">&lt;raw_filename&gt;</span><span class="p">]</span><span class="w"> </span><span class="no">ROOT_DIR</span><span class="w"> </span><span class="nv">&lt;directory_path&gt;</span><span class="w"> </span><span class="no">INCLUDE_DIR</span><span class="w"> </span><span class="nv">&lt;directory_path&gt;</span><span class="nf">)</span>
+</pre></div>
+</div>
+<p>Find and creates an imported library target called <code class="docutils literal notranslate"><span class="pre">&lt;lib_name&gt;</span></code>. This
+command incorporates the same behavior as <code class="docutils literal notranslate"><span class="pre">find_library()</span></code> and
+<code class="docutils literal notranslate"><span class="pre">add_library(IMPORTED)</span></code> combined. First, it recursively find the possible
+filenames for <code class="docutils literal notranslate"><span class="pre">RELEASE_NAME</span></code> and <code class="docutils literal notranslate"><span class="pre">DEBUG_NAME</span></code> library files in the given path
+<code class="docutils literal notranslate"><span class="pre">ROOT_DIR</span></code> from their raw filenames <code class="docutils literal notranslate"><span class="pre">&lt;raw_filename&gt;</span></code>. <code class="docutils literal notranslate"><span class="pre">RELEASE_NAME</span></code>
+and <code class="docutils literal notranslate"><span class="pre">DEBUG_NAME</span></code> are facultative but at least one has to be given, they
+define what configurtion types (in <code class="docutils literal notranslate"><span class="pre">CMAKE_CONFIGURATION_TYPES</span></code> cmake variable)
+will be supported by the library (see <a class="reference external" href="https://cmake.org/cmake/help/latest/variable/CMAKE_CONFIGURATION_TYPES.html">https://cmake.org/cmake/help/latest/variable/CMAKE_CONFIGURATION_TYPES.html</a>).
+The <code class="docutils literal notranslate"><span class="pre">&lt;raw_filename&gt;</span></code> given should be a library file name without any numeric character
+(for versions), any special character, any prefixes (e.g. lib) and any suffixes (e.g. .so)
+that are platform dependent. The command will loop over all file in <code class="docutils literal notranslate"><span class="pre">ROOT_DIR</span></code> and
+try to do a matching between the <code class="docutils literal notranslate"><span class="pre">&lt;raw_filename&gt;</span></code> in format <code class="docutils literal notranslate"><span class="pre">&lt;CMAKE_STATIC_LIBRARY_PREFIX|</span>
+<span class="pre">CMAKE_SHARED_LIBRARY_PREFIX&gt;&lt;raw_filename&gt;&lt;verions-numbers&gt;&lt;CMAKE_STATIC_LIBRARY_SUFFIX|</span>
+<span class="pre">CMAKE_SHARED_LIBRARY_SUFFIX&gt;</span></code> and each filename found striped from their numeric and
+special character version and their suffix and their prefix based on the plateform and
+the kind of library <code class="docutils literal notranslate"><span class="pre">STATIC</span></code> or <code class="docutils literal notranslate"><span class="pre">SHARED</span></code> (eg. .lib and .dll.a for static on
+Windows, .a for static on Unix, .dll for shared on Windows, .so for shared on Linux).
+An error message occured if there is more than one result or if no file is found.
+Secondly, when research is successful the <cite>add_library(IMPORTED)`</cite> CMake function is
+called and all target properties are filled. To fill in the include header files,
+the variable <code class="docutils literal notranslate"><span class="pre">INCLUDE_DIR</span></code> must give where the files are.</p>
+<div class="highlight-cmake notranslate" id="export"><div class="highlight"><pre><span></span><span class="nf">dependency(</span><span class="no">EXPORT</span><span class="w"> </span><span class="nv">&lt;lib_name&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="no">BUILD_TREE</span><span class="p">|</span><span class="no">INSTALL_TREE</span><span class="o">&gt;</span><span class="w"> </span><span class="p">[</span><span class="no">APPEND</span><span class="p">]</span><span class="w"> </span><span class="no">OUTPUT_FILE</span><span class="w"> </span><span class="nv">&lt;file_path&gt;</span><span class="nf">)</span>
+</pre></div>
+</div>
+<p>Export imported library target <code class="docutils literal notranslate"><span class="pre">&lt;lib_name&gt;</span></code> from the build-tree or the install-tree
+for a use by outside projects. It includes the features customized of the <code class="docutils literal notranslate"><span class="pre">export()</span></code>
+for <code class="docutils literal notranslate"><span class="pre">BUILD_TREE</span></code> and the <code class="docutils literal notranslate"><span class="pre">install(EXPORT)</span></code> and <code class="docutils literal notranslate"><span class="pre">install(TARGETS)</span></code> CMake commands
+for <code class="docutils literal notranslate"><span class="pre">INSTALL_TREE</span></code> (see <a class="reference external" href="https://cmake.org/cmake/help/latest/command/export.html">https://cmake.org/cmake/help/latest/command/export.html</a> and
+<a class="reference external" href="https://cmake.org/cmake/help/latest/command/install.html#export">https://cmake.org/cmake/help/latest/command/install.html#export</a>) for imported dependencies.
+The command will create a file <code class="docutils literal notranslate"><span class="pre">&lt;file_path&gt;</span></code> that may be included by outside projects to
+import targets from the current project's build-tree or install-tree. This file will be create
+in <code class="docutils literal notranslate"><span class="pre">CMAKE_CURRENT_BINARY_DIR</span></code> for <code class="docutils literal notranslate"><span class="pre">BUILD_TREE</span></code> and in <code class="docutils literal notranslate"><span class="pre">CMAKE_CURRENT_BINARY_DIR/CMakeFiles/Export&quot;</span>
+<span class="pre">for</span> <span class="pre">``INSTALL_TREE</span></code>. If the <code class="docutils literal notranslate"><span class="pre">APPEND</span></code> option is given the generated code will be appended
+to the file instead of overwriting it.</p>
+<div class="highlight-cmake notranslate" id="include-directories"><div class="highlight"><pre><span></span><span class="nf">dependency(</span><span class="no">INCLUDE_DIRECTORIES</span><span class="w"> </span><span class="nv">&lt;lib_name&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="no">SET</span><span class="p">|</span><span class="no">APPEND</span><span class="o">&gt;</span><span class="w"> </span><span class="no">PUBLIC</span><span class="w"> </span><span class="nv">&lt;item_list&gt;...</span><span class="nf">)</span>
+</pre></div>
+</div>
+<p>Set or append interface include directories to the imported library <code class="docutils literal notranslate"><span class="pre">&lt;lib_name&gt;</span></code>.
+It works like the <code class="docutils literal notranslate"><span class="pre">target_include_directories()</span></code> CMake command
+(see <a class="reference external" href="https://cmake.org/cmake/help/latest/command/target_include_directories.html">https://cmake.org/cmake/help/latest/command/target_include_directories.html</a>)
+but with a custom behavior for imported dependencies. PUBLIC specifies the scope
+of the following arguments. These one has to use the generator expressions
+<code class="docutils literal notranslate"><span class="pre">BUILD_INTERFACE</span></code> and <code class="docutils literal notranslate"><span class="pre">INSTALL_INTERFACE</span></code> (see <a class="reference external" href="https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html#build-specification-with-generator-expressions">https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html#build-specification-with-generator-expressions</a>).</p>
+<div class="highlight-cmake notranslate" id="imported-location"><div class="highlight"><pre><span></span><span class="nf">dependency(</span><span class="no">IMPORTED_LOCATION</span><span class="w"> </span><span class="nv">&lt;lib_name&gt;</span><span class="w"> </span><span class="p">[</span><span class="no">CONFIGURATION</span><span class="w"> </span><span class="nv">&lt;config_type&gt;</span><span class="p">]</span><span class="w"> </span><span class="no">PUBLIC</span><span class="w"> </span><span class="nv">&lt;item&gt;...</span><span class="nf">)</span>
+</pre></div>
+</div>
+<p>Set the full path to the imported library <code class="docutils literal notranslate"><span class="pre">&lt;lib_name&gt;</span></code>. If a <code class="docutils literal notranslate"><span class="pre">CONFIGURATION</span></code>
+option is given (DEBUG, RELEASE, etc) then the file will only be setted for this
+config type and only if it is a supported configuration. Otherwise it is setted
+for all configuration supported by the imported library. PUBLIC specifies the
+scope of the following arguments. These one has to use the generator expressions
+<code class="docutils literal notranslate"><span class="pre">BUILD_INTERFACE</span></code> and <code class="docutils literal notranslate"><span class="pre">INSTALL_INTERFACE</span></code>
+(see <a class="reference external" href="https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html#build-specification-with-generator-expressions">https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html#build-specification-with-generator-expressions</a>).</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3>Table of Contents</h3>
+    <ul>
+<li><a class="reference internal" href="#">Dependency</a><ul>
+<li><a class="reference internal" href="#synopsis">Synopsis</a></li>
+<li><a class="reference internal" href="#usage">Usage</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="FuncDebug.html"
+                          title="previous chapter">Debug</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="FuncDirectory.html"
+                          title="next chapter">Directory</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/module/FuncDependency.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="FuncDirectory.html" title="Directory"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="FuncDebug.html" title="Debug"
+             >previous</a> |</li>
+  <li>
+    <label class="sidebar-toggle" for="sidebar-check"></label>
+  </li>
+  <li class="rootlink">
+    <img src="../_static/cmake-logo-16.png" width="16" height="16" alt=""/>
+    <a href="https://cmake.org/">CMake 4.0.1</a>
+    <span class="reldelim1"> &#187;</span>
+  </li>
+  <li>
+    <a href="../index.html">Documentation</a> &#187;
+  </li>
+
+        <li class="nav-item nav-item-this"><a href="">Dependency</a></li> 
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025, Joseph Garnier.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+<script type="text/javascript">
+(function() {
+  "use strict";
+  const hide = () => document.getElementById("sidebar-check").checked = false;
+  addEventListener("keydown", e => (e.key === "Escape") && hide());
+  addEventListener("click", e => (e.target.tagName === "A") && hide());
+  addEventListener("hashchange", hide)
+})();
+</script>
+  </body>
+</html>
