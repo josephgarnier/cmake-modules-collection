@@ -5,13 +5,14 @@
 # LICENSE file in the root directory of this source tree.
 
 #[=======================================================================[.rst:
-
 StringManip
 -----------
+
 Operations on strings. It requires CMake 3.20 or newer.
 
 Synopsis
 ^^^^^^^^
+
 .. parsed-literal::
 
     string_manip(`SPLIT`_ <string> <output_list_var>)
@@ -22,31 +23,74 @@ Synopsis
 Usage
 ^^^^^
 
-.. _SPLIT:
-.. code-block:: cmake
-
+.. signature::
   string_manip(SPLIT <string> <output_list_var>)
 
-Split the string ``<string>`` into a list of strings wherever non-alphanumeric
-character (in using the CMake string(MAKE_C_IDENTIFIER) function) or a uppercase
-character is detected. This list is returned in ``<output_list_var>`` as a list.
-In case where no special char is found, the input string is returned as a list.
+  Splits the input string into a list of substrings based on specific
+  pattern rules.
 
-.. _TRANSFORM:
-.. code-block:: cmake
+  This command analyzes the given ``<string>`` and splits it into components
+  using the following criteria:
 
+  * Transitions between lowercase and uppercase letters
+    (e.g., ``MyValue`` → ``My;Value``).
+  * Non-alphanumeric characters, as defined by the `string(MAKE_C_IDENTIFIER) <https://cmake.org/cmake/help/latest/command/string.html#make-c-identifier>`_
+    transformation in CMake.
+
+  The resulting list is stored in ``<output_list_var>``.
+
+  If no split point is detected, the original string is returned as a
+  single-element list.
+
+  .. code-block:: cmake
+
+    # No split point detected
+    string_manip(SPLIT "mystringtosplit" output)
+    # output is "mystringtosplit"
+    string_manip(SPLIT "my1string2to3split" output)
+    # output is "my1string2to3split"
+
+    # Split on uppercase
+    string_manip(SPLIT "myStringToSplit" output)
+    # output is "my;String;To;Split"
+
+    # Split on non-alphanumeric
+    string_manip(SPLIT "my-string/to*split" output)
+    # output is "my;string;to;split"
+
+    # Split on multiple criteria
+    string_manip(SPLIT "myString_to*Split" output)
+    # output is "my;String;to;Split"
+
+.. signature::
   string_manip(SPLIT_TRANSFORM <string_var> <ACTION> [OUTPUT_VARIABLE <output_var>])
 
-Apply the string_manip(SPLIT) function on `<string_var>`` and apply an <ACTION>
-to all elements in the list, then, join them and store the result in place or in
-the specified ``<output_var>`` as a string. ``<ACTION>`` is one of:
+  Applies the :command:`string_manip(SPLIT)` operation to the value stored in ``<string_var>``,
+  transforms each resulting element according to the specified ``<ACTION>``,
+  then joins the list into a single string.
 
-::
+  The final result is either stored back in ``<string_var>``, or in ``<output_var>`` if the
+  ``OUTPUT_VARIABLE`` option is provided.
 
- START_CASE           = The word is converted into start case
- C_IDENTIFIER_UPPER   = Inspired from string(MAKE_C_IDENTIFIER) CMake function, the
- word is suffixed by an underscore and converted to upper. If the first character
- is a digit, an underscore will also be prepended to the result.
+  The available values for ``<ACTION>`` are:
+
+  ``START_CASE``
+    Converts each word to Start Case (first letter uppercase, others lowercase).
+
+  ``C_IDENTIFIER_UPPER``
+    Applies a transformation inspired by `string(MAKE_C_IDENTIFIER) <https://cmake.org/cmake/help/latest/command/string.html#make-c-identifier>`_:
+    each word is converted to uppercase and suffixed with an underscore.
+    If the first character is a digit, an underscore is also prepended to the result.
+
+  Example transformations:
+
+  * Input: ``"myVariableName"``
+    Action: ``START_CASE`` → ``"MyVariableName"``
+
+  * Input: ``"myVariableName"``
+    Action: ``C_IDENTIFIER_UPPER`` → ``"MY_VARIABLE_NAME_"`` (joined string)
+
+  If no split points are detected, the input is treated as a single-element list and transformed accordingly.
 
 .. _STRIP_INTERFACES:
 .. code-block:: cmake
@@ -67,7 +111,7 @@ Extract the content in BUILD_INTERFACE or INSTALL_INTERFACE generator expression
 #]=======================================================================]
 include_guard()
 
-cmake_minimum_required (VERSION 3.20)
+cmake_minimum_required (VERSION 3.20 FATAL_ERROR)
 
 #------------------------------------------------------------------------------
 # Public function of this module.
