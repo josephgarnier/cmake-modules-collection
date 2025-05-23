@@ -149,7 +149,10 @@
       },
       "command": "test",
       "preset": "${command:cmake.activeTestPresetName}",
-      "group": "test",
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
       "presentation": {
         "echo": true,
         "reveal": "always",

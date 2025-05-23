@@ -28,7 +28,7 @@ else()
 	
 	# Store whether we are building tests or not, then turn off the tests
 	set(build_testing_old "${BUILD_TESTING}")
-	set(BUILD_TESTING OFF CACHE BOOL "" FORCE)
+	set(BUILD_TESTING off CACHE BOOL "" FORCE)
 	
 	# Download CMakeTest and bring it into scope
 	message(STATUS "Downloading CMakeTest in the build-tree...")
