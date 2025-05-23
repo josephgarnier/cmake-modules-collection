@@ -59,7 +59,7 @@ An error message occured if there is more than one result or if no file is found
 #]=======================================================================]
 include_guard()
 
-cmake_minimum_required (VERSION 3.20)
+cmake_minimum_required (VERSION 3.20 FATAL_ERROR)
 
 #------------------------------------------------------------------------------
 # Public function of this module.

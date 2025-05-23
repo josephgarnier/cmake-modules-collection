@@ -5,9 +5,9 @@
 # LICENSE file in the root directory of this source tree.
 
 #[=======================================================================[.rst:
-
 Print
 ---------
+
 Log a message. It requires CMake 3.20 or newer.
 
 Synopsis
@@ -64,7 +64,7 @@ The optional ``<mode>`` keyword determines the type of message like in CMake
 #]=======================================================================]
 include_guard()
 
-cmake_minimum_required (VERSION 3.20)
+cmake_minimum_required (VERSION 3.20 FATAL_ERROR)
 
 # Global variables
 set(PRINT_BASE_DIR "${CMAKE_SOURCE_DIR}")

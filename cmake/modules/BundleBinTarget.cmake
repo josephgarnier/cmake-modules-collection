@@ -108,7 +108,7 @@ Add include directories ``<directory_path_list>`` to the target ``<target_name>`
 #]=======================================================================]
 include_guard()
 
-cmake_minimum_required (VERSION 3.20)
+cmake_minimum_required (VERSION 3.20 FATAL_ERROR)
 
 #------------------------------------------------------------------------------
 # Public function of this module

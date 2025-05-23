@@ -92,7 +92,7 @@ scope of the following arguments. These one has to use the generator expressions
 #]=======================================================================]
 include_guard()
 
-cmake_minimum_required (VERSION 3.20)
+cmake_minimum_required (VERSION 3.20 FATAL_ERROR)
 include(FuncDirectory)
 include(FuncStringManip)
 

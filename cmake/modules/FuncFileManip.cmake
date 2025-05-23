@@ -63,7 +63,7 @@ Sets as a list in the specified ``<output_list_var>`` a component of file in the
 #]=======================================================================]
 include_guard()
 
-cmake_minimum_required (VERSION 3.20)
+cmake_minimum_required (VERSION 3.20 FATAL_ERROR)
 
 #------------------------------------------------------------------------------
 # Public function of this module.
