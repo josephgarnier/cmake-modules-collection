@@ -39,7 +39,7 @@ These *optional dependencies* are only required to contribute to this project or
 - **Python 3.12.9+** (for doc generation).
 - **Sphinx 8.2.3+** (for doc generation) - can be found [here](https://www.sphinx-doc.org/en/master/usage/installation.html) or use `requirements.txt` in `doc/` folder.
 - **Sphinx Domain for Modern CMake** (for doc generation) - can be found [here](https://github.com/scikit-build/moderncmakedomain) or use `requirements.txt` in `doc/` folder.
-- **doc8** (for doc style checking) - can be found [here ](https://github.com/PyCQA/doc8) or use `requirements.txt` in `doc/` folder.
+- **doc8** (for doc style checking) - can be found [here](https://github.com/PyCQA/doc8) or use `requirements.txt` in `doc/` folder.
 - For **Visual Studio Code users**, these extensions are commanded:
   - [ms-vscode.cpptools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools) (for C/C++ support)
   - [ms-vscode.cmake-tools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools) (for CMake support)
@@ -86,15 +86,29 @@ The structure of this function signature results from the use of the CMake comma
 
 Within the public function of a module, the first parameter `<operation-name>` acts as a **dispatcher**, routing the execution flow to the internal macro that implements the requested operation. Therefore, the function’s role is limited to parsing arguments, initializing scoped variables, and calling an internal macro.
 
-Regarding **module documentation**, just like the code follows a style consistent with official CMake conventions, the documentation also aims to follow the [*CMake Documentation Guide*](https://github.com/Kitware/CMake/blob/master/Help/dev/documentation.rst). It is written in *reStructuredText* format and placed at the top of the file.
+Regarding **module documentation**, just like the code follows a style consistent with official CMake conventions, the documentation also aims to follow the [*CMake Documentation Guide*](https://github.com/Kitware/CMake/blob/master/Help/dev/documentation.rst). It is written in *reStructuredText* format and placed at the top of the file. The visual style replicates [the official one](https://github.com/Kitware/CMake/tree/master/Utilities/Sphinx).
 
 ### Module description
 
-| Name | Type | Description |
-|---|---|---|
-|   |   |   |
+Detailed module documentation is available by opening the `doc/build/html/index.html` file in a browser.
+
+| Name | Type | Description | Location |
+|---|---|---|---|
+| `Debug` | Function | Operations for helping with debug | `cmake/modules/FuncDebug.cmake` |
+| `Dependency` | Function | Operations to manipule dependencies | `cmake/modules/FuncDependency.cmake` |
+| `Directory` | Function | Operations to manipule directories | `cmake/modules/FuncDirectory.cmake` |
+| `FileManip` | Function | Operations on files | `cmake/modules/FuncFileManip.cmake` |
+| `Print` | Function | Log a message | `cmake/modules/FuncPrint.cmake` |
+| `StringManip` | Function | Operations on strings | `cmake/modules/FuncStringManip.cmake` |
+| `BinTarget` | Bundle | Operations to fully create and configure a binary target | `cmake/modules/BundleBinTarget.cmake` |
 
 ## 🧩 Integration
+
+This procedure explains how to get the collection of modules and configure a C++/CMake project to use them.
+
+**Prerequisites**:
+
+- All [required dependencies](#-requirements) are satisfied.
 
 To integrate the CMake module collection into a development project using CMake and C++., follow these steps:
 
@@ -108,28 +122,14 @@ To integrate the CMake module collection into a development project using CMake 
 
 2. If the ZIP archive was downloaded, extract its contents to any folder.
 
-3. Open the project's `cmake` folder, then copy or move the extracted `modules` folder into the CMake code directory of the project.
-
+3. Open the project's `cmake` folder, then copy or move the extracted `modules` folder into the CMake code directory of the C++/CMake project.
     > **Example**: for a project located at `<path-to-my-project>/`, copy the folder to `<path-to-my-project>/cmake/`.
 
 4. (Optional) Delete the downloaded repository and extracted files if they are no longer needed.
 
-## ⚙️ Usage and Commands
+5. Open the `CMakeLists.txt` file located at the root of the C++/CMake project.
 
-### Use a module in a C++/CMake project
-
-This procedure explains how to configure a C++/CMake project to use the previously integrated modules.
-
-**Prerequisites**:
-
-- All [required dependencies](#-requirements) are satisfied.
-- The modules [are integrated](#-integration) into the development project.
-
-To use the modules in a C++/CMake project, follow these steps:
-
-1. Open the `CMakeLists.txt` file located at the root of the C++/CMake project.
-
-2. Append the module path after the `project(...)` command:
+6. Append the module path after the `project(...)` command:
 
     ```cmake
     list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/<path-to-cmake>/modules")
@@ -138,45 +138,169 @@ To use the modules in a C++/CMake project, follow these steps:
     where `<path-to-cmake>` is the relative path to the directory containing the modules.  
     > **Example**: `${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules`
 
-3. Include the required modules using the following command:
+7. Include the required modules using the following command:
 
     ```cmake
     include(<module-name>)
     ```
 
-### Commands
+## 💻 Development
 
-Several *commands* and *scripts* are available for developing this project, including generating and cleaning the buildsystem, generating documentation, compiling the project and running tests.
+Several *commands* and *scripts* are available for the development of this project, including: build system generation and cleanup, documentation generation, test execution.
 
-These commands are written as **Visual Studio Code tasks** in `.vscode/tasks.json` and can be launched from the [command palette](https://code.visualstudio.com/docs/editor/tasks)
+Commands are also written as **Visual Studio Code tasks** in `.vscode/tasks.json` and can be launched from the [command palette](https://code.visualstudio.com/docs/editor/tasks). Many of them can also be run from the [Visual Studio Code CMake Tools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools). Scripts are stored in the project root.
 
-The available scripts are listed below. They have to be executed from the root of the project.
+The use of commands and scripts is described below, they must be run from the root project directory:
 
-To **clean** the buildsystem (remove content of `build/`, `doc/` and `bin/`):
+- To **clean** the buildsystem (remove content of `build/`, `doc/` and `bin/`):
 
-```bash
-# On Linux/MacOS
-./clean-cmake.sh
+  <details>
+  <summary>see details</summary>
 
-# On Windows
-clean-cmake.bat
-```
+  ```bash
+  # On Linux/MacOS
+  ./clean-cmake.sh
 
-To **generate** the buildsystem (call the `cmake` command):
+  # On Windows
+  clean-cmake.bat
+  ```
 
-```bash
-# On Linux/MacOS
-./run-cmake.sh
+  - VS Code task: `Project: Clean`.
+  </details>
 
-# On Windows
-run-cmake.bat
+- To **generate** the buildsystem (call the `cmake` command):
 
-# a useful command for listing what targets has been generated
-cmake --build ./build/ --target help
+  <details>
+  <summary>see details</summary>
+  
+  ```bash
+  # On Linux/MacOS
+  ./run-cmake.sh
 
-# a useful command for listing variables in the cache and their descriptions
-cmake -LAH ./build/
-```
+  # On Windows
+  run-cmake.bat
+  ```
+
+  - VS Code task: `Project: Clean`.
+  - **Note:** before running it, edit the script to change the default [cmake-presets](https://cmake.org/cmake/help/latest/manual/cmake-presets.7.html).
+  </details>
+
+- To **clean and generate** the buildsystem:
+
+  <details>
+  <summary>see details</summary>
+
+  ```bash
+  # On Linux/MacOS
+  ./clean-cmake.sh && echo \"\" && ./run-cmake.sh
+
+  # On Windows
+  clean-cmake.bat && echo. && run-cmake.bat
+  ```
+
+  - VS Code task: `Project: Clean and Generate`.
+  - **Note:** before running it, edit the script to change the default [cmake-presets](https://cmake.org/cmake/help/latest/manual/cmake-presets.7.html).
+  </details>
+
+- To **execute the `clean`** build phase (call the CMake target 'clean'):
+
+  <details>
+  <summary>see details</summary>
+
+  ```bash
+  # Run the CMake target 'clean'
+  cmake --build ./build/<preset-build-folder> --target clean
+  ```
+
+  - VS Code task: `CMake: Clean`.
+  </details>
+
+- To **execute the `default`** build phase (call the CMake target 'all'):
+
+  <details>
+  <summary>see details</summary>
+
+  ```bash
+  # Run the CMake target 'all'
+  cmake --target all --preset "<build-preset-name>"
+
+  # Run the CMake target 'all' in verbose mode
+  cmake --target all --verbose --preset "<build-preset-name>"
+  ```
+
+  - VS Code task: `CMake: Build all`.
+  </details>
+
+- To **execute the `clean` and `default`** build phases (call the CMake targets 'clean' then 'all'):
+
+  <details>
+  <summary>see details</summary>
+
+  ```bash
+  # Run the CMake target 'all' after the target 'clean'
+  cmake --target all --clean-first --preset "<build-preset-name>"
+
+  # Run the CMake target 'all' after the target 'clean' in verbose mode
+  cmake --target all --clean-first --verbose --preset "<build-preset-name>"
+  ```
+
+  - VS Code task: `CMake: Clean and Rebuild all`.
+  </details>
+
+- To **execute the `test`** build phases (call the CMake command 'ctest'):
+
+  <details>
+  <summary>see details</summary>
+
+  ```bash
+  # Run the CMake command 'ctest'
+  ctest --preset "<test-preset-name>"
+  ```
+
+  - VS Code task: `CMake: Test`.
+  </details>
+
+- To **execute the `doc`** build phases (call the CMake target 'doc'):
+
+  <details>
+  <summary>see details</summary>
+
+  ```bash
+  # Run the CMake target 'doc'
+  cmake --build ./build/<preset-build-folder> --target doc
+  ```
+
+  - VS Code task: `CMake: Doc`.
+  - **Note:** the 'doc' CMake target is included in 'all' CMake target.
+  </details>
+
+- To **execute a default workflow with `default`, `test`, `doc`** build phases:
+
+  <details>
+  <summary>see details</summary>
+
+  ```bash
+  # Run a default CMake workflow
+  cmake --workflow --preset "<workflow-preset-name>"
+  ```
+
+  - VS Code task: `CMake: Workflow`.
+  </details>
+
+- Some useful commands for debugging:
+
+  <details>
+  <summary>see details</summary>
+  
+  ```bash
+  # List what targets has been generated
+  cmake --build ./build/<preset-build-folder> --target help
+
+  # List variables in the cache and their descriptions
+  cmake -LAH ./build/<preset-build-folder>
+  ```
+
+  </details>
 
 ## 📚 Resources
 
@@ -193,6 +317,7 @@ CMake documentation:
 - [The CMake Documentation Guide](https://github.com/Kitware/CMake/blob/master/Help/dev/documentation.rst).
 - [Manual for CMake developers](https://cmake.org/cmake/help/latest/manual/cmake-developer.7.html).
 - [Description of the CMake language](https://cmake.org/cmake/help/latest/manual/cmake-language.7.html).
+- [reStructuredText syntax](https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html).
 
 Non-exhaustive list of **other CMake module collections** on GitHub:
 
