@@ -16,7 +16,7 @@ This collection of CMake modules provides macros and functions that extend offic
 <a href="#-requirements">Requirements</a> &nbsp;&bull;&nbsp;
 <a href="#-module-overview">Module overview</a> &nbsp;&bull;&nbsp;
 <a href="#-integration">Integration</a> &nbsp;&bull;&nbsp;
-<a href="#️-usage-and-commands">Usage</a> &nbsp;&bull;&nbsp;
+<a href="#-development">Development</a> &nbsp;&bull;&nbsp;
 <a href="#-resources">Resources</a> &nbsp;&bull;&nbsp;
 <a href="#️-license">License</a>
 
