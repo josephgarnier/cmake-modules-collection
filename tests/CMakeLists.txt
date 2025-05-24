@@ -77,6 +77,8 @@ else()
 endif()
 
 # Include CMakeTest
+set(CMAKETEST_USE_COLORS on)
+set(CMAKEPP_LANG_DEBUG_MODE off)
 include(cmake_test/cmake_test)
 
 ####################### Call tests ############################################
@@ -84,7 +86,8 @@ message(CHECK_START "Building tests")
 list(APPEND CMAKE_MESSAGE_INDENT "  ")
 
 ct_set_print_length("${CT_DEFAULT_PRINT_LENGTH}")
-ct_add_dir("./" CT_DEBUG_MODE_ON)
+cpp_set_global("CT_DEBUG_MODE" "FALSE")
+ct_add_dir("./" USE_REL_PATH_NAMES)
 
 list(POP_BACK CMAKE_MESSAGE_INDENT)
 message(CHECK_PASS "done")
