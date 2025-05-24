@@ -9,7 +9,7 @@
 # See README file in the root directory of this source tree.
 
 #-------------------------------------------------------------------------------
-# Test the StringManip module|Public command
+# Test of [StringManip module::Public command]
 ct_add_test(NAME "test_string_manip")
 function(${CMAKETEST_TEST})
 	include(FuncStringManip)

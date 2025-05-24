@@ -9,7 +9,8 @@
 # See README file in the root directory of this source tree.
 
 #-------------------------------------------------------------------------------
-# Test the StringManip module|SPLIT operation: ``string_manip(SPLIT <string> <output_list_var>)``
+# Test of [StringManip module::SPLIT operation]:
+#    ``string_manip(SPLIT <string> <output_list_var>)``
 ct_add_test(NAME "test_string_manip_split_operation")
 function(${CMAKETEST_TEST})
 	include(FuncStringManip)
