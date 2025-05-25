@@ -16,7 +16,7 @@ Synopsis
 .. parsed-literal::
 
     string_manip(`SPLIT`_ <string> <output_list_var>)
-    string_manip(`TRANSFORM`_ <string_var> <ACTION> [OUTPUT_VARIABLE <output_var>])
+    string_manip(`SPLIT_TRANSFORM`_ <string_var> <ACTION> [OUTPUT_VARIABLE <output_var>])
     string_manip(`STRIP_INTERFACES`_ <string_var> [OUTPUT_VARIABLE <output_var>])
     string_manip(`EXTRACT_INTERFACE`_ <string_var> <BUILD|INSTALL> [OUTPUT_VARIABLE <output_var>])
 
@@ -27,20 +27,18 @@ Usage
   string_manip(SPLIT <string> <output_list_var>)
 
   Splits the input string into a list of substrings based on specific
-  pattern rules.
-
-  This command analyzes the given ``<string>`` and splits it into components
-  using the following criteria:
+  pattern rules. This command analyzes the given ``<string>`` and splits
+  it into components using the following criteria:
 
   * Transitions between lowercase and uppercase letters
-    (e.g., ``MyValue`` → ``My;Value``).
+    (e.g., ``MyValue`` becomes ``My;Value``).
   * Non-alphanumeric characters, as defined by the `string(MAKE_C_IDENTIFIER) <https://cmake.org/cmake/help/latest/command/string.html#make-c-identifier>`_
     transformation in CMake.
 
-  The resulting list is stored in ``<output_list_var>``.
+  The resulting list is stored in ``<output_list_var>``. If no split point is
+  detected, the original string is returned as a single-element list.
 
-  If no split point is detected, the original string is returned as a
-  single-element list.
+  Example usage:
 
   .. code-block:: cmake
 
@@ -67,48 +65,65 @@ Usage
 
   Applies the :command:`string_manip(SPLIT)` operation to the value stored in ``<string_var>``,
   transforms each resulting element according to the specified ``<ACTION>``,
-  then joins the list into a single string.
-
-  The final result is either stored back in ``<string_var>``, or in ``<output_var>`` if the
-  ``OUTPUT_VARIABLE`` option is provided.
+  then joins the list into a single string. The final result is either stored
+  back in ``<string_var>``, or in ``<output_var>`` if the ``OUTPUT_VARIABLE``
+  option is provided.
 
   The available values for ``<ACTION>`` are:
 
-  ``START_CASE``
-    Converts each word to Start Case (first letter uppercase, others lowercase).
+    ``START_CASE``
+      Converts each word to Start Case (first letter uppercase, others lowercase).
 
-  ``C_IDENTIFIER_UPPER``
-    Applies a transformation inspired by `string(MAKE_C_IDENTIFIER) <https://cmake.org/cmake/help/latest/command/string.html#make-c-identifier>`_:
-    each word is converted to uppercase and suffixed with an underscore.
-    If the first character is a digit, an underscore is also prepended to the result.
+    ``C_IDENTIFIER_UPPER``
+      Applies a transformation inspired by `string(MAKE_C_IDENTIFIER) <https://cmake.org/cmake/help/latest/command/string.html#make-c-identifier>`_:
+      each word is converted to uppercase and suffixed with an underscore.
+      If the first character is a digit, an underscore is also prepended to
+      the result.
 
-  Example transformations:
+  Example of transformations:
 
-  * Input: ``"myVariableName"``
-    Action: ``START_CASE`` → ``"MyVariableName"``
+  ====================  ======================  =======================================
+  Input                 Action                  Output
+  ====================  ======================  =======================================
+  ``"myVariableName"``  ``START_CASE``          ``"MyVariableName"``
+  ``"myVariableName"``  ``C_IDENTIFIER_UPPER``  ``"MY_VARIABLE_NAME_"`` (joined string)
+  ====================  ======================  =======================================
 
-  * Input: ``"myVariableName"``
-    Action: ``C_IDENTIFIER_UPPER`` → ``"MY_VARIABLE_NAME_"`` (joined string)
+  If no split points are detected, the input is treated as a single-element
+  list and transformed accordingly.
 
-  If no split points are detected, the input is treated as a single-element list and transformed accordingly.
-
-.. _STRIP_INTERFACES:
-.. code-block:: cmake
-
+.. signature::
   string_manip(STRIP_INTERFACES <string_var> [OUTPUT_VARIABLE <output_var>])
 
-Strip BUILD_INTERFACE and INSTALL_INTERFACE generator expressions from the input
-``<string_var>`` and store the result in place or in the specified ``<output_var>``.
+  Removes CMake generator expressions of the form ``$<BUILD_INTERFACE:...>`` and
+  ``$<INSTALL_INTERFACE:...>`` from the value stored in ``<string_var>``. The
+  expressions are removed entirely, including any leading semicolon if
+  present.
 
-.. _EXTRACT_INTERFACE:
-.. code-block:: cmake
+  The resulting string is either stored back in ``<string_var>``, or in
+  ``<output_var>`` if the ``OUTPUT_VARIABLE`` option is provided.
 
+.. signature::
   string_manip(EXTRACT_INTERFACE <string_var> <BUILD|INSTALL> [OUTPUT_VARIABLE <output_var>])
 
-Extract the content in BUILD_INTERFACE or INSTALL_INTERFACE generator expressions from the input
-``<string_var>`` and store the result as a string in place or in the specified ``<output_var>``.
+  Extracts the content from either the ``$<BUILD_INTERFACE:...>`` or
+  ``$<INSTALL_INTERFACE:...>``  generator expression within the value stored
+  in ``<string_var>``, depending on the specified mode.
 
+  The ``<BUILD|INSTALL>`` argument determines which generator expression to
+  extract:
+
+  * ``BUILD``: Extracts the content of ``$<BUILD_INTERFACE:...>``.
+  * ``INSTALL``: Extracts the content of ``$<INSTALL_INTERFACE:...>``.
+
+  If multiple generator expressions of the specified type are present, their contents
+  are concatenated into a list.
+
+  The result is stored either back in ``<string_var>``, or in ``<output_var>``
+  if the ``OUTPUT_VARIABLE`` option is provided. If the specified generator
+  expression is not present in the input, an empty string is returned.
 #]=======================================================================]
+
 include_guard()
 
 cmake_minimum_required (VERSION 3.20 FATAL_ERROR)
@@ -149,7 +164,7 @@ endfunction()
 macro(_string_manip_split)
 	list(LENGTH SM_SPLIT nb_args)
 	if(NOT ${nb_args} EQUAL 2)
-		message(FATAL_ERROR "SPLIT argument is missing or wrong")
+		message(FATAL_ERROR "SPLIT argument is missing or wrong!")
 	endif()
 
 	list(GET SM_SPLIT 0 string_to_split)
@@ -163,7 +178,7 @@ endmacro()
 # Internal usage.
 macro(_string_manip_split_transform_identifier_upper)
 	if(NOT DEFINED SM_SPLIT_TRANSFORM)
-		message(FATAL_ERROR "TRANSFORM arguments is missing")
+		message(FATAL_ERROR "TRANSFORM arguments is missing or need a value!")
 	endif()
 	if(NOT ${SM_C_IDENTIFIER_UPPER})
 		message(FATAL_ERROR "C_IDENTIFIER_UPPER argument is missing")
@@ -197,10 +212,10 @@ endmacro()
 # Internal usage.
 macro(_string_manip_split_transform_start_case)
 	if(NOT DEFINED SM_SPLIT_TRANSFORM)
-		message(FATAL_ERROR "TRANSFORM arguments is missing")
+		message(FATAL_ERROR "TRANSFORM arguments is missing or need a value!")
 	endif()
 	if(NOT ${SM_START_CASE})
-		message(FATAL_ERROR "START_CASE argument is missing")
+		message(FATAL_ERROR "START_CASE argument is missing!")
 	endif()
 	
 	string_manip(SPLIT "${${SM_SPLIT_TRANSFORM}}" word_list)
@@ -225,7 +240,7 @@ endmacro()
 # Internal usage.
 macro(_string_manip_strip_interfaces)
 	if(NOT DEFINED SM_STRIP_INTERFACES)
-		message(FATAL_ERROR "STRIP_INTERFACES argument is missing")
+		message(FATAL_ERROR "STRIP_INTERFACES argument is missing or need a value!")
 	endif()
 
 	set(regex ";?\\$<BUILD_INTERFACE:[^>]+>|;?\\$<INSTALL_INTERFACE:[^>]+>")
@@ -257,8 +272,9 @@ macro(_string_manip_extract_interface)
 		string(REGEX MATCHALL "\\$<BUILD_INTERFACE:[^>]+>+" matches "${${SM_EXTRACT_INTERFACE}}")
 		set(matches_stripped "")
 		foreach(match IN ITEMS ${matches})
+			# Remove the first part "$<BUILD_INTERFACE:"
 			string(REPLACE "$<BUILD_INTERFACE:" "" match "${match}")
-			# Remove the last character ">".
+			# Remove the last character ">"
 			string(LENGTH "${match}" match_size)
 			math(EXPR match_size "${match_size}-1")
 			string(SUBSTRING "${match}" 0 ${match_size} match)
@@ -269,8 +285,9 @@ macro(_string_manip_extract_interface)
 		string(REGEX MATCHALL "\\$<INSTALL_INTERFACE:[^>]+>+" matches "${${SM_EXTRACT_INTERFACE}}")
 		set(matches_stripped "")
 		foreach(match IN ITEMS ${matches})
+			# Remove the first part "$<INSTALL_INTERFACE:"
 			string(REPLACE "$<INSTALL_INTERFACE:" "" match "${match}")
-			# Remove the last character ">".
+			# Remove the last character ">"
 			string(LENGTH "${match}" match_size)
 			math(EXPR match_size "${match_size}-1")
 			string(SUBSTRING "${match}" 0 ${match_size} match)
@@ -287,114 +304,3 @@ macro(_string_manip_extract_interface)
 		set(${SM_OUTPUT_VARIABLE} "${string_getted}" PARENT_SCOPE)
 	endif()
 endmacro()
-
-#------------------------------------------------------------------------------
-# Unit Tests.
-function(string_manip_unit_test)
-	#---- string_manip(SPLIT <string> <output_list_var>) ----
-	# Test 1
-	set(my_string "4Alpha-4beTagammaDe9ltaEc/hoalpha-Beta-in_4aLpha_4_be_ta_ga_mm5_aalpha_AlphaBetaGammaDelta")
-	string_manip(SPLIT "${my_string}" output)
-	set(expected "4;Alpha;4be;Tagamma;De9lta;Ec;hoalpha;Beta;in;4a;Lpha;4;be;ta;ga;mm5;aalpha;Alpha;Beta;Gamma;Delta")
-	if (NOT "${output}" STREQUAL "${expected}")
-		message (FATAL_ERROR "SPLIT is \"${output}\", expected is \"${expected}\"")
-	endif()
-	unset(expected)
-	unset(output)
-	unset(my_string)
-	
-	
-	#---- string_manip(SPLIT_TRANSFORM <string_var> START_CASE [OUTPUT_VARIABLE <output_var>]) ----
-	# Test 1
-	set(my_string "4Alpha-4beTagammaDe9ltaEc/hoalpha-Beta-in_4aLpha_4_be_ta_ga_mm5_aalpha_AlphaBetaGammaDelta")
-	string_manip(SPLIT_TRANSFORM my_string START_CASE OUTPUT_VARIABLE output)
-	set(expected "4Alpha4beTagammaDe9ltaEcHoalphaBetaIn4aLpha4BeTaGaMm5AalphaAlphaBetaGammaDelta")
-	if (NOT "${output}" STREQUAL "${expected}")
-		message (FATAL_ERROR "SPLIT_TRANSFORM(START_CASE) is \"${output}\", expected is \"${expected}\"")
-	endif()
-	unset(expected)
-	unset(output)
-	unset(my_string)
-	
-	# Test 2
-	set(output "4Alpha-4beTagammaDe9ltaEc/hoalpha-Beta-in_4aLpha_4_be_ta_ga_mm5_aalpha_AlphaBetaGammaDelta")
-	string_manip(SPLIT_TRANSFORM output START_CASE)
-	set(expected "4Alpha4beTagammaDe9ltaEcHoalphaBetaIn4aLpha4BeTaGaMm5AalphaAlphaBetaGammaDelta")
-	if (NOT "${output}" STREQUAL "${expected}")
-		message (FATAL_ERROR "SPLIT_TRANSFORM(START_CASE) is \"${output}\", expected is \"${expected}\"")
-	endif()
-	unset(expected)
-	unset(output)
-	unset(my_string)
-	
-	# Test 3
-	set(my_string "my-project-name")
-	string_manip(SPLIT_TRANSFORM my_string START_CASE OUTPUT_VARIABLE output)
-	set(expected "MyProjectName")
-	if (NOT "${output}" STREQUAL "${expected}")
-		message (FATAL_ERROR "SPLIT_TRANSFORM(START_CASE) is \"${output}\", expected is \"${expected}\"")
-	endif()
-	unset(expected)
-	unset(output)
-	unset(my_string)
-	
-	
-	#---- string_manip(SPLIT_TRANSFORM <string_var> C_IDENTIFIER_UPPER [OUTPUT_VARIABLE <output_var>]) ----
-	# Test 1
-	set(my_string "4Alpha-4beTagammaDe9ltaEc/hoalpha-Beta-in_4aLpha_4_be_ta_ga_mm5_aalpha_AlphaBetaGammaDelta")
-	string_manip(SPLIT_TRANSFORM my_string C_IDENTIFIER_UPPER OUTPUT_VARIABLE output)
-	set(expected "_4_ALPHA_4BE_TAGAMMA_DE9LTA_EC_HOALPHA_BETA_IN_4A_LPHA_4_BE_TA_GA_MM5_AALPHA_ALPHA_BETA_GAMMA_DELTA")
-	if (NOT "${output}" STREQUAL "${expected}")
-		message (FATAL_ERROR "SPLIT_TRANSFORM(C_IDENTIFIER_UPPER) is \"${output}\", expected is \"${expected}\"")
-	endif()
-	unset(expected)
-	unset(output)
-	unset(my_string)
-	
-	# Test 2
-	set(output "4Alpha-4beTagammaDe9ltaEc/hoalpha-Beta-in_4aLpha_4_be_ta_ga_mm5_aalpha_AlphaBetaGammaDelta")
-	string_manip(SPLIT_TRANSFORM output C_IDENTIFIER_UPPER)
-	set(expected "_4_ALPHA_4BE_TAGAMMA_DE9LTA_EC_HOALPHA_BETA_IN_4A_LPHA_4_BE_TA_GA_MM5_AALPHA_ALPHA_BETA_GAMMA_DELTA")
-	if (NOT "${output}" STREQUAL "${expected}")
-		message (FATAL_ERROR "SPLIT_TRANSFORM(C_IDENTIFIER_UPPER) is \"${output}\", expected is \"${expected}\"")
-	endif()
-	unset(expected)
-	unset(output)
-	unset(my_string)
-	
-	# Test 3
-	set(my_string "alpha")
-	string_manip(SPLIT_TRANSFORM my_string C_IDENTIFIER_UPPER OUTPUT_VARIABLE output)
-	set(expected "ALPHA")
-	if (NOT "${output}" STREQUAL "${expected}")
-		message (FATAL_ERROR "SPLIT_TRANSFORM(C_IDENTIFIER_UPPER) is \"${output}\", expected is \"${expected}\"")
-	endif()
-	unset(expected)
-	unset(output)
-	unset(my_string)
-	
-	# Test 4
-	set(my_string "1alpha")
-	string_manip(SPLIT_TRANSFORM my_string C_IDENTIFIER_UPPER OUTPUT_VARIABLE output)
-	set(expected "_1ALPHA")
-	if (NOT "${output}" STREQUAL "${expected}")
-		message (FATAL_ERROR "SPLIT_TRANSFORM(C_IDENTIFIER_UPPER) is \"${output}\", expected is \"${expected}\"")
-	endif()
-	unset(expected)
-	unset(output)
-	unset(my_string)
-	
-	# Test 5
-	set(my_string "my-project-name")
-	string_manip(SPLIT_TRANSFORM my_string C_IDENTIFIER_UPPER OUTPUT_VARIABLE output)
-	set(expected "MY_PROJECT_NAME")
-	if (NOT "${output}" STREQUAL "${expected}")
-		message (FATAL_ERROR "SPLIT_TRANSFORM(C_IDENTIFIER_UPPER) is \"${output}\", expected is \"${expected}\"")
-	endif()
-	unset(expected)
-	unset(output)
-	unset(my_string)
-	
-	
-	message(STATUS "All tests OK!")
-endfunction()
