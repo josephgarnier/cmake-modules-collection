@@ -38,7 +38,7 @@ set(DOC_INPUT_DIR      "${TARGET_DIR}/source")
 set(DOC_OUTPUT_DIR     "${TARGET_DIR}/build")
 
 if(NOT TARGET "doc")
-	add_custom_target("doc" ALL
+	add_custom_target("doc" # remettre ALL après
 		COMMAND ${SPHINX_EXECUTABLE} -M html "${DOC_INPUT_DIR}" "${DOC_OUTPUT_DIR}"
 		WORKING_DIRECTORY "${TARGET_BUILD_DIR}"
 		COMMENT "Generating the doc with Sphinx..."
