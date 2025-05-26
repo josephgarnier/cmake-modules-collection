@@ -157,7 +157,7 @@ list and transformed accordingly.</p>
 <dd><p>Removes CMake generator expressions of the form <code class="docutils literal notranslate"><span class="pre">$&lt;BUILD_INTERFACE:...&gt;</span></code> and
 <code class="docutils literal notranslate"><span class="pre">$&lt;INSTALL_INTERFACE:...&gt;</span></code> from the value stored in <code class="docutils literal notranslate"><span class="pre">&lt;string_var&gt;</span></code>. The
 expressions are removed entirely, including any leading semicolon if
-present.</p>
+present before the expression.</p>
 <p>The resulting string is either stored back in <code class="docutils literal notranslate"><span class="pre">&lt;string_var&gt;</span></code>, or in
 <code class="docutils literal notranslate"><span class="pre">&lt;output_var&gt;</span></code> if the <code class="docutils literal notranslate"><span class="pre">OUTPUT_VARIABLE</span></code> option is provided.</p>
 </dd></dl>
@@ -165,20 +165,39 @@ present.</p>
 <dl class="cmake signature">
 <dt class="sig sig-object cmake" id="extract-interface">
 <span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">string_manip(</span></span><span class="no"><span class="pre">EXTRACT_INTERFACE</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;string_var&gt;</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;</span></span><span class="no"><span class="pre">BUILD</span></span><span class="p"><span class="pre">|</span></span><span class="no"><span class="pre">INSTALL</span></span><span class="o"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">[</span></span><span class="no"><span class="pre">OUTPUT_VARIABLE</span></span><span class="nbsp"> </span><span class="nv"><span class="pre">&lt;output_var&gt;</span></span><span class="p"><span class="pre">]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#extract-interface" title="Link to this definition">¶</a></dt>
-<dd><p>Extracts the content from either the <code class="docutils literal notranslate"><span class="pre">$&lt;BUILD_INTERFACE:...&gt;</span></code> or
-<code class="docutils literal notranslate"><span class="pre">$&lt;INSTALL_INTERFACE:...&gt;</span></code>  generator expression within the value stored
+<dd><p>Extracts the content of either <code class="docutils literal notranslate"><span class="pre">$&lt;BUILD_INTERFACE:...&gt;</span></code> or
+<code class="docutils literal notranslate"><span class="pre">$&lt;INSTALL_INTERFACE:...&gt;</span></code> generator expressions from the value stored
 in <code class="docutils literal notranslate"><span class="pre">&lt;string_var&gt;</span></code>, depending on the specified mode.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">&lt;BUILD|INSTALL&gt;</span></code> argument determines which generator expression to
-extract:</p>
+<p>The value of <code class="docutils literal notranslate"><span class="pre">&lt;string_var&gt;</span></code> can be either a single string or a
+semicolon-separated list of strings. Generator expressions may be split
+across multiple list elements.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">&lt;BUILD|INSTALL&gt;</span></code> argument selects which generator expression to extract:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">BUILD</span></code>: Extracts the content of <code class="docutils literal notranslate"><span class="pre">$&lt;BUILD_INTERFACE:...&gt;</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">INSTALL</span></code>: Extracts the content of <code class="docutils literal notranslate"><span class="pre">$&lt;INSTALL_INTERFACE:...&gt;</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BUILD</span></code>: Extracts the content of all <code class="docutils literal notranslate"><span class="pre">$&lt;BUILD_INTERFACE:...&gt;</span></code> expressions.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">INSTALL</span></code>: Extracts the content of all <code class="docutils literal notranslate"><span class="pre">$&lt;INSTALL_INTERFACE:...&gt;</span></code> expressions.</p></li>
 </ul>
-<p>If multiple generator expressions of the specified type are present, their contents
-are concatenated into a list.</p>
-<p>The result is stored either back in <code class="docutils literal notranslate"><span class="pre">&lt;string_var&gt;</span></code>, or in <code class="docutils literal notranslate"><span class="pre">&lt;output_var&gt;</span></code>
-if the <code class="docutils literal notranslate"><span class="pre">OUTPUT_VARIABLE</span></code> option is provided. If the specified generator
-expression is not present in the input, an empty string is returned.</p>
+<p>When multiple matching generator expressions are found, their contents are
+concatenated into a single semicolon-separated string.</p>
+<p>The result is stored in <code class="docutils literal notranslate"><span class="pre">&lt;output_var&gt;</span></code> if the <code class="docutils literal notranslate"><span class="pre">OUTPUT_VARIABLE</span></code> option
+is specified. Otherwise, <code class="docutils literal notranslate"><span class="pre">&lt;string_var&gt;</span></code> is updated in place. If no
+matching expression is found, an empty string is returned.</p>
+<p>Example usage:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="c"># Case 1: Extract from a single BUILD_INTERFACE expression in place</span>
+<span class="nf">set(</span><span class="nb">value_1</span><span class="w"> </span><span class="s">&quot;file1.h;$&lt;BUILD_INTERFACE:file2.h;file3.h&gt;;file4.h&quot;</span><span class="nf">)</span>
+<span class="nf">string_manip(</span><span class="no">EXTRACT_INTERFACE</span><span class="w"> </span><span class="nb">value_1</span><span class="w"> </span><span class="no">BUILD</span><span class="nf">)</span>
+<span class="c"># output is &quot;file2.h;file3.h&quot;</span>
+
+<span class="c"># Case 2: Extract from a single INSTALL_INTERFACE expression in place</span>
+<span class="nf">set(</span><span class="nb">value_1</span><span class="w"> </span><span class="s">&quot;file5.h;$&lt;INSTALL_INTERFACE:file6.h;file7.h&gt;;file8.h&quot;</span><span class="nf">)</span>
+<span class="nf">string_manip(</span><span class="no">EXTRACT_INTERFACE</span><span class="w"> </span><span class="nb">value_1</span><span class="w"> </span><span class="no">INSTALL</span><span class="nf">)</span>
+<span class="c"># output is &quot;file6.h;file7.h&quot;</span>
+
+<span class="c"># Case 3: Multiple expressions (BUILD + INSTALL), extract only BUILD</span>
+<span class="nf">set(</span><span class="nb">value_3</span><span class="w"> </span><span class="s">&quot;file1.h;$&lt;BUILD_INTERFACE:file2.h;file3.h&gt;;file4.h;file5.h;$&lt;INSTALL_INTERFACE:file6.h;file7.h&gt;;file8.h&quot;</span><span class="nf">)</span>
+<span class="nf">string_manip(</span><span class="no">EXTRACT_INTERFACE</span><span class="w"> </span><span class="nb">value_3</span><span class="w"> </span><span class="no">BUILD</span><span class="nf">)</span>
+<span class="c"># output is &quot;file2.h;file3.h&quot;</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>
