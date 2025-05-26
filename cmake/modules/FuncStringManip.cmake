@@ -98,7 +98,7 @@ Usage
   Removes CMake generator expressions of the form ``$<BUILD_INTERFACE:...>`` and
   ``$<INSTALL_INTERFACE:...>`` from the value stored in ``<string_var>``. The
   expressions are removed entirely, including any leading semicolon if
-  present.
+  present before the expression.
 
   The resulting string is either stored back in ``<string_var>``, or in
   ``<output_var>`` if the ``OUTPUT_VARIABLE`` option is provided.
@@ -106,22 +106,44 @@ Usage
 .. signature::
   string_manip(EXTRACT_INTERFACE <string_var> <BUILD|INSTALL> [OUTPUT_VARIABLE <output_var>])
 
-  Extracts the content from either the ``$<BUILD_INTERFACE:...>`` or
-  ``$<INSTALL_INTERFACE:...>``  generator expression within the value stored
+  Extracts the content of either ``$<BUILD_INTERFACE:...>`` or
+  ``$<INSTALL_INTERFACE:...>`` generator expressions from the value stored
   in ``<string_var>``, depending on the specified mode.
 
-  The ``<BUILD|INSTALL>`` argument determines which generator expression to
-  extract:
+  The value of ``<string_var>`` can be either a single string or a
+  semicolon-separated list of strings. Generator expressions may be split
+  across multiple list elements.
 
-  * ``BUILD``: Extracts the content of ``$<BUILD_INTERFACE:...>``.
-  * ``INSTALL``: Extracts the content of ``$<INSTALL_INTERFACE:...>``.
+  The ``<BUILD|INSTALL>`` argument selects which generator expression to extract:
 
-  If multiple generator expressions of the specified type are present, their contents
-  are concatenated into a list.
+  * ``BUILD``: Extracts the content of all ``$<BUILD_INTERFACE:...>`` expressions.
+  * ``INSTALL``: Extracts the content of all ``$<INSTALL_INTERFACE:...>`` expressions.
 
-  The result is stored either back in ``<string_var>``, or in ``<output_var>``
-  if the ``OUTPUT_VARIABLE`` option is provided. If the specified generator
-  expression is not present in the input, an empty string is returned.
+  When multiple matching generator expressions are found, their contents are
+  concatenated into a single semicolon-separated string.
+
+  The result is stored in ``<output_var>`` if the ``OUTPUT_VARIABLE`` option
+  is specified. Otherwise, ``<string_var>`` is updated in place. If no
+  matching expression is found, an empty string is returned.
+  
+  Example usage:
+
+  .. code-block:: cmake
+
+    # Case 1: Extract from a single BUILD_INTERFACE expression in place
+    set(value_1 "file1.h;$<BUILD_INTERFACE:file2.h;file3.h>;file4.h")
+    string_manip(EXTRACT_INTERFACE value_1 BUILD)
+    # output is "file2.h;file3.h"
+
+    # Case 2: Extract from a single INSTALL_INTERFACE expression in place
+    set(value_1 "file5.h;$<INSTALL_INTERFACE:file6.h;file7.h>;file8.h")
+    string_manip(EXTRACT_INTERFACE value_1 INSTALL)
+    # output is "file6.h;file7.h"
+
+    # Case 3: Multiple expressions (BUILD + INSTALL), extract only BUILD
+    set(value_3 "file1.h;$<BUILD_INTERFACE:file2.h;file3.h>;file4.h;file5.h;$<INSTALL_INTERFACE:file6.h;file7.h>;file8.h")
+    string_manip(EXTRACT_INTERFACE value_3 BUILD)
+    # output is "file2.h;file3.h"
 #]=======================================================================]
 
 include_guard()
@@ -267,40 +289,42 @@ macro(_string_manip_extract_interface)
 		message(FATAL_ERROR "BUILD|INSTALL cannot be used together!")
 	endif()
 
-	set(string_getted "")
+	set(result_list "")
 	if(${SM_BUILD})
-		string(REGEX MATCHALL "\\$<BUILD_INTERFACE:[^>]+>+" matches "${${SM_EXTRACT_INTERFACE}}")
-		set(matches_stripped "")
-		foreach(match IN ITEMS ${matches})
-			# Remove the first part "$<BUILD_INTERFACE:"
-			string(REPLACE "$<BUILD_INTERFACE:" "" match "${match}")
-			# Remove the last character ">"
-			string(LENGTH "${match}" match_size)
-			math(EXPR match_size "${match_size}-1")
-			string(SUBSTRING "${match}" 0 ${match_size} match)
-			list(APPEND matches_stripped "${match}")
-		endforeach()
-		list(JOIN matches_stripped ";" string_getted)
+		set(opening_marker "$<BUILD_INTERFACE:")
 	elseif(${SM_INSTALL})
-		string(REGEX MATCHALL "\\$<INSTALL_INTERFACE:[^>]+>+" matches "${${SM_EXTRACT_INTERFACE}}")
-		set(matches_stripped "")
-		foreach(match IN ITEMS ${matches})
-			# Remove the first part "$<INSTALL_INTERFACE:"
-			string(REPLACE "$<INSTALL_INTERFACE:" "" match "${match}")
-			# Remove the last character ">"
-			string(LENGTH "${match}" match_size)
-			math(EXPR match_size "${match_size}-1")
-			string(SUBSTRING "${match}" 0 ${match_size} match)
-			list(APPEND matches_stripped "${match}")
-		endforeach()
-		list(JOIN matches_stripped ";" string_getted)
+		set(opening_marker "$<INSTALL_INTERFACE:")
 	else()
 		message(FATAL_ERROR "Wrong interface type!")
 	endif()
+	set(closing_marker ">")
+	set(accumulator "")
+	set(inside_expr off)
+	foreach(item IN ITEMS ${${SM_EXTRACT_INTERFACE}})
+		# Accumulate until the closing generator expression is found
+		if(NOT ${inside_expr} AND ("${item}" MATCHES "^\\${opening_marker}.*"))
+			set(accumulator "${item}")
+			set(inside_expr on)
+		elseif(${inside_expr})
+			list(APPEND accumulator "${item}")
+		endif()
 
+		if(${inside_expr} AND ("${item}" MATCHES ".*${closing_marker}$"))
+			list(LENGTH accumulator len)
+			list(JOIN accumulator ";" expr_str)
+			# Remove prefix "$<...:" and suffix ">"
+			string(REPLACE "${opening_marker}" "" expr_str "${expr_str}")
+			string(REPLACE "${closing_marker}" "" expr_str "${expr_str}")
+			list(APPEND result_list "${expr_str}")
+			unset(accumulator)
+			set(inside_expr off)
+		endif()
+	endforeach()
+
+	list(JOIN result_list ";" string_extracted)
 	if(NOT DEFINED SM_OUTPUT_VARIABLE)
-		set(${SM_EXTRACT_INTERFACE} "${string_getted}" PARENT_SCOPE)
+		set(${SM_EXTRACT_INTERFACE} "${string_extracted}" PARENT_SCOPE)
 	else()
-		set(${SM_OUTPUT_VARIABLE} "${string_getted}" PARENT_SCOPE)
+		set(${SM_OUTPUT_VARIABLE} "${string_extracted}" PARENT_SCOPE)
 	endif()
 endmacro()
