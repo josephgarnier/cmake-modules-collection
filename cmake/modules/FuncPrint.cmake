@@ -6,61 +6,131 @@
 
 #[=======================================================================[.rst:
 Print
----------
+-----
 
 Log a message. It requires CMake 3.20 or newer.
 
 Synopsis
 ^^^^^^^^
+
 .. parsed-literal::
 
-    `print`_([<mode>] "message with format text" <argument>...)
-    `print`_([<mode>] PATHS <file_list>... [INDENT])
-    `print`_([<mode>] LISTS <string_list>... [INDENT])
+  `Print Formated Message`_
+    print([<mode>] "message with format text" <argument>...)
+
+  `Print File List`_
+    print([<mode>] PATHS <file_list>... [INDENT])
+
+  `Print String List`_
+    print([<mode>] LISTS <string_list>... [INDENT])
+
+Module Variables
+^^^^^^^^^^^^^^^^
+
+.. variable:: PRINT_BASE_DIR
+
+  Specifies the base directory used to compute relative paths in the :command:`print(formated_messages)` commands. Its default value is `CMAKE_SOURCE_DIR <https://cmake.org/cmake/help/latest/variable/CMAKE_SOURCE_DIR.html>`_.
 
 Usage
 ^^^^^
-.. _print:
-.. code-block:: cmake
 
+.. _`Print Formated Message`:
+
+.. signature::
   print([<mode>] "message with format text" <argument>...)
+  :target: formated_messages
 
-Record the specified message text in the log. This command is inspired by
-`message()` from CMake and `printf()` from C (see https://linux.die.net/man/3/printf).
-The optional ``<mode>`` keyword determines the type of message like in CMake
-(see https://cmake.org/cmake/help/latest/command/message.html#general-messages).
-The format string is composed of zero or more directives: ordinary characters
-(not @), which are copied unchanged to the output stream; and conversion
-specifications, each of which results in fetching zero or more subsequent arguments.
-Each conversion specification is boxed by the character @, and contain a conversion specifier.
-Conversion specifier is one of:
+  Record the specified message text in the log, optionally specifying a message
+  mode. This command is inspired by the `message() <https://cmake.org/cmake/help/latest/command/message.html>`__ command from CMake and
+  the C `printf() <https://linux.die.net/man/3/printf>`_ function.
 
-::
+  If specified, the optional ``<mode>`` keyword must be one of the standard
+  message modes accepted by the `message() <https://cmake.org/cmake/help/latest/command/message.html#general-messages>`__ command, such as ``STATUS``, ``WARNING``, ``ERROR``, etc.
 
- @ap@ = The given path will be convert into an absolute path
- @rp@ = The given path will be convert into an relative path to `PRINT_BASE_DIR`
+  The ``"format string"`` may contain one or more custom conversion directives
+  enclosed in ``@`` characters. These directives will be replaced using the
+  provided arguments, in the order they are given.
 
-.. _print:
-.. code-block:: cmake
+  Each directive takes the form ``@specifier@``, where ``specifier`` is one of
+  the following:
 
+    ``@ap@``
+      Converts the corresponding argument into an absolute path.
+
+    ``@rp@``
+      Converts the corresponding argument into a path relative to the value of
+      the :variable:`PRINT_BASE_DIR` variable.
+
+  Example usage:
+
+  .. code-block:: cmake
+
+    # Case 1: Without mode
+    set(PRINT_BASE_DIR "${CMAKE_SOURCE_DIR}")
+    set(my_path "src/main.cpp")
+    print("Absolute: @ap@, Relative: @rp@" "${my_path}" "${my_path}")
+    # output is:
+    #   Absolute: /full/path/to/src/main.cpp, Relative: src/main.cpp
+
+    # Case 2: With status mode
+    set(PRINT_BASE_DIR "${CMAKE_SOURCE_DIR}")
+    set(my_path "src/main.cpp")
+    print(STATUS "Absolute: @ap@, Relative: @rp@" "${my_path}" "${my_path}")
+    # output is:
+    #   -- Absolute: /full/path/to/src/main.cpp, Relative: src/main.cpp
+
+.. _`Print File List`:
+
+.. signature::
   print([<mode>] PATHS <file_list>... [INDENT])
+  :target: file_list
 
-Record each file of the list of ``<file_list>`` in the log after having computed
-their relative path to ``PRINT_BASE_DIR``. The message is indented if ``INDENT``
-is set. This command is inspired by `message()` from CMake.
-The optional ``<mode>`` keyword determines the type of message like in CMake
-(see https://cmake.org/cmake/help/latest/command/message.html#general-messages).
+  Record in the log each file from the specified ``<file_list>`` after
+  converting them to paths relative to the value of the :variable:`PRINT_BASE_DIR`
+  variable. This command is inspired by the `message() <https://cmake.org/cmake/help/latest/command/message.html>`__ command from CMake.
 
-.. _print:
-.. code-block:: cmake
+  The optional ``<mode>`` argument determines the message type and may be any
+  of the standard message modes supported by the `message() <https://cmake.org/cmake/help/latest/command/message.html#general-messages>`__ command,
+  such as ``STATUS``, ``WARNING``, ``ERROR``, etc.
 
+  If the ``INDENT`` option is specified, the output message is indented by
+  two spaces. This affects the indentation level of the printed message using
+  the internal `CMAKE_MESSAGE_INDENT <https://cmake.org/cmake/help/latest/variable/CMAKE_MESSAGE_INDENT.html>`_ stack.
+
+  Example usage:
+
+  .. code-block:: cmake
+
+    set(PRINT_BASE_DIR "${CMAKE_SOURCE_DIR}")
+    set(my_files "${CMAKE_SOURCE_DIR}/src/main.cpp" "${CMAKE_SOURCE_DIR}/include/lib.hpp")
+    print(STATUS PATHS ${my_files} INDENT)
+    # output is:
+    #   src/main.cpp ; include/lib.hpp
+
+.. _`Print String List`:
+
+.. signature::
   print([<mode>] LISTS <string_list>... [INDENT])
+  :target: string_list
 
-Record each string of the list of ``<file_list>`` in the log. The message is indented
-if ``INDENT`` is set. This command is inspired by `message()` from CMake.
-The optional ``<mode>`` keyword determines the type of message like in CMake
-(see https://cmake.org/cmake/help/latest/command/message.html#general-messages).
+  Record in the log each string from the given ``<string_list>``. This command
+  is inspired by the `message() <https://cmake.org/cmake/help/latest/command/message.html>`__ command from CMake.
 
+  If specified, the optional ``<mode>`` keyword must be one of the standard
+  message modes accepted by the `message() <https://cmake.org/cmake/help/latest/command/message.html#general-messages>`__ command, such as ``STATUS``, ``WARNING``, ``ERROR``, etc.
+
+  If the ``INDENT`` option is specified, the output message is indented by
+  two spaces. This affects the indentation level of the printed message using
+  the internal `CMAKE_MESSAGE_INDENT <https://cmake.org/cmake/help/latest/variable/CMAKE_MESSAGE_INDENT.html>`_ stack.
+
+  Example usage:
+
+  .. code-block:: cmake
+
+    set(my_list "one" "two" "three")
+    print(STATUS LISTS ${my_list} INDENT)
+    # output is:
+    #   one ; two ; three
 #]=======================================================================]
 include_guard()
 

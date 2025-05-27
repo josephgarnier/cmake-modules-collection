@@ -10,13 +10,16 @@
 # -- Path setup --------------------------------------------------------------
 import sys
 import os
+from pathlib import Path
+
 dir_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.insert(0,dir_path)
 
-src_dir  = os.path.abspath(os.path.dirname(__file__))
 doc_path = os.path.dirname(dir_path)
-root_path = os.path.dirname(doc_path)
 build_path = os.path.join(doc_path, "build")
+source_path = os.path.join(doc_path, "source")
+extensions_path = os.path.join(source_path, "extensions")
+sys.path.append(os.path.abspath(extensions_path))
 
 
 # -- Project information -----------------------------------------------------
@@ -30,7 +33,7 @@ version = '1.0.0'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
-extensions = ['sphinxcontrib.moderncmakedomain']
+extensions = ['sphinxcontrib.moderncmakedomain','show_cmake_objects']
 highlight_language = 'cmake'
 pygments_style = 'colors.CMakeTemplateStyle'
 language = 'en'

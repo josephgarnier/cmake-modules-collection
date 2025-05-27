@@ -91,19 +91,23 @@ detected, the original string is returned as a single-element list.</p>
 <span class="nf">string_manip(</span><span class="no">SPLIT</span><span class="w"> </span><span class="s">&quot;mystringtosplit&quot;</span><span class="w"> </span><span class="nb">output</span><span class="nf">)</span>
 <span class="c"># output is &quot;mystringtosplit&quot;</span>
 <span class="nf">string_manip(</span><span class="no">SPLIT</span><span class="w"> </span><span class="s">&quot;my1string2to3split&quot;</span><span class="w"> </span><span class="nb">output</span><span class="nf">)</span>
-<span class="c"># output is &quot;my1string2to3split&quot;</span>
+<span class="c"># output is:</span>
+<span class="c">#   my1string2to3split</span>
 
 <span class="c"># Split on uppercase</span>
 <span class="nf">string_manip(</span><span class="no">SPLIT</span><span class="w"> </span><span class="s">&quot;myStringToSplit&quot;</span><span class="w"> </span><span class="nb">output</span><span class="nf">)</span>
-<span class="c"># output is &quot;my;String;To;Split&quot;</span>
+<span class="c"># output is:</span>
+<span class="c">#   my;String;To;Split</span>
 
 <span class="c"># Split on non-alphanumeric</span>
 <span class="nf">string_manip(</span><span class="no">SPLIT</span><span class="w"> </span><span class="s">&quot;my-string/to*split&quot;</span><span class="w"> </span><span class="nb">output</span><span class="nf">)</span>
-<span class="c"># output is &quot;my;string;to;split&quot;</span>
+<span class="c"># output is:</span>
+<span class="c">#   my;string;to;split</span>
 
 <span class="c"># Split on multiple criteria</span>
 <span class="nf">string_manip(</span><span class="no">SPLIT</span><span class="w"> </span><span class="s">&quot;myString_to*Split&quot;</span><span class="w"> </span><span class="nb">output</span><span class="nf">)</span>
-<span class="c"># output is &quot;my;String;to;Split&quot;</span>
+<span class="c"># output is:</span>
+<span class="c">#   my;String;to;Split</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -185,17 +189,20 @@ matching expression is found, an empty string is returned.</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="c"># Case 1: Extract from a single BUILD_INTERFACE expression in place</span>
 <span class="nf">set(</span><span class="nb">value_1</span><span class="w"> </span><span class="s">&quot;file1.h;$&lt;BUILD_INTERFACE:file2.h;file3.h&gt;;file4.h&quot;</span><span class="nf">)</span>
 <span class="nf">string_manip(</span><span class="no">EXTRACT_INTERFACE</span><span class="w"> </span><span class="nb">value_1</span><span class="w"> </span><span class="no">BUILD</span><span class="nf">)</span>
-<span class="c"># output is &quot;file2.h;file3.h&quot;</span>
+<span class="c"># output is:</span>
+<span class="c">#   file2.h;file3.h</span>
 
 <span class="c"># Case 2: Extract from a single INSTALL_INTERFACE expression in place</span>
 <span class="nf">set(</span><span class="nb">value_1</span><span class="w"> </span><span class="s">&quot;file5.h;$&lt;INSTALL_INTERFACE:file6.h;file7.h&gt;;file8.h&quot;</span><span class="nf">)</span>
 <span class="nf">string_manip(</span><span class="no">EXTRACT_INTERFACE</span><span class="w"> </span><span class="nb">value_1</span><span class="w"> </span><span class="no">INSTALL</span><span class="nf">)</span>
-<span class="c"># output is &quot;file6.h;file7.h&quot;</span>
+<span class="c"># output is:</span>
+<span class="c">#    file6.h;file7.h</span>
 
 <span class="c"># Case 3: Multiple expressions (BUILD + INSTALL), extract only BUILD</span>
 <span class="nf">set(</span><span class="nb">value_3</span><span class="w"> </span><span class="s">&quot;file1.h;$&lt;BUILD_INTERFACE:file2.h;file3.h&gt;;file4.h;file5.h;$&lt;INSTALL_INTERFACE:file6.h;file7.h&gt;;file8.h&quot;</span><span class="nf">)</span>
 <span class="nf">string_manip(</span><span class="no">EXTRACT_INTERFACE</span><span class="w"> </span><span class="nb">value_3</span><span class="w"> </span><span class="no">BUILD</span><span class="nf">)</span>
-<span class="c"># output is &quot;file2.h;file3.h&quot;</span>
+<span class="c"># output is:</span>
+<span class="c">#   file2.h;file3.h</span>
 </pre></div>
 </div>
 </dd></dl>

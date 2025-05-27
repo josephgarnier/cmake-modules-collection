@@ -46,19 +46,23 @@ Usage
     string_manip(SPLIT "mystringtosplit" output)
     # output is "mystringtosplit"
     string_manip(SPLIT "my1string2to3split" output)
-    # output is "my1string2to3split"
+    # output is:
+    #   my1string2to3split
 
     # Split on uppercase
     string_manip(SPLIT "myStringToSplit" output)
-    # output is "my;String;To;Split"
+    # output is:
+    #   my;String;To;Split
 
     # Split on non-alphanumeric
     string_manip(SPLIT "my-string/to*split" output)
-    # output is "my;string;to;split"
+    # output is:
+    #   my;string;to;split
 
     # Split on multiple criteria
     string_manip(SPLIT "myString_to*Split" output)
-    # output is "my;String;to;Split"
+    # output is:
+    #   my;String;to;Split
 
 .. signature::
   string_manip(SPLIT_TRANSFORM <string_var> <ACTION> [OUTPUT_VARIABLE <output_var>])
@@ -133,17 +137,20 @@ Usage
     # Case 1: Extract from a single BUILD_INTERFACE expression in place
     set(value_1 "file1.h;$<BUILD_INTERFACE:file2.h;file3.h>;file4.h")
     string_manip(EXTRACT_INTERFACE value_1 BUILD)
-    # output is "file2.h;file3.h"
+    # output is:
+    #   file2.h;file3.h
 
     # Case 2: Extract from a single INSTALL_INTERFACE expression in place
     set(value_1 "file5.h;$<INSTALL_INTERFACE:file6.h;file7.h>;file8.h")
     string_manip(EXTRACT_INTERFACE value_1 INSTALL)
-    # output is "file6.h;file7.h"
+    # output is:
+    #    file6.h;file7.h
 
     # Case 3: Multiple expressions (BUILD + INSTALL), extract only BUILD
     set(value_3 "file1.h;$<BUILD_INTERFACE:file2.h;file3.h>;file4.h;file5.h;$<INSTALL_INTERFACE:file6.h;file7.h>;file8.h")
     string_manip(EXTRACT_INTERFACE value_3 BUILD)
-    # output is "file2.h;file3.h"
+    # output is:
+    #   file2.h;file3.h
 #]=======================================================================]
 
 include_guard()
@@ -214,7 +221,7 @@ macro(_string_manip_split_transform_identifier_upper)
 		unset(formated_word)
 	endforeach()
 
-	# The underscore is removed if the second letter is not a digit.
+	# The underscore is removed if the second letter is not a digit
 	string(LENGTH output_formated_word output_formated_word_size)
 	if(${output_formated_word_size} GREATER_EQUAL 2)
 		string(SUBSTRING ${output_formated_word} 1 1 second_letter)

@@ -65,45 +65,107 @@
 <p>Log a message. It requires CMake 3.20 or newer.</p>
 <section id="synopsis">
 <h2>Synopsis<a class="headerlink" href="#synopsis" title="Link to this heading">¶</a></h2>
-<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="err">`</span><span class="nb">print</span><span class="err">`</span><span class="nf">_(</span><span class="p">[</span><span class="nv">&lt;mode&gt;</span><span class="p">]</span><span class="w"> </span><span class="s">&quot;message with format text&quot;</span><span class="w"> </span><span class="nv">&lt;argument&gt;...</span><span class="nf">)</span>
-<span class="err">`</span><span class="nb">print</span><span class="err">`</span><span class="nf">_(</span><span class="p">[</span><span class="nv">&lt;mode&gt;</span><span class="p">]</span><span class="w"> </span><span class="no">PATHS</span><span class="w"> </span><span class="nv">&lt;file_list&gt;...</span><span class="w"> </span><span class="p">[</span><span class="no">INDENT</span><span class="p">]</span><span class="nf">)</span>
-<span class="err">`</span><span class="nb">print</span><span class="err">`</span><span class="nf">_(</span><span class="p">[</span><span class="nv">&lt;mode&gt;</span><span class="p">]</span><span class="w"> </span><span class="no">LISTS</span><span class="w"> </span><span class="nv">&lt;string_list&gt;...</span><span class="w"> </span><span class="p">[</span><span class="no">INDENT</span><span class="p">]</span><span class="nf">)</span>
-</pre></div>
-</div>
+<pre class="literal-block"><a class="reference internal" href="#print-formated-message">Print Formated Message</a>
+  print([&lt;mode&gt;] &quot;message with format text&quot; &lt;argument&gt;...)
+
+<a class="reference internal" href="#print-file-list">Print File List</a>
+  print([&lt;mode&gt;] PATHS &lt;file_list&gt;... [INDENT])
+
+<a class="reference internal" href="#print-string-list">Print String List</a>
+  print([&lt;mode&gt;] LISTS &lt;string_list&gt;... [INDENT])</pre>
+</section>
+<section id="module-variables">
+<h2>Module Variables<a class="headerlink" href="#module-variables" title="Link to this heading">¶</a></h2>
+<dl class="cmake variable">
+<dt class="sig sig-object cmake" id="variable:PRINT_BASE_DIR">
+<span class="sig-name descname"><span class="pre">PRINT_BASE_DIR</span></span><a class="headerlink" href="#variable:PRINT_BASE_DIR" title="Link to this definition">¶</a></dt>
+<dd><p>Specifies the base directory used to compute relative paths in the <span class="target" id="index-0-command:print"></span><a class="reference internal" href="#formated-messages" title="print(formated_messages)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">print(formated_messages)</span></code></a> commands. Its default value is <a class="reference external" href="https://cmake.org/cmake/help/latest/variable/CMAKE_SOURCE_DIR.html">CMAKE_SOURCE_DIR</a>.</p>
+</dd></dl>
+
 </section>
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h2>
-<div class="highlight-cmake notranslate" id="id7"><div class="highlight"><pre><span></span><span class="nf">print(</span><span class="p">[</span><span class="nv">&lt;mode&gt;</span><span class="p">]</span><span class="w"> </span><span class="s">&quot;message with format text&quot;</span><span class="w"> </span><span class="nv">&lt;argument&gt;...</span><span class="nf">)</span>
+<dl class="cmake signature" id="print-formated-message">
+<dt class="sig sig-object cmake" id="formated-messages">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">print(</span></span><span class="p"><span class="pre">[</span></span><span class="nv"><span class="pre">&lt;mode&gt;</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;message</span> <span class="pre">with</span> <span class="pre">format</span> <span class="pre">text&quot;</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;argument&gt;...</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#formated-messages" title="Link to this definition">¶</a></dt>
+<dd><p>Record the specified message text in the log, optionally specifying a message
+mode. This command is inspired by the <a class="reference external" href="https://cmake.org/cmake/help/latest/command/message.html">message()</a> command from CMake and
+the C <a class="reference external" href="https://linux.die.net/man/3/printf">printf()</a> function.</p>
+<p>If specified, the optional <code class="docutils literal notranslate"><span class="pre">&lt;mode&gt;</span></code> keyword must be one of the standard
+message modes accepted by the <a class="reference external" href="https://cmake.org/cmake/help/latest/command/message.html#general-messages">message()</a> command, such as <code class="docutils literal notranslate"><span class="pre">STATUS</span></code>, <code class="docutils literal notranslate"><span class="pre">WARNING</span></code>, <code class="docutils literal notranslate"><span class="pre">ERROR</span></code>, etc.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">&quot;format</span> <span class="pre">string&quot;</span></code> may contain one or more custom conversion directives
+enclosed in <code class="docutils literal notranslate"><span class="pre">&#64;</span></code> characters. These directives will be replaced using the
+provided arguments, in the order they are given.</p>
+<p>Each directive takes the form <code class="docutils literal notranslate"><span class="pre">&#64;specifier&#64;</span></code>, where <code class="docutils literal notranslate"><span class="pre">specifier</span></code> is one of
+the following:</p>
+<blockquote>
+<div><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">&#64;ap&#64;</span></code></dt><dd><p>Converts the corresponding argument into an absolute path.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">&#64;rp&#64;</span></code></dt><dd><p>Converts the corresponding argument into a path relative to the value of
+the <span class="target" id="index-0-variable:PRINT_BASE_DIR"></span><a class="reference internal" href="#variable:PRINT_BASE_DIR" title="PRINT_BASE_DIR"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">PRINT_BASE_DIR</span></code></a> variable.</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>Example usage:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="c"># Case 1: Without mode</span>
+<span class="nf">set(</span><span class="no">PRINT_BASE_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}&quot;</span><span class="nf">)</span>
+<span class="nf">set(</span><span class="nb">my_path</span><span class="w"> </span><span class="s">&quot;src/main.cpp&quot;</span><span class="nf">)</span>
+<span class="nf">print(</span><span class="s">&quot;Absolute: @ap@, Relative: @rp@&quot;</span><span class="w"> </span><span class="s">&quot;${my_path}&quot;</span><span class="w"> </span><span class="s">&quot;${my_path}&quot;</span><span class="nf">)</span>
+<span class="c"># output is:</span>
+<span class="c">#   Absolute: /full/path/to/src/main.cpp, Relative: src/main.cpp</span>
+
+<span class="c"># Case 2: With status mode</span>
+<span class="nf">set(</span><span class="no">PRINT_BASE_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}&quot;</span><span class="nf">)</span>
+<span class="nf">set(</span><span class="nb">my_path</span><span class="w"> </span><span class="s">&quot;src/main.cpp&quot;</span><span class="nf">)</span>
+<span class="nf">print(</span><span class="no">STATUS</span><span class="w"> </span><span class="s">&quot;Absolute: @ap@, Relative: @rp@&quot;</span><span class="w"> </span><span class="s">&quot;${my_path}&quot;</span><span class="w"> </span><span class="s">&quot;${my_path}&quot;</span><span class="nf">)</span>
+<span class="c"># output is:</span>
+<span class="c">#   -- Absolute: /full/path/to/src/main.cpp, Relative: src/main.cpp</span>
 </pre></div>
 </div>
-<p>Record the specified message text in the log. This command is inspired by
-<cite>message()</cite> from CMake and <cite>printf()</cite> from C (see <a class="reference external" href="https://linux.die.net/man/3/printf">https://linux.die.net/man/3/printf</a>).
-The optional <code class="docutils literal notranslate"><span class="pre">&lt;mode&gt;</span></code> keyword determines the type of message like in CMake
-(see <a class="reference external" href="https://cmake.org/cmake/help/latest/command/message.html#general-messages">https://cmake.org/cmake/help/latest/command/message.html#general-messages</a>).
-The format string is composed of zero or more directives: ordinary characters
-(not &#64;), which are copied unchanged to the output stream; and conversion
-specifications, each of which results in fetching zero or more subsequent arguments.
-Each conversion specification is boxed by the character &#64;, and contain a conversion specifier.
-Conversion specifier is one of:</p>
-<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="err">@</span><span class="nb">ap</span><span class="err">@</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">The</span><span class="w"> </span><span class="nb">given</span><span class="w"> </span><span class="nb">path</span><span class="w"> </span><span class="nb">will</span><span class="w"> </span><span class="nb">be</span><span class="w"> </span><span class="nb">convert</span><span class="w"> </span><span class="nb">into</span><span class="w"> </span><span class="nb">an</span><span class="w"> </span><span class="nb">absolute</span><span class="w"> </span><span class="nb">path</span>
-<span class="err">@</span><span class="nb">rp</span><span class="err">@</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nb">The</span><span class="w"> </span><span class="nb">given</span><span class="w"> </span><span class="nb">path</span><span class="w"> </span><span class="nb">will</span><span class="w"> </span><span class="nb">be</span><span class="w"> </span><span class="nb">convert</span><span class="w"> </span><span class="nb">into</span><span class="w"> </span><span class="nb">an</span><span class="w"> </span><span class="nb">relative</span><span class="w"> </span><span class="nb">path</span><span class="w"> </span><span class="nb">to</span><span class="w"> </span><span class="err">`</span><span class="no">PRINT_BASE_DIR</span><span class="err">`</span>
+</dd></dl>
+
+<dl class="cmake signature" id="print-file-list">
+<dt class="sig sig-object cmake" id="file-list">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">print(</span></span><span class="p"><span class="pre">[</span></span><span class="nv"><span class="pre">&lt;mode&gt;</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="no"><span class="pre">PATHS</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;file_list&gt;...</span></span><span class="w"> </span><span class="p"><span class="pre">[</span></span><span class="no"><span class="pre">INDENT</span></span><span class="p"><span class="pre">]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#file-list" title="Link to this definition">¶</a></dt>
+<dd><p>Record in the log each file from the specified <code class="docutils literal notranslate"><span class="pre">&lt;file_list&gt;</span></code> after
+converting them to paths relative to the value of the <span class="target" id="index-1-variable:PRINT_BASE_DIR"></span><a class="reference internal" href="#variable:PRINT_BASE_DIR" title="PRINT_BASE_DIR"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">PRINT_BASE_DIR</span></code></a>
+variable. This command is inspired by the <a class="reference external" href="https://cmake.org/cmake/help/latest/command/message.html">message()</a> command from CMake.</p>
+<p>The optional <code class="docutils literal notranslate"><span class="pre">&lt;mode&gt;</span></code> argument determines the message type and may be any
+of the standard message modes supported by the <a class="reference external" href="https://cmake.org/cmake/help/latest/command/message.html#general-messages">message()</a> command,
+such as <code class="docutils literal notranslate"><span class="pre">STATUS</span></code>, <code class="docutils literal notranslate"><span class="pre">WARNING</span></code>, <code class="docutils literal notranslate"><span class="pre">ERROR</span></code>, etc.</p>
+<p>If the <code class="docutils literal notranslate"><span class="pre">INDENT</span></code> option is specified, the output message is indented by
+two spaces. This affects the indentation level of the printed message using
+the internal <a class="reference external" href="https://cmake.org/cmake/help/latest/variable/CMAKE_MESSAGE_INDENT.html">CMAKE_MESSAGE_INDENT</a> stack.</p>
+<p>Example usage:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">set(</span><span class="no">PRINT_BASE_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}&quot;</span><span class="nf">)</span>
+<span class="nf">set(</span><span class="nb">my_files</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src/main.cpp&quot;</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/include/lib.hpp&quot;</span><span class="nf">)</span>
+<span class="nf">print(</span><span class="no">STATUS</span><span class="w"> </span><span class="no">PATHS</span><span class="w"> </span><span class="o">${</span><span class="nt">my_files</span><span class="o">}</span><span class="w"> </span><span class="no">INDENT</span><span class="nf">)</span>
+<span class="c"># output is:</span>
+<span class="c">#   src/main.cpp ; include/lib.hpp</span>
 </pre></div>
 </div>
-<div class="highlight-cmake notranslate" id="id8"><div class="highlight"><pre><span></span><span class="nf">print(</span><span class="p">[</span><span class="nv">&lt;mode&gt;</span><span class="p">]</span><span class="w"> </span><span class="no">PATHS</span><span class="w"> </span><span class="nv">&lt;file_list&gt;...</span><span class="w"> </span><span class="p">[</span><span class="no">INDENT</span><span class="p">]</span><span class="nf">)</span>
+</dd></dl>
+
+<dl class="cmake signature" id="print-string-list">
+<dt class="sig sig-object cmake" id="string-list">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">print(</span></span><span class="p"><span class="pre">[</span></span><span class="nv"><span class="pre">&lt;mode&gt;</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="no"><span class="pre">LISTS</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;string_list&gt;...</span></span><span class="w"> </span><span class="p"><span class="pre">[</span></span><span class="no"><span class="pre">INDENT</span></span><span class="p"><span class="pre">]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#string-list" title="Link to this definition">¶</a></dt>
+<dd><p>Record in the log each string from the given <code class="docutils literal notranslate"><span class="pre">&lt;string_list&gt;</span></code>. This command
+is inspired by the <a class="reference external" href="https://cmake.org/cmake/help/latest/command/message.html">message()</a> command from CMake.</p>
+<p>If specified, the optional <code class="docutils literal notranslate"><span class="pre">&lt;mode&gt;</span></code> keyword must be one of the standard
+message modes accepted by the <a class="reference external" href="https://cmake.org/cmake/help/latest/command/message.html#general-messages">message()</a> command, such as <code class="docutils literal notranslate"><span class="pre">STATUS</span></code>, <code class="docutils literal notranslate"><span class="pre">WARNING</span></code>, <code class="docutils literal notranslate"><span class="pre">ERROR</span></code>, etc.</p>
+<p>If the <code class="docutils literal notranslate"><span class="pre">INDENT</span></code> option is specified, the output message is indented by
+two spaces. This affects the indentation level of the printed message using
+the internal <a class="reference external" href="https://cmake.org/cmake/help/latest/variable/CMAKE_MESSAGE_INDENT.html">CMAKE_MESSAGE_INDENT</a> stack.</p>
+<p>Example usage:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">set(</span><span class="nb">my_list</span><span class="w"> </span><span class="s">&quot;one&quot;</span><span class="w"> </span><span class="s">&quot;two&quot;</span><span class="w"> </span><span class="s">&quot;three&quot;</span><span class="nf">)</span>
+<span class="nf">print(</span><span class="no">STATUS</span><span class="w"> </span><span class="no">LISTS</span><span class="w"> </span><span class="o">${</span><span class="nt">my_list</span><span class="o">}</span><span class="w"> </span><span class="no">INDENT</span><span class="nf">)</span>
+<span class="c"># output is:</span>
+<span class="c">#   one ; two ; three</span>
 </pre></div>
 </div>
-<p>Record each file of the list of <code class="docutils literal notranslate"><span class="pre">&lt;file_list&gt;</span></code> in the log after having computed
-their relative path to <code class="docutils literal notranslate"><span class="pre">PRINT_BASE_DIR</span></code>. The message is indented if <code class="docutils literal notranslate"><span class="pre">INDENT</span></code>
-is set. This command is inspired by <cite>message()</cite> from CMake.
-The optional <code class="docutils literal notranslate"><span class="pre">&lt;mode&gt;</span></code> keyword determines the type of message like in CMake
-(see <a class="reference external" href="https://cmake.org/cmake/help/latest/command/message.html#general-messages">https://cmake.org/cmake/help/latest/command/message.html#general-messages</a>).</p>
-<div class="highlight-cmake notranslate" id="id9"><div class="highlight"><pre><span></span><span class="nf">print(</span><span class="p">[</span><span class="nv">&lt;mode&gt;</span><span class="p">]</span><span class="w"> </span><span class="no">LISTS</span><span class="w"> </span><span class="nv">&lt;string_list&gt;...</span><span class="w"> </span><span class="p">[</span><span class="no">INDENT</span><span class="p">]</span><span class="nf">)</span>
-</pre></div>
-</div>
-<p>Record each string of the list of <code class="docutils literal notranslate"><span class="pre">&lt;file_list&gt;</span></code> in the log. The message is indented
-if <code class="docutils literal notranslate"><span class="pre">INDENT</span></code> is set. This command is inspired by <cite>message()</cite> from CMake.
-The optional <code class="docutils literal notranslate"><span class="pre">&lt;mode&gt;</span></code> keyword determines the type of message like in CMake
-(see <a class="reference external" href="https://cmake.org/cmake/help/latest/command/message.html#general-messages">https://cmake.org/cmake/help/latest/command/message.html#general-messages</a>).</p>
+</dd></dl>
+
 </section>
 </section>
 
@@ -119,6 +181,7 @@ The optional <code class="docutils literal notranslate"><span class="pre">&lt;mo
     <ul>
 <li><a class="reference internal" href="#">Print</a><ul>
 <li><a class="reference internal" href="#synopsis">Synopsis</a></li>
+<li><a class="reference internal" href="#module-variables">Module Variables</a></li>
 <li><a class="reference internal" href="#usage">Usage</a></li>
 </ul>
 </li>
