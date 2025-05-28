@@ -8,7 +8,7 @@
 Print
 -----
 
-Log a message. It requires CMake 3.20 or newer.
+Log a message by wrapping the CMake `message() <https://cmake.org/cmake/help/latest/command/message.html>`__ command to extend its functionalities .It requires CMake 3.20 or newer.
 
 Synopsis
 ^^^^^^^^
@@ -18,11 +18,11 @@ Synopsis
   `Print Formated Message`_
     print([<mode>] "message with format text" <argument>...)
 
-  `Print File List`_
+  `Print Path List`_
     print([<mode>] PATHS <file_list>... [INDENT])
 
   `Print String List`_
-    print([<mode>] LISTS <string_list>... [INDENT])
+    print([<mode>] STRINGS <string_list>... [INDENT])
 
 Module Variables
 ^^^^^^^^^^^^^^^^
@@ -47,19 +47,20 @@ Usage
   If specified, the optional ``<mode>`` keyword must be one of the standard
   message modes accepted by the `message() <https://cmake.org/cmake/help/latest/command/message.html#general-messages>`__ command, such as ``STATUS``, ``WARNING``, ``ERROR``, etc.
 
-  The ``"format string"`` may contain one or more custom conversion directives
+  The ``"text to print"`` may contain one or more custom conversion directives
   enclosed in ``@`` characters. These directives will be replaced using the
-  provided arguments, in the order they are given.
+  provided arguments, in the order they are given. Text without directives
+  is equivalent to a call to `message() <https://cmake.org/cmake/help/latest/command/message.html#general-messages>`__ command.
 
   Each directive takes the form ``@specifier@``, where ``specifier`` is one of
   the following:
 
     ``@ap@``
-      Converts the corresponding argument into an absolute path.
+      Converts the corresponding argument into an absolute path to an existing file or directory.
 
     ``@rp@``
       Converts the corresponding argument into a path relative to the value of
-      the :variable:`PRINT_BASE_DIR` variable.
+      the :variable:`PRINT_BASE_DIR` variable. The file or the directory must exist on the disk.
 
   Example usage:
 
@@ -79,11 +80,11 @@ Usage
     # output is:
     #   -- Absolute: /full/path/to/src/main.cpp, Relative: src/main.cpp
 
-.. _`Print File List`:
+.. _`Print Path List`:
 
 .. signature::
   print([<mode>] PATHS <file_list>... [INDENT])
-  :target: file_list
+  :target: path_list
 
   Record in the log each file from the specified ``<file_list>`` after
   converting them to paths relative to the value of the :variable:`PRINT_BASE_DIR`
@@ -110,7 +111,7 @@ Usage
 .. _`Print String List`:
 
 .. signature::
-  print([<mode>] LISTS <string_list>... [INDENT])
+  print([<mode>] STRINGS <string_list>... [INDENT])
   :target: string_list
 
   Record in the log each string from the given ``<string_list>``. This command
@@ -128,7 +129,7 @@ Usage
   .. code-block:: cmake
 
     set(my_list "one" "two" "three")
-    print(STATUS LISTS ${my_list} INDENT)
+    print(STATUS STRINGS ${my_list} INDENT)
     # output is:
     #   one ; two ; three
 #]=======================================================================]
@@ -144,10 +145,10 @@ set(PRINT_BASE_DIR "${CMAKE_SOURCE_DIR}")
 function(print)
 	set(options FATAL_ERROR SEND_ERROR WARNING AUTHOR_WARNING DEPRECATION NOTICE STATUS VERBOSE DEBUG TRACE INDENT)
 	set(one_value_args "")
-	set(multi_value_args PATHS LISTS)
+	set(multi_value_args PATHS STRINGS)
 	cmake_parse_arguments(PRT "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 	
-	# Parse arguments. The macro `_print_message()` can't use the result of
+	# Parse arguments. The macro `_print_formated_message()` can't use the result of
 	# cmake_parse_arguments() because it has to parse each argument.
 	set(PRT_ARGV "")
 	set(PRT_ARGC ${ARGC})
@@ -159,17 +160,17 @@ function(print)
 	endforeach()
 
 	if((DEFINED PRT_PATHS) OR ("PATHS" IN_LIST PRT_KEYWORDS_MISSING_VALUES))
-		_print_paths()
-	elseif((DEFINED PRT_LISTS) OR ("LISTS" IN_LIST PRT_KEYWORDS_MISSING_VALUES))
-		_print_lists()
+		_print_path_list()
+	elseif((DEFINED PRT_STRINGS) OR ("STRINGS" IN_LIST PRT_KEYWORDS_MISSING_VALUES))
+		_print_string_list()
 	else()
-		_print_message()
+		_print_formated_message()
 	endif()
 endfunction()
 
 #------------------------------------------------------------------------------
 # Internal usage.
-macro(_print_message)
+macro(_print_formated_message)
 	# Error when no arguments are given.
 	if(${PRT_ARGC} EQUAL 0)
 		message(FATAL_ERROR "Incorrect number of arguments!")
@@ -267,7 +268,7 @@ endmacro()
 
 #------------------------------------------------------------------------------
 # Internal usage.
-macro(_print_paths)
+macro(_print_path_list)
 	if(DEFINED PRT_UNPARSED_ARGUMENTS)
 		message(FATAL_ERROR "Unrecognized arguments: \"${PRT_UNPARSED_ARGUMENTS}\"")
 	endif()
@@ -305,13 +306,13 @@ endmacro()
 
 #------------------------------------------------------------------------------
 # Internal usage.
-macro(_print_lists)
+macro(_print_string_list)
 	if(DEFINED PRT_UNPARSED_ARGUMENTS)
 		message(FATAL_ERROR "Unrecognized arguments: \"${PRT_UNPARSED_ARGUMENTS}\"")
 	endif()
-	if((NOT DEFINED PRT_LISTS)
-		AND (NOT "LISTS" IN_LIST PRT_KEYWORDS_MISSING_VALUES))
-		message(FATAL_ERROR "LISTS arguments is missing")
+	if((NOT DEFINED PRT_STRINGS)
+		AND (NOT "STRINGS" IN_LIST PRT_KEYWORDS_MISSING_VALUES))
+		message(FATAL_ERROR "STRINGS arguments is missing")
 	endif()
 	
 	set(mode "")
@@ -323,9 +324,9 @@ macro(_print_lists)
 		set(mode "${PRT_ARGV0}")
 	endif()
 	
-	# Format the lists
+	# Format the strings
 	set(formated_message "")
-	foreach(string IN ITEMS ${PRT_LISTS})
+	foreach(string IN ITEMS ${PRT_STRINGS})
 		list(APPEND formated_message "${string}")
 	endforeach()
 	list(JOIN formated_message " ; " formated_message)

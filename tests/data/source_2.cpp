@@ -1,0 +1,21 @@
+/******************************************************************************
+* Copyright 2019-present, Joseph Garnier
+* All rights reserved.
+*
+* This source code is licensed under the license found in the
+* LICENSE file in the root directory of this source tree.
+******************************************************************************/
+
+#include "source_2.h"
+#include "include_pch.h"
+
+Source2::Source2() noexcept
+{
+	Source3 source3;
+	std::cout << "Source2: default constructor" << std::endl;
+}
+
+Source2::~Source2() noexcept
+{
+	std::cout << "Source2: destructor" << std::endl;
+}
