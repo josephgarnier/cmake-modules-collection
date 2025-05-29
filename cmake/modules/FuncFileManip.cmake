@@ -5,13 +5,14 @@
 # LICENSE file in the root directory of this source tree.
 
 #[=======================================================================[.rst:
-
 FileManip
 ---------
+
 Operations on files. It requires CMake 3.20 or newer.
 
 Synopsis
 ^^^^^^^^
+
 .. parsed-literal::
 
     file_manip(`RELATIVE_PATH`_ <file_list_var> BASE_DIR <directory_path> [OUTPUT_VARIABLE <output_list_var>])
@@ -21,46 +22,92 @@ Synopsis
 
 Usage
 ^^^^^
-.. _RELATIVE_PATH:
-.. code-block:: cmake
 
+.. signature::
   file_manip(RELATIVE_PATH <file_list_var> BASE_DIR <directory_path> [OUTPUT_VARIABLE <output_list_var>])
 
-Compute the relative path from a ``<directory_path>`` for each files in the
-list of input path ``<file_list_var>`` and store the result in-place or in
-the specified ``<output_list_var>`` as a list.
+  Computes the relative path from a given ``<directory_path>`` for each file
+  in the list variable named ``<file_list_var>``. The result is stored either
+  in-place in ``<file_list_var>``, or in the variable specified by
+  ``<output_list_var>``, if the ``OUTPUT_VARIABLE`` option is provided.
 
-.. _ABSOLUTE_PATH:
-.. code-block:: cmake
+  Example usage:
 
+  .. code-block:: cmake
+
+    set(files
+      "/project/src/main.cpp"
+      "/project/include/lib.h"
+    )
+    file_manip(RELATIVE_PATH "${files}" BASE_DIR "/project")
+    # output is:
+    #   src/main.cpp ; include/lib.hpp
+
+.. signature::
   file_manip(ABSOLUTE_PATH <file_list_var> BASE_DIR <directory_path> [OUTPUT_VARIABLE <output_list_var>])
 
-Compute the absolute path from a ``<directory_path>`` for each files in the
-list of input path ``<file_list_var>`` and store the result in-place or in
-the specified ``<output_list_var>`` as a list.
+  Computes the absolute path from a given ``<directory_path>`` for each file
+  in the list variable named ``<file_list_var>``. The result is stored either
+  in-place in ``<file_list_var>``, or in the variable specified by
+  ``<output_list_var>``, if the ``OUTPUT_VARIABLE`` option is provided.
 
-.. _STRIP_PATH:
-.. code-block:: cmake
+  Example usage:
 
+  .. code-block:: cmake
+
+    set(files
+      "src/main.cpp"
+      "include/lib.hpp"
+    )
+    file_manip(ABSOLUTE_PATH "${files}" BASE_DIR "/project")
+    # output is:
+    #   /project/src/main.cpp ; /project/include/lib.h
+
+.. signature::
   file_manip(STRIP_PATH <file_list_var> BASE_DIR <directory_path> [OUTPUT_VARIABLE <output_list_var>])
 
-Strip the <directory_path>`` prefix of each file in ``<file_list_var>`` and
-store the result in-place or in the specified ``<output_list_var>`` as a list.
+  Removes the ``<directory_path>`` prefix from each file path in
+  ``<file_list_var>``. The result is stored either in-place in
+  ``<file_list_var>``, or in the variable specified by
+  ``<output_list_var>``, if the ``OUTPUT_VARIABLE`` option is provided.
 
-.. _GET_COMPONENT:
-.. code-block:: cmake
+  Example usage:
 
+  .. code-block:: cmake
+
+    set(files
+      "/project/src/main.cpp"
+      "/project/include/lib.h"
+    )
+    file_manip(STRIP_PATH "${files}" BASE_DIR "/project")
+    # output is:
+    #   src/main.cpp ; include/lib.hpp
+
+.. signature::
   file_manip(GET_COMPONENT <file_list>... MODE <mode> OUTPUT_VARIABLE <output_list_var>)
 
-Sets as a list in the specified ``<output_list_var>`` a component of file in the list of ``<file_list>``
-, where ``<mode>`` is one of:
+  Extracts a specific component from each path in the given ``<file_list>``
+  and stores the result in the variable specified by ``OUTPUT_VARIABLE``
+  option.
 
-::
+  The ``<mode>`` argument determines which component to extract and must be one of:
 
- DIRECTORY = Directory without file name
- NAME      = File name without directory
+  * ``DIRECTORY`` - Directory without file name.
+  * ``NAME``      - File name without directory.
 
+  Example usage:
+
+  .. code-block:: cmake
+
+    set(files
+      "/project/src/main.cpp"
+      "/project/include/lib.hpp"
+    )
+    file_manip(GET_COMPONENT "${files}" MODE DIRECTORY OUTPUT_VARIABLE dirs)
+    # output is:
+    #   /project/src ; /project/include
 #]=======================================================================]
+
 include_guard()
 
 cmake_minimum_required (VERSION 3.20 FATAL_ERROR)
