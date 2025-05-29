@@ -233,7 +233,7 @@ macro(_substitute_directives)
 		math(EXPR pos_first "${pos_first}+1") # +1 because the first char @ is excluded.
 		string(SUBSTRING "${message_tail}" ${pos_first}+1 -1 message_tail)
 		string(APPEND message_head "${message_cursor}")
-		
+
 		string(FIND "${message_tail}" "@" pos_second)
 		if(${pos_second} EQUAL -1)
 			break()
@@ -241,15 +241,14 @@ macro(_substitute_directives)
 		string(SUBSTRING "${message_tail}" 0 ${pos_second} message_cursor)
 		math(EXPR pos_second "${pos_second}+1") # +1 because the second char @ is excluded.
 		string(SUBSTRING "${message_tail}" ${pos_second} -1 message_tail)
-		
-		
+
 		# Substitute the directive by its value
 		set(directive_to_substitute "@${message_cursor}@")
 		list(POP_FRONT message_arg_list message_arg)
 		if("${message_arg}" STREQUAL "")
 			message(FATAL_ERROR "Argument missing for directive \"${directive_to_substitute}\"!")
 		endif()
-		
+
 		if("${directive_to_substitute}" STREQUAL "@ap@")
 			file(REAL_PATH "${message_arg}" message_arg BASE_DIRECTORY "${PRINT_BASE_DIR}")
 			set(directive_to_substitute "${message_arg}")
@@ -285,7 +284,7 @@ macro(_print_path_list)
 	if("${PRT_ARGV0}" IN_LIST options)
 		set(mode "${PRT_ARGV0}")
 	endif()
-	
+
 	# Format the paths
 	set(relative_path_list "")
 	foreach(file IN ITEMS ${PRT_PATHS})
