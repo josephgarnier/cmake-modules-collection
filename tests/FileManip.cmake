@@ -9,28 +9,28 @@
 # See README file in the root directory of this source tree.
 
 #-------------------------------------------------------------------------------
-# Test of [StringManip module::Public command]
-ct_add_test(NAME "test_string_manip")
+# Test of [FileManip module::Public command]:
+ct_add_test(NAME "test_file_manip")
 function(${CMAKETEST_TEST})
-	include(FuncStringManip)
+	include(FuncFileManip)
 
 	ct_add_section(NAME "public_command")
 	function(${CMAKETEST_SECTION})
 	
 		ct_add_section(NAME "throws_if_unknown_argument" EXPECTFAIL)
 		function(${CMAKETEST_SECTION})
-			string_manip(FOO)
+			file_manip(FOO)
 			ct_assert_prints("Unrecognized arguments: \"FOO\"")
 		endfunction()
 		
 		ct_add_section(NAME "throws_if_arg_op_is_missing_1" EXPECTFAIL)
 		function(${CMAKETEST_SECTION})
-			string_manip()
+			file_manip()
 		endfunction()
 		
 		ct_add_section(NAME "throws_if_arg_op_is_missing_2" EXPECTFAIL)
 		function(${CMAKETEST_SECTION})
-			string_manip(BAR)
+			file_manip(BAR)
 		endfunction()
 	endfunction()
 endfunction()
