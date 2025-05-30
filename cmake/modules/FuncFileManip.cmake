@@ -26,7 +26,7 @@ Usage
 .. signature::
   file_manip(RELATIVE_PATH <file_list_var> BASE_DIR <directory_path> [OUTPUT_VARIABLE <output_list_var>])
 
-  Computes the relative path from a given ``<directory_path>`` for each file
+  Computes the relative path from a given ``BASE_DIR`` for each file
   in the list variable named ``<file_list_var>``. The result is stored either
   in-place in ``<file_list_var>``, or in the variable specified by
   ``<output_list_var>``, if the ``OUTPUT_VARIABLE`` option is provided.
@@ -46,7 +46,7 @@ Usage
 .. signature::
   file_manip(ABSOLUTE_PATH <file_list_var> BASE_DIR <directory_path> [OUTPUT_VARIABLE <output_list_var>])
 
-  Computes the absolute path from a given ``<directory_path>`` for each file
+  Computes the absolute path from a given ``BASE_DIR`` for each file
   in the list variable named ``<file_list_var>``. The result is stored either
   in-place in ``<file_list_var>``, or in the variable specified by
   ``<output_list_var>``, if the ``OUTPUT_VARIABLE`` option is provided.
@@ -66,7 +66,7 @@ Usage
 .. signature::
   file_manip(STRIP_PATH <file_list_var> BASE_DIR <directory_path> [OUTPUT_VARIABLE <output_list_var>])
 
-  Removes the ``<directory_path>`` prefix from each file path in
+  Removes the ``BASE_DIR`` prefix from each file path in
   ``<file_list_var>``. The result is stored either in-place in
   ``<file_list_var>``, or in the variable specified by
   ``<output_list_var>``, if the ``OUTPUT_VARIABLE`` option is provided.
@@ -90,7 +90,7 @@ Usage
   and stores the result in the variable specified by ``OUTPUT_VARIABLE``
   option.
 
-  The ``<mode>`` argument determines which component to extract and must be one of:
+  The ``MODE`` argument determines which component to extract and must be one of:
 
   * ``DIRECTORY`` - Directory without file name.
   * ``NAME``      - File name without directory.
@@ -153,9 +153,15 @@ macro(_file_manip_relative_path)
 	if(NOT DEFINED FM_BASE_DIR)
 		message(FATAL_ERROR "BASE_DIR arguments is missing")
 	endif()
-	
+	if((NOT EXISTS "${FM_BASE_DIR}") OR (NOT IS_DIRECTORY "${FM_BASE_DIR}"))
+		message(FATAL_ERROR "Given path: ${FM_BASE_DIR} does not refer to an existing path or directory on disk!")
+	endif()
+
 	set(relative_path_list "")
 	foreach(file IN ITEMS ${${FM_RELATIVE_PATH}})
+		if(NOT EXISTS "${file}")
+			message(FATAL_ERROR "Given path: ${file} does not refer to an existing path on disk!")
+		endif()
 		file(RELATIVE_PATH relative_path "${FM_BASE_DIR}" "${file}")
 		list(APPEND relative_path_list "${relative_path}")
 	endforeach()
@@ -176,10 +182,16 @@ macro(_file_manip_absolute_path)
 	if(NOT DEFINED FM_BASE_DIR)
 		message(FATAL_ERROR "BASE_DIR arguments is missing")
 	endif()
-	
+	if((NOT EXISTS "${FM_BASE_DIR}") OR (NOT IS_DIRECTORY "${FM_BASE_DIR}"))
+		message(FATAL_ERROR "Given path: ${FM_BASE_DIR} does not refer to an existing path or directory on disk!")
+	endif()
+
 	set(absolute_path_list "")
 	foreach(file IN ITEMS ${${FM_ABSOLUTE_PATH}})
 		file(REAL_PATH "${file}" absolute_path BASE_DIRECTORY "${FM_BASE_DIR}")
+		if(NOT EXISTS "${absolute_path}")
+			message(FATAL_ERROR "Given path: ${absolute_path} does not refer to an existing path on disk!")
+		endif()
 		list(APPEND absolute_path_list ${absolute_path})
 	endforeach()
 	
