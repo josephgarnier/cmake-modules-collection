@@ -41,7 +41,7 @@ Usage
     )
     file_manip(RELATIVE_PATH "${files}" BASE_DIR "/project")
     # output is:
-    #   src/main.cpp ; include/lib.hpp
+    #   src/main.cpp;include/lib.hpp
 
 .. signature::
   file_manip(ABSOLUTE_PATH <file_list_var> BASE_DIR <directory_path> [OUTPUT_VARIABLE <output_list_var>])
@@ -61,7 +61,7 @@ Usage
     )
     file_manip(ABSOLUTE_PATH "${files}" BASE_DIR "/project")
     # output is:
-    #   /project/src/main.cpp ; /project/include/lib.h
+    #   /project/src/main.cpp;/project/include/lib.h
 
 .. signature::
   file_manip(STRIP_PATH <file_list_var> BASE_DIR <directory_path> [OUTPUT_VARIABLE <output_list_var>])
@@ -69,7 +69,9 @@ Usage
   Removes the ``BASE_DIR`` prefix from each file path in
   ``<file_list_var>``. The result is stored either in-place in
   ``<file_list_var>``, or in the variable specified by
-  ``<output_list_var>``, if the ``OUTPUT_VARIABLE`` option is provided.
+  ``<output_list_var>``, if the ``OUTPUT_VARIABLE`` option is provided. Unlike
+  to :command:`file_manip(RELATIVE_PATH)`, it performs no checks on the existence
+  of files. Paths are processed like any string.
 
   Example usage:
 
@@ -81,7 +83,7 @@ Usage
     )
     file_manip(STRIP_PATH "${files}" BASE_DIR "/project")
     # output is:
-    #   src/main.cpp ; include/lib.hpp
+    #   src/main.cpp;include/lib.hpp
 
 .. signature::
   file_manip(GET_COMPONENT <file_list>... MODE <mode> OUTPUT_VARIABLE <output_list_var>)
@@ -105,7 +107,7 @@ Usage
     )
     file_manip(GET_COMPONENT "${files}" MODE DIRECTORY OUTPUT_VARIABLE dirs)
     # output is:
-    #   /project/src ; /project/include
+    #   /project/src;/project/include
 #]=======================================================================]
 
 include_guard()
@@ -121,7 +123,7 @@ function(file_manip)
 	cmake_parse_arguments(FM "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 	
 	if(DEFINED FM_UNPARSED_ARGUMENTS)
-		message(FATAL_ERROR "Unrecognized arguments: \"${FM_UNPARSED_ARGUMENTS}\"")
+		message(FATAL_ERROR "Unrecognized arguments: \"${FM_UNPARSED_ARGUMENTS}\"!")
 	endif()
 
 	if(DEFINED FM_RELATIVE_PATH)
@@ -137,10 +139,10 @@ function(file_manip)
 		elseif("${FM_MODE}" STREQUAL NAME)
 			_file_manip_get_component_name()
 		else()
-			message(FATAL_ERROR "MODE arguments is missing")
+			message(FATAL_ERROR "MODE arguments is missing!")
 		endif()
 	else()
-		message(FATAL_ERROR "Operation argument is missing")
+		message(FATAL_ERROR "Operation argument is missing!")
 	endif()
 endfunction()
 
@@ -148,10 +150,10 @@ endfunction()
 # Internal usage.
 macro(_file_manip_relative_path)
 	if(NOT DEFINED FM_RELATIVE_PATH)
-		message(FATAL_ERROR "RELATIVE_PATH arguments is missing")
+		message(FATAL_ERROR "RELATIVE_PATH arguments is missing!")
 	endif()
 	if(NOT DEFINED FM_BASE_DIR)
-		message(FATAL_ERROR "BASE_DIR arguments is missing")
+		message(FATAL_ERROR "BASE_DIR arguments is missing!")
 	endif()
 	if((NOT EXISTS "${FM_BASE_DIR}") OR (NOT IS_DIRECTORY "${FM_BASE_DIR}"))
 		message(FATAL_ERROR "Given path: ${FM_BASE_DIR} does not refer to an existing path or directory on disk!")
@@ -177,10 +179,10 @@ endmacro()
 # Internal usage.
 macro(_file_manip_absolute_path)
 	if(NOT DEFINED FM_ABSOLUTE_PATH)
-		message(FATAL_ERROR "ABSOLUTE_PATH arguments is missing")
+		message(FATAL_ERROR "ABSOLUTE_PATH arguments is missing!")
 	endif()
 	if(NOT DEFINED FM_BASE_DIR)
-		message(FATAL_ERROR "BASE_DIR arguments is missing")
+		message(FATAL_ERROR "BASE_DIR arguments is missing!")
 	endif()
 	if((NOT EXISTS "${FM_BASE_DIR}") OR (NOT IS_DIRECTORY "${FM_BASE_DIR}"))
 		message(FATAL_ERROR "Given path: ${FM_BASE_DIR} does not refer to an existing path or directory on disk!")
@@ -206,10 +208,10 @@ endmacro()
 # Internal usage.
 macro(_file_manip_strip_path)
 	if(NOT DEFINED FM_STRIP_PATH)
-		message(FATAL_ERROR "STRIP_PATH arguments is missing")
+		message(FATAL_ERROR "STRIP_PATH arguments is missing!")
 	endif()
 	if(NOT DEFINED FM_BASE_DIR)
-		message(FATAL_ERROR "BASE_DIR arguments is missing")
+		message(FATAL_ERROR "BASE_DIR arguments is missing!")
 	endif()
 	
 	set(stripped_path_list "")
@@ -230,21 +232,21 @@ endmacro()
 macro(_file_manip_get_component_directory)
 	if((NOT DEFINED FM_GET_COMPONENT)
 		AND (NOT "GET_COMPONENT" IN_LIST FM_KEYWORDS_MISSING_VALUES))
-		message(FATAL_ERROR "GET_COMPONENT arguments is missing")
+		message(FATAL_ERROR "GET_COMPONENT arguments is missing!")
 	endif()
 	if(NOT DEFINED FM_MODE)
-		message(FATAL_ERROR "MODE arguments is missing")
+		message(FATAL_ERROR "MODE arguments is missing!")
 	endif()
 	if(NOT DEFINED FM_OUTPUT_VARIABLE)
-		message(FATAL_ERROR "OUTPUT_VARIABLE arguments is missing")
+		message(FATAL_ERROR "OUTPUT_VARIABLE arguments is missing!")
 	endif()
-	
+
 	set(directorty_path_list "")
 	foreach(file IN ITEMS ${FM_GET_COMPONENT})
 		cmake_path(GET file PARENT_PATH directory_path)
 		list(APPEND directorty_path_list "${directory_path}")
 	endforeach()
-	
+
 	set(${FM_OUTPUT_VARIABLE} "${directorty_path_list}" PARENT_SCOPE)
 endmacro()
 
@@ -253,18 +255,18 @@ endmacro()
 macro(_file_manip_get_component_name)
 	if((NOT DEFINED FM_GET_COMPONENT)
 		AND (NOT "GET_COMPONENT" IN_LIST FM_KEYWORDS_MISSING_VALUES))
-		message(FATAL_ERROR "GET_COMPONENT arguments is missing")
+		message(FATAL_ERROR "GET_COMPONENT arguments is missing!")
 	endif()
 	if(NOT DEFINED FM_MODE)
-		message(FATAL_ERROR "MODE arguments is missing")
+		message(FATAL_ERROR "MODE arguments is missing!")
 	endif()
 	if(NOT DEFINED FM_OUTPUT_VARIABLE)
-		message(FATAL_ERROR "OUTPUT_VARIABLE arguments is missing")
+		message(FATAL_ERROR "OUTPUT_VARIABLE arguments is missing!")
 	endif()
 	
 	set(file_name_list "")
 	foreach(file IN ITEMS ${FM_GET_COMPONENT})
-		cmake_path(FILENAME file PARENT_PATH file_name)
+		cmake_path(GET file FILENAME file_name)
 		list(APPEND file_name_list "${file_name}")
 	endforeach()
 	
