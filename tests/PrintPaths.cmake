@@ -16,10 +16,10 @@ function(${CMAKETEST_TEST})
 	include(FuncPrint)
 
 	# Functionalities checking
-	ct_add_section(NAME "print_without_mode")
+	ct_add_section(NAME "no_mode")
 	function(${CMAKETEST_SECTION})
 		set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
-		set(input_file_list
+		set(input
 			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/main.cpp"
 			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/source_1.cpp"
 			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/source_2.cpp"
@@ -28,16 +28,16 @@ function(${CMAKETEST_TEST})
 			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/source_5.cpp"
 			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/sub_1/source_sub_1.cpp"
 			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/sub_2/source_sub_2.cpp")
-		print(PATHS "${input_file_list}")
+		print(PATHS "${input}")
 		ct_assert_prints("data/main.cpp ; data/source_1.cpp ; data/source_2.cpp ; data/source_3.cpp ; data/source_4.cpp ; data/source_5.cpp ; data/sub_1/source_sub_1.cpp ; data/sub_2/source_sub_2.cpp")
-		print(PATHS "${input_file_list}" INDENT)
+		print(PATHS "${input}" INDENT)
 		ct_assert_prints("data/main.cpp ; data/source_1.cpp ; data/source_2.cpp ; data/source_3.cpp ; data/source_4.cpp ; data/source_5.cpp ; data/sub_1/source_sub_1.cpp ; data/sub_2/source_sub_2.cpp") # This function ignores the indentation
 	endfunction()
 
-	ct_add_section(NAME "print_with_status_mode")
+	ct_add_section(NAME "status_mode")
 	function(${CMAKETEST_SECTION})
 		set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
-		set(input_file_list
+		set(input
 			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/main.cpp"
 			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/source_1.cpp"
 			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/source_2.cpp"
@@ -46,9 +46,9 @@ function(${CMAKETEST_TEST})
 			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/source_5.cpp"
 			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/sub_1/source_sub_1.cpp"
 			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/sub_2/source_sub_2.cpp")
-		print(STATUS PATHS "${input_file_list}")
+		print(STATUS PATHS "${input}")
 		ct_assert_prints("data/main.cpp ; data/source_1.cpp ; data/source_2.cpp ; data/source_3.cpp ; data/source_4.cpp ; data/source_5.cpp ; data/sub_1/source_sub_1.cpp ; data/sub_2/source_sub_2.cpp")
-		print(STATUS PATHS "${input_file_list}" INDENT)
+		print(STATUS PATHS "${input}" INDENT)
 		ct_assert_prints("data/main.cpp ; data/source_1.cpp ; data/source_2.cpp ; data/source_3.cpp ; data/source_4.cpp ; data/source_5.cpp ; data/sub_1/source_sub_1.cpp ; data/sub_2/source_sub_2.cpp") # This function ignores the indentation
 	endfunction()
 

@@ -18,7 +18,7 @@ function(${CMAKETEST_TEST})
 	# Functionalities checking
 	ct_add_section(NAME "print_without_mode")
 	function(${CMAKETEST_SECTION})
-		set(input_string_list
+		set(input
 			"apple"
 			"banana"
 			"orange"
@@ -28,15 +28,15 @@ function(${CMAKETEST_TEST})
 			"grape"
 			"lemon"
 			"watermelon")
-		print(STRINGS "${input_string_list}")
+		print(STRINGS "${input}")
 		ct_assert_prints("apple ; banana ; orange ; carrot ; strawberry ; pineapple ; grape ; lemon ; watermelon")
-		print(STRINGS "${input_string_list}" INDENT)
+		print(STRINGS "${input}" INDENT)
 		ct_assert_prints("apple ; banana ; orange ; carrot ; strawberry ; pineapple ; grape ; lemon ; watermelon") # This function ignores the indentation
 	endfunction()
 
 	ct_add_section(NAME "print_with_status_mode")
 	function(${CMAKETEST_SECTION})
-		set(input_string_list
+		set(input
 			"apple"
 			"banana"
 			"orange"
@@ -46,9 +46,9 @@ function(${CMAKETEST_TEST})
 			"grape"
 			"lemon"
 			"watermelon")
-		print(STATUS STRINGS "${input_string_list}")
+		print(STATUS STRINGS "${input}")
 		ct_assert_prints("apple ; banana ; orange ; carrot ; strawberry ; pineapple ; grape ; lemon ; watermelon")
-		print(STATUS STRINGS "${input_string_list}" INDENT)
+		print(STATUS STRINGS "${input}" INDENT)
 		ct_assert_prints("apple ; banana ; orange ; carrot ; strawberry ; pineapple ; grape ; lemon ; watermelon") # This function ignores the indentation
 	endfunction()
 

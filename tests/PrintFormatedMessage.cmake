@@ -30,23 +30,23 @@ function(${CMAKETEST_TEST})
 	ct_add_section(NAME "message_with_ap_directive")
 	function(${CMAKETEST_SECTION})
 		set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
-		set(input_relative_path "data/main.cpp")
-		set(expected_absolute_path "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/${input_relative_path}")
-		print("Absolute: @ap@" "${input_relative_path}")
-		ct_assert_prints("Absolute: ${expected_absolute_path}")
-		print(STATUS "Absolute: @ap@" "${input_relative_path}")
-		ct_assert_prints("Absolute: ${expected_absolute_path}") # This function ignores the status mode
+		set(input "data/main.cpp")
+		set(expected_result "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/${input}")
+		print("Absolute: @ap@" "${input}")
+		ct_assert_prints("Absolute: ${expected_result}")
+		print(STATUS "Absolute: @ap@" "${input}")
+		ct_assert_prints("Absolute: ${expected_result}") # This function ignores the status mode
 	endfunction()
 
 	ct_add_section(NAME "message_with_rp_directive")
 	function(${CMAKETEST_SECTION})
 		set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
-		set(expected_relative_path "data/main.cpp")
-		set(input_absolute_path "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/${expected_relative_path}")
-		print("Relative: @rp@" "${input_absolute_path}")
-		ct_assert_prints("Relative: ${expected_relative_path}")
-		print(STATUS "Relative: @rp@" "${input_absolute_path}")
-		ct_assert_prints("Relative: ${expected_relative_path}") # This function ignores the status mode
+		set(expected_result "data/main.cpp")
+		set(input "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/${expected_result}")
+		print("Relative: @rp@" "${input}")
+		ct_assert_prints("Relative: ${expected_result}")
+		print(STATUS "Relative: @rp@" "${input}")
+		ct_assert_prints("Relative: ${expected_result}") # This function ignores the status mode
 	endfunction()
 
 	# Errors checking
