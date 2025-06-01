@@ -16,7 +16,7 @@ function(${CMAKETEST_TEST})
 	include(FuncFileManip)
 
 	# Functionalities checking
-	ct_add_section(NAME "directory_mode")
+	ct_add_section(NAME "directory_mode") # s'insipirer de ce fichier et notamment des exceptions et des noms "input" et "output" pour refaire tous les autres (sauf FileManipStripPath)
 	function(${CMAKETEST_SECTION})
 		set(input "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/main.cpp")
 		file_manip(GET_COMPONENT "${input}" MODE DIRECTORY OUTPUT_VARIABLE output)

@@ -10,7 +10,7 @@
 
 #-------------------------------------------------------------------------------
 # Test of [StringManip module::STRIP_INTERFACES operation]:
-#    ``string_manip(`STRIP_INTERFACES`_ <string_var> [OUTPUT_VARIABLE <output_var>])``
+#    ``string_manip(STRIP_INTERFACES <string_var> [OUTPUT_VARIABLE <output_var>])``
 ct_add_test(NAME "test_string_manip_strip_interfaces_operation")
 function(${CMAKETEST_TEST})
 	include(FuncStringManip)
