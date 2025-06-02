@@ -1,11 +1,23 @@
-# This is a basic workflow to help you get started with Actions
+# ============================================================
+# GitHub Actions Workflow: Build and Deploy Sphinx Documentation
+#
+# Description:
+# This workflow builds the Sphinx documentation located in the `doc/` folder
+# and deploys it to the `gh-pages` branch for GitHub Pages hosting.
+#
+# Trigger Conditions:
+# - On push to the `main` branch
+# - Only if files inside the `doc/` directory have changed
+#
+# Manual Trigger:
+# - Can also be triggered manually via the GitHub Actions interface.
+# ============================================================
 
 name: Build doc with sphinx
 on:
   push:
     branches: [ $default-branch ]
-  pull_request:
-    branches: [ $default-branch ]
+    paths: ['doc/**']
   workflow_dispatch:
 permissions:
   contents: write
@@ -24,7 +36,6 @@ jobs:
           build-command: "sphinx-build -M html ./source ./build"
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
-        if: ${{ github.ref == 'refs/heads/main' }}
         with:
           publish_branch: gh-pages
           github_token: ${{ secrets.GITHUB_TOKEN }}
