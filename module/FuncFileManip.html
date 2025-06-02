@@ -1,0 +1,245 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" />
+  <title>FileManip &mdash; CMake Modules Collection</title>
+
+    <link rel="stylesheet" href="../_static/cmake.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    
+    <link rel="shortcut icon" href="../_static/cmake-favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Print" href="FuncPrint.html" />
+    <link rel="prev" title="Directory" href="FuncDirectory.html" />
+ 
+
+  </head><body>
+    <input id="sidebar-check" type="checkbox" />
+    <label id="sidebar-overlay" for="sidebar-check"></label>
+
+
+
+    <div class="related relbar1" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="FuncPrint.html" title="Print"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="FuncDirectory.html" title="Directory"
+             accesskey="P">previous</a> |</li>
+  <li>
+    <label class="sidebar-toggle" for="sidebar-check"></label>
+  </li>
+  <li class="rootlink">
+    <img src="../_static/cmake-logo-16.png" width="16" height="16" alt=""/>
+    <a href="https://cmake.org/">CMake 4.0.1</a>
+    <span class="reldelim1"> &#187;</span>
+  </li>
+  <li>
+    <a href="../index.html">Documentation</a> &#187;
+  </li>
+ 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="filemanip">
+<span id="module:FuncFileManip"></span><h1>FileManip<a class="headerlink" href="#filemanip" title="Permalink to this headline">¶</a></h1>
+<p>Operations on files. It requires CMake 3.20 or newer.</p>
+<div class="section" id="synopsis">
+<h2>Synopsis<a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h2>
+<pre class="literal-block">file_manip(<a class="reference internal" href="#relative-path">RELATIVE_PATH</a> &lt;file_list_var&gt; BASE_DIR &lt;directory_path&gt; [OUTPUT_VARIABLE &lt;output_list_var&gt;])
+file_manip(<a class="reference internal" href="#absolute-path">ABSOLUTE_PATH</a> &lt;file_list_var&gt; BASE_DIR &lt;directory_path&gt; [OUTPUT_VARIABLE &lt;output_list_var&gt;])
+file_manip(<a class="reference internal" href="#strip-path">STRIP_PATH</a> &lt;file_list_var&gt; BASE_DIR &lt;directory_path&gt; [OUTPUT_VARIABLE &lt;output_list_var&gt;])
+file_manip(<a class="reference internal" href="#get-component">GET_COMPONENT</a> &lt;file_list&gt;... MODE &lt;mode&gt; OUTPUT_VARIABLE &lt;output_list_var&gt;)</pre>
+</div>
+<div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<dl class="signature">
+<dt id="relative-path">
+<code class="code cmake highlight sig-name descname"><span class="nf">file_manip(</span><span class="no">RELATIVE_PATH</span><span class="w"> </span><span class="nv">&lt;file_list_var&gt;</span><span class="w"> </span><span class="no">BASE_DIR</span><span class="w"> </span><span class="nv">&lt;directory_path&gt;</span><span class="w"> </span><span class="p">[</span><span class="no">OUTPUT_VARIABLE</span><span class="nbsp"> </span><span class="nv">&lt;output_list_var&gt;</span><span class="p">]</span><span class="nf">)</span></code><a class="headerlink" href="#relative-path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the relative path from a given <code class="docutils literal notranslate"><span class="pre">BASE_DIR</span></code> for each file
+in the list variable named <code class="docutils literal notranslate"><span class="pre">&lt;file_list_var&gt;</span></code>. The result is stored either
+in-place in <code class="docutils literal notranslate"><span class="pre">&lt;file_list_var&gt;</span></code>, or in the variable specified by
+<code class="docutils literal notranslate"><span class="pre">&lt;output_list_var&gt;</span></code>, if the <code class="docutils literal notranslate"><span class="pre">OUTPUT_VARIABLE</span></code> option is provided.</p>
+<p>Example usage:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">set(</span><span class="nb">files</span><span class="w"></span>
+<span class="w">  </span><span class="s">&quot;/project/src/main.cpp&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="s">&quot;/project/include/lib.h&quot;</span><span class="w"></span>
+<span class="nf">)</span><span class="w"></span>
+<span class="nf">file_manip(</span><span class="no">RELATIVE_PATH</span><span class="w"> </span><span class="s">&quot;${files}&quot;</span><span class="w"> </span><span class="no">BASE_DIR</span><span class="w"> </span><span class="s">&quot;/project&quot;</span><span class="nf">)</span><span class="w"></span>
+<span class="c"># output is:</span>
+<span class="c">#   src/main.cpp;include/lib.hpp</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="signature">
+<dt id="absolute-path">
+<code class="code cmake highlight sig-name descname"><span class="nf">file_manip(</span><span class="no">ABSOLUTE_PATH</span><span class="w"> </span><span class="nv">&lt;file_list_var&gt;</span><span class="w"> </span><span class="no">BASE_DIR</span><span class="w"> </span><span class="nv">&lt;directory_path&gt;</span><span class="w"> </span><span class="p">[</span><span class="no">OUTPUT_VARIABLE</span><span class="nbsp"> </span><span class="nv">&lt;output_list_var&gt;</span><span class="p">]</span><span class="nf">)</span></code><a class="headerlink" href="#absolute-path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the absolute path from a given <code class="docutils literal notranslate"><span class="pre">BASE_DIR</span></code> for each file
+in the list variable named <code class="docutils literal notranslate"><span class="pre">&lt;file_list_var&gt;</span></code>. The result is stored either
+in-place in <code class="docutils literal notranslate"><span class="pre">&lt;file_list_var&gt;</span></code>, or in the variable specified by
+<code class="docutils literal notranslate"><span class="pre">&lt;output_list_var&gt;</span></code>, if the <code class="docutils literal notranslate"><span class="pre">OUTPUT_VARIABLE</span></code> option is provided.</p>
+<p>Example usage:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">set(</span><span class="nb">files</span><span class="w"></span>
+<span class="w">  </span><span class="s">&quot;src/main.cpp&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="s">&quot;include/lib.hpp&quot;</span><span class="w"></span>
+<span class="nf">)</span><span class="w"></span>
+<span class="nf">file_manip(</span><span class="no">ABSOLUTE_PATH</span><span class="w"> </span><span class="s">&quot;${files}&quot;</span><span class="w"> </span><span class="no">BASE_DIR</span><span class="w"> </span><span class="s">&quot;/project&quot;</span><span class="nf">)</span><span class="w"></span>
+<span class="c"># output is:</span>
+<span class="c">#   /project/src/main.cpp;/project/include/lib.h</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="signature">
+<dt id="strip-path">
+<code class="code cmake highlight sig-name descname"><span class="nf">file_manip(</span><span class="no">STRIP_PATH</span><span class="w"> </span><span class="nv">&lt;file_list_var&gt;</span><span class="w"> </span><span class="no">BASE_DIR</span><span class="w"> </span><span class="nv">&lt;directory_path&gt;</span><span class="w"> </span><span class="p">[</span><span class="no">OUTPUT_VARIABLE</span><span class="nbsp"> </span><span class="nv">&lt;output_list_var&gt;</span><span class="p">]</span><span class="nf">)</span></code><a class="headerlink" href="#strip-path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes the <code class="docutils literal notranslate"><span class="pre">BASE_DIR</span></code> prefix from each file path in
+<code class="docutils literal notranslate"><span class="pre">&lt;file_list_var&gt;</span></code>. The result is stored either in-place in
+<code class="docutils literal notranslate"><span class="pre">&lt;file_list_var&gt;</span></code>, or in the variable specified by
+<code class="docutils literal notranslate"><span class="pre">&lt;output_list_var&gt;</span></code>, if the <code class="docutils literal notranslate"><span class="pre">OUTPUT_VARIABLE</span></code> option is provided. Unlike
+to <span class="target" id="index-0-command:file_manip"></span><a class="reference internal" href="#relative-path" title="file_manip(relative_path)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">file_manip(RELATIVE_PATH)</span></code></a>, it performs no checks on the existence
+of files. Paths are processed like any string.</p>
+<p>Example usage:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">set(</span><span class="nb">files</span><span class="w"></span>
+<span class="w">  </span><span class="s">&quot;/project/src/main.cpp&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="s">&quot;/project/include/lib.h&quot;</span><span class="w"></span>
+<span class="nf">)</span><span class="w"></span>
+<span class="nf">file_manip(</span><span class="no">STRIP_PATH</span><span class="w"> </span><span class="s">&quot;${files}&quot;</span><span class="w"> </span><span class="no">BASE_DIR</span><span class="w"> </span><span class="s">&quot;/project&quot;</span><span class="nf">)</span><span class="w"></span>
+<span class="c"># output is:</span>
+<span class="c">#   src/main.cpp;include/lib.hpp</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="signature">
+<dt id="get-component">
+<code class="code cmake highlight sig-name descname"><span class="nf">file_manip(</span><span class="no">GET_COMPONENT</span><span class="w"> </span><span class="nv">&lt;file_list&gt;...</span><span class="w"> </span><span class="no">MODE</span><span class="w"> </span><span class="nv">&lt;mode&gt;</span><span class="w"> </span><span class="no">OUTPUT_VARIABLE</span><span class="w"> </span><span class="nv">&lt;output_list_var&gt;</span><span class="nf">)</span></code><a class="headerlink" href="#get-component" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts a specific component from each path in the given <code class="docutils literal notranslate"><span class="pre">&lt;file_list&gt;</span></code>
+and stores the result in the variable specified by <code class="docutils literal notranslate"><span class="pre">OUTPUT_VARIABLE</span></code>
+option.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">MODE</span></code> argument determines which component to extract and must be one of:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">DIRECTORY</span></code> - Directory without file name.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NAME</span></code>      - File name without directory.</p></li>
+</ul>
+<p>Example usage:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">set(</span><span class="nb">files</span><span class="w"></span>
+<span class="w">  </span><span class="s">&quot;/project/src/main.cpp&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="s">&quot;/project/include/lib.hpp&quot;</span><span class="w"></span>
+<span class="nf">)</span><span class="w"></span>
+<span class="nf">file_manip(</span><span class="no">GET_COMPONENT</span><span class="w"> </span><span class="s">&quot;${files}&quot;</span><span class="w"> </span><span class="no">MODE</span><span class="w"> </span><span class="no">DIRECTORY</span><span class="w"> </span><span class="no">OUTPUT_VARIABLE</span><span class="w"> </span><span class="nb">dirs</span><span class="nf">)</span><span class="w"></span>
+<span class="c"># output is:</span>
+<span class="c">#   /project/src;/project/include</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3>Table of Contents</h3>
+    <ul>
+<li><a class="reference internal" href="#">FileManip</a><ul>
+<li><a class="reference internal" href="#synopsis">Synopsis</a></li>
+<li><a class="reference internal" href="#usage">Usage</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="FuncDirectory.html"
+                        title="previous chapter">Directory</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="FuncPrint.html"
+                        title="next chapter">Print</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/module/FuncFileManip.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="FuncPrint.html" title="Print"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="FuncDirectory.html" title="Directory"
+             >previous</a> |</li>
+  <li>
+    <label class="sidebar-toggle" for="sidebar-check"></label>
+  </li>
+  <li class="rootlink">
+    <img src="../_static/cmake-logo-16.png" width="16" height="16" alt=""/>
+    <a href="https://cmake.org/">CMake 4.0.1</a>
+    <span class="reldelim1"> &#187;</span>
+  </li>
+  <li>
+    <a href="../index.html">Documentation</a> &#187;
+  </li>
+ 
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2025, Joseph Garnier.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.
+    </div>
+<script type="text/javascript">
+(function() {
+  "use strict";
+  const hide = () => document.getElementById("sidebar-check").checked = false;
+  addEventListener("keydown", e => (e.key === "Escape") && hide());
+  addEventListener("click", e => (e.target.tagName === "A") && hide());
+  addEventListener("hashchange", hide)
+})();
+</script>
+  </body>
+</html>

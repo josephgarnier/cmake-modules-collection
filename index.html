@@ -1,0 +1,175 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" />
+  <title>cmake-modules-collection &mdash; CMake Modules Collection</title>
+
+    <link rel="stylesheet" href="_static/cmake.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    
+    <link rel="shortcut icon" href="_static/cmake-favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Debug" href="module/FuncDebug.html" />
+ 
+
+  </head><body>
+    <input id="sidebar-check" type="checkbox" />
+    <label id="sidebar-overlay" for="sidebar-check"></label>
+
+
+
+    <div class="related relbar1" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="module/FuncDebug.html" title="Debug"
+             accesskey="N">next</a> |</li>
+  <li>
+    <label class="sidebar-toggle" for="sidebar-check"></label>
+  </li>
+  <li class="rootlink">
+    <img src="_static/cmake-logo-16.png" width="16" height="16" alt=""/>
+    <a href="https://cmake.org/">CMake 4.0.1</a>
+    <span class="reldelim1"> &#187;</span>
+  </li>
+  <li>
+    <a href="#">Documentation</a> &#187;
+  </li>
+ 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="cmake-modules-collection">
+<h1>cmake-modules-collection<a class="headerlink" href="#cmake-modules-collection" title="Permalink to this headline">¶</a></h1>
+<p>The modules listed here are part of the CMake Modules Collection. Projects
+may provide further modules; their location(s) can be specified in the
+<a class="reference external" href="https://cmake.org/cmake/help/latest/variable/CMAKE_MODULE_PATH.html">CMAKE_MODULE_PATH</a> variable.</p>
+<div class="section" id="function-modules">
+<h2>Function Modules<a class="headerlink" href="#function-modules" title="Permalink to this headline">¶</a></h2>
+<p>These modules are loaded using the <a class="reference external" href="https://cmake.org/cmake/help/latest/command/include.html">include()</a> command. They are
+prefixed with <cite>Func</cite> and provide a single public function responsible for
+dispatching multiple operations, internally using private macros. Only one
+public command is exposed per module.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="module/FuncDebug.html">Debug</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module/FuncDependency.html">Dependency</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module/FuncDirectory.html">Directory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module/FuncFileManip.html">FileManip</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module/FuncPrint.html">Print</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module/FuncStringManip.html">StringManip</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="bundle-modules">
+<h2>Bundle Modules<a class="headerlink" href="#bundle-modules" title="Permalink to this headline">¶</a></h2>
+<p>These modules are loaded using the <a class="reference external" href="https://cmake.org/cmake/help/latest/command/include.html">include()</a> command. They are
+prefixed with <cite>Bundle</cite> and contain a set of functions and macros designed to
+operate on a common object, in a way that reflects object-oriented
+programming. Each function defines a separate command, and a module may
+include multiple commands.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="module/BundleBinTarget.html">BinTarget</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3>Table of Contents</h3>
+    <ul>
+<li><a class="reference internal" href="#">cmake-modules-collection</a><ul>
+<li><a class="reference internal" href="#function-modules">Function Modules</a></li>
+<li><a class="reference internal" href="#bundle-modules">Bundle Modules</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="module/FuncDebug.html"
+                        title="next chapter">Debug</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="module/FuncDebug.html" title="Debug"
+             >next</a> |</li>
+  <li>
+    <label class="sidebar-toggle" for="sidebar-check"></label>
+  </li>
+  <li class="rootlink">
+    <img src="_static/cmake-logo-16.png" width="16" height="16" alt=""/>
+    <a href="https://cmake.org/">CMake 4.0.1</a>
+    <span class="reldelim1"> &#187;</span>
+  </li>
+  <li>
+    <a href="#">Documentation</a> &#187;
+  </li>
+ 
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2025, Joseph Garnier.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.
+    </div>
+<script type="text/javascript">
+(function() {
+  "use strict";
+  const hide = () => document.getElementById("sidebar-check").checked = false;
+  addEventListener("keydown", e => (e.key === "Escape") && hide());
+  addEventListener("click", e => (e.target.tagName === "A") && hide());
+  addEventListener("hashchange", hide)
+})();
+</script>
+  </body>
+</html>
