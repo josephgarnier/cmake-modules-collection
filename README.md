@@ -92,15 +92,15 @@ Regarding **module documentation**, just like the code follows a style consisten
 
 Detailed module documentation is available by opening the `doc/build/html/index.html` file in a browser.
 
-| Name | Type | Description | Location |
-|---|---|---|---|
-| `Debug` | Function | Operations for helping with debug | `cmake/modules/FuncDebug.cmake` |
-| `Dependency` | Function | Operations to manipule dependencies | `cmake/modules/FuncDependency.cmake` |
-| `Directory` | Function | Operations to manipule directories | `cmake/modules/FuncDirectory.cmake` |
-| `FileManip` | Function | Operations on files | `cmake/modules/FuncFileManip.cmake` |
-| `Print` | Function | Log a message | `cmake/modules/FuncPrint.cmake` |
-| `StringManip` | Function | Operations on strings | `cmake/modules/FuncStringManip.cmake` |
-| `BinTarget` | Bundle | Operations to fully create and configure a binary target | `cmake/modules/BundleBinTarget.cmake` |
+| Name | Type | Description | Location | Doc |
+|---|---|---|---|---|
+| `Debug` | Function | Operations for helping with debug | `cmake/modules/FuncDebug.cmake` | [Link to doc](https://josephgarnier.github.io/cmake-modules-collection/module/FuncDebug.html) |
+| `Dependency` | Function | Operations to manipule dependencies | `cmake/modules/FuncDependency.cmake` | [Link to doc](https://josephgarnier.github.io/cmake-modules-collection/module/FuncDependency.html) |
+| `Directory` | Function | Operations to manipule directories | `cmake/modules/FuncDirectory.cmake` | [Link to doc](https://josephgarnier.github.io/cmake-modules-collection/module/FuncDirectory.html) |
+| `FileManip` | Function | Operations on files | `cmake/modules/FuncFileManip.cmake` | [Link to doc](https://josephgarnier.github.io/cmake-modules-collection/module/FuncFileManip.html) |
+| `Print` | Function | Log a message | `cmake/modules/FuncPrint.cmake` | [Link to doc](https://josephgarnier.github.io/cmake-modules-collection/module/FuncPrint.html) |
+| `StringManip` | Function | Operations on strings | `cmake/modules/FuncStringManip.cmake` | [Link to doc](https://josephgarnier.github.io/cmake-modules-collection/module/FuncStringManip.html) |
+| `BinTarget` | Bundle | Operations to fully create and configure a binary target | `cmake/modules/BundleBinTarget.cmake` | [Link to doc](https://josephgarnier.github.io/cmake-modules-collection/module/BundleBinTarget.html) |
 
 ## 🧩 Integration
 
