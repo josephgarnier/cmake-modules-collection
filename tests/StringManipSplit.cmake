@@ -21,6 +21,7 @@ function(${CMAKETEST_TEST})
 		string_manip(SPLIT "mystringtosplit" output)
 		ct_assert_string(output)
 		ct_assert_equal(output "mystringtosplit")
+
 		string_manip(SPLIT "my1string2to3split" output)
 		ct_assert_string(output)
 		ct_assert_equal(output "my1string2to3split")

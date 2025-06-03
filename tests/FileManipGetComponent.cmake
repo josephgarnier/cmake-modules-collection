@@ -16,8 +16,13 @@ function(${CMAKETEST_TEST})
 	include(FuncFileManip)
 
 	# Functionalities checking
-	ct_add_section(NAME "directory_mode") # s'insipirer de ce fichier et notamment des exceptions et des noms "input" et "output" pour refaire tous les autres (sauf FileManipStripPath)
+	ct_add_section(NAME "directory_mode")
 	function(${CMAKETEST_SECTION})
+		set(input "")
+		file_manip(GET_COMPONENT "${input}" MODE DIRECTORY OUTPUT_VARIABLE output)
+		ct_assert_string(output)
+		ct_assert_equal(output "")
+
 		set(input "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/main.cpp")
 		file_manip(GET_COMPONENT "${input}" MODE DIRECTORY OUTPUT_VARIABLE output)
 		ct_assert_string(output)
@@ -53,6 +58,11 @@ function(${CMAKETEST_TEST})
 
 	ct_add_section(NAME "name_mode")
 	function(${CMAKETEST_SECTION})
+		set(input "")
+		file_manip(GET_COMPONENT "${input}" MODE NAME OUTPUT_VARIABLE output)
+		ct_assert_string(output)
+		ct_assert_equal(output "")
+
 		set(input "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/main.cpp")
 		file_manip(GET_COMPONENT "${input}" MODE NAME OUTPUT_VARIABLE output)
 		ct_assert_string(output)
@@ -99,7 +109,7 @@ function(${CMAKETEST_TEST})
 
 	ct_add_section(NAME "throws_if_arg_file_list_is_missing_3" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
-		file_manip(GET_COMPONENT "" MODE DIRECTORY OUTPUT_VARIABLE output)
+		file_manip(GET_COMPONENT "input" MODE DIRECTORY OUTPUT_VARIABLE output)
 	endfunction()
 
 	ct_add_section(NAME "throws_if_arg_file_list_is_missing_4" EXPECTFAIL)

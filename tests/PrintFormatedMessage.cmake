@@ -18,13 +18,24 @@ function(${CMAKETEST_TEST})
 	# Functionalities checking
 	ct_add_section(NAME "message_without_directive")
 	function(${CMAKETEST_SECTION})
+		set(input "")
+		print("")
+		ct_assert_prints("")
+		
 		set(input "a text to print")
 		print("${input}")
 		ct_assert_prints("${input}")
+
 		print(STATUS "${input}")
 		ct_assert_prints("${input}") # This function ignores the status mode
+
 		print(STATUS "${input}" "unused argument")
 		ct_assert_prints("${input}") # This function ignores the status mode
+
+		set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
+		set(input "data/main.cpp")
+		print("" "${input}")
+		ct_assert_prints("")
 	endfunction()
 
 	ct_add_section(NAME "message_with_ap_directive")
@@ -34,6 +45,7 @@ function(${CMAKETEST_TEST})
 		set(expected_result "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/${input}")
 		print("Absolute: @ap@" "${input}")
 		ct_assert_prints("Absolute: ${expected_result}")
+
 		print(STATUS "Absolute: @ap@" "${input}")
 		ct_assert_prints("Absolute: ${expected_result}") # This function ignores the status mode
 	endfunction()
@@ -45,6 +57,7 @@ function(${CMAKETEST_TEST})
 		set(input "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/${expected_result}")
 		print("Relative: @rp@" "${input}")
 		ct_assert_prints("Relative: ${expected_result}")
+
 		print(STATUS "Relative: @rp@" "${input}")
 		ct_assert_prints("Relative: ${expected_result}") # This function ignores the status mode
 	endfunction()
