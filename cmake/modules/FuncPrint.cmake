@@ -205,7 +205,7 @@ macro(_print_formated_message)
 		endforeach()
 	endif()
 
-	# If arguments to the message are given, the directives are substituted.
+	# If arguments to the message are given, the directives are substituted
 	list(LENGTH message_arg_list message_arg_list_size)
 	if(${message_arg_list_size} GREATER 0)
 		_substitute_directives()
