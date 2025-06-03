@@ -36,7 +36,7 @@ else()
 	set(FETCHCONTENT_QUIET off)
 	FetchContent_Declare(
 		cmake_test
-		GIT_REPOSITORY https://github.com/CMakePP/CMakeTest
+		GIT_REPOSITORY https://github.com/josephgarnier/CMakeTest.git
 		GIT_SHALLOW on
 		GIT_PROGRESS on
 		EXCLUDE_FROM_ALL
