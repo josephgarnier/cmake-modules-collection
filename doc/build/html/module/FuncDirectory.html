@@ -67,34 +67,94 @@
 <h2>Synopsis<a class="headerlink" href="#synopsis" title="Link to this heading">¶</a></h2>
 <pre class="literal-block">directory(<a class="reference internal" href="#scan">SCAN</a> &lt;output_list_var&gt; [LIST_DIRECTORIES &lt;on|off&gt;] RELATIVE &lt;on|off&gt; ROOT_DIR &lt;directory_path&gt; &lt;INCLUDE_REGEX|EXCLUDE_REGEX&gt; &lt;regular_expression&gt;)
 directory(<a class="reference internal" href="#scan-dirs">SCAN_DIRS</a> &lt;output_list_var&gt; RECURSE &lt;on|off&gt; RELATIVE &lt;on|off&gt; ROOT_DIR &lt;directory_path&gt; &lt;INCLUDE_REGEX|EXCLUDE_REGEX&gt; &lt;regular_expression&gt;)
-directory(<a class="reference internal" href="#find-lib">FIND_LIB</a> &lt;output_var&gt; NAME &lt;raw_filename&gt; &lt;STATIC|SHARED&gt; RELATIVE &lt;on|off&gt; ROOT_DIR &lt;directory_path&gt;)</pre>
+directory(<a class="reference internal" href="#find-lib">FIND_LIB</a> &lt;output_lib_var&gt; FIND_IMPLIB &lt;output_implib_var&gt; NAME &lt;raw_filename&gt; &lt;STATIC|SHARED&gt; RELATIVE &lt;on|off&gt; ROOT_DIR &lt;directory_path&gt;)</pre>
 </section>
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h2>
-<div class="highlight-cmake notranslate" id="scan"><div class="highlight"><pre><span></span><span class="nf">directory(</span><span class="no">SCAN</span><span class="w"> </span><span class="nv">&lt;output_list_var&gt;</span><span class="w"> </span><span class="p">[</span><span class="no">LIST_DIRECTORIES</span><span class="w"> </span><span class="o">&lt;</span><span class="nb">on</span><span class="p">|</span><span class="nb">off</span><span class="o">&gt;</span><span class="p">]</span><span class="w"> </span><span class="no">RELATIVE</span><span class="w"> </span><span class="o">&lt;</span><span class="nb">on</span><span class="p">|</span><span class="nb">off</span><span class="o">&gt;</span><span class="w"> </span><span class="no">ROOT_DIR</span><span class="w"> </span><span class="nv">&lt;directory_path&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="no">INCLUDE_REGEX</span><span class="p">|</span><span class="no">EXCLUDE_REGEX</span><span class="o">&gt;</span><span class="w"> </span><span class="nv">&lt;regular_expression&gt;</span><span class="nf">)</span>
+<dl class="cmake signature">
+<dt class="sig sig-object cmake" id="scan">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">directory(</span></span><span class="no"><span class="pre">SCAN</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;output_list_var&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">[</span></span><span class="no"><span class="pre">LIST_DIRECTORIES</span></span><span class="nbsp"> </span><span class="o"><span class="pre">&lt;</span></span><span class="nb"><span class="pre">on</span></span><span class="p"><span class="pre">|</span></span><span class="nb"><span class="pre">off</span></span><span class="o"><span class="pre">&gt;</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="no"><span class="pre">RELATIVE</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;</span></span><span class="nb"><span class="pre">on</span></span><span class="p"><span class="pre">|</span></span><span class="nb"><span class="pre">off</span></span><span class="o"><span class="pre">&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">ROOT_DIR</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;directory_path&gt;</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;</span></span><span class="no"><span class="pre">INCLUDE_REGEX</span></span><span class="p"><span class="pre">|</span></span><span class="no"><span class="pre">EXCLUDE_REGEX</span></span><span class="o"><span class="pre">&gt;</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;regular_expression&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#scan" title="Link to this definition">¶</a></dt>
+<dd><p>Recursively scans files and directories under <code class="docutils literal notranslate"><span class="pre">ROOT_DIR</span></code>, applies an
+optional filter based on <code class="docutils literal notranslate"><span class="pre">INCLUDE_REGEX</span></code> or <code class="docutils literal notranslate"><span class="pre">EXCLUDE_REGEX</span></code>, and
+stores the result in <code class="docutils literal notranslate"><span class="pre">&lt;output_list_var&gt;</span></code>.</p>
+<p>Paths are returned as relative to <code class="docutils literal notranslate"><span class="pre">ROOT_DIR</span></code> if <code class="docutils literal notranslate"><span class="pre">RELATIVE</span></code> is <code class="docutils literal notranslate"><span class="pre">on</span></code>,
+or as absolute paths if <code class="docutils literal notranslate"><span class="pre">RELATIVE</span></code> is <code class="docutils literal notranslate"><span class="pre">off</span></code>.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">LIST_DIRECTORIES</span></code> is <code class="docutils literal notranslate"><span class="pre">on</span></code> (the default), directories are included in
+the result. If <code class="docutils literal notranslate"><span class="pre">LIST_DIRECTORIES</span></code> is <code class="docutils literal notranslate"><span class="pre">off</span></code>, only files are listed.</p>
+<p>Example usage:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">directory(</span><span class="no">SCAN</span><span class="w"> </span><span class="nb">result_list</span>
+<span class="w">          </span><span class="no">LIST_DIRECTORIES</span><span class="w"> </span><span class="nb">off</span>
+<span class="w">          </span><span class="no">RELATIVE</span><span class="w"> </span><span class="nb">on</span>
+<span class="w">          </span><span class="no">ROOT_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_CURRENT_SOURCE_DIR}&quot;</span>
+<span class="w">          </span><span class="no">INCLUDE_REGEX</span><span class="w"> </span><span class="s">&quot;.*[.]cpp$|.*[.]cc$|.*[.]cxx$&quot;</span><span class="nf">)</span>
+<span class="c"># output is:</span>
+<span class="c">#   src/main.cpp;src/util.cpp;lib/module.cpp</span>
 </pre></div>
 </div>
-<p>Recursively generate a list of all files that match the <code class="docutils literal notranslate"><span class="pre">&lt;regular_expressions&gt;</span></code>
-from the ROOT_DIR and store it into <code class="docutils literal notranslate"><span class="pre">&lt;output_list_var&gt;</span></code> as a list. The results will be
-returned as absolute paths to the given path <code class="docutils literal notranslate"><span class="pre">&lt;directory_path&gt;</span></code> if RELATIVE
-flag is set to off, else as relative path to ROOT_DIR. By default the function
-also add directories to result list. Setting LIST_DIRECTORIES to off removes
-directories to result list.</p>
-<div class="highlight-cmake notranslate" id="scan-dirs"><div class="highlight"><pre><span></span><span class="nf">directory(</span><span class="no">SCAN_DIRS</span><span class="w"> </span><span class="nv">&lt;output_list_var&gt;</span><span class="w"> </span><span class="no">RECURSE</span><span class="w"> </span><span class="o">&lt;</span><span class="nb">on</span><span class="p">|</span><span class="nb">off</span><span class="o">&gt;</span><span class="w"> </span><span class="no">RELATIVE</span><span class="w"> </span><span class="o">&lt;</span><span class="nb">on</span><span class="p">|</span><span class="nb">off</span><span class="o">&gt;</span><span class="w"> </span><span class="no">ROOT_DIR</span><span class="w"> </span><span class="nv">&lt;directory_path&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="no">INCLUDE_REGEX</span><span class="p">|</span><span class="no">EXCLUDE_REGEX</span><span class="o">&gt;</span><span class="w"> </span><span class="nv">&lt;regular_expression&gt;</span><span class="nf">)</span>
+</dd></dl>
+
+<dl class="cmake signature">
+<dt class="sig sig-object cmake" id="scan-dirs">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">directory(</span></span><span class="no"><span class="pre">SCAN_DIRS</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;output_list_var&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">RECURSE</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;</span></span><span class="nb"><span class="pre">on</span></span><span class="p"><span class="pre">|</span></span><span class="nb"><span class="pre">off</span></span><span class="o"><span class="pre">&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">RELATIVE</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;</span></span><span class="nb"><span class="pre">on</span></span><span class="p"><span class="pre">|</span></span><span class="nb"><span class="pre">off</span></span><span class="o"><span class="pre">&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">ROOT_DIR</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;directory_path&gt;</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;</span></span><span class="no"><span class="pre">INCLUDE_REGEX</span></span><span class="p"><span class="pre">|</span></span><span class="no"><span class="pre">EXCLUDE_REGEX</span></span><span class="o"><span class="pre">&gt;</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;regular_expression&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#scan-dirs" title="Link to this definition">¶</a></dt>
+<dd><p>Scan and collect all directories under <code class="docutils literal notranslate"><span class="pre">ROOT_DIR</span></code> that match the regular
+expression provided with either <code class="docutils literal notranslate"><span class="pre">INCLUDE_REGEX</span></code> or <code class="docutils literal notranslate"><span class="pre">EXCLUDE_REGEX</span></code>, and
+store the result in <code class="docutils literal notranslate"><span class="pre">&lt;output_list_var&gt;</span></code>.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">RECURSE</span></code> is <code class="docutils literal notranslate"><span class="pre">on</span></code>, the function traverses subdirectories recursively.
+If <code class="docutils literal notranslate"><span class="pre">RECURSE</span></code> is <code class="docutils literal notranslate"><span class="pre">off</span></code>, only the directories directly under <code class="docutils literal notranslate"><span class="pre">ROOT_DIR</span></code>
+are considered.</p>
+<p>The paths in the result are returned relative to <code class="docutils literal notranslate"><span class="pre">ROOT_DIR</span></code> if
+<code class="docutils literal notranslate"><span class="pre">RELATIVE</span></code> is <code class="docutils literal notranslate"><span class="pre">on</span></code>, or as absolute paths if <code class="docutils literal notranslate"><span class="pre">RELATIVE</span></code> is <code class="docutils literal notranslate"><span class="pre">off</span></code>.</p>
+<p>Example usage:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">directory(</span><span class="no">SCAN_DIRS</span><span class="w"> </span><span class="nb">matched_dirs</span>
+<span class="w">          </span><span class="no">RECURSE</span><span class="w"> </span><span class="nb">on</span>
+<span class="w">          </span><span class="no">RELATIVE</span><span class="w"> </span><span class="nb">on</span>
+<span class="w">          </span><span class="no">ROOT_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_CURRENT_SOURCE_DIR}&quot;</span>
+<span class="w">          </span><span class="no">INCLUDE_REGEX</span><span class="w"> </span><span class="s">&quot;include&quot;</span><span class="nf">)</span>
+<span class="c"># output is:</span>
+<span class="c">#   src/include;src/lib/include</span>
 </pre></div>
 </div>
-<p>Generate a list of all directories that match the <code class="docutils literal notranslate"><span class="pre">&lt;regular_expressions&gt;</span></code>
-from the ROOT_DIR and store it into <code class="docutils literal notranslate"><span class="pre">&lt;output_list_var&gt;</span></code> as a list. The results will be
-returned as absolute paths to the given path <code class="docutils literal notranslate"><span class="pre">&lt;directory_path&gt;</span></code> if RELATIVE 
-flag is set to off, else as relative path to ROOT_DIR. If RECURSE is set to on, the
-function will traverse all the subdirectories from ROOT_DIR.</p>
-<div class="highlight-cmake notranslate" id="find-lib"><div class="highlight"><pre><span></span><span class="nf">directory(</span><span class="no">FIND_LIB</span><span class="w"> </span><span class="nv">&lt;output_var_lib&gt;</span><span class="w"> </span><span class="no">FIND_IMPLIB</span><span class="w"> </span><span class="nv">&lt;output_var_implib&gt;</span><span class="w"> </span><span class="no">NAME</span><span class="w"> </span><span class="nv">&lt;raw_filename&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="no">STATIC</span><span class="p">|</span><span class="no">SHARED</span><span class="o">&gt;</span><span class="w"> </span><span class="no">RELATIVE</span><span class="w"> </span><span class="o">&lt;</span><span class="nb">on</span><span class="p">|</span><span class="nb">off</span><span class="o">&gt;</span><span class="w"> </span><span class="no">ROOT_DIR</span><span class="w"> </span><span class="nv">&lt;directory_path&gt;</span><span class="nf">)</span>
+</dd></dl>
+
+<dl class="cmake signature">
+<dt class="sig sig-object cmake" id="find-lib">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">directory(</span></span><span class="no"><span class="pre">FIND_LIB</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;output_lib_var&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">FIND_IMPLIB</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;output_implib_var&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">NAME</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;raw_filename&gt;</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;</span></span><span class="no"><span class="pre">STATIC</span></span><span class="p"><span class="pre">|</span></span><span class="no"><span class="pre">SHARED</span></span><span class="o"><span class="pre">&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">RELATIVE</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;</span></span><span class="nb"><span class="pre">on</span></span><span class="p"><span class="pre">|</span></span><span class="nb"><span class="pre">off</span></span><span class="o"><span class="pre">&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">ROOT_DIR</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;directory_path&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#find-lib" title="Link to this definition">¶</a></dt>
+<dd><p>Search recursively in <code class="docutils literal notranslate"><span class="pre">ROOT_DIR</span></code> for a library and, on DLL platforms, its
+import library. The name to search for is given via <code class="docutils literal notranslate"><span class="pre">NAME</span></code>, which should
+represent the base name of the library (without prefix or suffix).</p>
+<p>The matching uses system-defined prefixes and suffixes depending on the
+<code class="docutils literal notranslate"><span class="pre">STATIC</span></code> (by <a class="reference external" href="CMAKE_STATIC_LIBRARY_PREFIX">CMAKE_STATIC_LIBRARY_PREFIX</a> and <a class="reference external" href="https://cmake.org/cmake/help/latest/variable/CMAKE_STATIC_LIBRARY_SUFFIX.html">CMAKE_STATIC_LIBRARY_SUFFIX</a>)
+or <code class="docutils literal notranslate"><span class="pre">SHARED</span></code> (by <a class="reference external" href="https://cmake.org/cmake/help/latest/variable/CMAKE_SHARED_LIBRARY_PREFIX.html">CMAKE_SHARED_LIBRARY_PREFIX</a> and
+<a class="reference external" href="https://cmake.org/cmake/help/latest/variable/CMAKE_SHARED_LIBRARY_SUFFIX.html">CMAKE_SHARED_LIBRARY_SUFFIX</a>) flag, as well as 
+<a class="reference external" href="https://cmake.org/cmake/help/latest/variable/CMAKE_FIND_LIBRARY_PREFIXES.html">CMAKE_FIND_LIBRARY_PREFIXES</a> and <a class="reference external" href="https://cmake.org/cmake/help/latest/variable/CMAKE_STATIC_LIBRARY_SUFFIX.html">CMAKE_FIND_LIBRARY_SUFFIXES</a> if
+defined. This makes the behavior similar to <a class="reference external" href="https://cmake.org/cmake/help/latest/command/find_library.html">find_library()</a>, but more robust.</p>
+<p>If a matching library is found, its path is stored in <code class="docutils literal notranslate"><span class="pre">&lt;output_lib_var&gt;</span></code>. If a
+matching import library is found, its path is stored in <code class="docutils literal notranslate"><span class="pre">&lt;output_implib_var&gt;</span></code>. If
+<code class="docutils literal notranslate"><span class="pre">RELATIVE</span></code> is set to <code class="docutils literal notranslate"><span class="pre">on</span></code>, the results are relative to <code class="docutils literal notranslate"><span class="pre">ROOT_DIR</span></code>.
+Otherwise, absolute paths are returned.</p>
+<p>If no match is found, the values will be <code class="docutils literal notranslate"><span class="pre">&lt;output_lib_var&gt;-NOTFOUND</span></code> and
+<code class="docutils literal notranslate"><span class="pre">&lt;output_implib_var&gt;-NOTFOUND</span></code>. If multiple matches are found, a fatal error
+is raised.</p>
+<p>This command is especially useful to locate dependency artifacts when
+configuring imported targets manually. The resulting paths are typically
+used to set properties like <a class="reference external" href="https://cmake.org/cmake/help/latest/prop_tgt/IMPORTED_LOCATION.html">IMPORTED_LOCATION</a> and
+<a class="reference external" href="https://cmake.org/cmake/help/latest/prop_tgt/IMPORTED_IMPLIB.html">IMPORTED_IMPLIB_DEBUG</a> on an imported target, particularly in development
+or custom build setups where standard <a class="reference external" href="https://cmake.org/cmake/help/latest/command/find_library.html">find_library()</a> behavior is not
+sufficient.</p>
+<p>Example usage:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">directory(</span><span class="no">FIND_LIB</span><span class="w"> </span><span class="nb">mylib_path</span>
+<span class="w">          </span><span class="no">FIND_IMPLIB</span><span class="w"> </span><span class="nb">mylib_import</span>
+<span class="w">          </span><span class="no">NAME</span><span class="w"> </span><span class="s">&quot;zlib1&quot;</span>
+<span class="w">          </span><span class="no">SHARED</span>
+<span class="w">          </span><span class="no">RELATIVE</span><span class="w"> </span><span class="nb">on</span>
+<span class="w">          </span><span class="no">ROOT_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/libs&quot;</span><span class="nf">)</span>
+<span class="c"># output is:</span>
+<span class="c">#   lib=lib/zlib1.dll</span>
+<span class="c">#   implib=lib/zlib1.lib</span>
 </pre></div>
 </div>
-<p>Recursively try to find a library and its import library on DLL platforms in the given path <code class="docutils literal notranslate"><span class="pre">ROOT_DIR</span></code> from its raw filename <code class="docutils literal notranslate"><span class="pre">NAME</span></code>. The behavior is similar to <code class="docutils literal notranslate"><span class="pre">find_library()</span></code>, but more complete.</p>
-<p>If the library is found the result path is stored in the variable <code class="docutils literal notranslate"><span class="pre">&lt;output_var_lib&gt;</span></code>. If the import library is found the result path is stored in the variable <code class="docutils literal notranslate"><span class="pre">&lt;output_var_implib&gt;</span></code>. The results will be returned as absolute paths if <code class="docutils literal notranslate"><span class="pre">RELATIVE</span> <span class="pre">``</span> <span class="pre">flag</span> <span class="pre">is</span> <span class="pre">set</span> <span class="pre">to</span> <span class="pre">off,</span> <span class="pre">else</span> <span class="pre">as</span> <span class="pre">relative</span> <span class="pre">path</span> <span class="pre">to</span> <span class="pre">``ROOT_DIR</span></code>. If nothing is found, the result will be &lt;output_var_lib&gt;-NOTFOUND and &lt;output_var_implib&gt;-NOTFOUND.</p>
-<p>The name given to the <code class="docutils literal notranslate"><span class="pre">NAME</span></code> option should be a library file name, including its version number, but without any special character, any prefixes (e.g. lib) and any suffixes (e.g. .so), that are platform-dependent. The command will loop over all files in <code class="docutils literal notranslate"><span class="pre">ROOT_DIR</span></code> and try to get a library filename that match <code class="docutils literal notranslate"><span class="pre">[&lt;CMAKE_STATIC_LIBRARY_PREFIX|CMAKE_SHARED_LIBRARY_PREFIX|CMAKE_FIND_LIBRARY_PREFIXES&gt;]&lt;raw_filename&gt;&lt;CMAKE_STATIC_LIBRARY_SUFFIX|CMAKE_SHARED_LIBRARY_SUFFIX&gt;</span></code> and an import library filename that match <code class="docutils literal notranslate"><span class="pre">[&lt;CMAKE_STATIC_LIBRARY_PREFIX|CMAKE_SHARED_LIBRARY_PREFIX|CMAKE_FIND_LIBRARY_PREFIXES&gt;]&lt;raw_filename&gt;&lt;CMAKE_FIND_LIBRARY_SUFFIXES&gt;</span></code>. As noted, the prefix can be overwritten by <code class="docutils literal notranslate"><span class="pre">CMAKE_FIND_LIBRARY_PREFIXES</span></code>.</p>
-<p>An error message occured if there is more than one result or if no file is found.</p>
+</dd></dl>
+
 </section>
 </section>
 
