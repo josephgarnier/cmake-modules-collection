@@ -6,15 +6,16 @@
 * LICENSE file in the root directory of this source tree.
 ******************************************************************************/
 
-#include "source_5.h"
-#include "include_pch.h"
+#include "source_3.h"
+#include "../include/include_pch.h"
 
-Source5::Source5() noexcept
+Source3::Source3() noexcept
 {
-	std::cout << "Source5: default constructor" << std::endl;
+	Source4 source4;
+	std::cout << "Source3: default constructor" << std::endl;
 }
 
-Source5::~Source5() noexcept
+Source3::~Source3() noexcept
 {
-	std::cout << "Source5: destructor" << std::endl;
+	std::cout << "Source3: destructor" << std::endl;
 }

@@ -81,6 +81,9 @@ set(CMAKETEST_USE_COLORS on)
 set(CMAKEPP_LANG_DEBUG_MODE off)
 include(cmake_test/cmake_test)
 
+####################### Prepare test data #####################################
+add_subdirectory(data)
+
 ####################### Call tests ############################################
 message(CHECK_START "Building tests")
 list(APPEND CMAKE_MESSAGE_INDENT "  ")
