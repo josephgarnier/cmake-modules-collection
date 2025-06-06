@@ -16,7 +16,7 @@
 name: Build doc with sphinx
 on:
   push:
-    branches: [ $default-branch ]
+    branches: [ 'main' ]
     paths: ['doc/**']
   workflow_dispatch:
 permissions:
