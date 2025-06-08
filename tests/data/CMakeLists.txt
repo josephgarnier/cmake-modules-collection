@@ -10,6 +10,9 @@
 
 cmake_minimum_required (VERSION 4.0.1 FATAL_ERROR)
 
+message(CHECK_START "Creating data test")
+list(APPEND CMAKE_MESSAGE_INDENT "  ")
+
 ####################### Init local variables ##################################
 set(BUILD_DIR    "${CMAKE_CURRENT_BINARY_DIR}")
 set(BIN_DIR      "${CMAKE_CURRENT_SOURCE_DIR}/bin")
@@ -40,10 +43,11 @@ set(PRIVATE_HEADER_FILES
 	"${PRIVATE_HEADER_DIR}/sub_2/source_sub_2.h")
 set(PRECOMPILED_HEADER_FILE "${PUBLIC_HEADER_DIR}/include_pch.h")
 
-####################### Configure system and architecture info ################
+####################### Configure system and architecture info ##############
 if(NOT CMAKE_SYSTEM_PROCESSOR)
 	set(CMAKE_SYSTEM_PROCESSOR ${CMAKE_HOST_SYSTEM_PROCESSOR})
 endif()
+message(STATUS "Processor architecture is: ${CMAKE_SYSTEM_PROCESSOR}")
 set(SYSTEM_NAME "${CMAKE_SYSTEM_NAME}-${CMAKE_CXX_COMPILER_ID}-${CMAKE_SYSTEM_PROCESSOR}")
 string(TOLOWER ${SYSTEM_NAME} SYSTEM_NAME)
 message(STATUS "System name set to: ${SYSTEM_NAME}")
@@ -58,10 +62,14 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE   "${BIN_DIR}")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY           "${BIN_DIR}")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG     "${BIN_DIR}")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE   "${BIN_DIR}")
+file(RELATIVE_PATH relative_bin_dir "${${PROJECT_NAME}_PROJECT_DIR}" "${BIN_DIR}")
+message(STATUS "Output directory set to: ${relative_bin_dir}/")
 
 ####################### Set C++ standard and build type #######################
 set(CMAKE_CXX_STANDARD "20")
+message(STATUS "C++ standard version set to: C++${CMAKE_CXX_STANDARD}")
 set(CMAKE_BUILD_TYPE "RELEASE")
+message(STATUS "Build type set to: ${CMAKE_BUILD_TYPE}")
 
 ####################### Create a static mock library ##########################
 message(CHECK_START "Creating static mock library")
@@ -146,6 +154,9 @@ set_property(DIRECTORY "${${PROJECT_NAME}_PROJECT_DIR}"
 	PROPERTY ADDITIONAL_CLEAN_FILES
 	"${BIN_DIR}/${SHARED_MOCK_LIB_TARGET_NAME}"
 )
+
+list(POP_BACK CMAKE_MESSAGE_INDENT)
+message(CHECK_PASS "done")
 
 list(POP_BACK CMAKE_MESSAGE_INDENT)
 message(CHECK_PASS "done")
