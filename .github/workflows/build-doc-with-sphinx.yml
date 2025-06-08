@@ -30,7 +30,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
       - name: Build with Sphinx
-        uses: ammaraskar/sphinx-action@master
+        uses: ammaraskar/sphinx-action@8.2.3
         with:
           docs-folder: doc
           build-command: "sphinx-build -M html ./source ./build"
