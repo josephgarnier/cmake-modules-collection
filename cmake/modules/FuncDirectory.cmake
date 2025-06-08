@@ -97,7 +97,7 @@ Usage
   is raised.
   
   This command is especially useful to locate dependency artifacts when
-  configuring `imported targets <https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html#imported-targets>`_ manually. The resulting paths are typically
+  configuring `imported targets <https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html#imported-targets>`_ manually (see also `CMake's guide to binary import and export <https://cmake.org/cmake/help/latest/guide/importing-exporting/index.html>`_). The resulting paths are typically
   used to set properties like `IMPORTED_LOCATION <https://cmake.org/cmake/help/latest/prop_tgt/IMPORTED_LOCATION.html>`_ and
   `IMPORTED_IMPLIB_DEBUG <https://cmake.org/cmake/help/latest/prop_tgt/IMPORTED_IMPLIB.html>`_ on an imported target, particularly in development
   or custom build setups where standard `find_library() <https://cmake.org/cmake/help/latest/command/find_library.html>`_ behavior is not
@@ -275,26 +275,41 @@ macro(_directory_find_lib)
 		file(GLOB_RECURSE file_list FOLLOW_SYMLINKS LIST_DIRECTORIES off CONFIGURE_DEPENDS "${DIR_ROOT_DIR}/*")
 	endif()
 
-	# Build regex to find library
+	# Select appropriate prefix/suffix sets based on the requested library type
 	if(${DIR_SHARED})
+		# Shared library (.dll, .so, .dylib): used at runtime (IMPORTED_LOCATION)
 		set(lib_prefix_list "${CMAKE_SHARED_LIBRARY_PREFIX}")
 		set(lib_suffix_list "${CMAKE_SHARED_LIBRARY_SUFFIX}")
+
+		# Import library (.lib, .dll.a, .a): used at link time (IMPORTED_IMPLIB)
+		set(implib_prefix_list "${CMAKE_FIND_LIBRARY_PREFIXES}")
+		set(implib_suffix_list "${CMAKE_FIND_LIBRARY_SUFFIXES}")
 	elseif(${DIR_STATIC})
+		# Static library (.lib, .a): used at link time (no import lib concept)
 		set(lib_prefix_list "${CMAKE_STATIC_LIBRARY_PREFIX}")
 		set(lib_suffix_list "${CMAKE_STATIC_LIBRARY_SUFFIX}")
-	else()
-		message(FATAL_ERROR "Wrong build type!")
-	endif()
-	list(JOIN CMAKE_FIND_LIBRARY_PREFIXES "|" lib_prefix_list)
-	set(lib_regex "^(${lib_prefix_list})?${DIR_NAME}(${lib_suffix_list})$")
-	string(REGEX REPLACE [[(\.)]] [[\\\1]] lib_regex "${lib_regex}") # escape '.' char
 
-	# Build regex to find imported library
-	set(implib_prefix_list "${lib_prefix_list}")
-	set(implib_suffix_list "")
-	list(JOIN CMAKE_FIND_LIBRARY_SUFFIXES "|" implib_suffix_list)
-	set(implib_regex "^(${implib_prefix_list})?${DIR_NAME}(${implib_suffix_list})$")
-	string(REGEX REPLACE [[(\.)]] [[\\\1]] implib_regex "${implib_regex}") # escape '.' char
+		# Static libraries do not use import libraries
+		set(implib_prefix_list "")
+		set(implib_suffix_list "")
+	else()
+		message(FATAL_ERROR "Invalid build type: expected SHARED or STATIC!")
+	endif()
+
+	# Build regex to find the binary library (IMPORTED_LOCATION)
+	string(REGEX REPLACE [[\.]] [[\\.]] lib_suffix_list "${lib_suffix_list}") # escape '.' char
+	set(lib_regex "^(${lib_prefix_list})?${DIR_NAME}(${lib_suffix_list})$")
+	
+	# Build regex to find the import library (IMPORTED_IMPLIB), only if applicable
+	if(NOT "${implib_suffix_list}" STREQUAL "")
+		list(JOIN implib_prefix_list "|" implib_prefix_list)
+		list(JOIN implib_suffix_list "|" implib_suffix_list)
+		string(REGEX REPLACE [[\.]] [[\\.]] implib_suffix_list "${implib_suffix_list}") # escape '.' char
+		set(implib_regex "^(${implib_prefix_list})?${DIR_NAME}(${implib_suffix_list})$")
+	else()
+		# No import library applicable for static libraries
+		set(implib_regex "")
+	endif()
 
 	# Search lib and implib
 	set(library_found_path "${DIR_FIND_LIB}-NOTFOUND")
@@ -309,7 +324,8 @@ macro(_directory_find_lib)
 				message(FATAL_ERROR "At least two matches with the library name \"${DIR_NAME}\"!")
 			endif()
 		endif()
-		if("${file_name}" MATCHES "${implib_regex}")
+		if((NOT "${implib_suffix_list}" STREQUAL "")
+			AND ("${file_name}" MATCHES "${implib_regex}"))
 			# Find imported library (implib)
 			if("${import_library_found_path}" STREQUAL "${DIR_FIND_IMPLIB}-NOTFOUND")
 				set(import_library_found_path "${file}")
