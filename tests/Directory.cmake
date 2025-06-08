@@ -9,28 +9,23 @@
 # See README file in the root directory of this source tree.
 
 #-------------------------------------------------------------------------------
-# Test of [FileManip module::Public command]:
-ct_add_test(NAME "test_file_manip")
+# Test of [Directory module::Public command]:
+ct_add_test(NAME "test_directory")
 function(${CMAKETEST_TEST})
-	include(FuncFileManip)
+	include(FuncDirectory)
 
 	ct_add_section(NAME "public_command")
 	function(${CMAKETEST_SECTION})
 	
 		ct_add_section(NAME "throws_if_unknown_argument" EXPECTFAIL)
 		function(${CMAKETEST_SECTION})
-			file_manip(FOO)
+			directory(FOO)
 			ct_assert_prints("Unrecognized arguments: \"FOO\"")
 		endfunction()
 		
-		ct_add_section(NAME "throws_if_arg_op_is_missing_1" EXPECTFAIL)
+		ct_add_section(NAME "throws_if_arg_op_is_missing" EXPECTFAIL)
 		function(${CMAKETEST_SECTION})
-			file_manip()
-		endfunction()
-		
-		ct_add_section(NAME "throws_if_arg_op_is_missing_2" EXPECTFAIL)
-		function(${CMAKETEST_SECTION})
-			file_manip(BAR)
+			directory()
 		endfunction()
 	endfunction()
 endfunction()
