@@ -136,7 +136,7 @@ Otherwise, absolute paths are returned.</p>
 <code class="docutils literal notranslate"><span class="pre">&lt;output_implib_var&gt;-NOTFOUND</span></code>. If multiple matches are found, a fatal error
 is raised.</p>
 <p>This command is especially useful to locate dependency artifacts when
-configuring imported targets manually. The resulting paths are typically
+configuring <a class="reference external" href="https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html#imported-targets">imported targets</a> manually (see also <a class="reference external" href="https://cmake.org/cmake/help/latest/guide/importing-exporting/index.html">CMake's guide to binary import and export</a>). The resulting paths are typically
 used to set properties like <a class="reference external" href="https://cmake.org/cmake/help/latest/prop_tgt/IMPORTED_LOCATION.html">IMPORTED_LOCATION</a> and
 <a class="reference external" href="https://cmake.org/cmake/help/latest/prop_tgt/IMPORTED_IMPLIB.html">IMPORTED_IMPLIB_DEBUG</a> on an imported target, particularly in development
 or custom build setups where standard <a class="reference external" href="https://cmake.org/cmake/help/latest/command/find_library.html">find_library()</a> behavior is not
