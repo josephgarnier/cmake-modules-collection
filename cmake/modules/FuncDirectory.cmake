@@ -15,7 +15,7 @@ Synopsis
 
 .. parsed-literal::
 
-    directory(`SCAN`_ <output_list_var> [LIST_DIRECTORIES <on|off>] RELATIVE <on|off> ROOT_DIR <directory_path> <INCLUDE_REGEX|EXCLUDE_REGEX> <regular_expression>)
+    directory(`SCAN`_ <output_list_var> LIST_DIRECTORIES <on|off> RELATIVE <on|off> ROOT_DIR <directory_path> <INCLUDE_REGEX|EXCLUDE_REGEX> <regular_expression>)
     directory(`SCAN_DIRS`_ <output_list_var> RECURSE <on|off> RELATIVE <on|off> ROOT_DIR <directory_path> <INCLUDE_REGEX|EXCLUDE_REGEX> <regular_expression>)
     directory(`FIND_LIB`_ <output_lib_var> FIND_IMPLIB <output_implib_var> NAME <raw_filename> <STATIC|SHARED> RELATIVE <on|off> ROOT_DIR <directory_path>)
 
@@ -23,7 +23,7 @@ Usage
 ^^^^^
 
 .. signature::
-  directory(SCAN <output_list_var> [LIST_DIRECTORIES <on|off>] RELATIVE <on|off> ROOT_DIR <directory_path> <INCLUDE_REGEX|EXCLUDE_REGEX> <regular_expression>)
+  directory(SCAN <output_list_var> LIST_DIRECTORIES <on|off> RELATIVE <on|off> ROOT_DIR <directory_path> <INCLUDE_REGEX|EXCLUDE_REGEX> <regular_expression>)
 
   Recursively scans files and directories under ``ROOT_DIR``, applies an
   optional filter based on ``INCLUDE_REGEX`` or ``EXCLUDE_REGEX``, and
@@ -32,7 +32,7 @@ Usage
   Paths are returned as relative to ``ROOT_DIR`` if ``RELATIVE`` is ``on``,
   or as absolute paths if ``RELATIVE`` is ``off``.
 
-  If ``LIST_DIRECTORIES`` is ``on`` (the default), directories are included in
+  If ``LIST_DIRECTORIES`` is ``on``, directories are included in
   the result. If ``LIST_DIRECTORIES`` is ``off``, only files are listed.
 
   Example usage:
@@ -149,30 +149,27 @@ endfunction()
 # Internal usage.
 macro(_directory_scan)
 	if(NOT DEFINED DIR_SCAN)
-		message(FATAL_ERROR "SCAN arguments is missing")
+		message(FATAL_ERROR "SCAN arguments is missing!")
 	endif()
-	if((DEFINED DIR_LIST_DIRECTORIES)
-		AND	((NOT ${DIR_LIST_DIRECTORIES} STREQUAL "on")
+	if((NOT DEFINED DIR_LIST_DIRECTORIES)
+		OR ((NOT ${DIR_LIST_DIRECTORIES} STREQUAL "on")
 		AND (NOT ${DIR_LIST_DIRECTORIES} STREQUAL "off")))
-		message(FATAL_ERROR "LIST_DIRECTORIES arguments is wrong")
+		message(FATAL_ERROR "LIST_DIRECTORIES arguments is wrong!")
 	endif()
 	if((NOT DEFINED DIR_RELATIVE)
 		OR ((NOT ${DIR_RELATIVE} STREQUAL "on")
 		AND (NOT ${DIR_RELATIVE} STREQUAL "off")))
-		message(FATAL_ERROR "RELATIVE arguments is wrong")
+		message(FATAL_ERROR "RELATIVE arguments is wrong!")
 	endif()
 	if(NOT DEFINED DIR_ROOT_DIR)
-		message(FATAL_ERROR "ROOT_DIR arguments is missing")
+		message(FATAL_ERROR "ROOT_DIR arguments is missing!")
 	endif()
 	if((NOT DEFINED DIR_INCLUDE_REGEX)
 		AND (NOT DEFINED DIR_EXCLUDE_REGEX))
-		message(FATAL_ERROR "INCLUDE_REGEX|EXCLUDE_REGEX arguments is missing")
+		message(FATAL_ERROR "INCLUDE_REGEX|EXCLUDE_REGEX arguments is missing!")
 	endif()
 
 	set(file_list "")
-	if(NOT DEFINED DIR_LIST_DIRECTORIES)
-		set(DIR_LIST_DIRECTORIES on)
-	endif()
 	if(${DIR_RELATIVE})
 		file(GLOB_RECURSE file_list FOLLOW_SYMLINKS LIST_DIRECTORIES ${DIR_LIST_DIRECTORIES} RELATIVE "${DIR_ROOT_DIR}" CONFIGURE_DEPENDS "${DIR_ROOT_DIR}/*")
 	else()
@@ -192,24 +189,24 @@ endmacro()
 # Internal usage.
 macro(_directory_scan_dirs)
 	if(NOT DEFINED DIR_SCAN_DIRS)
-		message(FATAL_ERROR "SCAN_DIRS arguments is missing")
+		message(FATAL_ERROR "SCAN_DIRS arguments is missing!")
 	endif()
 	if((NOT DEFINED DIR_RECURSE)
 		OR ((NOT ${DIR_RECURSE} STREQUAL "on")
 		AND (NOT ${DIR_RECURSE} STREQUAL "off")))
-		message(FATAL_ERROR "RECURSE arguments is wrong")
+		message(FATAL_ERROR "RECURSE arguments is wrong!")
 	endif()
 	if((NOT DEFINED DIR_RELATIVE)
 		OR ((NOT ${DIR_RELATIVE} STREQUAL "on")
 		AND (NOT ${DIR_RELATIVE} STREQUAL "off")))
-		message(FATAL_ERROR "RELATIVE arguments is wrong")
+		message(FATAL_ERROR "RELATIVE arguments is wrong!")
 	endif()
 	if(NOT DEFINED DIR_ROOT_DIR)
-		message(FATAL_ERROR "ROOT_DIR arguments is missing")
+		message(FATAL_ERROR "ROOT_DIR arguments is missing!")
 	endif()
 	if((NOT DEFINED DIR_INCLUDE_REGEX)
 		AND (NOT DEFINED DIR_EXCLUDE_REGEX))
-		message(FATAL_ERROR "INCLUDE_REGEX|EXCLUDE_REGEX arguments is missing")
+		message(FATAL_ERROR "INCLUDE_REGEX|EXCLUDE_REGEX arguments is missing!")
 	endif()
 
 	set(file_list "")
