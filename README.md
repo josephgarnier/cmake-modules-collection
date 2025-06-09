@@ -90,7 +90,7 @@ Regarding **module documentation**, just like the code follows a style consisten
 
 ### Module description
 
-Detailed module documentation is available by opening the `doc/build/html/index.html` file in a browser.
+Detailed module documentation is available by opening the `doc/build/html/index.html` file in a browser or [this Website](https://josephgarnier.github.io/cmake-modules-collection/).
 
 | Name | Type | Description | Location |
 |---|---|---|---|
@@ -255,6 +255,9 @@ The use of commands and scripts is described below, they must be run from the ro
   ```bash
   # Run the CMake command 'ctest'
   ctest --preset "<test-preset-name>"
+  
+  # Run the CMake command 'ctest' while displaying much more information
+  ctest --preset "<test-preset-name>" --extra-verbose --debug
   ```
 
   - VS Code task: `CMake: Test`.
@@ -298,6 +301,9 @@ The use of commands and scripts is described below, they must be run from the ro
 
   # List variables in the cache and their descriptions
   cmake -LAH ./build/<preset-build-folder>
+  
+  # Print all available test labels without running any tests
+  ctest --preset "<test-preset-name>" --extra-verbose --debug --print-labels
   ```
 
   </details>
