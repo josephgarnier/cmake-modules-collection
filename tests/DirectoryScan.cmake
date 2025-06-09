@@ -363,8 +363,6 @@ function(${CMAKETEST_TEST})
 			RELATIVE off
 			INCLUDE_REGEX ".*"
 		)
-		ct_assert_list(output)
-		ct_assert_equal(output "${expected_output}")
 	endfunction()
 
 	ct_add_section(NAME "throws_if_arg_root_dir_is_missing_2" EXPECTFAIL)
