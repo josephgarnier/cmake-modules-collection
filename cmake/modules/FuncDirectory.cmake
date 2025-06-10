@@ -209,21 +209,21 @@ macro(_directory_scan_dirs)
 		message(FATAL_ERROR "INCLUDE_REGEX|EXCLUDE_REGEX arguments is missing!")
 	endif()
 
+	# Paths should not be relative, but absolute, in order to be able to filter files and keep only folders
 	set(file_list "")
-	if(${DIR_RECURSE} AND ${DIR_RELATIVE})
-		file(GLOB_RECURSE file_list FOLLOW_SYMLINKS LIST_DIRECTORIES on RELATIVE "${DIR_ROOT_DIR}" CONFIGURE_DEPENDS "${DIR_ROOT_DIR}/*")
-	elseif(${DIR_RECURSE} AND NOT ${DIR_RELATIVE})
+	if(${DIR_RECURSE})
 		file(GLOB_RECURSE file_list FOLLOW_SYMLINKS LIST_DIRECTORIES on CONFIGURE_DEPENDS "${DIR_ROOT_DIR}/*")
-	elseif(NOT ${DIR_RECURSE} AND ${DIR_RELATIVE})
-		file(GLOB file_list LIST_DIRECTORIES on RELATIVE "${DIR_ROOT_DIR}" CONFIGURE_DEPENDS "${DIR_ROOT_DIR}/*")
 	else()
 		file(GLOB file_list LIST_DIRECTORIES on CONFIGURE_DEPENDS "${DIR_ROOT_DIR}/*")
 	endif()
 
-	# Removes non-directory files.
+	# Keep only directories and compute relative paths if needed
 	set(directory_list "")
 	foreach(file IN ITEMS ${file_list})
 		if(IS_DIRECTORY "${file}")
+			if(${DIR_RELATIVE})
+				file(RELATIVE_PATH file "${DIR_ROOT_DIR}" "${file}")
+			endif()
 			list(APPEND directory_list "${file}")
 		endif()
 	endforeach()
