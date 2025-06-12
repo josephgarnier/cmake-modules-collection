@@ -15,7 +15,6 @@ ct_add_test(NAME "test_directory_find_lib_operation")
 function(${CMAKETEST_TEST})
 	include(FuncDirectory)
 
-	return() # This test file cannot be used until this bug is fixed: https://github.com/CMakePP/CMakeTest/issues/118
 	macro(_build_test_regex LIB_NAME LIB_BUILD_TYPE)
 		# Select appropriate prefix/suffix sets based on the requested library type
 		if("${LIB_BUILD_TYPE}" STREQUAL "SHARED")
@@ -182,6 +181,7 @@ function(${CMAKETEST_TEST})
 			ct_assert_string(output_implib)
 			ct_assert_false(output_implib) # equals to "fake_lib-NOTFOUND"
 
+			# Try to find an existing lib but with the wrong build type should fail
 			set(lib_name "shared_mock_lib")
 			directory(FIND_LIB output_lib
 				FIND_IMPLIB output_implib
@@ -211,6 +211,7 @@ function(${CMAKETEST_TEST})
 			ct_assert_string(output_implib)
 			ct_assert_false(output_implib) # equals to "fake_lib-NOTFOUND"
 
+			# Try to find an existing lib but with the wrong build type should fail
 			set(lib_name "shared_mock_lib")
 			directory(FIND_LIB output_lib
 				FIND_IMPLIB output_implib
@@ -243,18 +244,23 @@ function(${CMAKETEST_TEST})
 			ct_assert_string(output_implib)
 			ct_assert_false(output_implib) # equals to "fake_lib-NOTFOUND"
 
-			set(lib_name "static_mock_lib")
-			directory(FIND_LIB output_lib
-				FIND_IMPLIB output_implib
-				NAME "${lib_name}"
-				SHARED
-				RELATIVE off
-				ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data"
-			)
-			ct_assert_string(output_lib)
-			ct_assert_false(output_lib) # equals to "fake_lib-NOTFOUND"
-			ct_assert_string(output_implib)
-			ct_assert_false(output_implib) # equals to "fake_lib-NOTFOUND"
+			# On Windows, a static libary can have the same suffix ('.a' for GCC,
+			# '.lib' for MSVC) as a shared import library suffix ('.dll.a|.a|.lib'
+			# for GCC, '.dll.lib|.lib|.a' for MSVC)
+			if("${CMAKE_HOST_SYSTEM_NAME}" STREQUAL "Windows")
+				set(lib_name "static_mock_lib")
+				directory(FIND_LIB output_lib
+					FIND_IMPLIB output_implib
+					NAME "${lib_name}"
+					SHARED
+					RELATIVE off
+					ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data"
+				)
+				ct_assert_string(output_lib)
+				ct_assert_false(output_lib) # equals to "fake_lib-NOTFOUND"
+				ct_assert_string(output_implib)
+				ct_assert_true(output_implib) # NOT equals to "fake_lib-NOTFOUND"
+			endif()
 		endfunction()
 		
 		ct_add_section(NAME "get_relative_path")
@@ -272,22 +278,27 @@ function(${CMAKETEST_TEST})
 			ct_assert_string(output_implib)
 			ct_assert_false(output_implib) # equals to "fake_lib-NOTFOUND"
 
-			set(lib_name "static_mock_lib")
-			directory(FIND_LIB output_lib
-				FIND_IMPLIB output_implib
-				NAME "${lib_name}"
-				SHARED
-				RELATIVE on
-				ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data"
-			)
-			ct_assert_string(output_lib)
-			ct_assert_false(output_lib) # equals to "fake_lib-NOTFOUND"
-			ct_assert_string(output_implib)
-			ct_assert_false(output_implib) # equals to "fake_lib-NOTFOUND"
+			# On Windows, a static libary can have the same suffix ('.a' for GCC,
+			# '.lib' for MSVC) as a shared import library suffix ('.dll.a|.a|.lib'
+			# for GCC, '.dll.lib|.lib|.a' for MSVC)
+			if("${CMAKE_HOST_SYSTEM_NAME}" STREQUAL "Windows")
+				set(lib_name "static_mock_lib")
+				directory(FIND_LIB output_lib
+					FIND_IMPLIB output_implib
+					NAME "${lib_name}"
+					SHARED
+					RELATIVE on
+					ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data"
+				)
+				ct_assert_string(output_lib)
+				ct_assert_false(output_lib) # equals to "fake_lib-NOTFOUND"
+				ct_assert_string(output_implib)
+				ct_assert_true(output_implib) # NOT equals to "fake_lib-NOTFOUND"
+			endif()
 		endfunction()
 	endfunction()
 
-	# Errors checking
+	# # Errors checking
 	ct_add_section(NAME "throws_if_lib_is_duplicated" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		file(COPY "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/bin" DESTINATION "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/bin_temp_copy")	

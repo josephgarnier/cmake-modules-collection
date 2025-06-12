@@ -87,6 +87,29 @@ Usage
   `CMAKE_FIND_LIBRARY_PREFIXES <https://cmake.org/cmake/help/latest/variable/CMAKE_FIND_LIBRARY_PREFIXES.html>`_ and `CMAKE_FIND_LIBRARY_SUFFIXES <https://cmake.org/cmake/help/latest/variable/CMAKE_STATIC_LIBRARY_SUFFIX.html>`_ if
   defined. This makes the behavior similar to `find_library() <https://cmake.org/cmake/help/latest/command/find_library.html>`_, but more robust.
 
+  .. note::
+
+    The different value of prefix and suffix that the variables used
+    to search for libraries can take are:
+
+    .. code-block:: cmake
+
+      # With GCC on Windows
+      # CMAKE_SHARED_LIBRARY_PREFIX: lib
+      # CMAKE_SHARED_LIBRARY_SUFFIX: .dll
+      # CMAKE_STATIC_LIBRARY_PREFIX: lib
+      # CMAKE_STATIC_LIBRARY_SUFFIX: .a
+      # CMAKE_FIND_LIBRARY_PREFIXES: lib;
+      # CMAKE_FIND_LIBRARY_SUFFIXES: .dll.a;.a;.lib
+
+      # With MSVC on Windows
+      # CMAKE_SHARED_LIBRARY_PREFIX:
+      # CMAKE_SHARED_LIBRARY_SUFFIX: .dll
+      # CMAKE_STATIC_LIBRARY_PREFIX:
+      # CMAKE_STATIC_LIBRARY_SUFFIX: .lib
+      # CMAKE_FIND_LIBRARY_PREFIXES: ;lib
+      # CMAKE_FIND_LIBRARY_SUFFIXES: .dll.lib;.lib;.a
+
   If a matching library is found, its path is stored in ``<output_lib_var>``. If a
   matching import library is found, its path is stored in ``<output_implib_var>``. If
   ``RELATIVE`` is set to ``on``, the results are relative to ``ROOT_DIR``.
@@ -275,16 +298,16 @@ macro(_directory_find_lib)
 	# Select appropriate prefix/suffix sets based on the requested library type
 	if(${DIR_SHARED})
 		# Shared library (.dll, .so, .dylib): used at runtime (IMPORTED_LOCATION)
-		set(lib_prefix_list "${CMAKE_SHARED_LIBRARY_PREFIX}")
-		set(lib_suffix_list "${CMAKE_SHARED_LIBRARY_SUFFIX}")
+		set(lib_prefix_list "${CMAKE_SHARED_LIBRARY_PREFIX}") # 'lib' on Linux, empty on Windows
+		set(lib_suffix_list "${CMAKE_SHARED_LIBRARY_SUFFIX}") # '.so' on Linux, '.dll' on Windows
 
 		# Import library (.lib, .dll.a, .a): used at link time (IMPORTED_IMPLIB)
-		set(implib_prefix_list "${CMAKE_FIND_LIBRARY_PREFIXES}")
-		set(implib_suffix_list "${CMAKE_FIND_LIBRARY_SUFFIXES}")
+		set(implib_prefix_list "${CMAKE_FIND_LIBRARY_PREFIXES}") # 'empty|lib' on Linux, 'empty|lib' on Windows
+		set(implib_suffix_list "${CMAKE_FIND_LIBRARY_SUFFIXES}") # '.dll.a|.a|.lib' on Linux, '.dll.lib|.lib|.a' on Windows
 	elseif(${DIR_STATIC})
 		# Static library (.lib, .a): used at link time (no import lib concept)
-		set(lib_prefix_list "${CMAKE_STATIC_LIBRARY_PREFIX}")
-		set(lib_suffix_list "${CMAKE_STATIC_LIBRARY_SUFFIX}")
+		set(lib_prefix_list "${CMAKE_STATIC_LIBRARY_PREFIX}") # 'lib' on Linux, empty on Windows
+		set(lib_suffix_list "${CMAKE_STATIC_LIBRARY_SUFFIX}") # '.a' on Linux, '.lib' on Windows
 
 		# Static libraries do not use import libraries
 		set(implib_prefix_list "")
