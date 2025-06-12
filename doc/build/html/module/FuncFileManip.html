@@ -68,7 +68,7 @@
 <pre class="literal-block">file_manip(<a class="reference internal" href="#relative-path">RELATIVE_PATH</a> &lt;file_list_var&gt; BASE_DIR &lt;directory_path&gt; [OUTPUT_VARIABLE &lt;output_list_var&gt;])
 file_manip(<a class="reference internal" href="#absolute-path">ABSOLUTE_PATH</a> &lt;file_list_var&gt; BASE_DIR &lt;directory_path&gt; [OUTPUT_VARIABLE &lt;output_list_var&gt;])
 file_manip(<a class="reference internal" href="#strip-path">STRIP_PATH</a> &lt;file_list_var&gt; BASE_DIR &lt;directory_path&gt; [OUTPUT_VARIABLE &lt;output_list_var&gt;])
-file_manip(<a class="reference internal" href="#get-component">GET_COMPONENT</a> &lt;file_list&gt;... MODE &lt;mode&gt; OUTPUT_VARIABLE &lt;output_list_var&gt;)</pre>
+file_manip(<a class="reference internal" href="#get-component">GET_COMPONENT</a> &lt;file_list&gt; ... MODE &lt;mode&gt; OUTPUT_VARIABLE &lt;output_list_var&gt;)</pre>
 </section>
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h2>
@@ -133,7 +133,7 @@ of files. Paths are processed like any string.</p>
 
 <dl class="cmake signature">
 <dt class="sig sig-object cmake" id="get-component">
-<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">file_manip(</span></span><span class="no"><span class="pre">GET_COMPONENT</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;file_list&gt;...</span></span><span class="w"> </span><span class="no"><span class="pre">MODE</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;mode&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">OUTPUT_VARIABLE</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;output_list_var&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#get-component" title="Link to this definition">¶</a></dt>
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">file_manip(</span></span><span class="no"><span class="pre">GET_COMPONENT</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;file_list&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="w"> </span><span class="no"><span class="pre">MODE</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;mode&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">OUTPUT_VARIABLE</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;output_list_var&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#get-component" title="Link to this definition">¶</a></dt>
 <dd><p>Extracts a specific component from each path in the given <code class="docutils literal notranslate"><span class="pre">&lt;file_list&gt;</span></code>
 and stores the result in the variable specified by <code class="docutils literal notranslate"><span class="pre">OUTPUT_VARIABLE</span></code>
 option.</p>

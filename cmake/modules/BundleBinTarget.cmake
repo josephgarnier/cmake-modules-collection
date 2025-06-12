@@ -16,12 +16,12 @@ Synopsis
 
     `reset_local_bin_target_settings`_()
     `add_bin_target`_(TARGET_NAME <target_name> <STATIC|SHARED|HEADER|EXEC>)
-    `configure_bin_target_settings`_(TARGET_NAME <target_name> COMPILE_DEFINITIONS <definition_list>...)
+    `configure_bin_target_settings`_(TARGET_NAME <target_name> COMPILE_DEFINITIONS <definition_list> ...)
     `collect_source_files_by_location`_([SRC_DIR <directory_path> SRC_SOURCE_FILES <output_list_var> SRC_HEADER_FILES <output_list_var>]|[INCLUDE_DIR <directory_path> INCLUDE_HEADER_FILES <output_list_var>])
     `collect_source_files_by_policy`_(PUBLIC_HEADERS_SEPARATED <on|off> [<include_directory_path>] SRC_DIR <directory_path> SRC_SOURCE_FILES <output_list_var> PUBLIC_HEADER_DIR <output_var> PUBLIC_HEADER_FILES <output_list_var> PRIVATE_HEADER_DIR <output_var> PRIVATE_HEADER_FILES <output_list_var>)
-    `add_sources_to_target`_(TARGET_NAME <target_name> SOURCE_FILES <file_path_list>... PRIVATE_HEADER_FILES <file_path_list>... PUBLIC_HEADER_FILES <file_path_list>... PROJECT_DIR <directory_path>)
+    `add_sources_to_target`_(TARGET_NAME <target_name> SOURCE_FILES <file_path_list> ... PRIVATE_HEADER_FILES <file_path_list> ... PUBLIC_HEADER_FILES <file_path_list> ... PROJECT_DIR <directory_path>)
     `add_precompiled_header_to_target`_(TARGET_NAME <target_name> HEADER_FILE <file_path>)
-    `add_include_directories_to_target`_(TARGET_NAME <target_name> INCLUDE_DIRECTORIES <directory_path_list>...)
+    `add_include_directories_to_target`_(TARGET_NAME <target_name> INCLUDE_DIRECTORIES <directory_path_list> ...)
 
 Usage
 ^^^^^
@@ -42,7 +42,7 @@ Add a binary target ``<target_name>`` to the project as type ``STATIC``, ``SHARE
 .. _configure_bin_target_settings:
 .. code-block:: cmake
 
-  configure_bin_target_settings(TARGET_NAME <target_name> COMPILE_DEFINITIONS [<definition_list>...])
+  configure_bin_target_settings(TARGET_NAME <target_name> COMPILE_DEFINITIONS [<definition_list> ...])
 
 Configure the binary target ``<target_name>``: add it in a folder for IDE project, set compile features (C++ standard), set compile definitions, set compile options, add link options
 
@@ -87,7 +87,7 @@ An error is raised if ``PUBLIC_HEADERS_SEPARATED`` is ``on`` but ``<include_dire
 .. _add_sources_to_target:
 .. code-block:: cmake
 
-  add_sources_to_target(TARGET_NAME <target_name> SOURCE_FILES <file_path_list>... PRIVATE_HEADER_FILES <file_path_list>... PUBLIC_HEADER_FILES <file_path_list>... PROJECT_DIR <directory_path>)
+  add_sources_to_target(TARGET_NAME <target_name> SOURCE_FILES <file_path_list> ... PRIVATE_HEADER_FILES <file_path_list> ... PUBLIC_HEADER_FILES <file_path_list> ... PROJECT_DIR <directory_path>)
 
 Assign sources of ``SOURCE_FILES``, ``PRIVATE_HEADER_FILES`` and headers of ``PUBLIC_HEADER_FILES`` to the target ``<target_name>``, and define a grouping for source files in IDE project generation in ``PROJECT_DIR``.
 
@@ -101,7 +101,7 @@ Add a precompiled header file ``<file_path>`` to the target ``<target_name>``.
 .. _add_include_directories_to_target:
 .. code-block:: cmake
 
-  add_include_directories_to_target(TARGET_NAME <target_name> INCLUDE_DIRECTORIES <directory_path_list>...)
+  add_include_directories_to_target(TARGET_NAME <target_name> INCLUDE_DIRECTORIES <directory_path_list> ...)
 
 Add include directories ``<directory_path_list>`` to the target ``<target_name>``.
 

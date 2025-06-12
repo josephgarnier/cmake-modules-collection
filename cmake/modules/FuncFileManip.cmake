@@ -18,7 +18,7 @@ Synopsis
     file_manip(`RELATIVE_PATH`_ <file_list_var> BASE_DIR <directory_path> [OUTPUT_VARIABLE <output_list_var>])
     file_manip(`ABSOLUTE_PATH`_ <file_list_var> BASE_DIR <directory_path> [OUTPUT_VARIABLE <output_list_var>])
     file_manip(`STRIP_PATH`_ <file_list_var> BASE_DIR <directory_path> [OUTPUT_VARIABLE <output_list_var>])
-    file_manip(`GET_COMPONENT`_ <file_list>... MODE <mode> OUTPUT_VARIABLE <output_list_var>)
+    file_manip(`GET_COMPONENT`_ <file_list> ... MODE <mode> OUTPUT_VARIABLE <output_list_var>)
 
 Usage
 ^^^^^
@@ -86,7 +86,7 @@ Usage
     #   src/main.cpp;include/lib.hpp
 
 .. signature::
-  file_manip(GET_COMPONENT <file_list>... MODE <mode> OUTPUT_VARIABLE <output_list_var>)
+  file_manip(GET_COMPONENT <file_list> ... MODE <mode> OUTPUT_VARIABLE <output_list_var>)
 
   Extracts a specific component from each path in the given ``<file_list>``
   and stores the result in the variable specified by ``OUTPUT_VARIABLE``
