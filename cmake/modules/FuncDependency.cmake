@@ -273,8 +273,8 @@ include(FuncStringManip)
 # Public function of this module.
 function(dependency)
 	set(options SHARED STATIC BUILD_TREE INSTALL_TREE SET APPEND)
-	set(one_value_args IMPORT RELEASE_NAME DEBUG_NAME ROOT_DIR INCLUDE_DIR EXPORT OUTPUT_FILE INCLUDE_DIRECTORIES IMPORTED_LOCATION CONFIGURATION)
-	set(multi_value_args PUBLIC)
+	set(one_value_args IMPORT RELEASE_NAME DEBUG_NAME ROOT_DIR INCLUDE_DIR OUTPUT_FILE INCLUDE_DIRECTORIES IMPORTED_LOCATION CONFIGURATION)
+	set(multi_value_args EXPORT PUBLIC)
 	cmake_parse_arguments(DEP "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 	
 	if(DEFINED DEP_UNPARSED_ARGUMENTS)
@@ -395,8 +395,9 @@ endmacro()
 #------------------------------------------------------------------------------
 # Internal usage.
 macro(_dependency_export)
-	if(NOT DEFINED DEP_EXPORT)
-		message(FATAL_ERROR "EXPORT argument is missing or need a value!")
+	if((NOT DEFINED DEP_EXPORT)
+		AND (NOT "EXPORT" IN_LIST FM_KEYWORDS_MISSING_VALUES))
+		message(FATAL_ERROR "EXPORT arguments is missing or need a value!")
 	endif()
 	if((NOT ${DEP_BUILD_TREE})
 		AND (NOT ${DEP_INSTALL_TREE}))
@@ -408,142 +409,136 @@ macro(_dependency_export)
 	if(NOT DEFINED DEP_OUTPUT_FILE)
 		message(FATAL_ERROR "OUTPUT_FILE argument is missing or need a value!")
 	endif()
-	if(NOT TARGET "${DEP_EXPORT}")
-		message(FATAL_ERROR "The target \"${DEP_EXPORT}\" does not exists!")
+	foreach(lib_target_name IN ITEMS ${DEP_EXPORT})
+		if(NOT TARGET "${lib_target_name}")
+			message(FATAL_ERROR "The target \"${lib_target_name}\" does not exists!")
+		endif()
+	endforeach()
+	if((NOT DEFINED CMAKE_BUILD_TYPE)
+		OR ("${CMAKE_BUILD_TYPE}" STREQUAL ""))
+		message(FATAL_ERROR "CMAKE_BUILD_TYPE is not set!")
 	endif()
 
-	cmake_path(SET export_temp_file "${CMAKE_CURRENT_BINARY_DIR}")
+	# Set paths to export files
 	cmake_path(SET export_file "${CMAKE_CURRENT_BINARY_DIR}")
+	cmake_path(SET export_file_template "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
 	if(${DEP_BUILD_TREE})
-		cmake_path(APPEND export_temp_file "DependencyBuildTreeTemp.cmake")
+		cmake_path(APPEND export_file_template "ImportBuildTreeLibTargets.cmake.in")
 	elseif(${DEP_INSTALL_TREE})
-		cmake_path(APPEND export_temp_file "DependencyInstallTreeTemp.cmake")
 		cmake_path(APPEND export_file "CMakeFiles" "Export")
+		cmake_path(APPEND export_file_template "ImportInstallTreeLibTargets.cmake.in")
 	endif()
 	cmake_path(APPEND export_file "${DEP_OUTPUT_FILE}")
 
-	# When cmake command is call, the previous generated files has to be removed
-	if(EXISTS "${export_file}")
-		file(REMOVE
-			"${export_file}"
-			"${export_temp_file}"
-		)
+	# Read the template file once
+	file(READ "${export_file_template}" template_content)
+
+	# List of intermediate files to concatenate later
+	set(generated_target_files "")
+	foreach(lib_target_name IN ITEMS ${DEP_EXPORT})
+		# Set template file variables
+		get_target_property(lib_target_type "${lib_target_name}" TYPE)
+		if("${lib_target_type}" STREQUAL "STATIC_LIBRARY")
+			set(lib_target_type "STATIC")
+		elseif("${lib_target_type}" STREQUAL "SHARED_LIBRARY")
+			set(lib_target_type "SHARED")
+		else()
+			message(FATAL_ERROR "Target type \"${lib_target_type}\" for target \"${lib_target_name}\" is unsupported by export command!")
+		endif()
+	
+		# Substitute variable values referenced as @VAR@
+		string(CONFIGURE "${template_content}" configured_content @ONLY)
+
+		# Generate a per-target intermediate file with generator expressions
+		set(generated_file "${CMAKE_CURRENT_BINARY_DIR}/${lib_target_name}Target-${lib_target_type}.part.cmake")
+		if(NOT ("${generated_file}" IN_LIST generated_target_files))
+			file(GENERATE OUTPUT "${generated_file}"
+				CONTENT "${configured_content}"
+				TARGET "${lib_target_name}"
+			)
+			# Add generated files to the `clean` target
+			set_property(DIRECTORY
+				APPEND
+				PROPERTY ADDITIONAL_CLEAN_FILES
+				"${generated_file}"
+			)
+			list(APPEND generated_target_files "${generated_file}")
+		else()
+			message(FATAL_ERROR "Given target \"${lib_target_name}\" more than once!")
+		endif()
+	endforeach()
+
+	# Sanitize the output file path to create a valid CMake property identifier
+	cmake_path(GET export_file FILENAME sanitized_export_file)
+	string(MAKE_C_IDENTIFIER "${sanitized_export_file}" sanitized_export_file)
+
+	# If APPEND is not set, reset the list of intermediate files associated with the export file
+	if(NOT ${DEP_APPEND})
+		set_property(GLOBAL PROPERTY _EXPORT_FRAGMENTS_${sanitized_export_file} "")
 	endif()
 	
-	set(import_instructions "")
-	if((EXISTS "${export_temp_file}") AND (NOT ${DEP_APPEND}))
-		message(FATAL_ERROR "Export command already specified for the file \"${export_file}\". Did you miss 'APPEND' keyword?")
-	endif()
-	if(NOT EXISTS "${export_temp_file}")
-		# Ouptut file will be generated only one time after processing all of a project's CMakeLists.txt files
-		file(GENERATE OUTPUT "${export_file}" 
-			INPUT "${export_temp_file}"
-			TARGET "${DEP_EXPORT}"
-		)
-		if(${DEP_INSTALL_TREE})
-			cmake_path(GET DEP_OUTPUT_FILE PARENT_PATH install_export_dir)
-			install(FILES "${export_file}"
-				DESTINATION "${install_export_dir}"
+	# Append the generated intermediate files to the file's associated global property
+	get_property(existing_fragments GLOBAL PROPERTY _EXPORT_FRAGMENTS_${sanitized_export_file})
+	list(APPEND existing_fragments ${generated_target_files})
+	set_property(GLOBAL PROPERTY _EXPORT_FRAGMENTS_${sanitized_export_file} "${existing_fragments}")
+
+	# Only define the output generation rule once
+	set(unique_target_name "GenerateImportTargetFile_${sanitized_export_file}")
+	if(NOT TARGET ${unique_target_name})
+		# Concatenate all generated files into a single final file, but
+		# take care to clean or preserve existing file based on APPEND flag
+		if(${DEP_APPEND})
+			# Create the file if it does not exist and concatenate the content
+			add_custom_command(
+				OUTPUT "${export_file}"
+				COMMAND ${CMAKE_COMMAND} -E touch "${export_file}"
+				COMMAND ${CMAKE_COMMAND} -E cat ${existing_fragments} >> "${export_file}"
+				DEPENDS "${existing_fragments}"
+				COMMENT "Update the import file \"${export_file}\""
+			)
+		else()
+			# Overwrite the file with new content
+			add_custom_command(
+				OUTPUT "${export_file}"
+				COMMAND ${CMAKE_COMMAND} -E cat ${existing_fragments} > "${export_file}"
+				DEPENDS "${existing_fragments}"
+				COMMENT "Overwrite the import file \"${export_file}\""
 			)
 		endif()
-		_export_generate_header_code()
-	endif()
-
-	if(${DEP_BUILD_TREE})
-		_export_generate_build_tree()
-	elseif(${DEP_INSTALL_TREE})
-		_export_generate_install_tree()
-	endif()
-	_export_generate_footer_code()
 	
-	file(APPEND "${export_temp_file}" "${import_instructions}")
-endmacro()
-
-#------------------------------------------------------------------------------
-# Internal usage.
-macro(_export_generate_build_tree)
-	# Create the imported target
-	get_target_property(target_type "${DEP_EXPORT}" TYPE)
-  	string(APPEND import_instructions "# Create imported target \"$<TARGET_PROPERTY:NAME>\"\n")
-	if("${target_type}" STREQUAL "STATIC_LIBRARY")
-		string(APPEND import_instructions "add_library(\"$<TARGET_PROPERTY:NAME>\" STATIC IMPORTED)\n")
-	elseif("${target_type}" STREQUAL "SHARED_LIBRARY")
-		string(APPEND import_instructions "add_library(\"$<TARGET_PROPERTY:NAME>\" SHARED IMPORTED)\n")
+		# Create a unique generative target per output file to trigger the command
+		add_custom_target("${unique_target_name}" ALL
+			DEPENDS "${export_file}"
+			VERBATIM
+		)
 	else()
-		message(FATAL_ERROR "Target type \"${target_type}\" is unsupported by export command!")
+		if(${DEP_APPEND})
+			# Create the file if it does not exist and concatenate the content
+			add_custom_command(
+				OUTPUT "${export_file}" APPEND
+				COMMAND ${CMAKE_COMMAND} -E touch "${export_file}"
+				COMMAND ${CMAKE_COMMAND} -E cat ${existing_fragments} >> "${export_file}"
+				DEPENDS "${existing_fragments}"
+				COMMENT "Update the import file \"${export_file}\""
+			)
+		else()
+			# Overwrite the file with new content
+			add_custom_command(
+				OUTPUT "${export_file}" APPEND
+				COMMAND ${CMAKE_COMMAND} -E cat ${existing_fragments} > "${export_file}"
+				DEPENDS "${existing_fragments}"
+				COMMENT "Overwrite the import file \"${export_file}\""
+			)
+		endif()
 	endif()
 
-	# Add usage requirements.
-	string(APPEND import_instructions "\n")
-	string(APPEND import_instructions "set_target_properties(\"$<TARGET_PROPERTY:NAME>\" PROPERTIES\n")
-	string(APPEND import_instructions "  INTERFACE_INCLUDE_DIRECTORIES \"$<TARGET_PROPERTY:INTERFACE_INCLUDE_DIRECTORIES_BUILD>\"\n")
-	string(APPEND import_instructions "  IMPORTED_LOCATION_$<CONFIG> \"$<TARGET_PROPERTY:IMPORTED_LOCATION_BUILD_$<CONFIG>>\"\n")
-	string(APPEND import_instructions "  IMPORTED_IMPLIB_$<CONFIG> \"$<TARGET_PROPERTY:IMPORTED_IMPLIB_$<CONFIG>>\"\n")
-	string(APPEND import_instructions "  IMPORTED_SONAME_$<CONFIG> \"$<TARGET_PROPERTY:IMPORTED_SONAME_$<CONFIG>>\"\n")
-	string(APPEND import_instructions ")\n")
-	string(APPEND import_instructions "set_property(TARGET \"$<TARGET_PROPERTY:NAME>\" APPEND PROPERTY IMPORTED_CONFIGURATIONS \"$<CONFIG>\")\n")
-endmacro()
-
-#------------------------------------------------------------------------------
-# Internal usage.
-macro(_export_generate_install_tree)
-	# Add code to compute the installation prefix relative to the import file location.
-	string(APPEND import_instructions "# Compute the installation prefix relative to this file.\n")
-	string(APPEND import_instructions "get_filename_component(_IMPORT_PREFIX \"\${CMAKE_CURRENT_LIST_FILE}\" PATH)\n")
-	set(import_prefix "${install_export_dir}")
-	while((NOT "${import_prefix}" STREQUAL "${CMAKE_INSTALL_PREFIX}")
-		AND (NOT "${import_prefix}" STREQUAL ""))
-		string(APPEND import_instructions "get_filename_component(_IMPORT_PREFIX \"\${_IMPORT_PREFIX}\" PATH)\n")
-		cmake_path(GET import_prefix PARENT_PATH import_prefix)
-	endwhile()
-	string(APPEND import_instructions "if(_IMPORT_PREFIX STREQUAL \"/\")\n")
-	string(APPEND import_instructions "  set(_IMPORT_PREFIX \"\")\n")
-	string(APPEND import_instructions "endif()\n")
-	string(APPEND import_instructions "\n")
-
-	# Create the imported target.
-	get_target_property(target_type "${DEP_EXPORT}" TYPE)
-  	string(APPEND import_instructions "# Create imported target \"$<TARGET_PROPERTY:NAME>\"\n")
-	if("${target_type}" STREQUAL "STATIC_LIBRARY")
-		string(APPEND import_instructions "add_library(\"$<TARGET_PROPERTY:NAME>\" STATIC IMPORTED)\n")
-	elseif("${target_type}" STREQUAL "SHARED_LIBRARY")
-		string(APPEND import_instructions "add_library(\"$<TARGET_PROPERTY:NAME>\" SHARED IMPORTED)\n")
-	else()
-		message(FATAL_ERROR "Target type \"${target_type}\" is unsupported by export command!")
+	if(${DEP_INSTALL_TREE})
+		cmake_path(GET export_file PARENT_PATH install_export_dir)
+		install(FILES "${export_file}"
+			DESTINATION "${install_export_dir}"
+		)
+		message("install_export_dir: ${install_export_dir}")
 	endif()
-
-	# Add usage requirements.
-	string(APPEND import_instructions "\n")
-	string(APPEND import_instructions "set_target_properties(\"$<TARGET_PROPERTY:NAME>\" PROPERTIES\n")
-	string(APPEND import_instructions "  INTERFACE_INCLUDE_DIRECTORIES \"\${_IMPORT_PREFIX}/$<TARGET_PROPERTY:INTERFACE_INCLUDE_DIRECTORIES_INSTALL>\"\n")
-	string(APPEND import_instructions "  IMPORTED_LOCATION_$<CONFIG> \"\${_IMPORT_PREFIX}/$<TARGET_PROPERTY:IMPORTED_LOCATION_INSTALL_$<CONFIG>>\"\n")
-	string(APPEND import_instructions "  IMPORTED_IMPLIB_$<CONFIG> \"$<TARGET_PROPERTY:IMPORTED_IMPLIB_$<CONFIG>>\"\n")
-	string(APPEND import_instructions "  IMPORTED_SONAME_$<CONFIG> \"$<TARGET_PROPERTY:IMPORTED_SONAME_$<CONFIG>>\"\n")
-	string(APPEND import_instructions ")\n")
-	string(APPEND import_instructions "set_property(TARGET \"$<TARGET_PROPERTY:NAME>\" APPEND PROPERTY IMPORTED_CONFIGURATIONS \"$<CONFIG>\")\n")
-	string(APPEND import_instructions "\n")
-	
-	# Cleanup temporary variables.
-	string(APPEND import_instructions "# Cleanup temporary variables.\n")
-	string(APPEND import_instructions "unset(_IMPORT_PREFIX)\n")
-endmacro()
-
-#------------------------------------------------------------------------------
-# Internal usage.
-macro(_export_generate_header_code)
-	string(APPEND import_instructions "# Generated by the \"${PROJECT_NAME}\" project \n")
-	string(APPEND import_instructions "\n")
-	string(APPEND import_instructions "#----------------------------------------------------------------\n")
-	string(APPEND import_instructions "# Generated CMake target import file for internal libraries.\n")
-	string(APPEND import_instructions "#----------------------------------------------------------------\n")
-	string(APPEND import_instructions "\n")
-endmacro()
-
-#------------------------------------------------------------------------------
-# Internal usage.
-macro(_export_generate_footer_code)
-	string(APPEND import_instructions "#----------------------------------------------------------------\n")
-	string(APPEND import_instructions "\n")
 endmacro()
 
 #------------------------------------------------------------------------------
