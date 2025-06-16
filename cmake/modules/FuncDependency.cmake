@@ -433,8 +433,21 @@ macro(_dependency_export)
 	# Read the template file once
 	file(READ "${export_file_template}" template_content)
 
+	# Sanitize the output file path to create a valid CMake property identifier
+	cmake_path(GET export_file FILENAME sanitized_export_file)
+	string(MAKE_C_IDENTIFIER "${sanitized_export_file}" sanitized_export_file)
+	
+	# List of previously generated intermediate files
+	get_property(existing_export_parts GLOBAL PROPERTY "_EXPORT_PARTS_${sanitized_export_file}")
+
+	# Error if export command already specified for the file and 'APPEND' keyword is not used
+	list(LENGTH existing_export_parts nb_parts)
+	if((NOT nb_parts EQUAL 0) AND (NOT ${DEP_APPEND}))
+		message(FATAL_ERROR "Export command already specified for the file \"${DEP_OUTPUT_FILE}\". Did you miss 'APPEND' keyword?")
+	endif()
+	
 	# List of intermediate files to concatenate later
-	set(generated_target_files "")
+	set(new_export_parts "")
 	foreach(lib_target_name IN ITEMS ${DEP_EXPORT})
 		# Set template file variables
 		get_target_property(lib_target_type "${lib_target_name}" TYPE)
@@ -450,86 +463,69 @@ macro(_dependency_export)
 		string(CONFIGURE "${template_content}" configured_content @ONLY)
 
 		# Generate a per-target intermediate file with generator expressions
-		set(generated_file "${CMAKE_CURRENT_BINARY_DIR}/${lib_target_name}Target-${lib_target_type}.part.cmake")
-		if(NOT ("${generated_file}" IN_LIST generated_target_files))
-			file(GENERATE OUTPUT "${generated_file}"
+		set(new_part_file "${CMAKE_CURRENT_BINARY_DIR}/${lib_target_name}Target-${lib_target_type}.part.cmake")
+		if(NOT ("${new_part_file}" IN_LIST existing_export_parts))
+			file(GENERATE OUTPUT "${new_part_file}"
 				CONTENT "${configured_content}"
 				TARGET "${lib_target_name}"
 			)
+			set_source_files_properties("${new_part_file}" PROPERTIES GENERATED TRUE)
 			# Add generated files to the `clean` target
 			set_property(DIRECTORY
 				APPEND
 				PROPERTY ADDITIONAL_CLEAN_FILES
-				"${generated_file}"
+				"${new_part_file}"
 			)
-			list(APPEND generated_target_files "${generated_file}")
+			list(APPEND new_export_parts "${new_part_file}")
 		else()
 			message(FATAL_ERROR "Given target \"${lib_target_name}\" more than once!")
 		endif()
 	endforeach()
 
-	# Sanitize the output file path to create a valid CMake property identifier
-	cmake_path(GET export_file FILENAME sanitized_export_file)
-	string(MAKE_C_IDENTIFIER "${sanitized_export_file}" sanitized_export_file)
-
-	# If APPEND is not set, reset the list of intermediate files associated with the export file
-	if(NOT ${DEP_APPEND})
-		set_property(GLOBAL PROPERTY _EXPORT_FRAGMENTS_${sanitized_export_file} "")
-	endif()
-	
 	# Append the generated intermediate files to the file's associated global property
-	get_property(existing_fragments GLOBAL PROPERTY _EXPORT_FRAGMENTS_${sanitized_export_file})
-	list(APPEND existing_fragments ${generated_target_files})
-	set_property(GLOBAL PROPERTY _EXPORT_FRAGMENTS_${sanitized_export_file} "${existing_fragments}")
+	list(APPEND existing_export_parts "${new_export_parts}")
+	set_property(GLOBAL PROPERTY "_EXPORT_PARTS_${sanitized_export_file}" "${existing_export_parts}")
 
 	# Only define the output generation rule once
 	set(unique_target_name "GenerateImportTargetFile_${sanitized_export_file}")
+
+	# Build `add_custom_command()` for exporting
+	set(output_part "")
 	if(NOT TARGET ${unique_target_name})
-		# Concatenate all generated files into a single final file, but
-		# take care to clean or preserve existing file based on APPEND flag
-		if(${DEP_APPEND})
-			# Create the file if it does not exist and concatenate the content
-			add_custom_command(
-				OUTPUT "${export_file}"
-				COMMAND ${CMAKE_COMMAND} -E touch "${export_file}"
-				COMMAND ${CMAKE_COMMAND} -E cat ${existing_fragments} >> "${export_file}"
-				DEPENDS "${existing_fragments}"
-				COMMENT "Update the import file \"${export_file}\""
-			)
-		else()
-			# Overwrite the file with new content
-			add_custom_command(
-				OUTPUT "${export_file}"
-				COMMAND ${CMAKE_COMMAND} -E cat ${existing_fragments} > "${export_file}"
-				DEPENDS "${existing_fragments}"
-				COMMENT "Overwrite the import file \"${export_file}\""
-			)
-		endif()
-	
+		list(APPEND output_part "OUTPUT" "${export_file}")
+	else()
+		list(APPEND output_part "OUTPUT" "${export_file}" "APPEND")
+	endif()
+
+	set(comment_part "")
+	set(command_part "")
+	if(${DEP_APPEND})
+		list(APPEND command_part
+			"COMMAND" "${CMAKE_COMMAND}" "-E" "touch" "${export_file}")
+		list(APPEND command_part
+			"COMMAND" "${CMAKE_COMMAND}" "-E" "cat" ${new_export_parts} ">>" "${export_file}")
+		list(APPEND comment_part
+			"COMMENT" "Update the import file \"${export_file}\"")
+	else()
+		list(APPEND command_part
+			"COMMAND" "${CMAKE_COMMAND}" "-E" "cat" ${new_export_parts} ">" "${export_file}")
+		list(APPEND comment_part
+			"COMMENT" "Overwrite the import file \"${export_file}\"")
+	endif()
+
+	add_custom_command(
+		${output_part}
+		${command_part}
+		DEPENDS "${new_export_parts}"
+		${comment_part}
+	)
+
+	if(NOT TARGET "${unique_target_name}")
 		# Create a unique generative target per output file to trigger the command
 		add_custom_target("${unique_target_name}" ALL
 			DEPENDS "${export_file}"
 			VERBATIM
 		)
-	else()
-		if(${DEP_APPEND})
-			# Create the file if it does not exist and concatenate the content
-			add_custom_command(
-				OUTPUT "${export_file}" APPEND
-				COMMAND ${CMAKE_COMMAND} -E touch "${export_file}"
-				COMMAND ${CMAKE_COMMAND} -E cat ${existing_fragments} >> "${export_file}"
-				DEPENDS "${existing_fragments}"
-				COMMENT "Update the import file \"${export_file}\""
-			)
-		else()
-			# Overwrite the file with new content
-			add_custom_command(
-				OUTPUT "${export_file}" APPEND
-				COMMAND ${CMAKE_COMMAND} -E cat ${existing_fragments} > "${export_file}"
-				DEPENDS "${existing_fragments}"
-				COMMENT "Overwrite the import file \"${export_file}\""
-			)
-		endif()
 	endif()
 
 	if(${DEP_INSTALL_TREE})
