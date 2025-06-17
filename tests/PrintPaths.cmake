@@ -25,19 +25,19 @@ function(${CMAKETEST_TEST})
 
 		set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
 		set(input
-			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/main.cpp"
-			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/source_1.cpp"
-			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/source_2.cpp"
-			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/source_3.cpp"
-			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/source_4.cpp"
-			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/source_5.cpp"
-			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/sub_1/source_sub_1.cpp"
-			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/sub_2/source_sub_2.cpp")
+			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/main.cpp"
+			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/source_1.cpp"
+			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/source_2.cpp"
+			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/source_3.cpp"
+			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/source_4.cpp"
+			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/source_5.cpp"
+			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/sub_1/source_sub_1.cpp"
+			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/sub_2/source_sub_2.cpp")
 		print(PATHS "${input}")
-		ct_assert_prints("data/main.cpp ; data/source_1.cpp ; data/source_2.cpp ; data/source_3.cpp ; data/source_4.cpp ; data/source_5.cpp ; data/sub_1/source_sub_1.cpp ; data/sub_2/source_sub_2.cpp")
+		ct_assert_prints("data/src/main.cpp ; data/src/source_1.cpp ; data/src/source_2.cpp ; data/src/source_3.cpp ; data/src/source_4.cpp ; data/src/source_5.cpp ; data/src/sub_1/source_sub_1.cpp ; data/src/sub_2/source_sub_2.cpp")
 
 		print(PATHS "${input}" INDENT)
-		ct_assert_prints("data/main.cpp ; data/source_1.cpp ; data/source_2.cpp ; data/source_3.cpp ; data/source_4.cpp ; data/source_5.cpp ; data/sub_1/source_sub_1.cpp ; data/sub_2/source_sub_2.cpp") # This function ignores the indentation
+		ct_assert_prints("data/src/main.cpp ; data/src/source_1.cpp ; data/src/source_2.cpp ; data/src/source_3.cpp ; data/src/source_4.cpp ; data/src/source_5.cpp ; data/src/sub_1/source_sub_1.cpp ; data/src/sub_2/source_sub_2.cpp") # This function ignores the indentation
 	endfunction()
 
 	ct_add_section(NAME "status_mode")
@@ -49,19 +49,19 @@ function(${CMAKETEST_TEST})
 
 		set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
 		set(input
-			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/main.cpp"
-			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/source_1.cpp"
-			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/source_2.cpp"
-			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/source_3.cpp"
-			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/source_4.cpp"
-			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/source_5.cpp"
-			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/sub_1/source_sub_1.cpp"
-			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/sub_2/source_sub_2.cpp")
+			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/main.cpp"
+			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/source_1.cpp"
+			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/source_2.cpp"
+			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/source_3.cpp"
+			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/source_4.cpp"
+			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/source_5.cpp"
+			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/sub_1/source_sub_1.cpp"
+			"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/sub_2/source_sub_2.cpp")
 		print(STATUS PATHS "${input}")
-		ct_assert_prints("data/main.cpp ; data/source_1.cpp ; data/source_2.cpp ; data/source_3.cpp ; data/source_4.cpp ; data/source_5.cpp ; data/sub_1/source_sub_1.cpp ; data/sub_2/source_sub_2.cpp")
+		ct_assert_prints("data/src/main.cpp ; data/src/source_1.cpp ; data/src/source_2.cpp ; data/src/source_3.cpp ; data/src/source_4.cpp ; data/src/source_5.cpp ; data/src/sub_1/source_sub_1.cpp ; data/src/sub_2/source_sub_2.cpp")
 
 		print(STATUS PATHS "${input}" INDENT)
-		ct_assert_prints("data/main.cpp ; data/source_1.cpp ; data/source_2.cpp ; data/source_3.cpp ; data/source_4.cpp ; data/source_5.cpp ; data/sub_1/source_sub_1.cpp ; data/sub_2/source_sub_2.cpp") # This function ignores the indentation and the status
+		ct_assert_prints("data/src/main.cpp ; data/src/source_1.cpp ; data/src/source_2.cpp ; data/src/source_3.cpp ; data/src/source_4.cpp ; data/src/source_5.cpp ; data/src/sub_1/source_sub_1.cpp ; data/src/sub_2/source_sub_2.cpp") # This function ignores the indentation and the status
 	endfunction()
 
 	# Errors checking
