@@ -35,14 +35,14 @@
       "name": "Debug",
       "hidden": true,
       "cacheVariables": {
-        "PARAM_BUILD_TYPE": "debug"
+        "CMAKE_BUILD_TYPE": "DEBUG"
       }
     },
     {
       "name": "Release",
       "hidden": true,
       "cacheVariables": {
-        "PARAM_BUILD_TYPE": "release"
+        "CMAKE_BUILD_TYPE": "RELEASE"
       }
     },
     {

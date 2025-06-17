@@ -19,12 +19,12 @@ set(${PROJECT_NAME}_VERSION_MAJOR   "1")
 set(${PROJECT_NAME}_VERSION_MINOR   "0")
 set(${PROJECT_NAME}_VERSION_PATCH   "0")
 set(${PROJECT_NAME}_VERSION         "${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}.${${PROJECT_NAME}_VERSION_PATCH}")
-project("${PARAM_PROJECT_NAME}"
+project("${PROJECT_NAME}"
 	VERSION "${${PROJECT_NAME}_VERSION}"
 	DESCRIPTION "${${PROJECT_NAME}_SUMMARY}"
 	HOMEPAGE_URL "${${PROJECT_NAME}_VENDOR_CONTACT}"
 	LANGUAGES CXX)
-	
+
 ####################### Define and check project structure ####################
 set(${PROJECT_NAME}_PROJECT_DIR            "${CMAKE_CURRENT_SOURCE_DIR}")
 set(${PROJECT_NAME}_BUILD_DIR              "${CMAKE_CURRENT_BINARY_DIR}")
@@ -58,9 +58,14 @@ endforeach()
 
 ####################### Add module test #######################################
 set(BUILD_TESTING on)
-include(CTest)
-add_subdirectory(tests)
+if("${BUILD_TESTING}")
+	include(CTest)
+	enable_testing()
+	add_subdirectory(tests)
+endif()
 
 ####################### Add module doc ########################################
 set(BUILD_DOC on)
-add_subdirectory(doc)
+if("${BUILD_DOC}")
+	add_subdirectory(doc)
+endif()
