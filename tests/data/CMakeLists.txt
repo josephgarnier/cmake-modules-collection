@@ -76,6 +76,10 @@ message(CHECK_START "Creating static mock library")
 list(APPEND CMAKE_MESSAGE_INDENT "  ")
 
 set(STATIC_MOCK_LIB_TARGET_NAME "static_mock_lib")
+if("${CMAKE_BUILD_TYPE}" STREQUAL "DEBUG")
+	set(STATIC_MOCK_LIB_TARGET_NAME "static_mock_libd")
+endif()
+message(STATUS "Lib target name set to: ${STATIC_MOCK_LIB_TARGET_NAME}")
 add_library("${STATIC_MOCK_LIB_TARGET_NAME}" STATIC)
 target_compile_features("${STATIC_MOCK_LIB_TARGET_NAME}"
 	PRIVATE
@@ -120,7 +124,11 @@ message(CHECK_START "Creating shared mock library")
 list(APPEND CMAKE_MESSAGE_INDENT "  ")
 
 set(SHARED_MOCK_LIB_TARGET_NAME "shared_mock_lib")
+if("${CMAKE_BUILD_TYPE}" STREQUAL "DEBUG")
+	set(SHARED_MOCK_LIB_TARGET_NAME "shared_mock_libd")
+endif()
 add_library("${SHARED_MOCK_LIB_TARGET_NAME}" SHARED)
+message(STATUS "Lib target name set to: ${SHARED_MOCK_LIB_TARGET_NAME}")
 target_compile_features("${SHARED_MOCK_LIB_TARGET_NAME}"
 	PRIVATE "cxx_std_${CMAKE_CXX_STANDARD}"
 )
