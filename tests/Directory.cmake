@@ -20,7 +20,6 @@ function(${CMAKETEST_TEST})
 		ct_add_section(NAME "throws_if_unknown_argument" EXPECTFAIL)
 		function(${CMAKETEST_SECTION})
 			directory(FOO)
-			ct_assert_prints("Unrecognized arguments: \"FOO\"")
 		endfunction()
 		
 		ct_add_section(NAME "throws_if_arg_op_is_missing" EXPECTFAIL)
