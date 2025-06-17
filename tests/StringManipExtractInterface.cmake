@@ -155,6 +155,12 @@ function(${CMAKETEST_TEST})
 		string_manip(EXTRACT_INTERFACE input)
 	endfunction()
 
+	ct_add_section(NAME "throws_if_arg_interface_type_is_twice" EXPECTFAIL)
+	function(${CMAKETEST_SECTION})
+		set(input "before;$<BUILD_INTERFACE:src/file-a.cpp;src/file-b.cpp;src/file-c.cpp>;$<BUILD_INTERFACE:src/file-d.cpp;src/file-e.cpp;src/file-f.cpp>;between;$<INSTALL_INTERFACE:include/file-a.h;include/file-b.h;include/file-c.h>;after")
+		string_manip(EXTRACT_INTERFACE input BUILD INSTALL)
+	endfunction()
+
 	ct_add_section(NAME "throws_if_arg_output_var_is_missing_1" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		set(input "before;$<BUILD_INTERFACE:src/file-a.cpp;src/file-b.cpp;src/file-c.cpp>;$<BUILD_INTERFACE:src/file-d.cpp;src/file-e.cpp;src/file-f.cpp>;between;$<INSTALL_INTERFACE:include/file-a.h;include/file-b.h;include/file-c.h>;after")
