@@ -28,10 +28,10 @@ project("${PROJECT_NAME}"
 ####################### Define and check project structure ####################
 set(${PROJECT_NAME}_PROJECT_DIR            "${CMAKE_CURRENT_SOURCE_DIR}")
 set(${PROJECT_NAME}_BUILD_DIR              "${CMAKE_CURRENT_BINARY_DIR}")
-set(${PROJECT_NAME}_CMAKE_DIR               "${${PROJECT_NAME}_PROJECT_DIR}/cmake")
-set(${PROJECT_NAME}_CMAKE_MODULES_DIR       "${${PROJECT_NAME}_CMAKE_DIR}/modules")
-set(${PROJECT_NAME}_CMAKE_MODULES_EXT_DIR         "${${PROJECT_NAME}_CMAKE_DIR}/modules_ext")
-set(${PROJECT_NAME}_CMAKE_TOOLCHAINS_DIR         "${${PROJECT_NAME}_CMAKE_DIR}/toolchains")
+set(${PROJECT_NAME}_CMAKE_DIR              "${${PROJECT_NAME}_PROJECT_DIR}/cmake")
+set(${PROJECT_NAME}_CMAKE_MODULES_DIR      "${${PROJECT_NAME}_CMAKE_DIR}/modules")
+set(${PROJECT_NAME}_CMAKE_MODULES_EXT_DIR  "${${PROJECT_NAME}_CMAKE_DIR}/modules_ext")
+set(${PROJECT_NAME}_CMAKE_TOOLCHAINS_DIR   "${${PROJECT_NAME}_CMAKE_DIR}/toolchains")
 set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}"
 	"${${PROJECT_NAME}_CMAKE_MODULES_DIR}"
 	"${${PROJECT_NAME}_CMAKE_MODULES_EXT_DIR}"
