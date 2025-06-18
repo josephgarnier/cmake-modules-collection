@@ -33,7 +33,6 @@ function(${CMAKETEST_TEST})
 				ROOT_DIR "${TESTS_DATA_DIR}"
 				INCLUDE_REGEX ".*"
 			)
-			message("output1: ${output}")
 			ct_assert_list(output)
 			ct_assert_equal(output "${expected_output}")
 		endfunction()
@@ -52,7 +51,6 @@ function(${CMAKETEST_TEST})
 				ROOT_DIR "${TESTS_DATA_DIR}"
 				INCLUDE_REGEX ".*"
 			)
-			message("output2: ${output}")
 			ct_assert_list(output)
 			ct_assert_equal(output "${expected_output}")
 		endfunction()
