@@ -13,7 +13,7 @@ cmake_minimum_required (VERSION 4.0.1 FATAL_ERROR)
 message(CHECK_START "Creating data test")
 list(APPEND CMAKE_MESSAGE_INDENT "  ")
 
-####################### Init local variables ##################################
+####################### Init level variables ##################################
 set(BUILD_DIR    "${CMAKE_CURRENT_BINARY_DIR}")
 set(BIN_DIR      "${CMAKE_CURRENT_SOURCE_DIR}/bin")
 set(SRC_DIR      "${CMAKE_CURRENT_SOURCE_DIR}/src")

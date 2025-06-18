@@ -22,27 +22,27 @@ function(${CMAKETEST_TEST})
 		ct_add_section(NAME "get_absolute_path")
 		function(${CMAKETEST_SECTION})
 			set(expected_output
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/main.cpp"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/source_1.cpp"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/source_1.h"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/source_2.cpp"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/source_2.h"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/source_3.cpp"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/source_3.h"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/source_4.cpp"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/source_4.h"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/source_5.cpp"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/source_5.h"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/sub_1"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/sub_1/source_sub_1.cpp"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/sub_1/source_sub_1.h"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/sub_2"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/sub_2/source_sub_2.cpp"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/sub_2/source_sub_2.h")
+				"${TESTS_DATA_DIR}/src/main.cpp"
+				"${TESTS_DATA_DIR}/src/source_1.cpp"
+				"${TESTS_DATA_DIR}/src/source_1.h"
+				"${TESTS_DATA_DIR}/src/source_2.cpp"
+				"${TESTS_DATA_DIR}/src/source_2.h"
+				"${TESTS_DATA_DIR}/src/source_3.cpp"
+				"${TESTS_DATA_DIR}/src/source_3.h"
+				"${TESTS_DATA_DIR}/src/source_4.cpp"
+				"${TESTS_DATA_DIR}/src/source_4.h"
+				"${TESTS_DATA_DIR}/src/source_5.cpp"
+				"${TESTS_DATA_DIR}/src/source_5.h"
+				"${TESTS_DATA_DIR}/src/sub_1"
+				"${TESTS_DATA_DIR}/src/sub_1/source_sub_1.cpp"
+				"${TESTS_DATA_DIR}/src/sub_1/source_sub_1.h"
+				"${TESTS_DATA_DIR}/src/sub_2"
+				"${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp"
+				"${TESTS_DATA_DIR}/src/sub_2/source_sub_2.h")
 			directory(SCAN output
 				LIST_DIRECTORIES on
 				RELATIVE off
-				ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src"
+				ROOT_DIR "${TESTS_DATA_DIR}/src"
 				INCLUDE_REGEX ".*"
 			)
 			ct_assert_list(output)
@@ -72,7 +72,7 @@ function(${CMAKETEST_TEST})
 			directory(SCAN output
 				LIST_DIRECTORIES on
 				RELATIVE on
-				ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src"
+				ROOT_DIR "${TESTS_DATA_DIR}/src"
 				INCLUDE_REGEX ".*"
 			)
 			ct_assert_list(output)
@@ -86,25 +86,25 @@ function(${CMAKETEST_TEST})
 		ct_add_section(NAME "get_absolute_path")
 		function(${CMAKETEST_SECTION})
 			set(expected_output
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/main.cpp"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/source_1.cpp"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/source_1.h"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/source_2.cpp"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/source_2.h"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/source_3.cpp"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/source_3.h"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/source_4.cpp"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/source_4.h"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/source_5.cpp"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/source_5.h"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/sub_1/source_sub_1.cpp"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/sub_1/source_sub_1.h"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/sub_2/source_sub_2.cpp"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/sub_2/source_sub_2.h")
+				"${TESTS_DATA_DIR}/src/main.cpp"
+				"${TESTS_DATA_DIR}/src/source_1.cpp"
+				"${TESTS_DATA_DIR}/src/source_1.h"
+				"${TESTS_DATA_DIR}/src/source_2.cpp"
+				"${TESTS_DATA_DIR}/src/source_2.h"
+				"${TESTS_DATA_DIR}/src/source_3.cpp"
+				"${TESTS_DATA_DIR}/src/source_3.h"
+				"${TESTS_DATA_DIR}/src/source_4.cpp"
+				"${TESTS_DATA_DIR}/src/source_4.h"
+				"${TESTS_DATA_DIR}/src/source_5.cpp"
+				"${TESTS_DATA_DIR}/src/source_5.h"
+				"${TESTS_DATA_DIR}/src/sub_1/source_sub_1.cpp"
+				"${TESTS_DATA_DIR}/src/sub_1/source_sub_1.h"
+				"${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp"
+				"${TESTS_DATA_DIR}/src/sub_2/source_sub_2.h")
 			directory(SCAN output
 				LIST_DIRECTORIES off
 				RELATIVE off
-				ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src"
+				ROOT_DIR "${TESTS_DATA_DIR}/src"
 				INCLUDE_REGEX ".*"
 			)
 			ct_assert_list(output)
@@ -132,7 +132,7 @@ function(${CMAKETEST_TEST})
 			directory(SCAN output
 				LIST_DIRECTORIES off
 				RELATIVE on
-				ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src"
+				ROOT_DIR "${TESTS_DATA_DIR}/src"
 				INCLUDE_REGEX ".*"
 			)
 			ct_assert_list(output)
@@ -146,18 +146,18 @@ function(${CMAKETEST_TEST})
 		ct_add_section(NAME "get_absolute_path")
 		function(${CMAKETEST_SECTION})
 			set(expected_output
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/main.cpp"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/source_1.cpp"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/source_2.cpp"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/source_3.cpp"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/source_4.cpp"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/source_5.cpp"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/sub_1/source_sub_1.cpp"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/sub_2/source_sub_2.cpp")
+				"${TESTS_DATA_DIR}/src/main.cpp"
+				"${TESTS_DATA_DIR}/src/source_1.cpp"
+				"${TESTS_DATA_DIR}/src/source_2.cpp"
+				"${TESTS_DATA_DIR}/src/source_3.cpp"
+				"${TESTS_DATA_DIR}/src/source_4.cpp"
+				"${TESTS_DATA_DIR}/src/source_5.cpp"
+				"${TESTS_DATA_DIR}/src/sub_1/source_sub_1.cpp"
+				"${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp")
 			directory(SCAN output
 				LIST_DIRECTORIES on
 				RELATIVE off
-				ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src"
+				ROOT_DIR "${TESTS_DATA_DIR}/src"
 				INCLUDE_REGEX ".*[.]cpp$|.*[.]cc$|.*[.]cxx$"
 			)
 			ct_assert_list(output)
@@ -178,7 +178,7 @@ function(${CMAKETEST_TEST})
 			directory(SCAN output
 				LIST_DIRECTORIES on
 				RELATIVE on
-				ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src"
+				ROOT_DIR "${TESTS_DATA_DIR}/src"
 				INCLUDE_REGEX ".*[.]cpp$|.*[.]cc$|.*[.]cxx$"
 			)
 			ct_assert_list(output)
@@ -192,20 +192,20 @@ function(${CMAKETEST_TEST})
 		ct_add_section(NAME "get_absolute_path")
 		function(${CMAKETEST_SECTION})
 			set(expected_output
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/main.cpp"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/source_1.cpp"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/source_2.cpp"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/source_3.cpp"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/source_4.cpp"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/source_5.cpp"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/sub_1"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/sub_1/source_sub_1.cpp"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/sub_2"
-				"${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/sub_2/source_sub_2.cpp")
+				"${TESTS_DATA_DIR}/src/main.cpp"
+				"${TESTS_DATA_DIR}/src/source_1.cpp"
+				"${TESTS_DATA_DIR}/src/source_2.cpp"
+				"${TESTS_DATA_DIR}/src/source_3.cpp"
+				"${TESTS_DATA_DIR}/src/source_4.cpp"
+				"${TESTS_DATA_DIR}/src/source_5.cpp"
+				"${TESTS_DATA_DIR}/src/sub_1"
+				"${TESTS_DATA_DIR}/src/sub_1/source_sub_1.cpp"
+				"${TESTS_DATA_DIR}/src/sub_2"
+				"${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp")
 			directory(SCAN output
 				LIST_DIRECTORIES on
 				RELATIVE off
-				ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src"
+				ROOT_DIR "${TESTS_DATA_DIR}/src"
 				EXCLUDE_REGEX ".*[.]h$|.*[.]hpp$|.*[.]hxx$|.*[.]inl$|.*[.]tpp$"
 			)
 			ct_assert_list(output)
@@ -228,7 +228,7 @@ function(${CMAKETEST_TEST})
 			directory(SCAN output
 				LIST_DIRECTORIES on
 				RELATIVE on
-				ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src"
+				ROOT_DIR "${TESTS_DATA_DIR}/src"
 				EXCLUDE_REGEX ".*[.]h$|.*[.]hpp$|.*[.]hxx$|.*[.]inl$|.*[.]tpp$"
 			)
 			ct_assert_list(output)
@@ -242,7 +242,7 @@ function(${CMAKETEST_TEST})
 		directory(SCAN
 			LIST_DIRECTORIES on
 			RELATIVE off
-			ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src"
+			ROOT_DIR "${TESTS_DATA_DIR}/src"
 			INCLUDE_REGEX ".*"
 		)
 	endfunction()
@@ -252,7 +252,7 @@ function(${CMAKETEST_TEST})
 		directory(SCAN ""
 			LIST_DIRECTORIES on
 			RELATIVE off
-			ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src"
+			ROOT_DIR "${TESTS_DATA_DIR}/src"
 			INCLUDE_REGEX ".*"
 		)
 	endfunction()
@@ -262,7 +262,7 @@ function(${CMAKETEST_TEST})
 		directory(SCAN "output"
 			LIST_DIRECTORIES on
 			RELATIVE off
-			ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src"
+			ROOT_DIR "${TESTS_DATA_DIR}/src"
 			INCLUDE_REGEX ".*"
 		)
 	endfunction()
@@ -273,7 +273,7 @@ function(${CMAKETEST_TEST})
 		directory(SCAN output
 			LIST_DIRECTORIES on
 			RELATIVE off
-			ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src"
+			ROOT_DIR "${TESTS_DATA_DIR}/src"
 			INCLUDE_REGEX ".*"
 		)
 	endfunction()
@@ -282,7 +282,7 @@ function(${CMAKETEST_TEST})
 	function(${CMAKETEST_SECTION})
 		directory(SCAN output
 			RELATIVE off
-			ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src"
+			ROOT_DIR "${TESTS_DATA_DIR}/src"
 			INCLUDE_REGEX ".*"
 		)
 	endfunction()
@@ -292,7 +292,7 @@ function(${CMAKETEST_TEST})
 		directory(SCAN output
 			LIST_DIRECTORIES
 			RELATIVE off
-			ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src"
+			ROOT_DIR "${TESTS_DATA_DIR}/src"
 			INCLUDE_REGEX ".*"
 		)
 	endfunction()
@@ -302,7 +302,7 @@ function(${CMAKETEST_TEST})
 		directory(SCAN output
 			LIST_DIRECTORIES ""
 			RELATIVE off
-			ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src"
+			ROOT_DIR "${TESTS_DATA_DIR}/src"
 			INCLUDE_REGEX ".*"
 		)
 	endfunction()
@@ -312,7 +312,7 @@ function(${CMAKETEST_TEST})
 		directory(SCAN output
 			LIST_DIRECTORIES "wrong"
 			RELATIVE off
-			ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src"
+			ROOT_DIR "${TESTS_DATA_DIR}/src"
 			INCLUDE_REGEX ".*"
 		)
 	endfunction()
@@ -321,7 +321,7 @@ function(${CMAKETEST_TEST})
 	function(${CMAKETEST_SECTION})
 		directory(SCAN output
 			LIST_DIRECTORIES on
-			ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src"
+			ROOT_DIR "${TESTS_DATA_DIR}/src"
 			INCLUDE_REGEX ".*"
 		)
 	endfunction()
@@ -331,7 +331,7 @@ function(${CMAKETEST_TEST})
 		directory(SCAN output
 			LIST_DIRECTORIES on
 			RELATIVE
-			ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src"
+			ROOT_DIR "${TESTS_DATA_DIR}/src"
 			INCLUDE_REGEX ".*"
 		)
 	endfunction()
@@ -341,7 +341,7 @@ function(${CMAKETEST_TEST})
 		directory(SCAN output
 			LIST_DIRECTORIES on
 			RELATIVE ""
-			ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src"
+			ROOT_DIR "${TESTS_DATA_DIR}/src"
 			INCLUDE_REGEX ".*"
 		)
 	endfunction()
@@ -351,7 +351,7 @@ function(${CMAKETEST_TEST})
 		directory(SCAN output
 			LIST_DIRECTORIES on
 			RELATIVE "wrong"
-			ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src"
+			ROOT_DIR "${TESTS_DATA_DIR}/src"
 			INCLUDE_REGEX ".*"
 		)
 	endfunction()
@@ -400,7 +400,7 @@ function(${CMAKETEST_TEST})
 		directory(SCAN output
 			LIST_DIRECTORIES on
 			RELATIVE off
-			ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src"
+			ROOT_DIR "${TESTS_DATA_DIR}/src"
 		)
 	endfunction()
 
@@ -409,7 +409,7 @@ function(${CMAKETEST_TEST})
 		directory(SCAN output
 			LIST_DIRECTORIES on
 			RELATIVE off
-			ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src"
+			ROOT_DIR "${TESTS_DATA_DIR}/src"
 			INCLUDE_REGEX
 		)
 	endfunction()
@@ -419,7 +419,7 @@ function(${CMAKETEST_TEST})
 		directory(SCAN output
 			LIST_DIRECTORIES on
 			RELATIVE off
-			ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src"
+			ROOT_DIR "${TESTS_DATA_DIR}/src"
 			INCLUDE_REGEX ""
 		)
 	endfunction()

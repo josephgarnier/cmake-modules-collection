@@ -65,14 +65,14 @@ function(${CMAKETEST_TEST})
 				NAME "${lib_name}"
 				STATIC
 				RELATIVE off
-				ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data"
+				ROOT_DIR "${TESTS_DATA_DIR}"
 			)
 			_build_test_regex("${lib_name}" "STATIC")
 
 			ct_assert_string(output_lib)
 			ct_assert_true(output_lib)
 			cmake_path(GET output_lib PARENT_PATH lib_dir_path)
-			ct_assert_equal(lib_dir_path "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/bin")
+			ct_assert_equal(lib_dir_path "${TESTS_DATA_DIR}/bin")
 			cmake_path(GET output_lib FILENAME lib_file_name)
 			ct_assert_true_regex(lib_file_name "${LIB_REGEX}")
 
@@ -88,7 +88,7 @@ function(${CMAKETEST_TEST})
 				NAME "${lib_name}"
 				STATIC
 				RELATIVE on
-				ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data"
+				ROOT_DIR "${TESTS_DATA_DIR}"
 			)
 			_build_test_regex("${lib_name}" "STATIC")
 
@@ -115,21 +115,21 @@ function(${CMAKETEST_TEST})
 				NAME "${lib_name}"
 				SHARED
 				RELATIVE off
-				ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data"
+				ROOT_DIR "${TESTS_DATA_DIR}"
 			)
 			_build_test_regex("${lib_name}" "SHARED")
 
 			ct_assert_string(output_lib)
 			ct_assert_true(output_lib)
 			cmake_path(GET output_lib PARENT_PATH lib_dir_path)
-			ct_assert_equal(lib_dir_path "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/bin")
+			ct_assert_equal(lib_dir_path "${TESTS_DATA_DIR}/bin")
 			cmake_path(GET output_lib FILENAME lib_file_name)
 			ct_assert_true_regex(lib_file_name "${LIB_REGEX}")
 
 			ct_assert_string(output_implib)
 			ct_assert_true(output_implib)
 			cmake_path(GET output_implib PARENT_PATH implib_dir_path)
-			ct_assert_equal(lib_dir_path "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/bin")
+			ct_assert_equal(lib_dir_path "${TESTS_DATA_DIR}/bin")
 			cmake_path(GET output_implib FILENAME implib_file_name)
 			ct_assert_true_regex(implib_file_name "${IMPLIB_REGEX}")
 		endfunction()
@@ -142,7 +142,7 @@ function(${CMAKETEST_TEST})
 				NAME "${lib_name}"
 				SHARED
 				RELATIVE on
-				ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data"
+				ROOT_DIR "${TESTS_DATA_DIR}"
 			)
 			_build_test_regex("${lib_name}" "SHARED")
 
@@ -174,7 +174,7 @@ function(${CMAKETEST_TEST})
 				NAME "${lib_name}"
 				STATIC
 				RELATIVE off
-				ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data"
+				ROOT_DIR "${TESTS_DATA_DIR}"
 			)
 			ct_assert_string(output_lib)
 			ct_assert_false(output_lib) # equals to "fake_lib-NOTFOUND"
@@ -188,7 +188,7 @@ function(${CMAKETEST_TEST})
 				NAME "${lib_name}"
 				STATIC
 				RELATIVE off
-				ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data"
+				ROOT_DIR "${TESTS_DATA_DIR}"
 			)
 			ct_assert_string(output_lib)
 			ct_assert_false(output_lib) # equals to "fake_lib-NOTFOUND"
@@ -204,7 +204,7 @@ function(${CMAKETEST_TEST})
 				NAME "${lib_name}"
 				STATIC
 				RELATIVE on
-				ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data"
+				ROOT_DIR "${TESTS_DATA_DIR}"
 			)
 			ct_assert_string(output_lib)
 			ct_assert_false(output_lib) # equals to "fake_lib-NOTFOUND"
@@ -218,7 +218,7 @@ function(${CMAKETEST_TEST})
 				NAME "${lib_name}"
 				STATIC
 				RELATIVE on
-				ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data"
+				ROOT_DIR "${TESTS_DATA_DIR}"
 			)
 			ct_assert_string(output_lib)
 			ct_assert_false(output_lib) # equals to "fake_lib-NOTFOUND"
@@ -237,7 +237,7 @@ function(${CMAKETEST_TEST})
 				NAME "${lib_name}"
 				SHARED
 				RELATIVE off
-				ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data"
+				ROOT_DIR "${TESTS_DATA_DIR}"
 			)
 			ct_assert_string(output_lib)
 			ct_assert_false(output_lib) # equals to "fake_lib-NOTFOUND"
@@ -254,7 +254,7 @@ function(${CMAKETEST_TEST})
 					NAME "${lib_name}"
 					SHARED
 					RELATIVE off
-					ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data"
+					ROOT_DIR "${TESTS_DATA_DIR}"
 				)
 				ct_assert_string(output_lib)
 				ct_assert_false(output_lib) # equals to "fake_lib-NOTFOUND"
@@ -271,7 +271,7 @@ function(${CMAKETEST_TEST})
 				NAME "${lib_name}"
 				SHARED
 				RELATIVE on
-				ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data"
+				ROOT_DIR "${TESTS_DATA_DIR}"
 			)
 			ct_assert_string(output_lib)
 			ct_assert_false(output_lib) # equals to "fake_lib-NOTFOUND"
@@ -288,7 +288,7 @@ function(${CMAKETEST_TEST})
 					NAME "${lib_name}"
 					SHARED
 					RELATIVE on
-					ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data"
+					ROOT_DIR "${TESTS_DATA_DIR}"
 				)
 				ct_assert_string(output_lib)
 				ct_assert_false(output_lib) # equals to "fake_lib-NOTFOUND"
@@ -301,16 +301,16 @@ function(${CMAKETEST_TEST})
 	# # Errors checking
 	ct_add_section(NAME "throws_if_lib_is_duplicated" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
-		file(COPY "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/bin" DESTINATION "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/bin_temp_copy")	
+		file(COPY "${TESTS_DATA_DIR}/bin" DESTINATION "${TESTS_DATA_DIR}/bin_temp_copy")	
 		set(lib_name "shared_mock_lib")
 		directory(FIND_LIB output_lib
 			FIND_IMPLIB output_implib
 			NAME "${lib_name}"
 			SHARED
 			RELATIVE off
-			ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data"
+			ROOT_DIR "${TESTS_DATA_DIR}"
 		)
-		file(REMOVE_RECURSE "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/bin_temp_copy")
+		file(REMOVE_RECURSE "${TESTS_DATA_DIR}/bin_temp_copy")
 	endfunction()
 	
 	ct_add_section(NAME "throws_if_arg_output_lib_var_is_missing_1" EXPECTFAIL)
@@ -321,7 +321,7 @@ function(${CMAKETEST_TEST})
 			NAME "${lib_name}"
 			SHARED
 			RELATIVE off
-			ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data"
+			ROOT_DIR "${TESTS_DATA_DIR}"
 		)
 	endfunction()
 
@@ -333,7 +333,7 @@ function(${CMAKETEST_TEST})
 			NAME "${lib_name}"
 			SHARED
 			RELATIVE off
-			ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data"
+			ROOT_DIR "${TESTS_DATA_DIR}"
 		)
 	endfunction()
 
@@ -345,7 +345,7 @@ function(${CMAKETEST_TEST})
 			NAME "${lib_name}"
 			SHARED
 			RELATIVE off
-			ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data"
+			ROOT_DIR "${TESTS_DATA_DIR}"
 		)
 	endfunction()
 
@@ -358,7 +358,7 @@ function(${CMAKETEST_TEST})
 			NAME "${lib_name}"
 			SHARED
 			RELATIVE off
-			ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data"
+			ROOT_DIR "${TESTS_DATA_DIR}"
 		)
 	endfunction()
 
@@ -370,7 +370,7 @@ function(${CMAKETEST_TEST})
 			NAME "${lib_name}"
 			SHARED
 			RELATIVE off
-			ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data"
+			ROOT_DIR "${TESTS_DATA_DIR}"
 		)
 	endfunction()
 
@@ -382,7 +382,7 @@ function(${CMAKETEST_TEST})
 			NAME "${lib_name}"
 			SHARED
 			RELATIVE off
-			ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data"
+			ROOT_DIR "${TESTS_DATA_DIR}"
 		)
 	endfunction()
 
@@ -394,7 +394,7 @@ function(${CMAKETEST_TEST})
 			NAME "${lib_name}"
 			SHARED
 			RELATIVE off
-			ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data"
+			ROOT_DIR "${TESTS_DATA_DIR}"
 		)
 	endfunction()
 
@@ -407,7 +407,7 @@ function(${CMAKETEST_TEST})
 			NAME "${lib_name}"
 			SHARED
 			RELATIVE off
-			ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data"
+			ROOT_DIR "${TESTS_DATA_DIR}"
 		)
 	endfunction()
 
@@ -419,7 +419,7 @@ function(${CMAKETEST_TEST})
 			NAME
 			SHARED
 			RELATIVE off
-			ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data"
+			ROOT_DIR "${TESTS_DATA_DIR}"
 		)
 	endfunction()
 
@@ -431,7 +431,7 @@ function(${CMAKETEST_TEST})
 			NAME ""
 			SHARED
 			RELATIVE off
-			ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data"
+			ROOT_DIR "${TESTS_DATA_DIR}"
 		)
 	endfunction()
 
@@ -442,7 +442,7 @@ function(${CMAKETEST_TEST})
 			FIND_IMPLIB output_implib
 			NAME "${lib_name}"
 			RELATIVE off
-			ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data"
+			ROOT_DIR "${TESTS_DATA_DIR}"
 		)
 	endfunction()
 	
@@ -454,7 +454,7 @@ function(${CMAKETEST_TEST})
 			NAME "${lib_name}"
 			SHARED STATIC
 			RELATIVE off
-			ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data"
+			ROOT_DIR "${TESTS_DATA_DIR}"
 		)
 	endfunction()
 
@@ -465,7 +465,7 @@ function(${CMAKETEST_TEST})
 			FIND_IMPLIB output_implib
 			NAME "${lib_name}"
 			SHARED
-			ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data"
+			ROOT_DIR "${TESTS_DATA_DIR}"
 		)
 	endfunction()
 
@@ -477,7 +477,7 @@ function(${CMAKETEST_TEST})
 			NAME "${lib_name}"
 			SHARED
 			RELATIVE
-			ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data"
+			ROOT_DIR "${TESTS_DATA_DIR}"
 		)
 	endfunction()
 
@@ -489,7 +489,7 @@ function(${CMAKETEST_TEST})
 			NAME "${lib_name}"
 			SHARED
 			RELATIVE "not-bool"
-			ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data"
+			ROOT_DIR "${TESTS_DATA_DIR}"
 		)
 	endfunction()
 	
@@ -548,7 +548,7 @@ function(${CMAKETEST_TEST})
 			NAME "${lib_name}"
 			SHARED
 			RELATIVE off
-			ROOT_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/data/src/source_1.cpp"
+			ROOT_DIR "${TESTS_DATA_DIR}/src/source_1.cpp"
 		)
 	endfunction()
 endfunction()
