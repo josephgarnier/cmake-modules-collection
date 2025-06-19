@@ -8,7 +8,7 @@
 Print
 -----
 
-Log a message by wrapping the CMake `message() <https://cmake.org/cmake/help/latest/command/message.html>`__ command to extend its functionalities .It requires CMake 3.20 or newer.
+Log a message by wrapping the CMake :cmake:command:`message() <cmake:command:message>` command to extend its functionalities .It requires CMake 3.20 or newer.
 
 Synopsis
 ^^^^^^^^
@@ -29,7 +29,7 @@ Module Variables
 
 .. variable:: PRINT_BASE_DIR
 
-  Specifies the base directory used to compute relative paths in the :command:`print(formated_messages)` commands. Its default value is `CMAKE_SOURCE_DIR <https://cmake.org/cmake/help/latest/variable/CMAKE_SOURCE_DIR.html>`_.
+  Specifies the base directory used to compute relative paths in the :command:`print(normal)` commands. Its default value is :cmake:variable:`CMAKE_SOURCE_DIR <cmake:variable:CMAKE_SOURCE_DIR>`.
 
 Usage
 ^^^^^
@@ -38,19 +38,19 @@ Usage
 
 .. signature::
   print([<mode>] "message with format text" <argument>...)
-  :target: formated_messages
+  :target: normal
 
   Record the specified message text in the log, optionally specifying a message
-  mode. This command is inspired by the `message() <https://cmake.org/cmake/help/latest/command/message.html>`__ command from CMake and
+  mode. This command is inspired by the :cmake:command:`message() <cmake:command:message>` command from CMake and
   the C `printf() <https://linux.die.net/man/3/printf>`_ function.
 
   If specified, the optional ``<mode>`` keyword must be one of the standard
-  message modes accepted by the `message() <https://cmake.org/cmake/help/latest/command/message.html#general-messages>`__ command, such as ``STATUS``, ``WARNING``, ``ERROR``, etc.
+  message modes accepted by the :cmake:command:`message() <cmake:command:message>` command, such as ``STATUS``, ``WARNING``, ``ERROR``, etc.
 
   The ``"text to print"`` may contain one or more custom conversion directives
   enclosed in ``@`` characters. These directives will be replaced using the
   provided arguments, in the order they are given. Text without directives
-  is equivalent to a call to `message() <https://cmake.org/cmake/help/latest/command/message.html#general-messages>`__ command.
+  is equivalent to a call to :cmake:command:`message() <cmake:command:message>` command.
 
   Each directive takes the form ``@specifier@``, where ``specifier`` is one of
   the following:
@@ -84,19 +84,19 @@ Usage
 
 .. signature::
   print([<mode>] PATHS <file_list>... [INDENT])
-  :target: path_list
+  :target: PATHS
 
   Record in the log each file from the specified ``<file_list>`` after
   converting them to paths relative to the value of the :variable:`PRINT_BASE_DIR`
-  variable. This command is inspired by the `message() <https://cmake.org/cmake/help/latest/command/message.html>`__ command from CMake.
+  variable. This command is inspired by the :cmake:command:`message() <cmake:command:message>` command from CMake.
 
   The optional ``<mode>`` argument determines the message type and may be any
-  of the standard message modes supported by the `message() <https://cmake.org/cmake/help/latest/command/message.html#general-messages>`__ command,
+  of the standard message modes supported by the :cmake:command:`message() <cmake:command:message>` command,
   such as ``STATUS``, ``WARNING``, ``ERROR``, etc.
 
   If the ``INDENT`` option is specified, the output message is indented by
   two spaces. This affects the indentation level of the printed message using
-  the internal `CMAKE_MESSAGE_INDENT <https://cmake.org/cmake/help/latest/variable/CMAKE_MESSAGE_INDENT.html>`_ stack.
+  the internal :cmake:variable:`CMAKE_MESSAGE_INDENT <cmake:variable:CMAKE_MESSAGE_INDENT>` stack.
 
   Example usage:
 
@@ -112,17 +112,17 @@ Usage
 
 .. signature::
   print([<mode>] STRINGS <string_list>... [INDENT])
-  :target: string_list
+  :target: STRINGS
 
   Record in the log each string from the given ``<string_list>``. This command
-  is inspired by the `message() <https://cmake.org/cmake/help/latest/command/message.html>`__ command from CMake.
+  is inspired by the :cmake:command:`message() <cmake:command:message>` command from CMake.
 
   If specified, the optional ``<mode>`` keyword must be one of the standard
-  message modes accepted by the `message() <https://cmake.org/cmake/help/latest/command/message.html#general-messages>`__ command, such as ``STATUS``, ``WARNING``, ``ERROR``, etc.
+  message modes accepted by the :cmake:command:`message() <cmake:command:message>` command, such as ``STATUS``, ``WARNING``, ``ERROR``, etc.
 
   If the ``INDENT`` option is specified, the output message is indented by
   two spaces. This affects the indentation level of the printed message using
-  the internal `CMAKE_MESSAGE_INDENT <https://cmake.org/cmake/help/latest/variable/CMAKE_MESSAGE_INDENT.html>`_ stack.
+  the internal :cmake:variable:`CMAKE_MESSAGE_INDENT <cmake:variable:CMAKE_MESSAGE_INDENT>` stack.
 
   Example usage:
 

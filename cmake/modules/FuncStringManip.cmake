@@ -32,7 +32,7 @@ Usage
 
   * Transitions between lowercase and uppercase letters
     (e.g., ``MyValue`` becomes ``My;Value``).
-  * Non-alphanumeric characters, as defined by the `string(MAKE_C_IDENTIFIER) <https://cmake.org/cmake/help/latest/command/string.html#make-c-identifier>`_
+  * Non-alphanumeric characters, as defined by the :cmake:command:`string(MAKE_C_IDENTIFIER) <cmake:command:string(make_c_identifier)>`
     transformation in CMake.
 
   The resulting list is stored in ``<output_list_var>``. If no split point is
@@ -79,7 +79,7 @@ Usage
       Converts each word to Start Case (first letter uppercase, others lowercase).
 
     ``C_IDENTIFIER_UPPER``
-      Applies a transformation inspired by `string(MAKE_C_IDENTIFIER) <https://cmake.org/cmake/help/latest/command/string.html#make-c-identifier>`_:
+      Applies a transformation inspired by :cmake:command:`string(MAKE_C_IDENTIFIER) <cmake:command:string(make_c_identifier)>`:
       each word is converted to uppercase and suffixed with an underscore.
       If the first character is a digit, an underscore is also prepended to
       the result.

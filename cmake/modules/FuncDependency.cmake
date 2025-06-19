@@ -6,37 +6,38 @@
 
 #[=======================================================================[.rst:
 Dependency
----------
+----------
 
-Operations to manipule dependencies. It requires CMake 3.20 or newer.
+Operations to manipule dependencies. They mainly encapsulate the numerous function calls required to `import and export dependencies <https://cmake.org/cmake/help/latest/guide/importing-exporting/index.html>`_. It requires CMake 3.20 or newer.
 
 Synopsis
 ^^^^^^^^
 
 .. parsed-literal::
 
-    dependency(`IMPORT`_ <lib_name> <STATIC|SHARED> [RELEASE_NAME <raw_filename>] [DEBUG_NAME <raw_filename>] ROOT_DIR <directory_path> INCLUDE_DIR <directory_path>)
-    dependency(`EXPORT`_ <lib_name> <BUILD_TREE|INSTALL_TREE> [APPEND] OUTPUT_FILE <file_path>)
-    dependency(`INCLUDE_DIRECTORIES`_ <lib_name> <SET|APPEND> PUBLIC <gen_expr_list> ...)
-    dependency(`IMPORTED_LOCATION`_ <lib_name> [CONFIGURATION <build_type>] PUBLIC <gen_expr_list> ...)
+    dependency(`IMPORT`_ <lib_target_name> <STATIC|SHARED> [RELEASE_NAME <raw_filename>] [DEBUG_NAME <raw_filename>] ROOT_DIR <directory_path> INCLUDE_DIR <directory_path>)
+    dependency(`EXPORT`_ <lib_target_name_list> ... <BUILD_TREE|INSTALL_TREE> [APPEND] OUTPUT_FILE <file_name>)
+    dependency(`INCLUDE_DIRECTORIES`_ <lib_target_name> <SET|APPEND> PUBLIC <gen_expr_list> ...)
+    dependency(`IMPORTED_LOCATION`_ <lib_target_name> [CONFIGURATION <build_type>] PUBLIC <gen_expr_list> ...)
 
 Usage
 ^^^^^
 
 .. signature::
-  dependency(IMPORT <lib_name> <STATIC|SHARED> [RELEASE_NAME <raw_filename>] [DEBUG_NAME <raw_filename>] ROOT_DIR <directory_path> INCLUDE_DIR <directory_path>)
+  dependency(IMPORT <lib_target_name> <STATIC|SHARED> [RELEASE_NAME <raw_filename>] [DEBUG_NAME <raw_filename>] ROOT_DIR <directory_path> INCLUDE_DIR <directory_path>)
 
-  Create an imported library target named ``<lib_name>`` by locating its
-  binary files and setting the necessary target properties. This command
-  combines behavior similar to `find_library() <https://cmake.org/cmake/help/latest/command/find_library.html>`_ and
-  `add_library(IMPORTED) <https://cmake.org/cmake/help/latest/command/add_library.html>`_.
+  Create an imported library target named ``<lib_target_name>``, which should
+  represent the base name of the library (without prefix or suffix), by
+  locating its binary files and setting the necessary target properties. This
+  command combines behavior similar to :cmake:command:`find_library() <cmake:command:find_library()>` and
+  :cmake:command:`add_library(IMPORTED) <cmake:command:add_library(imported)>`.
 
   The command requires either the ``STATIC`` or ``SHARED`` keyword to specify
   the type of library. Only one may be used. At least one of
   ``RELEASE_NAME <raw_filename>`` or ``DEBUG_NAME <raw_filename>`` must be
   provided. Both can be used. These arguments determine which configurations
   of the library will be available, typically matching values in the
-  `CMAKE_CONFIGURATION_TYPES <https://cmake.org/cmake/help/latest/variable/CMAKE_CONFIGURATION_TYPES.html>`_ variable.
+  :cmake:variable:`CMAKE_CONFIGURATION_TYPES <cmake:variable:CMAKE_CONFIGURATION_TYPES>` variable.
 
   The value of ``<raw_filename>`` should be the core name of the library file,
   stripped of:
@@ -60,7 +61,7 @@ Usage
 
   If more than one file matches or no file is found, an error is raised.
 
-  Once located, an imported target is created using `add_library(IMPORTED) <https://cmake.org/cmake/help/latest/command/add_library.html>`_ and
+  Once located, an imported target is created using :cmake:command:`add_library(IMPORTED) <cmake:command:add_library(imported)>` and
   appropriate properties for each available configuration (``RELEASE`` and/or
   ``DEBUG``) are set, including paths to the binary and import libraries (if
   applicable), as well as the soname.
@@ -117,73 +118,121 @@ Usage
       SHARED
       RELEASE_NAME "mylib_1.11.0"
       DEBUG_NAME "mylibd_1.11.0"
-      ROOT_DIR "${CMAKE_SOURCE_DIR}/libs"
+      ROOT_DIR "${CMAKE_SOURCE_DIR}/lib"
       INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/mylib"
     )
 
 .. signature::
-  dependency(EXPORT <lib_name> <BUILD_TREE|INSTALL_TREE> [APPEND] OUTPUT_FILE <file_path>)
+  dependency(EXPORT <lib_target_name_list> ... <BUILD_TREE|INSTALL_TREE> [APPEND] OUTPUT_FILE <file_name>)
 
-  Export an imported library target ``<lib_name>`` for use by external CMake
-  projects. This command provides enhanced and customized behavior comparable
-  to `export() <https://cmake.org/cmake/help/latest/command/export.html>`_ (for ``BUILD_TREE``) and `install(EXPORT) <https://cmake.org/cmake/help/latest/command/install.html#export>`_
-  (for ``INSTALL_TREE``), but specifically tailored to exported imported targets.
+  Creates a file ``<file_name>`` that may be included by outside projects to
+  import targets in ``<lib_target_name_list>`` from the current project's
+  build-tree or install-tree. This command is functionally similar to using
+  :cmake:command:`export(TARGETS) <cmake:command:export(targets)>` in a ``BUILD_TREE`` context and :cmake:command:`install(EXPORT) <cmake:command:install(export)>`
+  in an ``INSTALL_TREE`` context, but is designed specifically to export
+  imported targets with :command:`dependency(IMPORT)` instead of build targets.
 
-  The output is a CMake script file named ``<file_path>``, which can be
-  included by downstream projects to import library target from the current
-  project's build-tree or install-tree.
+  The targets in ``<lib_target_name_list>`` must be previously created imported
+  targets. The names should match exactly the target names used during import.
 
-  Depending on the tree context:
+  One of ``BUILD_TREE`` or ``INSTALL_TREE`` must be specified to indicate the
+  context in which the file is generated:
 
-  * For ``BUILD_TREE``: The file is generated in ``CMAKE_CURRENT_BINARY_DIR``.
+  * When ``BUILD_TREE`` is used, the command generates the file in
+    ``CMAKE_CURRENT_BINARY_DIR/<file_name>``, similar to how :cmake:command:`export(TARGETS) <cmake:command:export(targets)>`
+    produces a file to be included by other build projects. This file enables
+    other projects to import the specified targets directly from the build-tree
+    . It can be included from a ``<PackageName>Config.cmake`` file to provide
+    usage information for downstream projects.
 
-  * For ``INSTALL_TREE``: The file is generated in ``CMAKE_CURRENT_BINARY_DIR/
-    CMakeFiles/Export`` and installed in the same relative directory structure
-    under the install prefix.
+  * When ``INSTALL_TREE`` is used, the file is generated in
+    ``CMAKE_CURRENT_BINARY_DIR/cmake/export/<file_name>`` and an install rule
+    is added to copy the file to ``CMAKE_INSTALL_PREFIX/cmake/export/
+    <file_name>``. This is similar to combining :cmake:command:`install(TARGETS) <cmake:command:install(targets)>` with
+    :cmake:command:`install(EXPORT) <cmake:command:install(export)>`, but applies to imported rather than built targets.
+    This makes the export file available post-install and allows downstream
+    projects to include the file from a package configuration file.
 
-  If the ``APPEND`` keyword is specified, new export code is appended
-  to the output file instead of overwriting it.
+  Note that no install rules are created for the actual binary files of the
+  imported targets; only the export script ``OUTPUT_FILE`` itself is installed.
 
-  The exported script recreates the target and sets all relevant properties,
-  so the target can be used transparently by other projects. It set the same
-  properties than the module command :command:`dependency(IMPORT)`, so see
-  its documentations for more details.
+  If the ``APPEND`` keyword is specified, the generated code is appended to the
+  existing file instead of overwriting it. This is useful for exporting
+  multiple targets incrementally to a single file.
+
+  The generated file defines all necessary target properties so that the
+  imported targets can be used as if they were defined locally. The properties
+  are identical to those set by the :command:`dependency(IMPORT)` command; see
+  its documentation for additional details.
 
   Example usage:
 
   .. code-block:: cmake
 
-    dependency(EXPORT "myimportedlib"
+    # Import target
+    dependency(IMPORT "myimportedlib-1"
+      SHARED
+      RELEASE_NAME "myimportedlib-1"
+      DEBUG_NAME "myimportedlibd-1"
+      ROOT_DIR "${CMAKE_SOURCE_DIR}/lib"
+      INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/myimportedlib-1"
+    )
+    dependency(IMPORT "myimportedlib-2"
+      SHARED
+      RELEASE_NAME "myimportedlib-2"
+      DEBUG_NAME "myimportedlibd-2"
+      ROOT_DIR "${CMAKE_SOURCE_DIR}/lib"
+      INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/myimportedlib-2"
+    )
+
+    # Export from Build-Tree
+    dependency(EXPORT "myimportedlib-1" "myimportedlib-2"
       BUILD_TREE
       APPEND
       OUTPUT_FILE "InternalDependencyTargets.cmake"
     )
+    # Is more or less equivalent to:
+    export(TARGETS "myimportedlib-1" "myimportedlib-2"
+      APPEND
+      FILE "InternalDependencyTargets.cmake"
+    )
 
-    dependency(EXPORT "${imported_library}"
+    # Exporting from Install-Tree
+    dependency(EXPORT "myimportedlib-1" "myimportedlib-2"
       INSTALL_TREE
       APPEND
-      OUTPUT_FILE "${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME}/cmake/InternalDependencyTargets.cmake"
+      OUTPUT_FILE "InternalDependencyTargets.cmake"
+    )
+    # Is more or less equivalent to:
+    install(TARGETS "myimportedlib-1" "myimportedlib-2"
+      EXPORT "LibExport"
+    )
+    install(EXPORT "LibExport"
+      DESTINATION "cmake/export"
+      FILE "InternalDependencyTargets.cmake"
     )
 
   The resulting file ``InternalDependencyTargets.cmake`` may then be included
-  by CMake projects in ``<PackageName>Config.cmake.in`` to be used by
-  `configure_package_config_file() <https://cmake.org/cmake/help/latest/module/CMakePackageConfigHelpers.html>`_ CMake command:
+  by a package configuration file ``<PackageName>Config.cmake.in`` to be used by
+  :cmake:command:`configure_package_config_file() <cmake:command:configure_package_config_file>` command:
 
   .. code-block:: cmake
 
     include("${CMAKE_CURRENT_LIST_DIR}/InternalDependencyTargets.cmake")
 
 .. signature::
-  dependency(INCLUDE_DIRECTORIES <lib_name> <SET|APPEND> PUBLIC <gen_expr_list> ...)
+  dependency(INCLUDE_DIRECTORIES <lib_target_name> <SET|APPEND> PUBLIC <gen_expr_list> ...)
 
-  Set or append public include directories via `INTERFACE_INCLUDE_DIRECTORIES <https://cmake.org/cmake/help/latest/prop_tgt/INTERFACE_INCLUDE_DIRECTORIES.html>`_
-  property to the imported target ``<lib_name>``. This command works similarly to
-  `target_include_directories() <https://cmake.org/cmake/help/latest/command/target_include_directories.html>`_ in CMake, but introduces a separation
-  between build-time and install-time contexts for imported dependencies.
+  Set or append public include directories via :cmake:prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES <cmake:prop_tgt:INTERFACE_INCLUDE_DIRECTORIES>`
+  property to the imported target ``<lib_target_name>``. The name should
+  represent the base name of the library (without prefix or suffix). This
+  command works similarly to :cmake:command:`target_include_directories() <cmake:command:target_include_directories>` in CMake,
+  but introduces a separation between build-time and install-time contexts for
+  imported dependencies.
 
   The behavior differs from standard CMake in that it stores build and install
-  include paths separately using generator expressions (see the section
-  "`Build specification with generator expressions <https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html#build-specification-with-generator-expressions>`_").
+  include paths separately using generator expressions (see 
+  `how write build specification with generator expressions <https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html#build-specification-with-generator-expressions>`_).
 
   The ``PUBLIC`` keyword indicates that the specified directories apply to the
   usage requirements of the target (i.e., will be propagated to consumers of
@@ -201,7 +250,8 @@ Usage
     ``INTERFACE_INCLUDE_DIRECTORIES``
       This standard property determines the public include directories seen
       by consumers of the library. This will be populated using only the
-      build-specific include paths (i.e., extracted from ``$<BUILD_INTERFACE:...>``).
+      build-specific include paths (i.e., extracted from
+      ``$<BUILD_INTERFACE:...>``). See the `CMake doc <https://cmake.org/cmake/help/latest/prop_tgt/INTERFACE_INCLUDE_DIRECTORIES.html>`_ for full details.
 
     ``INTERFACE_INCLUDE_DIRECTORIES_BUILD``
       A *custom property* used internally to distinguish the build-time
@@ -234,12 +284,12 @@ Usage
     when imported via :command:`dependency(EXPORT)`).
 
 .. signature::
-  dependency(IMPORTED_LOCATION <lib_name> [CONFIGURATION <config_type>] PUBLIC <gen_expr_list> ...)
+  dependency(IMPORTED_LOCATION <lib_target_name> [CONFIGURATION <config_type>] PUBLIC <gen_expr_list> ...)
 
-  Set the full path to the imported target ``<lib_name>`` for one or more
-  configurations. This command sets the ``IMPORTED_LOCATION_<CONFIG>`` property
-  of the imported target from a generator expressions. More
-  details in `CMake doc <https://cmake.org/cmake/help/latest/prop_tgt/IMPORTED_LOCATION.html>`_.
+  Set the full path to the imported target ``<lib_target_name>``, which should
+  represent the base name of the library (without prefix or suffix), for one or
+  more configurations. This command sets the :cmake:prop_tgt:`IMPORTED_LOCATION_<CONFIG> <cmake:prop_tgt:IMPORTED_LOCATION_<CONFIG>>`
+  property of the imported target from a generator expressions.
 
   If the ``CONFIGURATION`` option is specified, the path is set only for the
   given ``<config_type>`` (e.g. ``DEBUG``, ``RELEASE``), provided that this
@@ -249,8 +299,8 @@ Usage
   The ``PUBLIC`` keyword specifies the usage scope of the following arguments.
   These arguments **must use generator expressions** such as ``$<BUILD_INTERFACE:...>``
   and ``$<INSTALL_INTERFACE:...>`` to distinguish between build and install
-  phases (see the section
-  "`Build specification with generator expressions <https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html#build-specification-with-generator-expressions>`_").
+  phases (see 
+  `how write build specification with generator expressions <https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html#build-specification-with-generator-expressions>`_).
 
   Example usage:
 
@@ -425,7 +475,7 @@ macro(_dependency_export)
 	if(${DEP_BUILD_TREE})
 		cmake_path(APPEND export_file_template "ImportBuildTreeLibTargets.cmake.in")
 	elseif(${DEP_INSTALL_TREE})
-		cmake_path(APPEND export_file "CMakeFiles" "Export")
+		cmake_path(APPEND export_file "cmake" "export")
 		cmake_path(APPEND export_file_template "ImportInstallTreeLibTargets.cmake.in")
 	endif()
 	cmake_path(APPEND export_file "${DEP_OUTPUT_FILE}")
@@ -463,7 +513,7 @@ macro(_dependency_export)
 		string(CONFIGURE "${template_content}" configured_content @ONLY)
 
 		# Generate a per-target intermediate file with generator expressions
-		set(new_part_file "${CMAKE_CURRENT_BINARY_DIR}/${lib_target_name}Target-${lib_target_type}.part.cmake")
+		set(new_part_file "${CMAKE_CURRENT_BINARY_DIR}/${lib_target_name}Targets-${lib_target_type}.part.cmake")
 		if(NOT ("${new_part_file}" IN_LIST existing_export_parts))
 			file(GENERATE OUTPUT "${new_part_file}"
 				CONTENT "${configured_content}"
@@ -492,24 +542,29 @@ macro(_dependency_export)
 	# Build `add_custom_command()` for exporting
 	set(output_part "")
 	if(NOT TARGET ${unique_target_name})
-		list(APPEND output_part "OUTPUT" "${export_file}")
+		set(output_part "OUTPUT" "${export_file}")
 	else()
-		list(APPEND output_part "OUTPUT" "${export_file}" "APPEND")
+		set(output_part "OUTPUT" "${export_file}" "APPEND")
 	endif()
 
 	set(comment_part "")
 	set(command_part "")
+	get_filename_component(export_dir "${export_file}" DIRECTORY)
+	if(NOT EXISTS "${export_dir}")
+		list(APPEND command_part
+			"COMMAND" "${CMAKE_COMMAND}" "-E" "make_directory" "${export_dir}")
+	endif()
 	if(${DEP_APPEND})
 		list(APPEND command_part
 			"COMMAND" "${CMAKE_COMMAND}" "-E" "touch" "${export_file}")
 		list(APPEND command_part
 			"COMMAND" "${CMAKE_COMMAND}" "-E" "cat" ${new_export_parts} ">>" "${export_file}")
-		list(APPEND comment_part
+		set(comment_part
 			"COMMENT" "Update the import file \"${export_file}\"")
 	else()
 		list(APPEND command_part
 			"COMMAND" "${CMAKE_COMMAND}" "-E" "cat" ${new_export_parts} ">" "${export_file}")
-		list(APPEND comment_part
+		set(comment_part
 			"COMMENT" "Overwrite the import file \"${export_file}\"")
 	endif()
 
@@ -529,11 +584,9 @@ macro(_dependency_export)
 	endif()
 
 	if(${DEP_INSTALL_TREE})
-		cmake_path(GET export_file PARENT_PATH install_export_dir)
 		install(FILES "${export_file}"
-			DESTINATION "${install_export_dir}"
+			DESTINATION "cmake/export"
 		)
-		message("install_export_dir: ${install_export_dir}")
 	endif()
 endmacro()
 

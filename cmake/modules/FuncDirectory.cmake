@@ -81,11 +81,11 @@ Usage
   represent the base name of the library (without prefix or suffix).
 
   The matching uses system-defined prefixes and suffixes depending on the
-  ``STATIC`` (by `CMAKE_STATIC_LIBRARY_PREFIX <CMAKE_STATIC_LIBRARY_PREFIX>`_ and `CMAKE_STATIC_LIBRARY_SUFFIX <https://cmake.org/cmake/help/latest/variable/CMAKE_STATIC_LIBRARY_SUFFIX.html>`_)
-  or ``SHARED`` (by `CMAKE_SHARED_LIBRARY_PREFIX <https://cmake.org/cmake/help/latest/variable/CMAKE_SHARED_LIBRARY_PREFIX.html>`_ and
-  `CMAKE_SHARED_LIBRARY_SUFFIX <https://cmake.org/cmake/help/latest/variable/CMAKE_SHARED_LIBRARY_SUFFIX.html>`_) flag, as well as 
-  `CMAKE_FIND_LIBRARY_PREFIXES <https://cmake.org/cmake/help/latest/variable/CMAKE_FIND_LIBRARY_PREFIXES.html>`_ and `CMAKE_FIND_LIBRARY_SUFFIXES <https://cmake.org/cmake/help/latest/variable/CMAKE_STATIC_LIBRARY_SUFFIX.html>`_ if
-  defined. This makes the behavior similar to `find_library() <https://cmake.org/cmake/help/latest/command/find_library.html>`_, but more robust.
+  ``STATIC`` (by :cmake:variable:`CMAKE_STATIC_LIBRARY_PREFIX <cmake:variable:CMAKE_STATIC_LIBRARY_PREFIX>` and :cmake:variable:`CMAKE_STATIC_LIBRARY_SUFFIX <cmake:variable:CMAKE_STATIC_LIBRARY_SUFFIX>`)
+  or ``SHARED`` (by :cmake:variable:`CMAKE_SHARED_LIBRARY_PREFIX <cmake:variable:CMAKE_SHARED_LIBRARY_PREFIX>` and
+  :cmake:variable:`CMAKE_SHARED_LIBRARY_SUFFIX <cmake:variable:CMAKE_SHARED_LIBRARY_SUFFIX>`) flag, as well as 
+  :cmake:variable:`CMAKE_FIND_LIBRARY_PREFIXES <cmake:variable:CMAKE_FIND_LIBRARY_PREFIXES>` and :cmake:variable:`CMAKE_FIND_LIBRARY_SUFFIXES <cmake:variable:CMAKE_FIND_LIBRARY_SUFFIXES>` if
+  defined. This makes the behavior similar to :cmake:command:`find_library() <cmake:command:find_library()>`, but more robust.
 
   .. note::
 
@@ -120,10 +120,11 @@ Usage
   is raised.
   
   This command is especially useful to locate dependency artifacts when
-  configuring `imported targets <https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html#imported-targets>`_ manually (see also `CMake's guide to binary import and export <https://cmake.org/cmake/help/latest/guide/importing-exporting/index.html>`_). The resulting paths are typically
-  used to set properties like `IMPORTED_LOCATION <https://cmake.org/cmake/help/latest/prop_tgt/IMPORTED_LOCATION.html>`_ and
-  `IMPORTED_IMPLIB_DEBUG <https://cmake.org/cmake/help/latest/prop_tgt/IMPORTED_IMPLIB.html>`_ on an imported target, particularly in development
-  or custom build setups where standard `find_library() <https://cmake.org/cmake/help/latest/command/find_library.html>`_ behavior is not
+  configuring :ref:`Imported Target <Imported Targets>`  manually (see also
+  `CMake's guide to binary import and export <https://cmake.org/cmake/help/latest/guide/importing-exporting/index.html>`_). The resulting paths are typically
+  used to set properties like :cmake:prop_tgt:`IMPORTED_LOCATION <cmake:prop_tgt:IMPORTED_LOCATION>` and
+  :cmake:prop_tgt:`IMPORTED_IMPLIB <cmake:prop_tgt:IMPORTED_IMPLIB>` on an imported target, particularly in development
+  or custom build setups where standard :cmake:command:`find_library() <cmake:command:find_library()>` behavior is not
   sufficient.
 
   Example usage:
