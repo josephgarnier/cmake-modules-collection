@@ -8,15 +8,15 @@ cmake-modules-collection
 
 The modules listed here are part of the CMake Modules Collection. Projects
 may provide further modules; their location(s) can be specified in the
-`CMAKE_MODULE_PATH <https://cmake.org/cmake/help/latest/variable/CMAKE_MODULE_PATH.html>`_ variable.
+:cmake:variable:`CMAKE_MODULE_PATH <cmake:variable:CMAKE_MODULE_PATH>` variable.
 
 Function Modules
 ================
 
-These modules are loaded using the `include() <https://cmake.org/cmake/help/latest/command/include.html>`_ command. They are
-prefixed with `Func` and provide a single public function responsible for
-dispatching multiple operations, internally using private macros. Only one
-public command is exposed per module.
+These modules are loaded using the :cmake:command:`include() <cmake:command:include()>`
+command. They are prefixed with `Func` and provide a single public function
+responsible for dispatching multiple operations, internally using private
+macros. Only one public command is exposed per module.
 
 .. toctree::
    :maxdepth: 1
@@ -31,11 +31,11 @@ public command is exposed per module.
 Bundle Modules
 ==============
 
-These modules are loaded using the `include() <https://cmake.org/cmake/help/latest/command/include.html>`_ command. They are
-prefixed with `Bundle` and contain a set of functions and macros designed to
-operate on a common object, in a way that reflects object-oriented
-programming. Each function defines a separate command, and a module may
-include multiple commands.
+These modules are loaded using the :cmake:command:`include() <cmake:command:include()>`
+command. They are prefixed with `Bundle` and contain a set of functions and
+macros designed to operate on a common object, in a way that reflects
+object-oriented programming. Each function defines a separate command, and a
+module may include multiple commands.
 
 .. toctree::
    :maxdepth: 1

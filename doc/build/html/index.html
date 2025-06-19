@@ -60,13 +60,13 @@
 <h1>cmake-modules-collection<a class="headerlink" href="#cmake-modules-collection" title="Link to this heading">¶</a></h1>
 <p>The modules listed here are part of the CMake Modules Collection. Projects
 may provide further modules; their location(s) can be specified in the
-<a class="reference external" href="https://cmake.org/cmake/help/latest/variable/CMAKE_MODULE_PATH.html">CMAKE_MODULE_PATH</a> variable.</p>
+<span class="target" id="index-0-variable:cmake:variable:CMAKE_MODULE_PATH"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/variable/CMAKE_MODULE_PATH.html#variable:CMAKE_MODULE_PATH" title="(in CMake v4.0.3)"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">CMAKE_MODULE_PATH</span></code></a> variable.</p>
 <section id="function-modules">
 <h2>Function Modules<a class="headerlink" href="#function-modules" title="Link to this heading">¶</a></h2>
-<p>These modules are loaded using the <a class="reference external" href="https://cmake.org/cmake/help/latest/command/include.html">include()</a> command. They are
-prefixed with <cite>Func</cite> and provide a single public function responsible for
-dispatching multiple operations, internally using private macros. Only one
-public command is exposed per module.</p>
+<p>These modules are loaded using the <span class="target" id="index-0-command:cmake:command:include"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/include.html#command:include" title="(in CMake v4.0.3)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">include()</span></code></a>
+command. They are prefixed with <cite>Func</cite> and provide a single public function
+responsible for dispatching multiple operations, internally using private
+macros. Only one public command is exposed per module.</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="module/FuncDebug.html">Debug</a></li>
@@ -80,11 +80,11 @@ public command is exposed per module.</p>
 </section>
 <section id="bundle-modules">
 <h2>Bundle Modules<a class="headerlink" href="#bundle-modules" title="Link to this heading">¶</a></h2>
-<p>These modules are loaded using the <a class="reference external" href="https://cmake.org/cmake/help/latest/command/include.html">include()</a> command. They are
-prefixed with <cite>Bundle</cite> and contain a set of functions and macros designed to
-operate on a common object, in a way that reflects object-oriented
-programming. Each function defines a separate command, and a module may
-include multiple commands.</p>
+<p>These modules are loaded using the <span class="target" id="index-1-command:cmake:command:include"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/include.html#command:include" title="(in CMake v4.0.3)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">include()</span></code></a>
+command. They are prefixed with <cite>Bundle</cite> and contain a set of functions and
+macros designed to operate on a common object, in a way that reflects
+object-oriented programming. Each function defines a separate command, and a
+module may include multiple commands.</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="module/BundleBinTarget.html">BinTarget</a></li>
