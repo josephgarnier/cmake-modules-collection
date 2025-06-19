@@ -33,7 +33,10 @@ version = '1.0.0'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
-extensions = ['sphinxcontrib.moderncmakedomain','show_cmake_objects']
+extensions = ['sphinxcontrib.moderncmakedomain','sphinx.ext.intersphinx','show_cmake_objects']
+intersphinx_mapping = {
+    'cmake': ('https://cmake.org/cmake/help/latest', None)
+}
 highlight_language = 'cmake'
 pygments_style = 'colors.CMakeTemplateStyle'
 language = 'en'
