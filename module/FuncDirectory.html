@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Directory &mdash; CMake Modules Collection</title>
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3862c66" />
+    <link rel="stylesheet" type="text/css" href="../_static/cmake.css?v=4d06bd55" />
+    
+    <script src="../_static/documentation_options.js?v=977c7dfd"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../_static/cmake-favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="FileManip" href="FuncFileManip.html" />
+    <link rel="prev" title="Dependency" href="FuncDependency.html" />
+ 
+
+  </head><body>
+    <input id="sidebar-check" type="checkbox" />
+    <label id="sidebar-overlay" for="sidebar-check"></label>
+
+
+
+    <div class="related relbar1" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="FuncFileManip.html" title="FileManip"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="FuncDependency.html" title="Dependency"
+             accesskey="P">previous</a> |</li>
+  <li>
+    <label class="sidebar-toggle" for="sidebar-check"></label>
+  </li>
+  <li class="rootlink">
+    <img src="../_static/cmake-logo-16.png" width="16" height="16" alt=""/>
+    <a href="https://cmake.org/">CMake 4.0.1</a>
+    <span class="reldelim1"> &#187;</span>
+  </li>
+  <li>
+    <a href="../index.html">Documentation</a> &#187;
+  </li>
+
+        <li class="nav-item nav-item-this"><a href="">Directory</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="directory">
+<span id="module:FuncDirectory"></span><h1>Directory<a class="headerlink" href="#directory" title="Link to this heading">¶</a></h1>
+<p>Operations to manipule directories. It requires CMake 3.20 or newer.</p>
+<section id="synopsis">
+<h2>Synopsis<a class="headerlink" href="#synopsis" title="Link to this heading">¶</a></h2>
+<pre class="literal-block">directory(<a class="reference internal" href="#scan">SCAN</a> &lt;output_list_var&gt; LIST_DIRECTORIES &lt;on|off&gt; RELATIVE &lt;on|off&gt; ROOT_DIR &lt;directory_path&gt; &lt;INCLUDE_REGEX|EXCLUDE_REGEX&gt; &lt;regular_expression&gt;)
+directory(<a class="reference internal" href="#scan-dirs">SCAN_DIRS</a> &lt;output_list_var&gt; RECURSE &lt;on|off&gt; RELATIVE &lt;on|off&gt; ROOT_DIR &lt;directory_path&gt; &lt;INCLUDE_REGEX|EXCLUDE_REGEX&gt; &lt;regular_expression&gt;)
+directory(<a class="reference internal" href="#find-lib">FIND_LIB</a> &lt;output_lib_var&gt; FIND_IMPLIB &lt;output_implib_var&gt; NAME &lt;raw_filename&gt; &lt;STATIC|SHARED&gt; RELATIVE &lt;on|off&gt; ROOT_DIR &lt;directory_path&gt;)</pre>
+</section>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h2>
+<dl class="cmake signature">
+<dt class="sig sig-object cmake" id="scan">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">directory(</span></span><span class="no"><span class="pre">SCAN</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;output_list_var&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">LIST_DIRECTORIES</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;</span></span><span class="nb"><span class="pre">on</span></span><span class="p"><span class="pre">|</span></span><span class="nb"><span class="pre">off</span></span><span class="o"><span class="pre">&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">RELATIVE</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;</span></span><span class="nb"><span class="pre">on</span></span><span class="p"><span class="pre">|</span></span><span class="nb"><span class="pre">off</span></span><span class="o"><span class="pre">&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">ROOT_DIR</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;directory_path&gt;</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;</span></span><span class="no"><span class="pre">INCLUDE_REGEX</span></span><span class="p"><span class="pre">|</span></span><span class="no"><span class="pre">EXCLUDE_REGEX</span></span><span class="o"><span class="pre">&gt;</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;regular_expression&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#scan" title="Link to this definition">¶</a></dt>
+<dd><p>Recursively scans files and directories under <code class="docutils literal notranslate"><span class="pre">ROOT_DIR</span></code>, applies an
+optional filter based on <code class="docutils literal notranslate"><span class="pre">INCLUDE_REGEX</span></code> or <code class="docutils literal notranslate"><span class="pre">EXCLUDE_REGEX</span></code>, and
+stores the result in <code class="docutils literal notranslate"><span class="pre">&lt;output_list_var&gt;</span></code>.</p>
+<p>Paths are returned as relative to <code class="docutils literal notranslate"><span class="pre">ROOT_DIR</span></code> if <code class="docutils literal notranslate"><span class="pre">RELATIVE</span></code> is <code class="docutils literal notranslate"><span class="pre">on</span></code>,
+or as absolute paths if <code class="docutils literal notranslate"><span class="pre">RELATIVE</span></code> is <code class="docutils literal notranslate"><span class="pre">off</span></code>.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">LIST_DIRECTORIES</span></code> is <code class="docutils literal notranslate"><span class="pre">on</span></code>, directories are included in
+the result. If <code class="docutils literal notranslate"><span class="pre">LIST_DIRECTORIES</span></code> is <code class="docutils literal notranslate"><span class="pre">off</span></code>, only files are listed.</p>
+<p>Example usage:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">directory(</span><span class="no">SCAN</span><span class="w"> </span><span class="nb">result_list</span>
+<span class="w">          </span><span class="no">LIST_DIRECTORIES</span><span class="w"> </span><span class="nb">off</span>
+<span class="w">          </span><span class="no">RELATIVE</span><span class="w"> </span><span class="nb">on</span>
+<span class="w">          </span><span class="no">ROOT_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_CURRENT_SOURCE_DIR}&quot;</span>
+<span class="w">          </span><span class="no">INCLUDE_REGEX</span><span class="w"> </span><span class="s">&quot;.*[.]cpp$|.*[.]cc$|.*[.]cxx$&quot;</span><span class="nf">)</span>
+<span class="c"># output is:</span>
+<span class="c">#   src/main.cpp;src/util.cpp;lib/module.cpp</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="cmake signature">
+<dt class="sig sig-object cmake" id="scan-dirs">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">directory(</span></span><span class="no"><span class="pre">SCAN_DIRS</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;output_list_var&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">RECURSE</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;</span></span><span class="nb"><span class="pre">on</span></span><span class="p"><span class="pre">|</span></span><span class="nb"><span class="pre">off</span></span><span class="o"><span class="pre">&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">RELATIVE</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;</span></span><span class="nb"><span class="pre">on</span></span><span class="p"><span class="pre">|</span></span><span class="nb"><span class="pre">off</span></span><span class="o"><span class="pre">&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">ROOT_DIR</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;directory_path&gt;</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;</span></span><span class="no"><span class="pre">INCLUDE_REGEX</span></span><span class="p"><span class="pre">|</span></span><span class="no"><span class="pre">EXCLUDE_REGEX</span></span><span class="o"><span class="pre">&gt;</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;regular_expression&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#scan-dirs" title="Link to this definition">¶</a></dt>
+<dd><p>Scan and collect all directories under <code class="docutils literal notranslate"><span class="pre">ROOT_DIR</span></code> that match the regular
+expression provided with either <code class="docutils literal notranslate"><span class="pre">INCLUDE_REGEX</span></code> or <code class="docutils literal notranslate"><span class="pre">EXCLUDE_REGEX</span></code>, and
+store the result in <code class="docutils literal notranslate"><span class="pre">&lt;output_list_var&gt;</span></code>.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">RECURSE</span></code> is <code class="docutils literal notranslate"><span class="pre">on</span></code>, the function traverses subdirectories recursively.
+If <code class="docutils literal notranslate"><span class="pre">RECURSE</span></code> is <code class="docutils literal notranslate"><span class="pre">off</span></code>, only the directories directly under <code class="docutils literal notranslate"><span class="pre">ROOT_DIR</span></code>
+are considered.</p>
+<p>The paths in the result are returned relative to <code class="docutils literal notranslate"><span class="pre">ROOT_DIR</span></code> if
+<code class="docutils literal notranslate"><span class="pre">RELATIVE</span></code> is <code class="docutils literal notranslate"><span class="pre">on</span></code>, or as absolute paths if <code class="docutils literal notranslate"><span class="pre">RELATIVE</span></code> is <code class="docutils literal notranslate"><span class="pre">off</span></code>.</p>
+<p>Example usage:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">directory(</span><span class="no">SCAN_DIRS</span><span class="w"> </span><span class="nb">matched_dirs</span>
+<span class="w">          </span><span class="no">RECURSE</span><span class="w"> </span><span class="nb">on</span>
+<span class="w">          </span><span class="no">RELATIVE</span><span class="w"> </span><span class="nb">on</span>
+<span class="w">          </span><span class="no">ROOT_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_CURRENT_SOURCE_DIR}&quot;</span>
+<span class="w">          </span><span class="no">INCLUDE_REGEX</span><span class="w"> </span><span class="s">&quot;include&quot;</span><span class="nf">)</span>
+<span class="c"># output is:</span>
+<span class="c">#   src/include;src/lib/include</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="cmake signature">
+<dt class="sig sig-object cmake" id="find-lib">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">directory(</span></span><span class="no"><span class="pre">FIND_LIB</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;output_lib_var&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">FIND_IMPLIB</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;output_implib_var&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">NAME</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;raw_filename&gt;</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;</span></span><span class="no"><span class="pre">STATIC</span></span><span class="p"><span class="pre">|</span></span><span class="no"><span class="pre">SHARED</span></span><span class="o"><span class="pre">&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">RELATIVE</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;</span></span><span class="nb"><span class="pre">on</span></span><span class="p"><span class="pre">|</span></span><span class="nb"><span class="pre">off</span></span><span class="o"><span class="pre">&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">ROOT_DIR</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;directory_path&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#find-lib" title="Link to this definition">¶</a></dt>
+<dd><p>Search recursively in <code class="docutils literal notranslate"><span class="pre">ROOT_DIR</span></code> for a library and, on DLL platforms, its
+import library. The name to search for is given via <code class="docutils literal notranslate"><span class="pre">NAME</span></code>, which should
+represent the base name of the library (without prefix or suffix).</p>
+<p>The matching uses system-defined prefixes and suffixes depending on the
+<code class="docutils literal notranslate"><span class="pre">STATIC</span></code> (by <span class="target" id="index-0-variable:cmake:variable:CMAKE_STATIC_LIBRARY_PREFIX"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/variable/CMAKE_STATIC_LIBRARY_PREFIX.html#variable:CMAKE_STATIC_LIBRARY_PREFIX" title="(in CMake v4.0.3)"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">CMAKE_STATIC_LIBRARY_PREFIX</span></code></a> and <span class="target" id="index-0-variable:cmake:variable:CMAKE_STATIC_LIBRARY_SUFFIX"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/variable/CMAKE_STATIC_LIBRARY_SUFFIX.html#variable:CMAKE_STATIC_LIBRARY_SUFFIX" title="(in CMake v4.0.3)"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">CMAKE_STATIC_LIBRARY_SUFFIX</span></code></a>)
+or <code class="docutils literal notranslate"><span class="pre">SHARED</span></code> (by <span class="target" id="index-0-variable:cmake:variable:CMAKE_SHARED_LIBRARY_PREFIX"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/variable/CMAKE_SHARED_LIBRARY_PREFIX.html#variable:CMAKE_SHARED_LIBRARY_PREFIX" title="(in CMake v4.0.3)"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">CMAKE_SHARED_LIBRARY_PREFIX</span></code></a> and
+<span class="target" id="index-0-variable:cmake:variable:CMAKE_SHARED_LIBRARY_SUFFIX"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/variable/CMAKE_SHARED_LIBRARY_SUFFIX.html#variable:CMAKE_SHARED_LIBRARY_SUFFIX" title="(in CMake v4.0.3)"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">CMAKE_SHARED_LIBRARY_SUFFIX</span></code></a>) flag, as well as 
+<span class="target" id="index-0-variable:cmake:variable:CMAKE_FIND_LIBRARY_PREFIXES"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/variable/CMAKE_FIND_LIBRARY_PREFIXES.html#variable:CMAKE_FIND_LIBRARY_PREFIXES" title="(in CMake v4.0.3)"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">CMAKE_FIND_LIBRARY_PREFIXES</span></code></a> and <span class="target" id="index-0-variable:cmake:variable:CMAKE_FIND_LIBRARY_SUFFIXES"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/variable/CMAKE_FIND_LIBRARY_SUFFIXES.html#variable:CMAKE_FIND_LIBRARY_SUFFIXES" title="(in CMake v4.0.3)"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">CMAKE_FIND_LIBRARY_SUFFIXES</span></code></a> if
+defined. This makes the behavior similar to <span class="target" id="index-0-command:cmake:command:find_library"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/find_library.html#command:find_library" title="(in CMake v4.0.3)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">find_library()</span></code></a>, but more robust.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The different value of prefix and suffix that the variables used
+to search for libraries can take are:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="c"># With GCC on Windows</span>
+<span class="c"># CMAKE_SHARED_LIBRARY_PREFIX: lib</span>
+<span class="c"># CMAKE_SHARED_LIBRARY_SUFFIX: .dll</span>
+<span class="c"># CMAKE_STATIC_LIBRARY_PREFIX: lib</span>
+<span class="c"># CMAKE_STATIC_LIBRARY_SUFFIX: .a</span>
+<span class="c"># CMAKE_FIND_LIBRARY_PREFIXES: lib;</span>
+<span class="c"># CMAKE_FIND_LIBRARY_SUFFIXES: .dll.a;.a;.lib</span>
+
+<span class="c"># With MSVC on Windows</span>
+<span class="c"># CMAKE_SHARED_LIBRARY_PREFIX:</span>
+<span class="c"># CMAKE_SHARED_LIBRARY_SUFFIX: .dll</span>
+<span class="c"># CMAKE_STATIC_LIBRARY_PREFIX:</span>
+<span class="c"># CMAKE_STATIC_LIBRARY_SUFFIX: .lib</span>
+<span class="c"># CMAKE_FIND_LIBRARY_PREFIXES: ;lib</span>
+<span class="c"># CMAKE_FIND_LIBRARY_SUFFIXES: .dll.lib;.lib;.a</span>
+</pre></div>
+</div>
+</div>
+<p>If a matching library is found, its path is stored in <code class="docutils literal notranslate"><span class="pre">&lt;output_lib_var&gt;</span></code>. If a
+matching import library is found, its path is stored in <code class="docutils literal notranslate"><span class="pre">&lt;output_implib_var&gt;</span></code>. If
+<code class="docutils literal notranslate"><span class="pre">RELATIVE</span></code> is set to <code class="docutils literal notranslate"><span class="pre">on</span></code>, the results are relative to <code class="docutils literal notranslate"><span class="pre">ROOT_DIR</span></code>.
+Otherwise, absolute paths are returned.</p>
+<p>If no match is found, the values will be <code class="docutils literal notranslate"><span class="pre">&lt;output_lib_var&gt;-NOTFOUND</span></code> and
+<code class="docutils literal notranslate"><span class="pre">&lt;output_implib_var&gt;-NOTFOUND</span></code>. If multiple matches are found, a fatal error
+is raised.</p>
+<p>This command is especially useful to locate dependency artifacts when
+configuring <a class="reference external" href="https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html#imported-targets" title="(in CMake v4.0.3)"><span class="xref std std-ref">Imported Target</span></a>  manually (see also
+<a class="reference external" href="https://cmake.org/cmake/help/latest/guide/importing-exporting/index.html">CMake's guide to binary import and export</a>). The resulting paths are typically
+used to set properties like <span class="target" id="index-0-prop_tgt:cmake:prop_tgt:IMPORTED_LOCATION"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/prop_tgt/IMPORTED_LOCATION.html#prop_tgt:IMPORTED_LOCATION" title="(in CMake v4.0.3)"><code class="xref cmake cmake-prop_tgt docutils literal notranslate"><span class="pre">IMPORTED_LOCATION</span></code></a> and
+<span class="target" id="index-0-prop_tgt:cmake:prop_tgt:IMPORTED_IMPLIB"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/prop_tgt/IMPORTED_IMPLIB.html#prop_tgt:IMPORTED_IMPLIB" title="(in CMake v4.0.3)"><code class="xref cmake cmake-prop_tgt docutils literal notranslate"><span class="pre">IMPORTED_IMPLIB</span></code></a> on an imported target, particularly in development
+or custom build setups where standard <span class="target" id="index-1-command:cmake:command:find_library"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/find_library.html#command:find_library" title="(in CMake v4.0.3)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">find_library()</span></code></a> behavior is not
+sufficient.</p>
+<p>Example usage:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">directory(</span><span class="no">FIND_LIB</span><span class="w"> </span><span class="nb">mylib_path</span>
+<span class="w">          </span><span class="no">FIND_IMPLIB</span><span class="w"> </span><span class="nb">mylib_import</span>
+<span class="w">          </span><span class="no">NAME</span><span class="w"> </span><span class="s">&quot;zlib1&quot;</span>
+<span class="w">          </span><span class="no">SHARED</span>
+<span class="w">          </span><span class="no">RELATIVE</span><span class="w"> </span><span class="nb">on</span>
+<span class="w">          </span><span class="no">ROOT_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/libs&quot;</span><span class="nf">)</span>
+<span class="c"># output is:</span>
+<span class="c">#   lib=lib/zlib1.dll</span>
+<span class="c">#   implib=lib/zlib1.lib</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3>Table of Contents</h3>
+    <ul>
+<li><a class="reference internal" href="#">Directory</a><ul>
+<li><a class="reference internal" href="#synopsis">Synopsis</a></li>
+<li><a class="reference internal" href="#usage">Usage</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="FuncDependency.html"
+                          title="previous chapter">Dependency</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="FuncFileManip.html"
+                          title="next chapter">FileManip</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/module/FuncDirectory.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="FuncFileManip.html" title="FileManip"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="FuncDependency.html" title="Dependency"
+             >previous</a> |</li>
+  <li>
+    <label class="sidebar-toggle" for="sidebar-check"></label>
+  </li>
+  <li class="rootlink">
+    <img src="../_static/cmake-logo-16.png" width="16" height="16" alt=""/>
+    <a href="https://cmake.org/">CMake 4.0.1</a>
+    <span class="reldelim1"> &#187;</span>
+  </li>
+  <li>
+    <a href="../index.html">Documentation</a> &#187;
+  </li>
+
+        <li class="nav-item nav-item-this"><a href="">Directory</a></li> 
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025, Joseph Garnier.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+<script type="text/javascript">
+(function() {
+  "use strict";
+  const hide = () => document.getElementById("sidebar-check").checked = false;
+  addEventListener("keydown", e => (e.key === "Escape") && hide());
+  addEventListener("click", e => (e.target.tagName === "A") && hide());
+  addEventListener("hashchange", hide)
+})();
+</script>
+  </body>
+</html>
