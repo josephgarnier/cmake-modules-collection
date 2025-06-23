@@ -215,8 +215,8 @@ macro(_file_manip_strip_path)
 	endif()
 	
 	set(stripped_path_list "")
-	foreach(file IN ITEMS ${${FM_STRIP_PATH}})
-		string(REPLACE "${FM_BASE_DIR}/" "" stripped_path ${file})
+	foreach(file_path IN ITEMS ${${FM_STRIP_PATH}})
+		string(REPLACE "${FM_BASE_DIR}/" "" stripped_path "${file_path}")
 		list(APPEND stripped_path_list ${stripped_path})
 	endforeach()
 	
@@ -242,8 +242,8 @@ macro(_file_manip_get_component_directory)
 	endif()
 
 	set(directorty_path_list "")
-	foreach(file IN ITEMS ${FM_GET_COMPONENT})
-		cmake_path(GET file PARENT_PATH directory_path)
+	foreach(file_path IN ITEMS ${FM_GET_COMPONENT})
+		cmake_path(GET file_path PARENT_PATH directory_path)
 		list(APPEND directorty_path_list "${directory_path}")
 	endforeach()
 
@@ -265,8 +265,8 @@ macro(_file_manip_get_component_name)
 	endif()
 	
 	set(file_name_list "")
-	foreach(file IN ITEMS ${FM_GET_COMPONENT})
-		cmake_path(GET file FILENAME file_name)
+	foreach(file_path IN ITEMS ${FM_GET_COMPONENT})
+		cmake_path(GET file_path FILENAME file_name)
 		list(APPEND file_name_list "${file_name}")
 	endforeach()
 	
