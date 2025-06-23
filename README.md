@@ -304,6 +304,9 @@ The use of commands and scripts is described below, they must be run from the ro
   
   # Print all available test labels without running any tests
   ctest --preset "<test-preset-name>" --extra-verbose --debug --print-labels
+  
+  # Showing all links of CMake Intersphinx mapping file
+  python -m sphinx.ext.intersphinx https://cmake.org/cmake/help/latest/objects.inv
   ```
 
   </details>
