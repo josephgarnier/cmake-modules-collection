@@ -169,7 +169,7 @@ Usage
 
   .. code-block:: cmake
 
-    # Import target
+    # Import target before exporting
     dependency(IMPORT "myimportedlib-1"
       SHARED
       RELEASE_NAME "myimportedlib-1"
@@ -188,7 +188,6 @@ Usage
     # Export from Build-Tree
     dependency(EXPORT "myimportedlib-1" "myimportedlib-2"
       BUILD_TREE
-      APPEND
       OUTPUT_FILE "InternalDependencyTargets.cmake"
     )
     # Is more or less equivalent to:
@@ -198,9 +197,9 @@ Usage
     )
 
     # Exporting from Install-Tree
+    set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/install")
     dependency(EXPORT "myimportedlib-1" "myimportedlib-2"
       INSTALL_TREE
-      APPEND
       OUTPUT_FILE "InternalDependencyTargets.cmake"
     )
     # Is more or less equivalent to:
@@ -470,15 +469,18 @@ macro(_dependency_export)
 	endif()
 
 	# Set paths to export files
-	cmake_path(SET export_file "${CMAKE_CURRENT_BINARY_DIR}")
+	cmake_path(SET export_dir "${CMAKE_CURRENT_BINARY_DIR}")
 	cmake_path(SET export_file_template "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
 	if(${DEP_BUILD_TREE})
 		cmake_path(APPEND export_file_template "ImportBuildTreeLibTargets.cmake.in")
 	elseif(${DEP_INSTALL_TREE})
-		cmake_path(APPEND export_file "cmake" "export")
+		cmake_path(APPEND export_dir "cmake" "export")
+		if(NOT EXISTS "${export_dir}")
+			file(MAKE_DIRECTORY "${export_dir}")
+		endif()
 		cmake_path(APPEND export_file_template "ImportInstallTreeLibTargets.cmake.in")
 	endif()
-	cmake_path(APPEND export_file "${DEP_OUTPUT_FILE}")
+	set(export_file "${export_dir}/${DEP_OUTPUT_FILE}")
 
 	# Read the template file once
 	file(READ "${export_file_template}" template_content)
@@ -490,7 +492,7 @@ macro(_dependency_export)
 	# List of previously generated intermediate files
 	get_property(existing_export_parts GLOBAL PROPERTY "_EXPORT_PARTS_${sanitized_export_file}")
 
-	# Error if export command already specified for the file and 'APPEND' keyword is not used
+	# Throw an error if export command already specified for the file and 'APPEND' keyword is not used
 	list(LENGTH existing_export_parts nb_parts)
 	if((NOT nb_parts EQUAL 0) AND (NOT ${DEP_APPEND}))
 		message(FATAL_ERROR "Export command already specified for the file \"${DEP_OUTPUT_FILE}\". Did you miss 'APPEND' keyword?")
@@ -513,7 +515,7 @@ macro(_dependency_export)
 		string(CONFIGURE "${template_content}" configured_content @ONLY)
 
 		# Generate a per-target intermediate file with generator expressions
-		set(new_part_file "${CMAKE_CURRENT_BINARY_DIR}/${lib_target_name}Targets-${lib_target_type}.part.cmake")
+		set(new_part_file "${export_dir}/${lib_target_name}Targets-${lib_target_type}.part.cmake")
 		if(NOT ("${new_part_file}" IN_LIST existing_export_parts))
 			file(GENERATE OUTPUT "${new_part_file}"
 				CONTENT "${configured_content}"
@@ -549,11 +551,6 @@ macro(_dependency_export)
 
 	set(comment_part "")
 	set(command_part "")
-	get_filename_component(export_dir "${export_file}" DIRECTORY)
-	if(NOT EXISTS "${export_dir}")
-		list(APPEND command_part
-			"COMMAND" "${CMAKE_COMMAND}" "-E" "make_directory" "${export_dir}")
-	endif()
 	if(${DEP_APPEND})
 		list(APPEND command_part
 			"COMMAND" "${CMAKE_COMMAND}" "-E" "touch" "${export_file}")
@@ -575,6 +572,7 @@ macro(_dependency_export)
 		${comment_part}
 	)
 
+	# Only true during the first invocation
 	if(NOT TARGET "${unique_target_name}")
 		# Create a unique generative target per output file to trigger the command
 		add_custom_target("${unique_target_name}" ALL
@@ -582,7 +580,6 @@ macro(_dependency_export)
 			VERBATIM
 		)
 	endif()
-
 	if(${DEP_INSTALL_TREE})
 		install(FILES "${export_file}"
 			DESTINATION "cmake/export"
