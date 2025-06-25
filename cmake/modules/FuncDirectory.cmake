@@ -116,8 +116,10 @@ Usage
   Otherwise, absolute paths are returned.
 
   If no match is found, the values will be ``<output_lib_var>-NOTFOUND`` and
-  ``<output_implib_var>-NOTFOUND``. If multiple matches are found, a fatal error
-  is raised.
+  ``<output_implib_var>-NOTFOUND``. In ``STATIC`` mode,
+  ``<output_implib_var>-NOTFOUND`` is always returned, because an import
+  library is only for a shared library. If multiple matches are found, a
+  fatal error is raised.
   
   This command is especially useful to locate dependency artifacts when
   configuring :ref:`Imported Target <Imported Targets>`  manually (see also

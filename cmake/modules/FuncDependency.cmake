@@ -44,7 +44,7 @@ Usage
 
   * Any version numbers.
   * Platform-specific prefixes (e.g. ``lib``).
-  * Platform-specific suffixes (e.g. ``.so``, ``.dll``, ``.a``, ``.lib``).
+  * Platform-specific suffixes (e.g. ``.so``, ``.dll``, ``.dll.a``, ``.a``, ``.lib``).
 
   The file will be resolved by scanning recursively all files in the given
   ``ROOT_DIR`` and attempting to match against expected filename patterns
@@ -84,21 +84,25 @@ Usage
       install-tree context.
 
     ``IMPORTED_LOCATION_<CONFIG>``
-      The full path to the actual library file (e.g. ``.a``, ``.so``, ``.dll``),
+      The full path to the actual library file (e.g. ``.so``, ``.dll``, ``.a``, ``.lib``),
       set separately for each configuration (``RELEASE`` and/or ``DEBUG``). See the `CMake doc <https://cmake.org/cmake/help/latest/prop_tgt/IMPORTED_LOCATION_CONFIG.html>`_ for full details.
 
     ``IMPORTED_LOCATION_BUILD_<CONFIG>``
       *Custom property* set to an empty value. Intended for build-tree specific
-      overrides of the library path, for usage from the build-tree context
+      overrides of the library path, for usage from the build-tree context.
+      Use :command:`dependency(IMPORTED_LOCATION)` to initialize this property.
 
     ``IMPORTED_LOCATION_INSTALL_<CONFIG>``
       *Custom property* set to an empty value. Intended for install-time
       overrides of the library path, for usage from the install-tree context.
+      Use :command:`dependency(IMPORTED_LOCATION)` to initialize this property.
 
     ``IMPORTED_IMPLIB_<CONFIG>``
       On DLL-based platforms (e.g. Windows), set to the full path of the
-      import library file (e.g. ``.lib``, ``.dll.a``) for the corresponding
-      configuration. See the `CMake doc <https://cmake.org/cmake/help/latest/prop_tgt/IMPORTED_IMPLIB_CONFIG.html>`_ for full details.
+      import library file (e.g. ``.dll.a``, ``.a``, ``.lib``) for the corresponding
+      configuration. For static libraries, this property is set to empty,
+      because an import library is only for a shared library. See the
+      `CMake doc <https://cmake.org/cmake/help/latest/prop_tgt/IMPORTED_IMPLIB_CONFIG.html>`_ for full details.
 
     ``IMPORTED_SONAME_<CONFIG>``
       Set to the filename of the resolved library (without path), allowing
