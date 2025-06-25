@@ -385,63 +385,84 @@ macro(_dependency_import)
 		message(FATAL_ERROR "Wrong library type!")
 	endif()
 
+	# Create target
 	add_library("${DEP_IMPORT}" "${library_type}" IMPORTED)
-	set_target_properties("${DEP_IMPORT}" PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${DEP_INCLUDE_DIR}") # For usage from source-tree.
-	set_target_properties("${DEP_IMPORT}" PROPERTIES INTERFACE_INCLUDE_DIRECTORIES_BUILD "") # Custom property for usage from build-tree.
-	set_target_properties("${DEP_IMPORT}" PROPERTIES INTERFACE_INCLUDE_DIRECTORIES_INSTALL "") # Custom property for usage from install-tree.
+	set_target_properties("${DEP_IMPORT}" PROPERTIES
+		INTERFACE_INCLUDE_DIRECTORIES "${DEP_INCLUDE_DIR}" # For usage from source-tree.
+		INTERFACE_INCLUDE_DIRECTORIES_BUILD "" # Custom property for usage from build-tree.
+		INTERFACE_INCLUDE_DIRECTORIES_INSTALL "" # Custom property for usage from install-tree.
+	)
+
+	# Get the library file for release
 	if(DEFINED DEP_RELEASE_NAME)
-		# Get the library file for release.
-		directory(FIND_LIB lib_release
-			FIND_IMPLIB imp_lib_release
+		directory(FIND_LIB release_lib
+			FIND_IMPLIB release_implib
 			NAME "${DEP_RELEASE_NAME}"
 			"${library_type}"
 			RELATIVE off
 			ROOT_DIR "${DEP_ROOT_DIR}"
 		)
-		if(NOT lib_release)
+		if(NOT release_lib)
 			message(FATAL_ERROR "The release library \"${DEP_RELEASE_NAME}\" was not found!")
 		endif()
-		if(WIN32 AND NOT imp_lib_release)
+		if(WIN32 AND ("${library_type}" STREQUAL "SHARED") AND NOT release_implib)
 			message(FATAL_ERROR "The release import library \"${DEP_RELEASE_NAME}\" was not found!")
 		endif()
 
-		# Add library properties for release.
-		cmake_path(GET lib_release FILENAME lib_release_name)
+		# Only shared libraries use import libraries, so make sure release_implib
+		# is to empty when it is equals to `release_implib-NOTFOUND`
+		if(NOT release_implib)
+			set(release_implib "")
+		endif()
+		
+		# Add library properties for release
+		cmake_path(GET release_lib FILENAME release_lib_name)
 		set_target_properties("${DEP_IMPORT}" PROPERTIES
-			IMPORTED_LOCATION_RELEASE "${lib_release}" # Only for ".dll" and ".lib" and ".a" and ".so". For usage from source-tree.
-			IMPORTED_LOCATION_BUILD_RELEASE "" # Custom property for usage from build-tree.
-			IMPORTED_LOCATION_INSTALL_RELEASE "" # Custom property for usage from install-tree.
-			IMPORTED_IMPLIB_RELEASE "${imp_lib_release}" # Only for ".lib" and ".dll.a" on DLL platforms.
-			IMPORTED_SONAME_RELEASE "${lib_release_name}"
+			IMPORTED_LOCATION_RELEASE "${release_lib}" # Only for '.so|.dll|.a|.lib'. For usage from source-tree
+			IMPORTED_LOCATION_BUILD_RELEASE "" # Custom property for usage from build-tree
+			IMPORTED_LOCATION_INSTALL_RELEASE "" # Custom property for usage from install-tree
+			IMPORTED_IMPLIB_RELEASE "${release_implib}" # Only for '.dll.a|.a|.lib' on DLL platforms
+			IMPORTED_SONAME_RELEASE "${release_lib_name}"
 		)
-		set_property(TARGET "${DEP_IMPORT}" APPEND PROPERTY IMPORTED_CONFIGURATIONS "RELEASE")
+		set_property(TARGET "${DEP_IMPORT}"
+			APPEND PROPERTY IMPORTED_CONFIGURATIONS "RELEASE"
+		)
 	endif()
 
+	# Get the library file for debug
 	if(DEFINED DEP_DEBUG_NAME)
-		# Get the library file for debug.
-		directory(FIND_LIB lib_debug
-			FIND_IMPLIB imp_lib_debug
+		directory(FIND_LIB debug_lib
+			FIND_IMPLIB debug_implib
 			NAME "${DEP_DEBUG_NAME}"
 			"${library_type}"
 			RELATIVE off
 			ROOT_DIR "${DEP_ROOT_DIR}"
 		)
-		if(NOT lib_debug)
+		if(NOT debug_lib)
 			message(FATAL_ERROR "The debug library \"${DEP_DEBUG_NAME}\" was not found!")
 		endif()
-		if(WIN32 AND NOT imp_lib_debug)
+		if(WIN32 AND ("${library_type}" STREQUAL "SHARED") AND NOT debug_implib)
 			message(FATAL_ERROR "The debug import library \"${DEP_DEBUG_NAME}\" was not found!")
 		endif()
-		# Add library properties for debug.
-		cmake_path(GET lib_debug FILENAME lib_debug_name)
+
+		# Only shared libraries use import libraries, so make sure debug_implib
+		# is to empty when it is equals to `debug_implib-NOTFOUND`
+		if(NOT debug_implib)
+			set(debug_implib "")
+		endif()
+		
+		# Add library properties for debug
+		cmake_path(GET debug_lib FILENAME debug_lib_name)
 		set_target_properties("${DEP_IMPORT}" PROPERTIES
-			IMPORTED_LOCATION_DEBUG "${lib_debug}" # Only for ".dll" and ".lib" and ".a" and ".so". For usage from source-tree.
-			IMPORTED_LOCATION_BUILD_DEBUG "" # Custom property for usage from build-tree.
-			IMPORTED_LOCATION_INSTALL_DEBUG "" # Custom property for usage from install-tree.
-			IMPORTED_IMPLIB_DEBUG "${imp_lib_debug}" # Only for ".lib" and ".dll.a" on DLL platforms.
-			IMPORTED_SONAME_DEBUG "${lib_debug_name}"
+			IMPORTED_LOCATION_DEBUG "${debug_lib}" # Only for '.so|.dll|.a|.lib'. For usage from source-tree.
+			IMPORTED_LOCATION_BUILD_DEBUG "" # Custom property for usage from build-tree
+			IMPORTED_LOCATION_INSTALL_DEBUG "" # Custom property for usage from install-tree
+			IMPORTED_IMPLIB_DEBUG "${debug_implib}" # Only for '.dll.a|.a|.lib' on DLL platforms
+			IMPORTED_SONAME_DEBUG "${debug_lib_name}"
 		)
-		set_property(TARGET "${DEP_IMPORT}" APPEND PROPERTY IMPORTED_CONFIGURATIONS "DEBUG")
+		set_property(TARGET "${DEP_IMPORT}"
+			APPEND PROPERTY IMPORTED_CONFIGURATIONS "DEBUG"
+		)
 	endif()
 endmacro()
 
