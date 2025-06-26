@@ -15,9 +15,9 @@ ct_add_test(NAME "test_directory_find_lib_operation")
 function(${CMAKETEST_TEST})
 	include(FuncDirectory)
 
-	macro(_build_test_regex LIB_NAME LIB_BUILD_TYPE)
+	macro(_build_test_regex LIB_NAME LIB_BINARY_TYPE)
 		# Select appropriate prefix/suffix sets based on the requested library type
-		if("${LIB_BUILD_TYPE}" STREQUAL "SHARED")
+		if("${LIB_BINARY_TYPE}" STREQUAL "SHARED")
 			# Shared library (.dll, .so, .dylib): used at runtime (IMPORTED_LOCATION)
 			set(lib_prefix_list "${CMAKE_SHARED_LIBRARY_PREFIX}")
 			set(lib_suffix_list "${CMAKE_SHARED_LIBRARY_SUFFIX}")
@@ -25,7 +25,7 @@ function(${CMAKETEST_TEST})
 			# Import library (.lib, .dll.a, .a): used at link time (IMPORTED_IMPLIB)
 			set(implib_prefix_list "${CMAKE_FIND_LIBRARY_PREFIXES}")
 			set(implib_suffix_list "${CMAKE_FIND_LIBRARY_SUFFIXES}")
-		elseif("${LIB_BUILD_TYPE}" STREQUAL "STATIC")
+		elseif("${LIB_BINARY_TYPE}" STREQUAL "STATIC")
 			# Static library (.lib, .a): used at link time (no import lib concept)
 			set(lib_prefix_list "${CMAKE_STATIC_LIBRARY_PREFIX}")
 			set(lib_suffix_list "${CMAKE_STATIC_LIBRARY_SUFFIX}")
@@ -77,7 +77,8 @@ function(${CMAKETEST_TEST})
 			ct_assert_true_regex(lib_file_name "${LIB_REGEX}")
 
 			ct_assert_string(output_implib)
-			ct_assert_false(output_implib) # equals to "fake_lib-NOTFOUND"
+			ct_assert_equal(output_implib "output_implib-NOTFOUND")
+			ct_assert_false(output_implib) # equals to "output_implib-NOTFOUND"
 		endfunction()
 
 		ct_add_section(NAME "get_relative_path")
@@ -100,7 +101,8 @@ function(${CMAKETEST_TEST})
 			ct_assert_true_regex(lib_file_name "${LIB_REGEX}")
 
 			ct_assert_string(output_implib)
-			ct_assert_false(output_implib) # equals to "fake_lib-NOTFOUND"
+			ct_assert_equal(output_implib "output_implib-NOTFOUND")
+			ct_assert_false(output_implib) # equals to "output_implib-NOTFOUND"
 		endfunction()
 	endfunction()
 	
@@ -177,9 +179,11 @@ function(${CMAKETEST_TEST})
 				ROOT_DIR "${TESTS_DATA_DIR}"
 			)
 			ct_assert_string(output_lib)
-			ct_assert_false(output_lib) # equals to "fake_lib-NOTFOUND"
+			ct_assert_equal(output_lib "output_lib-NOTFOUND")
+			ct_assert_false(output_lib) # equals to "output_lib-NOTFOUND"
 			ct_assert_string(output_implib)
-			ct_assert_false(output_implib) # equals to "fake_lib-NOTFOUND"
+			ct_assert_equal(output_implib "output_implib-NOTFOUND")
+			ct_assert_false(output_implib) # equals to "output_implib-NOTFOUND"
 
 			# Try to find an existing lib but with the wrong build type should fail
 			set(lib_name "shared_mock_lib")
@@ -191,9 +195,11 @@ function(${CMAKETEST_TEST})
 				ROOT_DIR "${TESTS_DATA_DIR}"
 			)
 			ct_assert_string(output_lib)
-			ct_assert_false(output_lib) # equals to "fake_lib-NOTFOUND"
+			ct_assert_equal(output_lib "output_lib-NOTFOUND")
+			ct_assert_false(output_lib) # equals to "output_lib-NOTFOUND"
 			ct_assert_string(output_implib)
-			ct_assert_false(output_implib) # equals to "fake_lib-NOTFOUND"
+			ct_assert_equal(output_implib "output_implib-NOTFOUND")
+			ct_assert_false(output_implib) # equals to "output_implib-NOTFOUND"
 		endfunction()
 
 		ct_add_section(NAME "get_relative_path")
@@ -207,9 +213,11 @@ function(${CMAKETEST_TEST})
 				ROOT_DIR "${TESTS_DATA_DIR}"
 			)
 			ct_assert_string(output_lib)
-			ct_assert_false(output_lib) # equals to "fake_lib-NOTFOUND"
+			ct_assert_equal(output_lib "output_lib-NOTFOUND")
+			ct_assert_false(output_lib) # equals to "output_lib-NOTFOUND"
 			ct_assert_string(output_implib)
-			ct_assert_false(output_implib) # equals to "fake_lib-NOTFOUND"
+			ct_assert_equal(output_implib "output_implib-NOTFOUND")
+			ct_assert_false(output_implib) # equals to "output_implib-NOTFOUND"
 
 			# Try to find an existing lib but with the wrong build type should fail
 			set(lib_name "shared_mock_lib")
@@ -221,9 +229,11 @@ function(${CMAKETEST_TEST})
 				ROOT_DIR "${TESTS_DATA_DIR}"
 			)
 			ct_assert_string(output_lib)
-			ct_assert_false(output_lib) # equals to "fake_lib-NOTFOUND"
+			ct_assert_equal(output_lib "output_lib-NOTFOUND")
+			ct_assert_false(output_lib) # equals to "output_lib-NOTFOUND"
 			ct_assert_string(output_implib)
-			ct_assert_false(output_implib) # equals to "fake_lib-NOTFOUND"
+			ct_assert_equal(output_implib "output_implib-NOTFOUND")
+			ct_assert_false(output_implib) # equals to "output_implib-NOTFOUND"
 		endfunction()
 	endfunction()
 
@@ -240,9 +250,11 @@ function(${CMAKETEST_TEST})
 				ROOT_DIR "${TESTS_DATA_DIR}"
 			)
 			ct_assert_string(output_lib)
-			ct_assert_false(output_lib) # equals to "fake_lib-NOTFOUND"
+			ct_assert_equal(output_lib "output_lib-NOTFOUND")
+			ct_assert_false(output_lib) # equals to "output_lib-NOTFOUND"
 			ct_assert_string(output_implib)
-			ct_assert_false(output_implib) # equals to "fake_lib-NOTFOUND"
+			ct_assert_equal(output_implib "output_implib-NOTFOUND")
+			ct_assert_false(output_implib) # equals to "output_implib-NOTFOUND"
 
 			# On Windows, a static libary can have the same suffix ('.a' for GCC,
 			# '.lib' for MSVC) as a shared import library suffix ('.dll.a|.a|.lib'
@@ -257,9 +269,10 @@ function(${CMAKETEST_TEST})
 					ROOT_DIR "${TESTS_DATA_DIR}"
 				)
 				ct_assert_string(output_lib)
-				ct_assert_false(output_lib) # equals to "fake_lib-NOTFOUND"
+				ct_assert_equal(output_lib "output_lib-NOTFOUND")
+				ct_assert_false(output_lib) # equals to "output_lib-NOTFOUND"
 				ct_assert_string(output_implib)
-				ct_assert_true(output_implib) # NOT equals to "fake_lib-NOTFOUND"
+				ct_assert_true(output_implib) # NOT equals to "output_implib-NOTFOUND"
 			endif()
 		endfunction()
 		
@@ -274,9 +287,11 @@ function(${CMAKETEST_TEST})
 				ROOT_DIR "${TESTS_DATA_DIR}"
 			)
 			ct_assert_string(output_lib)
-			ct_assert_false(output_lib) # equals to "fake_lib-NOTFOUND"
+			ct_assert_equal(output_lib "output_lib-NOTFOUND")
+			ct_assert_false(output_lib) # equals to "output_lib-NOTFOUND"
 			ct_assert_string(output_implib)
-			ct_assert_false(output_implib) # equals to "fake_lib-NOTFOUND"
+			ct_assert_equal(output_implib "output_implib-NOTFOUND")
+			ct_assert_false(output_implib) # equals to "output_implib-NOTFOUND"
 
 			# On Windows, a static libary can have the same suffix ('.a' for GCC,
 			# '.lib' for MSVC) as a shared import library suffix ('.dll.a|.a|.lib'
@@ -291,7 +306,8 @@ function(${CMAKETEST_TEST})
 					ROOT_DIR "${TESTS_DATA_DIR}"
 				)
 				ct_assert_string(output_lib)
-				ct_assert_false(output_lib) # equals to "fake_lib-NOTFOUND"
+				ct_assert_equal(output_lib "output_lib-NOTFOUND")
+				ct_assert_false(output_lib) # equals to "output_lib-NOTFOUND"
 				ct_assert_string(output_implib)
 				ct_assert_true(output_implib) # NOT equals to "fake_lib-NOTFOUND"
 			endif()
@@ -416,7 +432,6 @@ function(${CMAKETEST_TEST})
 		set(lib_name "shared_mock_lib")
 		directory(FIND_LIB output_lib
 			FIND_IMPLIB output_implib
-			NAME
 			SHARED
 			RELATIVE off
 			ROOT_DIR "${TESTS_DATA_DIR}"
@@ -428,6 +443,18 @@ function(${CMAKETEST_TEST})
 		set(lib_name "shared_mock_lib")
 		directory(FIND_LIB output_lib
 			FIND_IMPLIB output_implib
+			NAME
+			SHARED
+			RELATIVE off
+			ROOT_DIR "${TESTS_DATA_DIR}"
+		)
+	endfunction()
+
+	ct_add_section(NAME "throws_if_arg_name_is_missing_3" EXPECTFAIL)
+	function(${CMAKETEST_SECTION})
+		set(lib_name "shared_mock_lib")
+		directory(FIND_LIB output_lib
+			FIND_IMPLIB output_implib
 			NAME ""
 			SHARED
 			RELATIVE off
@@ -435,7 +462,7 @@ function(${CMAKETEST_TEST})
 		)
 	endfunction()
 
-	ct_add_section(NAME "throws_if_arg_build_type_is_missing" EXPECTFAIL)
+	ct_add_section(NAME "throws_if_arg_binary_type_is_missing" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		set(lib_name "shared_mock_lib")
 		directory(FIND_LIB output_lib
@@ -446,7 +473,7 @@ function(${CMAKETEST_TEST})
 		)
 	endfunction()
 	
-	ct_add_section(NAME "throws_if_arg_build_type_is_twice" EXPECTFAIL)
+	ct_add_section(NAME "throws_if_arg_binary_type_is_twice" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		set(lib_name "shared_mock_lib")
 		directory(FIND_LIB output_lib
