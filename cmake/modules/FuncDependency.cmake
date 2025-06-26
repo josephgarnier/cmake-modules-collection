@@ -138,7 +138,7 @@ Usage
 
   The behavior differs from standard CMake in that it stores build and install
   include paths separately using generator expressions (see 
-  `how write build specification with generator expressions <https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html#build-specification-with-generator-expressions>`_).
+  `how write build specification with generator expressions <https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html#include-directories-and-usage-requirements>`_).
 
   The ``PUBLIC`` keyword indicates that the specified directories apply to the
   usage requirements of the target (i.e., will be propagated to consumers of
@@ -415,8 +415,9 @@ macro(_dependency_import)
 		endif()
 
 		# Only shared libraries use import libraries, so make sure implib
-		# is to empty when it is equals to `implib-NOTFOUND`
-		if(NOT implib)
+		# is set to empty when it is equals to `implib-NOTFOUND` (especially
+		# for static libraries)
+		if(implib STREQUAL "implib-NOTFOUND")
 			set(implib "")
 		endif()
 		

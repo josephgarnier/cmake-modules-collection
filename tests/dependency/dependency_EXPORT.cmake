@@ -16,6 +16,7 @@ function(${CMAKETEST_TEST})
 	include(FuncDependency)
 
 	set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install")
+	# Simulate a call to `dependency(IMPORT)`, then `dependency(INCLUDE_DIRECTORIES)`, then `dependency(IMPORTED_LOCATION)`
 	macro(_import_mock_libs)
 		include(FuncDirectory)
 
@@ -37,6 +38,10 @@ function(${CMAKETEST_TEST})
 			RELATIVE off
 			ROOT_DIR "${TESTS_DATA_DIR}/bin"
 		)
+		if(NOT implib_file_path)
+			set(implib_file_path "")
+		endif()
+
 		cmake_path(GET lib_file_path FILENAME lib_file_name)
 		set_target_properties("imp_static_mock_lib" PROPERTIES
 			IMPORTED_LOCATION_${CMAKE_BUILD_TYPE} "${lib_file_path}"

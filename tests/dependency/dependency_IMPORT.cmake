@@ -74,6 +74,9 @@ function(${CMAKETEST_TEST})
 		ct_assert_true(output_lib_property)
 		ct_assert_target_does_not_have_property("${lib_target_name}"
 			IMPORTED_IMPLIB_${CMAKE_BUILD_TYPE})
+		get_target_property(output_lib_property "${lib_target_name}"
+			IMPORTED_IMPLIB_${CMAKE_BUILD_TYPE})
+		ct_assert_equal(output_lib_property "")
 		get_property(output_lib_property TARGET "${lib_target_name}"
 			PROPERTY IMPORTED_IMPLIB_${CMAKE_BUILD_TYPE} SET)
 		ct_assert_true(output_lib_property)
