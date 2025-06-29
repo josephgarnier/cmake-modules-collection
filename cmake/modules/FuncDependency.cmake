@@ -535,18 +535,25 @@ macro(_dependency_include_directories)
 	if(${DEP_SET} AND ${DEP_APPEND})
 		message(FATAL_ERROR "SET|APPEND cannot be used together!")
 	endif()
-	if(NOT DEFINED DEP_PUBLIC)
-		OR ("PUBLIC" IN_LIST DEP_KEYWORDS_MISSING_VALUES)
+	if((NOT DEFINED DEP_PUBLIC)
+		OR ("PUBLIC" IN_LIST DEP_KEYWORDS_MISSING_VALUES))
 		message(FATAL_ERROR "PUBLIC argument is missing or need a value!")
+		message(("UCU"))
 	endif()
 
 	if(NOT TARGET "${DEP_INCLUDE_DIRECTORIES}")
 		message(FATAL_ERROR "The target \"${DEP_INCLUDE_DIRECTORIES}\" does not exists!")
 	endif()
 
-	string_manip(EXTRACT_INTERFACE DEP_PUBLIC BUILD OUTPUT_VARIABLE include_directories_build_interface)
-	string_manip(EXTRACT_INTERFACE DEP_PUBLIC INSTALL OUTPUT_VARIABLE include_directories_install_interface)
-	if(${DEP_SET})
+	string_manip(EXTRACT_INTERFACE DEP_PUBLIC
+		BUILD
+		OUTPUT_VARIABLE include_directories_build_interface
+	)
+	string_manip(EXTRACT_INTERFACE DEP_PUBLIC
+		INSTALL
+		OUTPUT_VARIABLE include_directories_install_interface
+	)
+	if(${DEP_SET}) # voir pour utiliser append en variable et fusionner avec le else + renommer en ADD_INCLUDE_DIRECTORIES
 		set_property(TARGET "${DEP_INCLUDE_DIRECTORIES}"
 			PROPERTY INTERFACE_INCLUDE_DIRECTORIES "${include_directories_build_interface}"
 		)
