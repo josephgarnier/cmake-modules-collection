@@ -118,12 +118,62 @@ Usage
 
   .. code-block:: cmake
 
-    dependency(IMPORT "mylib"
+    # Import shared lib
+    dependency(IMPORT "my_shared_lib"
       SHARED
       RELEASE_NAME "mylib_1.11.0"
       DEBUG_NAME "mylibd_1.11.0"
       ROOT_DIR "${CMAKE_SOURCE_DIR}/lib"
       INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/mylib"
+    )
+    # Is more or less equivalent to:
+    add_library("my_shared_lib" SHARED IMPORTED)
+    set_target_properties("my_shared_lib" PROPERTIES
+        INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_SOURCE_DIR}/include/mylib"
+        INTERFACE_INCLUDE_DIRECTORIES_BUILD ""
+        INTERFACE_INCLUDE_DIRECTORIES_INSTALL ""
+    )
+    find_library(lib NAMES "mylib_1.11.0")
+    find_library(implib NAMES "mylibd_1.11.0")
+    cmake_path(GET lib FILENAME lib_name)
+    set_target_properties("my_shared_lib" PROPERTIES
+        IMPORTED_LOCATION_RELEASE "${lib}"
+        IMPORTED_LOCATION_BUILD_RELEASE ""
+        IMPORTED_LOCATION_INSTALL_RELEASE ""
+        IMPORTED_IMPLIB_RELEASE "${implib}"
+        IMPORTED_SONAME_RELEASE "${lib_name}"
+    )
+    set_property(TARGET "my_shared_lib"
+        APPEND PROPERTY IMPORTED_CONFIGURATIONS "${CMAKE_BUILD_TYPE}"
+    )
+
+    # Import static lib
+    dependency(IMPORT "my_static_lib"
+      STATIC
+      RELEASE_NAME "mylib_1.11.0"
+      DEBUG_NAME "mylibd_1.11.0"
+      ROOT_DIR "${CMAKE_SOURCE_DIR}/lib"
+      INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/mylib"
+    )
+    # Is more or less equivalent to:
+    add_library("my_shared_lib" SHARED IMPORTED)
+    set_target_properties("my_shared_lib" PROPERTIES
+        INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_SOURCE_DIR}/include/mylib"
+        INTERFACE_INCLUDE_DIRECTORIES_BUILD ""
+        INTERFACE_INCLUDE_DIRECTORIES_INSTALL ""
+    )
+    find_library(lib NAMES "mylib_1.11.0")
+    find_library(implib NAMES "mylibd_1.11.0")
+    cmake_path(GET lib FILENAME lib_name)
+    set_target_properties("my_shared_lib" PROPERTIES
+        IMPORTED_LOCATION_RELEASE "${lib}"
+        IMPORTED_LOCATION_BUILD_RELEASE ""
+        IMPORTED_LOCATION_INSTALL_RELEASE ""
+        IMPORTED_IMPLIB_RELEASE "${implib}"
+        IMPORTED_SONAME_RELEASE "${lib_name}"
+    )
+    set_property(TARGET "my_shared_lib"
+        APPEND PROPERTY IMPORTED_CONFIGURATIONS "${CMAKE_BUILD_TYPE}"
     )
 
 .. signature::
@@ -177,17 +227,53 @@ Usage
 
   .. code-block:: cmake
 
-    dependency(INCLUDE_DIRECTORIES "mylib" SET
-      PUBLIC
-        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
-        "$<INSTALL_INTERFACE:include>"
+    # Import libs
+    dependency(IMPORT "my_shared_lib"
+      SHARED
+      RELEASE_NAME "mylib_1.11.0"
+      DEBUG_NAME "mylibd_1.11.0"
+      ROOT_DIR "${CMAKE_SOURCE_DIR}/lib"
+      INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/mylib"
+    )
+    dependency(IMPORT "my_static_lib"
+      STATIC
+      RELEASE_NAME "mylib_1.11.0"
+      DEBUG_NAME "mylibd_1.11.0"
+      ROOT_DIR "${CMAKE_SOURCE_DIR}/lib"
+      INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/mylib"
     )
 
-  This example sets ``mylib`` to expose:
+    # Set include directories for shared lib
+    dependency(INCLUDE_DIRECTORIES "my_shared_lib" SET
+      PUBLIC
+        "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include/mylib>"
+        "$<INSTALL_INTERFACE:include/mylib>"
+    )
+    # Is more or less equivalent to:
+    target_include_directories(static_mock_lib
+        PUBLIC
+            "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include/mylib>"
+            "$<INSTALL_INTERFACE:include/mylib>"
+    )
 
-  * ``${CMAKE_CURRENT_SOURCE_DIR}/include`` during the build.
-  * ``<prefix>/include`` after installation (where ``<prefix>`` is resolved
-    when imported via :command:`dependency(EXPORT)`).
+    # Set include directories for static lib
+    dependency(INCLUDE_DIRECTORIES "my_static_lib" SET
+      PUBLIC
+        "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include/mylib>"
+        "$<INSTALL_INTERFACE:include/mylib>"
+    )
+    # Is more or less equivalent to:
+    target_include_directories(static_mock_lib
+        PUBLIC
+            "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include/mylib>"
+            "$<INSTALL_INTERFACE:include/mylib>"
+    )
+
+  This example sets ``my_shared_lib`` and ``my_static_lib`` to expose:
+
+  * ``${CMAKE_SOURCE_DIR}/include/mylib`` during the build.
+  * ``<CMAKE_INSTALL_PREFIX>/include/mylib`` after installation (where
+    ``<CMAKE_INSTALL_PREFIX>`` is resolved when imported via :command:`dependency(EXPORT)`).
 
 .. signature::
   dependency(IMPORTED_LOCATION <lib_target_name> [CONFIGURATION <config_type>] PUBLIC <gen_expr_list> ...)

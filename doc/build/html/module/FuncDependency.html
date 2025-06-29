@@ -66,9 +66,9 @@
 <section id="synopsis">
 <h2>Synopsis<a class="headerlink" href="#synopsis" title="Link to this heading">¶</a></h2>
 <pre class="literal-block">dependency(<a class="reference internal" href="#import">IMPORT</a> &lt;lib_target_name&gt; &lt;STATIC|SHARED&gt; [RELEASE_NAME &lt;raw_filename&gt;] [DEBUG_NAME &lt;raw_filename&gt;] ROOT_DIR &lt;directory_path&gt; INCLUDE_DIR &lt;directory_path&gt;)
-dependency(<a class="reference internal" href="#export">EXPORT</a> &lt;lib_target_name_list&gt; ... &lt;BUILD_TREE|INSTALL_TREE&gt; [APPEND] OUTPUT_FILE &lt;file_name&gt;)
 dependency(<a class="reference internal" href="#include-directories">INCLUDE_DIRECTORIES</a> &lt;lib_target_name&gt; &lt;SET|APPEND&gt; PUBLIC &lt;gen_expr_list&gt; ...)
-dependency(<a class="reference internal" href="#imported-location">IMPORTED_LOCATION</a> &lt;lib_target_name&gt; [CONFIGURATION &lt;build_type&gt;] PUBLIC &lt;gen_expr_list&gt; ...)</pre>
+dependency(<a class="reference internal" href="#imported-location">IMPORTED_LOCATION</a> &lt;lib_target_name&gt; [CONFIGURATION &lt;build_type&gt;] PUBLIC &lt;gen_expr_list&gt; ...)
+dependency(<a class="reference internal" href="#export">EXPORT</a> &lt;lib_target_name_list&gt; ... &lt;BUILD_TREE|INSTALL_TREE&gt; [APPEND] OUTPUT_FILE &lt;file_name&gt;)</pre>
 </section>
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h2>
@@ -78,20 +78,20 @@ dependency(<a class="reference internal" href="#imported-location">IMPORTED_LOCA
 <dd><p>Create an imported library target named <code class="docutils literal notranslate"><span class="pre">&lt;lib_target_name&gt;</span></code>, which should
 represent the base name of the library (without prefix or suffix), by
 locating its binary files and setting the necessary target properties. This
-command combines behavior similar to <span class="target" id="index-0-command:cmake:command:find_library"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/find_library.html#command:find_library" title="(in CMake v4.0.3)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">find_library()</span></code></a> and
-<span class="target" id="index-0-command:cmake:command:add_library"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/add_library.html#imported" title="(in CMake v4.0.3)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">add_library(IMPORTED)</span></code></a>.</p>
+command combines behavior similar to <span class="target" id="index-0-command:cmake:command:find_library"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/find_library.html#command:find_library" title="(in CMake v4.1.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">find_library()</span></code></a> and
+<span class="target" id="index-0-command:cmake:command:add_library"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/add_library.html#imported" title="(in CMake v4.1.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">add_library(IMPORTED)</span></code></a>.</p>
 <p>The command requires either the <code class="docutils literal notranslate"><span class="pre">STATIC</span></code> or <code class="docutils literal notranslate"><span class="pre">SHARED</span></code> keyword to specify
 the type of library. Only one may be used. At least one of
 <code class="docutils literal notranslate"><span class="pre">RELEASE_NAME</span> <span class="pre">&lt;raw_filename&gt;</span></code> or <code class="docutils literal notranslate"><span class="pre">DEBUG_NAME</span> <span class="pre">&lt;raw_filename&gt;</span></code> must be
 provided. Both can be used. These arguments determine which configurations
 of the library will be available, typically matching values in the
-<span class="target" id="index-0-variable:cmake:variable:CMAKE_CONFIGURATION_TYPES"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/variable/CMAKE_CONFIGURATION_TYPES.html#variable:CMAKE_CONFIGURATION_TYPES" title="(in CMake v4.0.3)"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">CMAKE_CONFIGURATION_TYPES</span></code></a> variable.</p>
+<span class="target" id="index-0-variable:cmake:variable:CMAKE_CONFIGURATION_TYPES"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/variable/CMAKE_CONFIGURATION_TYPES.html#variable:CMAKE_CONFIGURATION_TYPES" title="(in CMake v4.1.0)"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">CMAKE_CONFIGURATION_TYPES</span></code></a> variable.</p>
 <p>The value of <code class="docutils literal notranslate"><span class="pre">&lt;raw_filename&gt;</span></code> should be the core name of the library file,
 stripped of:</p>
 <ul class="simple">
 <li><p>Any version numbers.</p></li>
 <li><p>Platform-specific prefixes (e.g. <code class="docutils literal notranslate"><span class="pre">lib</span></code>).</p></li>
-<li><p>Platform-specific suffixes (e.g. <code class="docutils literal notranslate"><span class="pre">.so</span></code>, <code class="docutils literal notranslate"><span class="pre">.dll</span></code>, <code class="docutils literal notranslate"><span class="pre">.a</span></code>, <code class="docutils literal notranslate"><span class="pre">.lib</span></code>).</p></li>
+<li><p>Platform-specific suffixes (e.g. <code class="docutils literal notranslate"><span class="pre">.so</span></code>, <code class="docutils literal notranslate"><span class="pre">.dll</span></code>, <code class="docutils literal notranslate"><span class="pre">.dll.a</span></code>, <code class="docutils literal notranslate"><span class="pre">.a</span></code>, <code class="docutils literal notranslate"><span class="pre">.lib</span></code>).</p></li>
 </ul>
 <p>The file will be resolved by scanning recursively all files in the given
 <code class="docutils literal notranslate"><span class="pre">ROOT_DIR</span></code> and attempting to match against expected filename patterns
@@ -106,7 +106,7 @@ version and their suffix and their prefix based on the plateform and the
 kind of library <code class="docutils literal notranslate"><span class="pre">STATIC</span></code> or <code class="docutils literal notranslate"><span class="pre">SHARED</span></code>. See the command module
 <span class="target" id="index-0-command:directory"></span><a class="reference internal" href="FuncDirectory.html#scan" title="directory(scan)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">directory(SCAN)</span></code></a>, that is used internally, for full details.</p>
 <p>If more than one file matches or no file is found, an error is raised.</p>
-<p>Once located, an imported target is created using <span class="target" id="index-1-command:cmake:command:add_library"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/add_library.html#imported" title="(in CMake v4.0.3)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">add_library(IMPORTED)</span></code></a> and
+<p>Once located, an imported target is created using <span class="target" id="index-1-command:cmake:command:add_library"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/add_library.html#imported" title="(in CMake v4.1.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">add_library(IMPORTED)</span></code></a> and
 appropriate properties for each available configuration (<code class="docutils literal notranslate"><span class="pre">RELEASE</span></code> and/or
 <code class="docutils literal notranslate"><span class="pre">DEBUG</span></code>) are set, including paths to the binary and import libraries (if
 applicable), as well as the soname.</p>
@@ -125,18 +125,22 @@ build-tree context.</p>
 include paths during installation or packaging, for usage from the
 install-tree context.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">IMPORTED_LOCATION_&lt;CONFIG&gt;</span></code></dt><dd><p>The full path to the actual library file (e.g. <code class="docutils literal notranslate"><span class="pre">.a</span></code>, <code class="docutils literal notranslate"><span class="pre">.so</span></code>, <code class="docutils literal notranslate"><span class="pre">.dll</span></code>),
+<dt><code class="docutils literal notranslate"><span class="pre">IMPORTED_LOCATION_&lt;CONFIG&gt;</span></code></dt><dd><p>The full path to the actual library file (e.g. <code class="docutils literal notranslate"><span class="pre">.so</span></code>, <code class="docutils literal notranslate"><span class="pre">.dll</span></code>, <code class="docutils literal notranslate"><span class="pre">.a</span></code>, <code class="docutils literal notranslate"><span class="pre">.lib</span></code>),
 set separately for each configuration (<code class="docutils literal notranslate"><span class="pre">RELEASE</span></code> and/or <code class="docutils literal notranslate"><span class="pre">DEBUG</span></code>). See the <a class="reference external" href="https://cmake.org/cmake/help/latest/prop_tgt/IMPORTED_LOCATION_CONFIG.html">CMake doc</a> for full details.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">IMPORTED_LOCATION_BUILD_&lt;CONFIG&gt;</span></code></dt><dd><p><em>Custom property</em> set to an empty value. Intended for build-tree specific
-overrides of the library path, for usage from the build-tree context</p>
+overrides of the library path, for usage from the build-tree context.
+Use <span class="target" id="index-0-command:dependency"></span><a class="reference internal" href="#imported-location" title="dependency(imported_location)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">dependency(IMPORTED_LOCATION)</span></code></a> to initialize this property.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">IMPORTED_LOCATION_INSTALL_&lt;CONFIG&gt;</span></code></dt><dd><p><em>Custom property</em> set to an empty value. Intended for install-time
-overrides of the library path, for usage from the install-tree context.</p>
+overrides of the library path, for usage from the install-tree context.
+Use <span class="target" id="index-1-command:dependency"></span><a class="reference internal" href="#imported-location" title="dependency(imported_location)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">dependency(IMPORTED_LOCATION)</span></code></a> to initialize this property.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">IMPORTED_IMPLIB_&lt;CONFIG&gt;</span></code></dt><dd><p>On DLL-based platforms (e.g. Windows), set to the full path of the
-import library file (e.g. <code class="docutils literal notranslate"><span class="pre">.lib</span></code>, <code class="docutils literal notranslate"><span class="pre">.dll.a</span></code>) for the corresponding
-configuration. See the <a class="reference external" href="https://cmake.org/cmake/help/latest/prop_tgt/IMPORTED_IMPLIB_CONFIG.html">CMake doc</a> for full details.</p>
+import library file (e.g. <code class="docutils literal notranslate"><span class="pre">.dll.a</span></code>, <code class="docutils literal notranslate"><span class="pre">.a</span></code>, <code class="docutils literal notranslate"><span class="pre">.lib</span></code>) for the corresponding
+configuration. For static libraries, this property is set to empty,
+because an import library is only for a shared library. See the
+<a class="reference external" href="https://cmake.org/cmake/help/latest/prop_tgt/IMPORTED_IMPLIB_CONFIG.html">CMake doc</a> for full details.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">IMPORTED_SONAME_&lt;CONFIG&gt;</span></code></dt><dd><p>Set to the filename of the resolved library (without path), allowing
 CMake to handle runtime linking and version resolution. See the
@@ -149,103 +153,63 @@ details.</p>
 </dl>
 </div></blockquote>
 <p>Example usage:</p>
-<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">dependency(</span><span class="no">IMPORT</span><span class="w"> </span><span class="s">&quot;mylib&quot;</span>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="c"># Import shared lib</span>
+<span class="nf">dependency(</span><span class="no">IMPORT</span><span class="w"> </span><span class="s">&quot;my_shared_lib&quot;</span>
 <span class="w">  </span><span class="no">SHARED</span>
 <span class="w">  </span><span class="no">RELEASE_NAME</span><span class="w"> </span><span class="s">&quot;mylib_1.11.0&quot;</span>
 <span class="w">  </span><span class="no">DEBUG_NAME</span><span class="w"> </span><span class="s">&quot;mylibd_1.11.0&quot;</span>
 <span class="w">  </span><span class="no">ROOT_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/lib&quot;</span>
 <span class="w">  </span><span class="no">INCLUDE_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/include/mylib&quot;</span>
 <span class="nf">)</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="cmake signature">
-<dt class="sig sig-object cmake" id="export">
-<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">dependency(</span></span><span class="no"><span class="pre">EXPORT</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;lib_target_name_list&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;</span></span><span class="no"><span class="pre">BUILD_TREE</span></span><span class="p"><span class="pre">|</span></span><span class="no"><span class="pre">INSTALL_TREE</span></span><span class="o"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">[</span></span><span class="no"><span class="pre">APPEND</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="no"><span class="pre">OUTPUT_FILE</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;file_name&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#export" title="Link to this definition">¶</a></dt>
-<dd><p>Creates a file <code class="docutils literal notranslate"><span class="pre">&lt;file_name&gt;</span></code> that may be included by outside projects to
-import targets in <code class="docutils literal notranslate"><span class="pre">&lt;lib_target_name_list&gt;</span></code> from the current project's
-build-tree or install-tree. This command is functionally similar to using
-<span class="target" id="index-0-command:cmake:command:export"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/export.html#targets" title="(in CMake v4.0.3)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">export(TARGETS)</span></code></a> in a <code class="docutils literal notranslate"><span class="pre">BUILD_TREE</span></code> context and <span class="target" id="index-0-command:cmake:command:install"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/install.html#export" title="(in CMake v4.0.3)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">install(EXPORT)</span></code></a>
-in an <code class="docutils literal notranslate"><span class="pre">INSTALL_TREE</span></code> context, but is designed specifically to export
-imported targets with <span class="target" id="index-0-command:dependency"></span><a class="reference internal" href="#import" title="dependency(import)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">dependency(IMPORT)</span></code></a> instead of build targets.</p>
-<p>The targets in <code class="docutils literal notranslate"><span class="pre">&lt;lib_target_name_list&gt;</span></code> must be previously created imported
-targets. The names should match exactly the target names used during import.</p>
-<p>One of <code class="docutils literal notranslate"><span class="pre">BUILD_TREE</span></code> or <code class="docutils literal notranslate"><span class="pre">INSTALL_TREE</span></code> must be specified to indicate the
-context in which the file is generated:</p>
-<ul class="simple">
-<li><p>When <code class="docutils literal notranslate"><span class="pre">BUILD_TREE</span></code> is used, the command generates the file in
-<code class="docutils literal notranslate"><span class="pre">CMAKE_CURRENT_BINARY_DIR/&lt;file_name&gt;</span></code>, similar to how <span class="target" id="index-1-command:cmake:command:export"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/export.html#targets" title="(in CMake v4.0.3)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">export(TARGETS)</span></code></a>
-produces a file to be included by other build projects. This file enables
-other projects to import the specified targets directly from the build-tree
-. It can be included from a <code class="docutils literal notranslate"><span class="pre">&lt;PackageName&gt;Config.cmake</span></code> file to provide
-usage information for downstream projects.</p></li>
-<li><p>When <code class="docutils literal notranslate"><span class="pre">INSTALL_TREE</span></code> is used, the file is generated in
-<code class="docutils literal notranslate"><span class="pre">CMAKE_CURRENT_BINARY_DIR/cmake/export/&lt;file_name&gt;</span></code> and an install rule
-is added to copy the file to <code class="docutils literal notranslate"><span class="pre">CMAKE_INSTALL_PREFIX/cmake/export/</span>
-<span class="pre">&lt;file_name&gt;</span></code>. This is similar to combining <span class="target" id="index-1-command:cmake:command:install"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/install.html#targets" title="(in CMake v4.0.3)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">install(TARGETS)</span></code></a> with
-<span class="target" id="index-2-command:cmake:command:install"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/install.html#export" title="(in CMake v4.0.3)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">install(EXPORT)</span></code></a>, but applies to imported rather than built targets.
-This makes the export file available post-install and allows downstream
-projects to include the file from a package configuration file.</p></li>
-</ul>
-<p>Note that no install rules are created for the actual binary files of the
-imported targets; only the export script <code class="docutils literal notranslate"><span class="pre">OUTPUT_FILE</span></code> itself is installed.</p>
-<p>If the <code class="docutils literal notranslate"><span class="pre">APPEND</span></code> keyword is specified, the generated code is appended to the
-existing file instead of overwriting it. This is useful for exporting
-multiple targets incrementally to a single file.</p>
-<p>The generated file defines all necessary target properties so that the
-imported targets can be used as if they were defined locally. The properties
-are identical to those set by the <span class="target" id="index-1-command:dependency"></span><a class="reference internal" href="#import" title="dependency(import)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">dependency(IMPORT)</span></code></a> command; see
-its documentation for additional details.</p>
-<p>Example usage:</p>
-<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="c"># Import target</span>
-<span class="nf">dependency(</span><span class="no">IMPORT</span><span class="w"> </span><span class="s">&quot;myimportedlib-1&quot;</span>
-<span class="w">  </span><span class="no">SHARED</span>
-<span class="w">  </span><span class="no">RELEASE_NAME</span><span class="w"> </span><span class="s">&quot;myimportedlib-1&quot;</span>
-<span class="w">  </span><span class="no">DEBUG_NAME</span><span class="w"> </span><span class="s">&quot;myimportedlibd-1&quot;</span>
-<span class="w">  </span><span class="no">ROOT_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/lib&quot;</span>
-<span class="w">  </span><span class="no">INCLUDE_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/include/myimportedlib-1&quot;</span>
+<span class="c"># Is more or less equivalent to:</span>
+<span class="nf">add_library(</span><span class="s">&quot;my_shared_lib&quot;</span><span class="w"> </span><span class="no">SHARED</span><span class="w"> </span><span class="no">IMPORTED</span><span class="nf">)</span>
+<span class="nf">set_target_properties(</span><span class="s">&quot;my_shared_lib&quot;</span><span class="w"> </span><span class="no">PROPERTIES</span>
+<span class="w">    </span><span class="no">INTERFACE_INCLUDE_DIRECTORIES</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/include/mylib&quot;</span>
+<span class="w">    </span><span class="no">INTERFACE_INCLUDE_DIRECTORIES_BUILD</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">    </span><span class="no">INTERFACE_INCLUDE_DIRECTORIES_INSTALL</span><span class="w"> </span><span class="s">&quot;&quot;</span>
 <span class="nf">)</span>
-<span class="nf">dependency(</span><span class="no">IMPORT</span><span class="w"> </span><span class="s">&quot;myimportedlib-2&quot;</span>
-<span class="w">  </span><span class="no">SHARED</span>
-<span class="w">  </span><span class="no">RELEASE_NAME</span><span class="w"> </span><span class="s">&quot;myimportedlib-2&quot;</span>
-<span class="w">  </span><span class="no">DEBUG_NAME</span><span class="w"> </span><span class="s">&quot;myimportedlibd-2&quot;</span>
-<span class="w">  </span><span class="no">ROOT_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/lib&quot;</span>
-<span class="w">  </span><span class="no">INCLUDE_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/include/myimportedlib-2&quot;</span>
+<span class="nf">find_library(</span><span class="nb">lib</span><span class="w"> </span><span class="no">NAMES</span><span class="w"> </span><span class="s">&quot;mylib_1.11.0&quot;</span><span class="nf">)</span>
+<span class="nf">find_library(</span><span class="nb">implib</span><span class="w"> </span><span class="no">NAMES</span><span class="w"> </span><span class="s">&quot;mylibd_1.11.0&quot;</span><span class="nf">)</span>
+<span class="nf">cmake_path(</span><span class="no">GET</span><span class="w"> </span><span class="nb">lib</span><span class="w"> </span><span class="no">FILENAME</span><span class="w"> </span><span class="nb">lib_name</span><span class="nf">)</span>
+<span class="nf">set_target_properties(</span><span class="s">&quot;my_shared_lib&quot;</span><span class="w"> </span><span class="no">PROPERTIES</span>
+<span class="w">    </span><span class="no">IMPORTED_LOCATION_RELEASE</span><span class="w"> </span><span class="s">&quot;${lib}&quot;</span>
+<span class="w">    </span><span class="no">IMPORTED_LOCATION_BUILD_RELEASE</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">    </span><span class="no">IMPORTED_LOCATION_INSTALL_RELEASE</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">    </span><span class="no">IMPORTED_IMPLIB_RELEASE</span><span class="w"> </span><span class="s">&quot;${implib}&quot;</span>
+<span class="w">    </span><span class="no">IMPORTED_SONAME_RELEASE</span><span class="w"> </span><span class="s">&quot;${lib_name}&quot;</span>
+<span class="nf">)</span>
+<span class="nf">set_property(</span><span class="no">TARGET</span><span class="w"> </span><span class="s">&quot;my_shared_lib&quot;</span>
+<span class="w">    </span><span class="no">APPEND</span><span class="w"> </span><span class="no">PROPERTY</span><span class="w"> </span><span class="no">IMPORTED_CONFIGURATIONS</span><span class="w"> </span><span class="s">&quot;${CMAKE_BUILD_TYPE}&quot;</span>
 <span class="nf">)</span>
 
-<span class="c"># Export from Build-Tree</span>
-<span class="nf">dependency(</span><span class="no">EXPORT</span><span class="w"> </span><span class="s">&quot;myimportedlib-1&quot;</span><span class="w"> </span><span class="s">&quot;myimportedlib-2&quot;</span>
-<span class="w">  </span><span class="no">BUILD_TREE</span>
-<span class="w">  </span><span class="no">APPEND</span>
-<span class="w">  </span><span class="no">OUTPUT_FILE</span><span class="w"> </span><span class="s">&quot;InternalDependencyTargets.cmake&quot;</span>
+<span class="c"># Import static lib</span>
+<span class="nf">dependency(</span><span class="no">IMPORT</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span>
+<span class="w">  </span><span class="no">STATIC</span>
+<span class="w">  </span><span class="no">RELEASE_NAME</span><span class="w"> </span><span class="s">&quot;mylib_1.11.0&quot;</span>
+<span class="w">  </span><span class="no">DEBUG_NAME</span><span class="w"> </span><span class="s">&quot;mylibd_1.11.0&quot;</span>
+<span class="w">  </span><span class="no">ROOT_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/lib&quot;</span>
+<span class="w">  </span><span class="no">INCLUDE_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/include/mylib&quot;</span>
 <span class="nf">)</span>
 <span class="c"># Is more or less equivalent to:</span>
-<span class="nf">export(</span><span class="no">TARGETS</span><span class="w"> </span><span class="s">&quot;myimportedlib-1&quot;</span><span class="w"> </span><span class="s">&quot;myimportedlib-2&quot;</span>
-<span class="w">  </span><span class="no">APPEND</span>
-<span class="w">  </span><span class="no">FILE</span><span class="w"> </span><span class="s">&quot;InternalDependencyTargets.cmake&quot;</span>
+<span class="nf">add_library(</span><span class="s">&quot;my_shared_lib&quot;</span><span class="w"> </span><span class="no">SHARED</span><span class="w"> </span><span class="no">IMPORTED</span><span class="nf">)</span>
+<span class="nf">set_target_properties(</span><span class="s">&quot;my_shared_lib&quot;</span><span class="w"> </span><span class="no">PROPERTIES</span>
+<span class="w">    </span><span class="no">INTERFACE_INCLUDE_DIRECTORIES</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/include/mylib&quot;</span>
+<span class="w">    </span><span class="no">INTERFACE_INCLUDE_DIRECTORIES_BUILD</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">    </span><span class="no">INTERFACE_INCLUDE_DIRECTORIES_INSTALL</span><span class="w"> </span><span class="s">&quot;&quot;</span>
 <span class="nf">)</span>
-
-<span class="c"># Exporting from Install-Tree</span>
-<span class="nf">dependency(</span><span class="no">EXPORT</span><span class="w"> </span><span class="s">&quot;myimportedlib-1&quot;</span><span class="w"> </span><span class="s">&quot;myimportedlib-2&quot;</span>
-<span class="w">  </span><span class="no">INSTALL_TREE</span>
-<span class="w">  </span><span class="no">APPEND</span>
-<span class="w">  </span><span class="no">OUTPUT_FILE</span><span class="w"> </span><span class="s">&quot;InternalDependencyTargets.cmake&quot;</span>
+<span class="nf">find_library(</span><span class="nb">lib</span><span class="w"> </span><span class="no">NAMES</span><span class="w"> </span><span class="s">&quot;mylib_1.11.0&quot;</span><span class="nf">)</span>
+<span class="nf">find_library(</span><span class="nb">implib</span><span class="w"> </span><span class="no">NAMES</span><span class="w"> </span><span class="s">&quot;mylibd_1.11.0&quot;</span><span class="nf">)</span>
+<span class="nf">cmake_path(</span><span class="no">GET</span><span class="w"> </span><span class="nb">lib</span><span class="w"> </span><span class="no">FILENAME</span><span class="w"> </span><span class="nb">lib_name</span><span class="nf">)</span>
+<span class="nf">set_target_properties(</span><span class="s">&quot;my_shared_lib&quot;</span><span class="w"> </span><span class="no">PROPERTIES</span>
+<span class="w">    </span><span class="no">IMPORTED_LOCATION_RELEASE</span><span class="w"> </span><span class="s">&quot;${lib}&quot;</span>
+<span class="w">    </span><span class="no">IMPORTED_LOCATION_BUILD_RELEASE</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">    </span><span class="no">IMPORTED_LOCATION_INSTALL_RELEASE</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">    </span><span class="no">IMPORTED_IMPLIB_RELEASE</span><span class="w"> </span><span class="s">&quot;${implib}&quot;</span>
+<span class="w">    </span><span class="no">IMPORTED_SONAME_RELEASE</span><span class="w"> </span><span class="s">&quot;${lib_name}&quot;</span>
 <span class="nf">)</span>
-<span class="c"># Is more or less equivalent to:</span>
-<span class="nf">install(</span><span class="no">TARGETS</span><span class="w"> </span><span class="s">&quot;myimportedlib-1&quot;</span><span class="w"> </span><span class="s">&quot;myimportedlib-2&quot;</span>
-<span class="w">  </span><span class="no">EXPORT</span><span class="w"> </span><span class="s">&quot;LibExport&quot;</span>
+<span class="nf">set_property(</span><span class="no">TARGET</span><span class="w"> </span><span class="s">&quot;my_shared_lib&quot;</span>
+<span class="w">    </span><span class="no">APPEND</span><span class="w"> </span><span class="no">PROPERTY</span><span class="w"> </span><span class="no">IMPORTED_CONFIGURATIONS</span><span class="w"> </span><span class="s">&quot;${CMAKE_BUILD_TYPE}&quot;</span>
 <span class="nf">)</span>
-<span class="nf">install(</span><span class="no">EXPORT</span><span class="w"> </span><span class="s">&quot;LibExport&quot;</span>
-<span class="w">  </span><span class="no">DESTINATION</span><span class="w"> </span><span class="s">&quot;cmake/export&quot;</span>
-<span class="w">  </span><span class="no">FILE</span><span class="w"> </span><span class="s">&quot;InternalDependencyTargets.cmake&quot;</span>
-<span class="nf">)</span>
-</pre></div>
-</div>
-<p>The resulting file <code class="docutils literal notranslate"><span class="pre">InternalDependencyTargets.cmake</span></code> may then be included
-by a package configuration file <code class="docutils literal notranslate"><span class="pre">&lt;PackageName&gt;Config.cmake.in</span></code> to be used by
-<span class="target" id="index-0-command:cmake:command:configure_package_config_file"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/module/CMakePackageConfigHelpers.html#command:configure_package_config_file" title="(in CMake v4.0.3)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">configure_package_config_file()</span></code></a> command:</p>
-<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">include(</span><span class="s">&quot;${CMAKE_CURRENT_LIST_DIR}/InternalDependencyTargets.cmake&quot;</span><span class="nf">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -253,15 +217,15 @@ by a package configuration file <code class="docutils literal notranslate"><span
 <dl class="cmake signature">
 <dt class="sig sig-object cmake" id="include-directories">
 <span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">dependency(</span></span><span class="no"><span class="pre">INCLUDE_DIRECTORIES</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;lib_target_name&gt;</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;</span></span><span class="no"><span class="pre">SET</span></span><span class="p"><span class="pre">|</span></span><span class="no"><span class="pre">APPEND</span></span><span class="o"><span class="pre">&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">PUBLIC</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;gen_expr_list&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#include-directories" title="Link to this definition">¶</a></dt>
-<dd><p>Set or append public include directories via <span class="target" id="index-0-prop_tgt:cmake:prop_tgt:INTERFACE_INCLUDE_DIRECTORIES"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/prop_tgt/INTERFACE_INCLUDE_DIRECTORIES.html#prop_tgt:INTERFACE_INCLUDE_DIRECTORIES" title="(in CMake v4.0.3)"><code class="xref cmake cmake-prop_tgt docutils literal notranslate"><span class="pre">INTERFACE_INCLUDE_DIRECTORIES</span></code></a>
+<dd><p>Set or append public include directories via <span class="target" id="index-0-prop_tgt:cmake:prop_tgt:INTERFACE_INCLUDE_DIRECTORIES"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/prop_tgt/INTERFACE_INCLUDE_DIRECTORIES.html#prop_tgt:INTERFACE_INCLUDE_DIRECTORIES" title="(in CMake v4.1.0)"><code class="xref cmake cmake-prop_tgt docutils literal notranslate"><span class="pre">INTERFACE_INCLUDE_DIRECTORIES</span></code></a>
 property to the imported target <code class="docutils literal notranslate"><span class="pre">&lt;lib_target_name&gt;</span></code>. The name should
 represent the base name of the library (without prefix or suffix). This
-command works similarly to <span class="target" id="index-0-command:cmake:command:target_include_directories"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/target_include_directories.html#command:target_include_directories" title="(in CMake v4.0.3)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_include_directories()</span></code></a> in CMake,
+command works similarly to <span class="target" id="index-0-command:cmake:command:target_include_directories"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/target_include_directories.html#command:target_include_directories" title="(in CMake v4.1.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_include_directories()</span></code></a> in CMake,
 but introduces a separation between build-time and install-time contexts for
 imported dependencies.</p>
 <p>The behavior differs from standard CMake in that it stores build and install
 include paths separately using generator expressions (see 
-<a class="reference external" href="https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html#build-specification-with-generator-expressions">how write build specification with generator expressions</a>).</p>
+<a class="reference external" href="https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html#include-directories-and-usage-requirements">how write build specification with generator expressions</a>).</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">PUBLIC</span></code> keyword indicates that the specified directories apply to the
 usage requirements of the target (i.e., will be propagated to consumers of
 the target). The directories following it <strong>must use generator expressions</strong> like
@@ -294,18 +258,54 @@ be used after installation. It is extracted from the
 CMake itself but are later re-injected into export files generated by
 <span class="target" id="index-2-command:dependency"></span><a class="reference internal" href="#export" title="dependency(export)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">dependency(EXPORT)</span></code></a>.</p>
 <p>Example usage:</p>
-<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">dependency(</span><span class="no">INCLUDE_DIRECTORIES</span><span class="w"> </span><span class="s">&quot;mylib&quot;</span><span class="w"> </span><span class="no">SET</span>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="c"># Import libs</span>
+<span class="nf">dependency(</span><span class="no">IMPORT</span><span class="w"> </span><span class="s">&quot;my_shared_lib&quot;</span>
+<span class="w">  </span><span class="no">SHARED</span>
+<span class="w">  </span><span class="no">RELEASE_NAME</span><span class="w"> </span><span class="s">&quot;mylib_1.11.0&quot;</span>
+<span class="w">  </span><span class="no">DEBUG_NAME</span><span class="w"> </span><span class="s">&quot;mylibd_1.11.0&quot;</span>
+<span class="w">  </span><span class="no">ROOT_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/lib&quot;</span>
+<span class="w">  </span><span class="no">INCLUDE_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/include/mylib&quot;</span>
+<span class="nf">)</span>
+<span class="nf">dependency(</span><span class="no">IMPORT</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span>
+<span class="w">  </span><span class="no">STATIC</span>
+<span class="w">  </span><span class="no">RELEASE_NAME</span><span class="w"> </span><span class="s">&quot;mylib_1.11.0&quot;</span>
+<span class="w">  </span><span class="no">DEBUG_NAME</span><span class="w"> </span><span class="s">&quot;mylibd_1.11.0&quot;</span>
+<span class="w">  </span><span class="no">ROOT_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/lib&quot;</span>
+<span class="w">  </span><span class="no">INCLUDE_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/include/mylib&quot;</span>
+<span class="nf">)</span>
+
+<span class="c"># Set include directories for shared lib</span>
+<span class="nf">dependency(</span><span class="no">INCLUDE_DIRECTORIES</span><span class="w"> </span><span class="s">&quot;my_shared_lib&quot;</span><span class="w"> </span><span class="no">SET</span>
 <span class="w">  </span><span class="no">PUBLIC</span>
-<span class="w">    </span><span class="s">&quot;$&lt;BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include&gt;&quot;</span>
-<span class="w">    </span><span class="s">&quot;$&lt;INSTALL_INTERFACE:include&gt;&quot;</span>
+<span class="w">    </span><span class="s">&quot;$&lt;BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include/mylib&gt;&quot;</span>
+<span class="w">    </span><span class="s">&quot;$&lt;INSTALL_INTERFACE:include/mylib&gt;&quot;</span>
+<span class="nf">)</span>
+<span class="c"># Is more or less equivalent to:</span>
+<span class="nf">target_include_directories(</span><span class="nb">static_mock_lib</span>
+<span class="w">    </span><span class="no">PUBLIC</span>
+<span class="w">        </span><span class="s">&quot;$&lt;BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include/mylib&gt;&quot;</span>
+<span class="w">        </span><span class="s">&quot;$&lt;INSTALL_INTERFACE:include/mylib&gt;&quot;</span>
+<span class="nf">)</span>
+
+<span class="c"># Set include directories for static lib</span>
+<span class="nf">dependency(</span><span class="no">INCLUDE_DIRECTORIES</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span><span class="w"> </span><span class="no">SET</span>
+<span class="w">  </span><span class="no">PUBLIC</span>
+<span class="w">    </span><span class="s">&quot;$&lt;BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include/mylib&gt;&quot;</span>
+<span class="w">    </span><span class="s">&quot;$&lt;INSTALL_INTERFACE:include/mylib&gt;&quot;</span>
+<span class="nf">)</span>
+<span class="c"># Is more or less equivalent to:</span>
+<span class="nf">target_include_directories(</span><span class="nb">static_mock_lib</span>
+<span class="w">    </span><span class="no">PUBLIC</span>
+<span class="w">        </span><span class="s">&quot;$&lt;BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include/mylib&gt;&quot;</span>
+<span class="w">        </span><span class="s">&quot;$&lt;INSTALL_INTERFACE:include/mylib&gt;&quot;</span>
 <span class="nf">)</span>
 </pre></div>
 </div>
-<p>This example sets <code class="docutils literal notranslate"><span class="pre">mylib</span></code> to expose:</p>
+<p>This example sets <code class="docutils literal notranslate"><span class="pre">my_shared_lib</span></code> and <code class="docutils literal notranslate"><span class="pre">my_static_lib</span></code> to expose:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">${CMAKE_CURRENT_SOURCE_DIR}/include</span></code> during the build.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">&lt;prefix&gt;/include</span></code> after installation (where <code class="docutils literal notranslate"><span class="pre">&lt;prefix&gt;</span></code> is resolved
-when imported via <span class="target" id="index-3-command:dependency"></span><a class="reference internal" href="#export" title="dependency(export)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">dependency(EXPORT)</span></code></a>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">${CMAKE_SOURCE_DIR}/include/mylib</span></code> during the build.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;CMAKE_INSTALL_PREFIX&gt;/include/mylib</span></code> after installation (where
+<code class="docutils literal notranslate"><span class="pre">&lt;CMAKE_INSTALL_PREFIX&gt;</span></code> is resolved when imported via <span class="target" id="index-3-command:dependency"></span><a class="reference internal" href="#export" title="dependency(export)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">dependency(EXPORT)</span></code></a>).</p></li>
 </ul>
 </dd></dl>
 
@@ -314,7 +314,7 @@ when imported via <span class="target" id="index-3-command:dependency"></span><a
 <span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">dependency(</span></span><span class="no"><span class="pre">IMPORTED_LOCATION</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;lib_target_name&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">[</span></span><span class="no"><span class="pre">CONFIGURATION</span></span><span class="nbsp"> </span><span class="nv"><span class="pre">&lt;config_type&gt;</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="no"><span class="pre">PUBLIC</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;gen_expr_list&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#imported-location" title="Link to this definition">¶</a></dt>
 <dd><p>Set the full path to the imported target <code class="docutils literal notranslate"><span class="pre">&lt;lib_target_name&gt;</span></code>, which should
 represent the base name of the library (without prefix or suffix), for one or
-more configurations. This command sets the <span class="target" id="index-0-prop_tgt:cmake:prop_tgt:IMPORTED_LOCATION_&lt;CONFIG&gt;"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/prop_tgt/IMPORTED_LOCATION_CONFIG.html#prop_tgt:IMPORTED_LOCATION_&lt;CONFIG&gt;" title="(in CMake v4.0.3)"><code class="xref cmake cmake-prop_tgt docutils literal notranslate"><span class="pre">IMPORTED_LOCATION_&lt;CONFIG&gt;</span></code></a>
+more configurations. This command sets the <span class="target" id="index-0-prop_tgt:cmake:prop_tgt:IMPORTED_LOCATION_&lt;CONFIG&gt;"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/prop_tgt/IMPORTED_LOCATION_CONFIG.html#prop_tgt:IMPORTED_LOCATION_&lt;CONFIG&gt;" title="(in CMake v4.1.0)"><code class="xref cmake cmake-prop_tgt docutils literal notranslate"><span class="pre">IMPORTED_LOCATION_&lt;CONFIG&gt;</span></code></a>
 property of the imported target from a generator expressions.</p>
 <p>If the <code class="docutils literal notranslate"><span class="pre">CONFIGURATION</span></code> option is specified, the path is set only for the
 given <code class="docutils literal notranslate"><span class="pre">&lt;config_type&gt;</span></code> (e.g. <code class="docutils literal notranslate"><span class="pre">DEBUG</span></code>, <code class="docutils literal notranslate"><span class="pre">RELEASE</span></code>), provided that this
@@ -332,6 +332,95 @@ phases (see
 <span class="w">    </span><span class="s">&quot;$&lt;BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/debug/libMyLib.a&gt;&quot;</span>
 <span class="w">    </span><span class="s">&quot;$&lt;INSTALL_INTERFACE:lib/libMyLib.a&gt;&quot;</span>
 <span class="nf">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="cmake signature">
+<dt class="sig sig-object cmake" id="export">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">dependency(</span></span><span class="no"><span class="pre">EXPORT</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;lib_target_name_list&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;</span></span><span class="no"><span class="pre">BUILD_TREE</span></span><span class="p"><span class="pre">|</span></span><span class="no"><span class="pre">INSTALL_TREE</span></span><span class="o"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">[</span></span><span class="no"><span class="pre">APPEND</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="no"><span class="pre">OUTPUT_FILE</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;file_name&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#export" title="Link to this definition">¶</a></dt>
+<dd><p>Creates a file <code class="docutils literal notranslate"><span class="pre">&lt;file_name&gt;</span></code> that may be included by outside projects to
+import targets in <code class="docutils literal notranslate"><span class="pre">&lt;lib_target_name_list&gt;</span></code> from the current project's
+build-tree or install-tree. This command is functionally similar to using
+<span class="target" id="index-0-command:cmake:command:export"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/export.html#targets" title="(in CMake v4.1.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">export(TARGETS)</span></code></a> in a <code class="docutils literal notranslate"><span class="pre">BUILD_TREE</span></code> context and <span class="target" id="index-0-command:cmake:command:install"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/install.html#export" title="(in CMake v4.1.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">install(EXPORT)</span></code></a>
+in an <code class="docutils literal notranslate"><span class="pre">INSTALL_TREE</span></code> context, but is designed specifically to export
+imported targets with <span class="target" id="index-4-command:dependency"></span><a class="reference internal" href="#import" title="dependency(import)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">dependency(IMPORT)</span></code></a> instead of build targets.</p>
+<p>The targets in <code class="docutils literal notranslate"><span class="pre">&lt;lib_target_name_list&gt;</span></code> must be previously created imported
+targets. The names should match exactly the target names used during import.</p>
+<p>One of <code class="docutils literal notranslate"><span class="pre">BUILD_TREE</span></code> or <code class="docutils literal notranslate"><span class="pre">INSTALL_TREE</span></code> must be specified to indicate the
+context in which the file is generated:</p>
+<ul class="simple">
+<li><p>When <code class="docutils literal notranslate"><span class="pre">BUILD_TREE</span></code> is used, the command generates the file in
+<code class="docutils literal notranslate"><span class="pre">CMAKE_CURRENT_BINARY_DIR/&lt;file_name&gt;</span></code>, similar to how <span class="target" id="index-1-command:cmake:command:export"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/export.html#targets" title="(in CMake v4.1.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">export(TARGETS)</span></code></a>
+produces a file to be included by other build projects. This file enables
+other projects to import the specified targets directly from the build-tree
+. It can be included from a <code class="docutils literal notranslate"><span class="pre">&lt;PackageName&gt;Config.cmake</span></code> file to provide
+usage information for downstream projects.</p></li>
+<li><p>When <code class="docutils literal notranslate"><span class="pre">INSTALL_TREE</span></code> is used, the file is generated in
+<code class="docutils literal notranslate"><span class="pre">CMAKE_CURRENT_BINARY_DIR/cmake/export/&lt;file_name&gt;</span></code> and an install rule
+is added to copy the file to <code class="docutils literal notranslate"><span class="pre">CMAKE_INSTALL_PREFIX/cmake/export/</span>
+<span class="pre">&lt;file_name&gt;</span></code>. This is similar to combining <span class="target" id="index-1-command:cmake:command:install"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/install.html#targets" title="(in CMake v4.1.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">install(TARGETS)</span></code></a> with
+<span class="target" id="index-2-command:cmake:command:install"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/install.html#export" title="(in CMake v4.1.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">install(EXPORT)</span></code></a>, but applies to imported rather than built targets.
+This makes the export file available post-install and allows downstream
+projects to include the file from a package configuration file.</p></li>
+</ul>
+<p>Note that no install rules are created for the actual binary files of the
+imported targets; only the export script <code class="docutils literal notranslate"><span class="pre">OUTPUT_FILE</span></code> itself is installed.</p>
+<p>If the <code class="docutils literal notranslate"><span class="pre">APPEND</span></code> keyword is specified, the generated code is appended to the
+existing file instead of overwriting it. This is useful for exporting
+multiple targets incrementally to a single file.</p>
+<p>The generated file defines all necessary target properties so that the
+imported targets can be used as if they were defined locally. The properties
+are identical to those set by the <span class="target" id="index-5-command:dependency"></span><a class="reference internal" href="#import" title="dependency(import)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">dependency(IMPORT)</span></code></a> command; see
+its documentation for additional details.</p>
+<p>Example usage:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="c"># Import target before exporting</span>
+<span class="nf">dependency(</span><span class="no">IMPORT</span><span class="w"> </span><span class="s">&quot;myimportedlib-1&quot;</span>
+<span class="w">  </span><span class="no">SHARED</span>
+<span class="w">  </span><span class="no">RELEASE_NAME</span><span class="w"> </span><span class="s">&quot;myimportedlib-1&quot;</span>
+<span class="w">  </span><span class="no">DEBUG_NAME</span><span class="w"> </span><span class="s">&quot;myimportedlibd-1&quot;</span>
+<span class="w">  </span><span class="no">ROOT_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/lib&quot;</span>
+<span class="w">  </span><span class="no">INCLUDE_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/include/myimportedlib-1&quot;</span>
+<span class="nf">)</span>
+<span class="nf">dependency(</span><span class="no">IMPORT</span><span class="w"> </span><span class="s">&quot;myimportedlib-2&quot;</span>
+<span class="w">  </span><span class="no">SHARED</span>
+<span class="w">  </span><span class="no">RELEASE_NAME</span><span class="w"> </span><span class="s">&quot;myimportedlib-2&quot;</span>
+<span class="w">  </span><span class="no">DEBUG_NAME</span><span class="w"> </span><span class="s">&quot;myimportedlibd-2&quot;</span>
+<span class="w">  </span><span class="no">ROOT_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/lib&quot;</span>
+<span class="w">  </span><span class="no">INCLUDE_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/include/myimportedlib-2&quot;</span>
+<span class="nf">)</span>
+
+<span class="c"># Export from Build-Tree</span>
+<span class="nf">dependency(</span><span class="no">EXPORT</span><span class="w"> </span><span class="s">&quot;myimportedlib-1&quot;</span><span class="w"> </span><span class="s">&quot;myimportedlib-2&quot;</span>
+<span class="w">  </span><span class="no">BUILD_TREE</span>
+<span class="w">  </span><span class="no">OUTPUT_FILE</span><span class="w"> </span><span class="s">&quot;InternalDependencyTargets.cmake&quot;</span>
+<span class="nf">)</span>
+<span class="c"># Is more or less equivalent to:</span>
+<span class="nf">export(</span><span class="no">TARGETS</span><span class="w"> </span><span class="s">&quot;myimportedlib-1&quot;</span><span class="w"> </span><span class="s">&quot;myimportedlib-2&quot;</span>
+<span class="w">  </span><span class="no">APPEND</span>
+<span class="w">  </span><span class="no">FILE</span><span class="w"> </span><span class="s">&quot;InternalDependencyTargets.cmake&quot;</span>
+<span class="nf">)</span>
+
+<span class="c"># Exporting from Install-Tree</span>
+<span class="nf">set(</span><span class="no">CMAKE_INSTALL_PREFIX</span><span class="w"> </span><span class="s">&quot;${CMAKE_CURRENT_BINARY_DIR}/install&quot;</span><span class="nf">)</span>
+<span class="nf">dependency(</span><span class="no">EXPORT</span><span class="w"> </span><span class="s">&quot;myimportedlib-1&quot;</span><span class="w"> </span><span class="s">&quot;myimportedlib-2&quot;</span>
+<span class="w">  </span><span class="no">INSTALL_TREE</span>
+<span class="w">  </span><span class="no">OUTPUT_FILE</span><span class="w"> </span><span class="s">&quot;InternalDependencyTargets.cmake&quot;</span>
+<span class="nf">)</span>
+<span class="c"># Is more or less equivalent to:</span>
+<span class="nf">install(</span><span class="no">TARGETS</span><span class="w"> </span><span class="s">&quot;myimportedlib-1&quot;</span><span class="w"> </span><span class="s">&quot;myimportedlib-2&quot;</span>
+<span class="w">  </span><span class="no">EXPORT</span><span class="w"> </span><span class="s">&quot;LibExport&quot;</span>
+<span class="nf">)</span>
+<span class="nf">install(</span><span class="no">EXPORT</span><span class="w"> </span><span class="s">&quot;LibExport&quot;</span>
+<span class="w">  </span><span class="no">DESTINATION</span><span class="w"> </span><span class="s">&quot;cmake/export&quot;</span>
+<span class="w">  </span><span class="no">FILE</span><span class="w"> </span><span class="s">&quot;InternalDependencyTargets.cmake&quot;</span>
+<span class="nf">)</span>
+</pre></div>
+</div>
+<p>The resulting file <code class="docutils literal notranslate"><span class="pre">InternalDependencyTargets.cmake</span></code> may then be included
+by a package configuration file <code class="docutils literal notranslate"><span class="pre">&lt;PackageName&gt;Config.cmake.in</span></code> to be used by
+<span class="target" id="index-0-command:cmake:command:configure_package_config_file"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/module/CMakePackageConfigHelpers.html#command:configure_package_config_file" title="(in CMake v4.1.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">configure_package_config_file()</span></code></a> command:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">include(</span><span class="s">&quot;${CMAKE_CURRENT_LIST_DIR}/InternalDependencyTargets.cmake&quot;</span><span class="nf">)</span>
 </pre></div>
 </div>
 </dd></dl>
