@@ -9,8 +9,8 @@
 # See README file in the root directory of this source tree.
 
 #-------------------------------------------------------------------------------
-# Test of [Dependency module::INCLUDE_DIRECTORIES operation]:
-#    ``dependency(INCLUDE_DIRECTORIES <lib_name> <SET|APPEND> PUBLIC <gen_expr_list> ...)``
+# Test of [Dependency module::ADD_INCLUDE_DIRECTORIES operation]:
+#    ``dependency(ADD_INCLUDE_DIRECTORIES <lib_name> <SET|APPEND> PUBLIC <gen_expr_list> ...)``
 ct_add_test(NAME "test_dependency_include_directories_operation")
 function(${CMAKETEST_TEST})
 	include(FuncDependency)
@@ -102,7 +102,7 @@ function(${CMAKETEST_TEST})
 	# Functionalities checking
 	ct_add_section(NAME "overwrite_all_interfaces")
 	function(${CMAKETEST_SECTION})
-		dependency(INCLUDE_DIRECTORIES "imp_static_mock_lib" SET
+		dependency(ADD_INCLUDE_DIRECTORIES "imp_static_mock_lib" SET
 			PUBLIC
 				"$<BUILD_INTERFACE:${TESTS_DATA_DIR}/include>"
 				"$<INSTALL_INTERFACE:include>"
@@ -117,7 +117,7 @@ function(${CMAKETEST_TEST})
 			INTERFACE_INCLUDE_DIRECTORIES_INSTALL)
 		ct_assert_equal(output_lib_property "include")
 
-		dependency(INCLUDE_DIRECTORIES "imp_shared_mock_lib" SET
+		dependency(ADD_INCLUDE_DIRECTORIES "imp_shared_mock_lib" SET
 			PUBLIC
 				"$<BUILD_INTERFACE:${TESTS_DATA_DIR}/include>"
 				"$<INSTALL_INTERFACE:include>"
@@ -135,7 +135,7 @@ function(${CMAKETEST_TEST})
 
 	ct_add_section(NAME "overwrite_build_interfaces")
 	function(${CMAKETEST_SECTION})
-		dependency(INCLUDE_DIRECTORIES "imp_static_mock_lib" SET
+		dependency(ADD_INCLUDE_DIRECTORIES "imp_static_mock_lib" SET
 			PUBLIC
 				"$<BUILD_INTERFACE:${TESTS_DATA_DIR}/include>"
 		)
@@ -151,7 +151,7 @@ function(${CMAKETEST_TEST})
 			PROPERTY INTERFACE_INCLUDE_DIRECTORIES_INSTALL SET)
 		ct_assert_true(output_lib_property)
 
-		dependency(INCLUDE_DIRECTORIES "imp_shared_mock_lib" SET
+		dependency(ADD_INCLUDE_DIRECTORIES "imp_shared_mock_lib" SET
 			PUBLIC
 				"$<BUILD_INTERFACE:${TESTS_DATA_DIR}/include>"
 		)
@@ -170,7 +170,7 @@ function(${CMAKETEST_TEST})
 
 	ct_add_section(NAME "overwrite_install_interfaces")
 	function(${CMAKETEST_SECTION})
-		dependency(INCLUDE_DIRECTORIES "imp_static_mock_lib" SET
+		dependency(ADD_INCLUDE_DIRECTORIES "imp_static_mock_lib" SET
 			PUBLIC
 				"$<INSTALL_INTERFACE:include>"
 		)
@@ -188,7 +188,7 @@ function(${CMAKETEST_TEST})
 			INTERFACE_INCLUDE_DIRECTORIES_INSTALL)
 		ct_assert_equal(output_lib_property "include")
 
-		dependency(INCLUDE_DIRECTORIES "imp_shared_mock_lib" SET
+		dependency(ADD_INCLUDE_DIRECTORIES "imp_shared_mock_lib" SET
 			PUBLIC
 				"$<INSTALL_INTERFACE:include>"
 		)
@@ -209,12 +209,12 @@ function(${CMAKETEST_TEST})
 	
 	ct_add_section(NAME "append_all_interfaces")
 	function(${CMAKETEST_SECTION})
-		dependency(INCLUDE_DIRECTORIES "imp_static_mock_lib" SET
+		dependency(ADD_INCLUDE_DIRECTORIES "imp_static_mock_lib" SET
 			PUBLIC
 				"$<BUILD_INTERFACE:${TESTS_DATA_DIR}/include-1>"
 				"$<INSTALL_INTERFACE:include-1>"
 		)
-		dependency(INCLUDE_DIRECTORIES "imp_static_mock_lib" APPEND
+		dependency(ADD_INCLUDE_DIRECTORIES "imp_static_mock_lib" APPEND
 			PUBLIC
 				"$<BUILD_INTERFACE:${TESTS_DATA_DIR}/include-2>"
 				"$<INSTALL_INTERFACE:include-2>"
@@ -232,12 +232,12 @@ function(${CMAKETEST_TEST})
 		ct_assert_list(output_lib_property)
 		ct_assert_equal(output_lib_property "include-1;include-2")
 
-		dependency(INCLUDE_DIRECTORIES "imp_shared_mock_lib" SET
+		dependency(ADD_INCLUDE_DIRECTORIES "imp_shared_mock_lib" SET
 			PUBLIC
 				"$<BUILD_INTERFACE:${TESTS_DATA_DIR}/include-1>"
 				"$<INSTALL_INTERFACE:include-1>"
 		)
-		dependency(INCLUDE_DIRECTORIES "imp_shared_mock_lib" APPEND
+		dependency(ADD_INCLUDE_DIRECTORIES "imp_shared_mock_lib" APPEND
 			PUBLIC
 				"$<BUILD_INTERFACE:${TESTS_DATA_DIR}/include-2>"
 				"$<INSTALL_INTERFACE:include-2>"
@@ -258,12 +258,12 @@ function(${CMAKETEST_TEST})
 
 	ct_add_section(NAME "append_build_interfaces")
 	function(${CMAKETEST_SECTION})
-		dependency(INCLUDE_DIRECTORIES "imp_static_mock_lib" SET
+		dependency(ADD_INCLUDE_DIRECTORIES "imp_static_mock_lib" SET
 			PUBLIC
 				"$<BUILD_INTERFACE:${TESTS_DATA_DIR}/include-1>"
 				"$<INSTALL_INTERFACE:include-1>"
 		)
-		dependency(INCLUDE_DIRECTORIES "imp_static_mock_lib" APPEND
+		dependency(ADD_INCLUDE_DIRECTORIES "imp_static_mock_lib" APPEND
 			PUBLIC
 				"$<BUILD_INTERFACE:${TESTS_DATA_DIR}/include-2>"
 		)
@@ -280,12 +280,12 @@ function(${CMAKETEST_TEST})
 		ct_assert_not_list(output_lib_property)
 		ct_assert_equal(output_lib_property "include-1")
 
-		dependency(INCLUDE_DIRECTORIES "imp_shared_mock_lib" SET
+		dependency(ADD_INCLUDE_DIRECTORIES "imp_shared_mock_lib" SET
 			PUBLIC
 				"$<BUILD_INTERFACE:${TESTS_DATA_DIR}/include-1>"
 				"$<INSTALL_INTERFACE:include-1>"
 		)
-		dependency(INCLUDE_DIRECTORIES "imp_shared_mock_lib" APPEND
+		dependency(ADD_INCLUDE_DIRECTORIES "imp_shared_mock_lib" APPEND
 			PUBLIC
 				"$<BUILD_INTERFACE:${TESTS_DATA_DIR}/include-2>"
 		)
@@ -305,12 +305,12 @@ function(${CMAKETEST_TEST})
 
 	ct_add_section(NAME "append_install_interfaces")
 	function(${CMAKETEST_SECTION})
-		dependency(INCLUDE_DIRECTORIES "imp_static_mock_lib" SET
+		dependency(ADD_INCLUDE_DIRECTORIES "imp_static_mock_lib" SET
 			PUBLIC
 				"$<BUILD_INTERFACE:${TESTS_DATA_DIR}/include-1>"
 				"$<INSTALL_INTERFACE:include-1>"
 		)
-		dependency(INCLUDE_DIRECTORIES "imp_static_mock_lib" APPEND
+		dependency(ADD_INCLUDE_DIRECTORIES "imp_static_mock_lib" APPEND
 			PUBLIC
 				"$<INSTALL_INTERFACE:include-2>"
 		)
@@ -327,12 +327,12 @@ function(${CMAKETEST_TEST})
 		ct_assert_list(output_lib_property)
 		ct_assert_equal(output_lib_property "include-1;include-2")
 
-		dependency(INCLUDE_DIRECTORIES "imp_shared_mock_lib" SET
+		dependency(ADD_INCLUDE_DIRECTORIES "imp_shared_mock_lib" SET
 			PUBLIC
 				"$<BUILD_INTERFACE:${TESTS_DATA_DIR}/include-1>"
 				"$<INSTALL_INTERFACE:include-1>"
 		)
-		dependency(INCLUDE_DIRECTORIES "imp_shared_mock_lib" APPEND
+		dependency(ADD_INCLUDE_DIRECTORIES "imp_shared_mock_lib" APPEND
 			PUBLIC
 				"$<INSTALL_INTERFACE:include-2>"
 		)
@@ -353,7 +353,7 @@ function(${CMAKETEST_TEST})
 	# Errors checking
 	ct_add_section(NAME "throws_if_arg_target_is_missing_1" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
-		dependency(INCLUDE_DIRECTORIES SET
+		dependency(ADD_INCLUDE_DIRECTORIES SET
 			PUBLIC
 				"$<BUILD_INTERFACE:${TESTS_DATA_DIR}/include>"
 				"$<INSTALL_INTERFACE:include>"
@@ -362,7 +362,7 @@ function(${CMAKETEST_TEST})
 
 	ct_add_section(NAME "throws_if_arg_target_is_missing_2" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
-		dependency(INCLUDE_DIRECTORIES "" SET
+		dependency(ADD_INCLUDE_DIRECTORIES "" SET
 			PUBLIC
 				"$<BUILD_INTERFACE:${TESTS_DATA_DIR}/include>"
 				"$<INSTALL_INTERFACE:include>"
@@ -371,7 +371,7 @@ function(${CMAKETEST_TEST})
 
 	ct_add_section(NAME "throws_if_arg_modifier_is_missing_1" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
-		dependency(INCLUDE_DIRECTORIES "imp_shared_mock_lib"
+		dependency(ADD_INCLUDE_DIRECTORIES "imp_shared_mock_lib"
 			PUBLIC
 				"$<BUILD_INTERFACE:${TESTS_DATA_DIR}/include>"
 				"$<INSTALL_INTERFACE:include>"
@@ -380,7 +380,7 @@ function(${CMAKETEST_TEST})
 	
 	ct_add_section(NAME "throws_if_arg_modifier_is_twice" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
-		dependency(INCLUDE_DIRECTORIES "imp_shared_mock_lib" SET APPEND
+		dependency(ADD_INCLUDE_DIRECTORIES "imp_shared_mock_lib" SET APPEND
 			PUBLIC
 				"$<BUILD_INTERFACE:${TESTS_DATA_DIR}/include>"
 				"$<INSTALL_INTERFACE:include>"
@@ -389,20 +389,20 @@ function(${CMAKETEST_TEST})
 
 	ct_add_section(NAME "throws_if_arg_public_is_missing_1" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
-		dependency(INCLUDE_DIRECTORIES "imp_shared_mock_lib" SET
+		dependency(ADD_INCLUDE_DIRECTORIES "imp_shared_mock_lib" SET
 		)
 	endfunction()
 
 	ct_add_section(NAME "throws_if_arg_public_is_missing_2" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
-		dependency(INCLUDE_DIRECTORIES "imp_shared_mock_lib" SET
+		dependency(ADD_INCLUDE_DIRECTORIES "imp_shared_mock_lib" SET
 			PUBLIC
 		)
 	endfunction()
 	
 	ct_add_section(NAME "throws_if_arg_public_is_missing_3" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
-		dependency(INCLUDE_DIRECTORIES "imp_shared_mock_lib" SET
+		dependency(ADD_INCLUDE_DIRECTORIES "imp_shared_mock_lib" SET
 			PUBLIC ""
 		)
 	endfunction()

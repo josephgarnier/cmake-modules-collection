@@ -16,7 +16,7 @@ Synopsis
 .. parsed-literal::
 
     dependency(`IMPORT`_ <lib_target_name> <STATIC|SHARED> [RELEASE_NAME <raw_filename>] [DEBUG_NAME <raw_filename>] ROOT_DIR <directory_path> INCLUDE_DIR <directory_path>)
-    dependency(`INCLUDE_DIRECTORIES`_ <lib_target_name> <SET|APPEND> PUBLIC <gen_expr_list> ...)
+    dependency(`ADD_INCLUDE_DIRECTORIES`_ <lib_target_name> <SET|APPEND> PUBLIC <gen_expr_list> ...)
     dependency(`IMPORTED_LOCATION`_ <lib_target_name> [CONFIGURATION <build_type>] PUBLIC <gen_expr_list> ...)
     dependency(`EXPORT`_ <lib_target_name_list> ... <BUILD_TREE|INSTALL_TREE> [APPEND] OUTPUT_FILE <file_name>)
 
@@ -177,7 +177,7 @@ Usage
     )
 
 .. signature::
-  dependency(INCLUDE_DIRECTORIES <lib_target_name> <SET|APPEND> PUBLIC <gen_expr_list> ...)
+  dependency(ADD_INCLUDE_DIRECTORIES <lib_target_name> <SET|APPEND> PUBLIC <gen_expr_list> ...)
 
   Set or append public include directories via :cmake:prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES <cmake:prop_tgt:INTERFACE_INCLUDE_DIRECTORIES>`
   property to the imported target ``<lib_target_name>``. The name should
@@ -244,7 +244,7 @@ Usage
     )
 
     # Set include directories for shared lib
-    dependency(INCLUDE_DIRECTORIES "my_shared_lib" SET
+    dependency(ADD_INCLUDE_DIRECTORIES "my_shared_lib" SET
       PUBLIC
         "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include/mylib>"
         "$<INSTALL_INTERFACE:include/mylib>"
@@ -257,7 +257,7 @@ Usage
     )
 
     # Set include directories for static lib
-    dependency(INCLUDE_DIRECTORIES "my_static_lib" SET
+    dependency(ADD_INCLUDE_DIRECTORIES "my_static_lib" SET
       PUBLIC
         "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include/mylib>"
         "$<INSTALL_INTERFACE:include/mylib>"
@@ -412,7 +412,7 @@ include(FuncStringManip)
 # Public function of this module.
 function(dependency)
 	set(options SHARED STATIC BUILD_TREE INSTALL_TREE SET APPEND)
-	set(one_value_args IMPORT RELEASE_NAME DEBUG_NAME ROOT_DIR INCLUDE_DIR OUTPUT_FILE INCLUDE_DIRECTORIES IMPORTED_LOCATION CONFIGURATION)
+	set(one_value_args IMPORT RELEASE_NAME DEBUG_NAME ROOT_DIR INCLUDE_DIR OUTPUT_FILE ADD_INCLUDE_DIRECTORIES IMPORTED_LOCATION CONFIGURATION)
 	set(multi_value_args EXPORT PUBLIC)
 	cmake_parse_arguments(DEP "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 	
@@ -424,8 +424,8 @@ function(dependency)
 		_dependency_import()
 	elseif(DEFINED DEP_EXPORT)
 		_dependency_export()
-	elseif(DEFINED DEP_INCLUDE_DIRECTORIES)
-		_dependency_include_directories()
+	elseif(DEFINED DEP_ADD_INCLUDE_DIRECTORIES)
+		_dependency_add_include_directories()
 	elseif(DEFINED DEP_IMPORTED_LOCATION)
 		_dependency_imported_location()
 	else()
@@ -524,9 +524,9 @@ endmacro()
 
 #------------------------------------------------------------------------------
 # Internal usage.
-macro(_dependency_include_directories)
-	if(NOT DEFINED DEP_INCLUDE_DIRECTORIES)
-		message(FATAL_ERROR "INCLUDE_DIRECTORIES argument is missing or need a value!")
+macro(_dependency_add_include_directories)
+	if(NOT DEFINED DEP_ADD_INCLUDE_DIRECTORIES)
+		message(FATAL_ERROR "ADD_INCLUDE_DIRECTORIES argument is missing or need a value!")
 	endif()
 	if((NOT ${DEP_SET})
 		AND (NOT ${DEP_APPEND}))
@@ -541,37 +541,37 @@ macro(_dependency_include_directories)
 		message(("UCU"))
 	endif()
 
-	if(NOT TARGET "${DEP_INCLUDE_DIRECTORIES}")
-		message(FATAL_ERROR "The target \"${DEP_INCLUDE_DIRECTORIES}\" does not exists!")
+	if(NOT TARGET "${DEP_ADD_INCLUDE_DIRECTORIES}")
+		message(FATAL_ERROR "The target \"${DEP_ADD_INCLUDE_DIRECTORIES}\" does not exists!")
 	endif()
 
 	string_manip(EXTRACT_INTERFACE DEP_PUBLIC
 		BUILD
-		OUTPUT_VARIABLE include_directories_build_interface
+		OUTPUT_VARIABLE include_dirs_build_interface
 	)
 	string_manip(EXTRACT_INTERFACE DEP_PUBLIC
 		INSTALL
-		OUTPUT_VARIABLE include_directories_install_interface
+		OUTPUT_VARIABLE include_dirs_install_interface
 	)
-	if(${DEP_SET}) # voir pour utiliser append en variable et fusionner avec le else + renommer en ADD_INCLUDE_DIRECTORIES
-		set_property(TARGET "${DEP_INCLUDE_DIRECTORIES}"
-			PROPERTY INTERFACE_INCLUDE_DIRECTORIES "${include_directories_build_interface}"
+	if(${DEP_SET})
+		set_property(TARGET "${DEP_ADD_INCLUDE_DIRECTORIES}"
+			PROPERTY INTERFACE_INCLUDE_DIRECTORIES "${include_dirs_build_interface}"
 		)
-		set_property(TARGET "${DEP_INCLUDE_DIRECTORIES}"
-			PROPERTY INTERFACE_INCLUDE_DIRECTORIES_BUILD "${include_directories_build_interface}"
+		set_property(TARGET "${DEP_ADD_INCLUDE_DIRECTORIES}"
+			PROPERTY INTERFACE_INCLUDE_DIRECTORIES_BUILD "${include_dirs_build_interface}"
 		)
-		set_property(TARGET "${DEP_INCLUDE_DIRECTORIES}"
-			PROPERTY INTERFACE_INCLUDE_DIRECTORIES_INSTALL "${include_directories_install_interface}"
+		set_property(TARGET "${DEP_ADD_INCLUDE_DIRECTORIES}"
+			PROPERTY INTERFACE_INCLUDE_DIRECTORIES_INSTALL "${include_dirs_install_interface}"
 		)
 	elseif(${DEP_APPEND})
-		set_property(TARGET "${DEP_INCLUDE_DIRECTORIES}" APPEND
-			PROPERTY INTERFACE_INCLUDE_DIRECTORIES "${include_directories_build_interface}"
+		set_property(TARGET "${DEP_ADD_INCLUDE_DIRECTORIES}" APPEND
+			PROPERTY INTERFACE_INCLUDE_DIRECTORIES "${include_dirs_build_interface}"
 		)
-		set_property(TARGET "${DEP_INCLUDE_DIRECTORIES}" APPEND
-			PROPERTY INTERFACE_INCLUDE_DIRECTORIES_BUILD "${include_directories_build_interface}"
+		set_property(TARGET "${DEP_ADD_INCLUDE_DIRECTORIES}" APPEND
+			PROPERTY INTERFACE_INCLUDE_DIRECTORIES_BUILD "${include_dirs_build_interface}"
 		)
-		set_property(TARGET "${DEP_INCLUDE_DIRECTORIES}" APPEND
-			PROPERTY INTERFACE_INCLUDE_DIRECTORIES_INSTALL "${include_directories_install_interface}"
+		set_property(TARGET "${DEP_ADD_INCLUDE_DIRECTORIES}" APPEND
+			PROPERTY INTERFACE_INCLUDE_DIRECTORIES_INSTALL "${include_dirs_install_interface}"
 		)
 	else()
 		message(FATAL_ERROR "Wrong option!")

@@ -16,7 +16,7 @@ function(${CMAKETEST_TEST})
 	include(FuncDependency)
 
 	set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install")
-	# Simulate a call to `dependency(IMPORT)`, then `dependency(INCLUDE_DIRECTORIES)`, then `dependency(IMPORTED_LOCATION)`
+	# Simulate a call to `dependency(IMPORT)`, then `dependency(ADD_INCLUDE_DIRECTORIES)`, then `dependency(IMPORTED_LOCATION)`
 	macro(_import_mock_libs)
 		include(FuncDirectory)
 
