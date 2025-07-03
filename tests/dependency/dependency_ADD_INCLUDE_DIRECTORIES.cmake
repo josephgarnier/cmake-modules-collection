@@ -11,7 +11,7 @@
 #-------------------------------------------------------------------------------
 # Test of [Dependency module::ADD_INCLUDE_DIRECTORIES operation]:
 #    ``dependency(ADD_INCLUDE_DIRECTORIES <lib_name> <SET|APPEND> PUBLIC <gen_expr_list> ...)``
-ct_add_test(NAME "test_dependency_include_directories_operation")
+ct_add_test(NAME "test_dependency_add_include_directories_operation")
 function(${CMAKETEST_TEST})
 	include(FuncDependency)
 
@@ -87,21 +87,25 @@ function(${CMAKETEST_TEST})
 		_import_mock_libs()
 	endif()
 
-	# Reset properties set by `dependency(IMPORT)`
-	set_target_properties("imp_static_mock_lib" PROPERTIES
-		INTERFACE_INCLUDE_DIRECTORIES ""
-		INTERFACE_INCLUDE_DIRECTORIES_BUILD ""
-		INTERFACE_INCLUDE_DIRECTORIES_INSTALL ""
-	)
-	set_target_properties("imp_shared_mock_lib" PROPERTIES
-		INTERFACE_INCLUDE_DIRECTORIES ""
-		INTERFACE_INCLUDE_DIRECTORIES_BUILD ""
-		INTERFACE_INCLUDE_DIRECTORIES_INSTALL ""
-	)
-		
+	# To call before each test
+	macro(_set_up_test)
+		# Reset properties set by `dependency(ADD_INCLUDE_DIRECTORIES)`
+		set_target_properties("imp_static_mock_lib" PROPERTIES
+			INTERFACE_INCLUDE_DIRECTORIES ""
+			INTERFACE_INCLUDE_DIRECTORIES_BUILD ""
+			INTERFACE_INCLUDE_DIRECTORIES_INSTALL ""
+		)
+		set_target_properties("imp_shared_mock_lib" PROPERTIES
+			INTERFACE_INCLUDE_DIRECTORIES ""
+			INTERFACE_INCLUDE_DIRECTORIES_BUILD ""
+			INTERFACE_INCLUDE_DIRECTORIES_INSTALL ""
+		)
+	endmacro()
+
 	# Functionalities checking
 	ct_add_section(NAME "overwrite_all_interfaces")
 	function(${CMAKETEST_SECTION})
+		_set_up_test()
 		dependency(ADD_INCLUDE_DIRECTORIES "imp_static_mock_lib" SET
 			PUBLIC
 				"$<BUILD_INTERFACE:${TESTS_DATA_DIR}/include>"
@@ -135,6 +139,7 @@ function(${CMAKETEST_TEST})
 
 	ct_add_section(NAME "overwrite_build_interfaces")
 	function(${CMAKETEST_SECTION})
+		_set_up_test()
 		dependency(ADD_INCLUDE_DIRECTORIES "imp_static_mock_lib" SET
 			PUBLIC
 				"$<BUILD_INTERFACE:${TESTS_DATA_DIR}/include>"
@@ -170,6 +175,7 @@ function(${CMAKETEST_TEST})
 
 	ct_add_section(NAME "overwrite_install_interfaces")
 	function(${CMAKETEST_SECTION})
+		_set_up_test()
 		dependency(ADD_INCLUDE_DIRECTORIES "imp_static_mock_lib" SET
 			PUBLIC
 				"$<INSTALL_INTERFACE:include>"
@@ -209,6 +215,7 @@ function(${CMAKETEST_TEST})
 	
 	ct_add_section(NAME "append_all_interfaces")
 	function(${CMAKETEST_SECTION})
+		_set_up_test()
 		dependency(ADD_INCLUDE_DIRECTORIES "imp_static_mock_lib" SET
 			PUBLIC
 				"$<BUILD_INTERFACE:${TESTS_DATA_DIR}/include-1>"
@@ -258,6 +265,7 @@ function(${CMAKETEST_TEST})
 
 	ct_add_section(NAME "append_build_interfaces")
 	function(${CMAKETEST_SECTION})
+		_set_up_test()
 		dependency(ADD_INCLUDE_DIRECTORIES "imp_static_mock_lib" SET
 			PUBLIC
 				"$<BUILD_INTERFACE:${TESTS_DATA_DIR}/include-1>"
@@ -305,6 +313,7 @@ function(${CMAKETEST_TEST})
 
 	ct_add_section(NAME "append_install_interfaces")
 	function(${CMAKETEST_SECTION})
+		_set_up_test()
 		dependency(ADD_INCLUDE_DIRECTORIES "imp_static_mock_lib" SET
 			PUBLIC
 				"$<BUILD_INTERFACE:${TESTS_DATA_DIR}/include-1>"
@@ -363,6 +372,15 @@ function(${CMAKETEST_TEST})
 	ct_add_section(NAME "throws_if_arg_target_is_missing_2" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		dependency(ADD_INCLUDE_DIRECTORIES "" SET
+			PUBLIC
+				"$<BUILD_INTERFACE:${TESTS_DATA_DIR}/include>"
+				"$<INSTALL_INTERFACE:include>"
+		)
+	endfunction()
+
+	ct_add_section(NAME "throws_if_arg_target_is_unknown" EXPECTFAIL)
+	function(${CMAKETEST_SECTION})
+		dependency(ADD_INCLUDE_DIRECTORIES "unknown_target" SET
 			PUBLIC
 				"$<BUILD_INTERFACE:${TESTS_DATA_DIR}/include>"
 				"$<INSTALL_INTERFACE:include>"
