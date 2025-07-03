@@ -17,7 +17,7 @@ Synopsis
 
     dependency(`IMPORT`_ <lib_target_name> <STATIC|SHARED> [RELEASE_NAME <raw_filename>] [DEBUG_NAME <raw_filename>] ROOT_DIR <directory_path> INCLUDE_DIR <directory_path>)
     dependency(`ADD_INCLUDE_DIRECTORIES`_ <lib_target_name> <SET|APPEND> PUBLIC <gen_expr_list> ...)
-    dependency(`IMPORTED_LOCATION`_ <lib_target_name> [CONFIGURATION <build_type>] PUBLIC <gen_expr_list> ...)
+    dependency(`SET_IMPORTED_LOCATION`_ <lib_target_name> [CONFIGURATION <build_type>] PUBLIC <gen_expr_list> ...)
     dependency(`EXPORT`_ <lib_target_name_list> ... <BUILD_TREE|INSTALL_TREE> [APPEND] OUTPUT_FILE <file_name>)
 
 Usage
@@ -185,6 +185,11 @@ Usage
   command works similarly to :cmake:command:`target_include_directories() <cmake:command:target_include_directories>` in CMake,
   but introduces a separation between build-time and install-time contexts for
   imported dependencies.
+  
+  This command is intended for targets that have been previously declared
+  using :command:`dependency(IMPORT)`, and is typically used in conjunction
+  with :command:`dependency(EXPORT)` to complete the definition of
+  an imported target for external reuse.
 
   The behavior differs from standard CMake in that it stores build and install
   include paths separately using generator expressions (see 
@@ -276,33 +281,100 @@ Usage
     ``<CMAKE_INSTALL_PREFIX>`` is resolved when imported via :command:`dependency(EXPORT)`).
 
 .. signature::
-  dependency(IMPORTED_LOCATION <lib_target_name> [CONFIGURATION <config_type>] PUBLIC <gen_expr_list> ...)
+  dependency(SET_IMPORTED_LOCATION <lib_target_name> [CONFIGURATION <config_type>] PUBLIC <gen_expr_list> ...)
 
-  Set the full path to the imported target ``<lib_target_name>``, which should
-  represent the base name of the library (without prefix or suffix), for one or
-  more configurations. This command sets the :cmake:prop_tgt:`IMPORTED_LOCATION_<CONFIG> <cmake:prop_tgt:IMPORTED_LOCATION_<CONFIG>>`
-  property of the imported target from a generator expressions.
+  Set the :cmake:prop_tgt:`IMPORTED_LOCATION_<CONFIG> <cmake:prop_tgt:IMPORTED_LOCATION_<CONFIG>>` property of the imported
+  target ``<lib_target_name>`` using generator expressions to provide the
+  full path to the library file. The name should represent the base name of
+  the library (without prefix or suffix).
 
-  If the ``CONFIGURATION`` option is specified, the path is set only for the
-  given ``<config_type>`` (e.g. ``DEBUG``, ``RELEASE``), provided that this
-  configuration is supported by the target. If ``CONFIGURATION`` is omitted, the
-  path is set for all configurations supported by the imported target.
+  This command is intended for targets that have been previously declared
+  using :command:`dependency(IMPORT)`. It allows specifying a different
+  location for each build configuration type, or for all configurations
+  if no configuration is specified. Also, this command is typically used in
+  conjunction with :command:`dependency(EXPORT)` to complete the definition of
+  an imported target for external reuse.
 
-  The ``PUBLIC`` keyword specifies the usage scope of the following arguments.
-  These arguments **must use generator expressions** such as ``$<BUILD_INTERFACE:...>``
-  and ``$<INSTALL_INTERFACE:...>`` to distinguish between build and install
-  phases (see 
+  If ``CONFIGURATION`` is given, the property is only set for that
+  configuration. Otherwise, the property is set for all configurations
+  supported by the target. Configuration types must match one of the
+  values listed in the target's :cmake:prop_tgt:`IMPORTED_CONFIGURATIONS <cmake:prop_tgt:IMPORTED_CONFIGURATIONS>` property.
+
+  The ``PUBLIC`` keyword must be followed by one or more generator expressions
+  that define the path to the library file during build and install phases.
+  The paths following it **must use generator expressions** like
+  ``$<BUILD_INTERFACE:...>`` and ``$<INSTALL_INTERFACE:...>`` to distinguish
+  between build and install phases. (see 
   `how write build specification with generator expressions <https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html#build-specification-with-generator-expressions>`_).
+
+  These expressions are evaluated to determine the value of the following
+  CMake properties set by this command:
+
+    ``IMPORTED_LOCATION_<CONFIG>``
+      The full path to the actual library file (e.g. ``.so``, ``.dll``, ``.a``, ``.lib``),
+      set separately for each configuration (``RELEASE`` and/or ``DEBUG``).
+      See the `CMake doc <https://cmake.org/cmake/help/latest/prop_tgt/IMPORTED_LOCATION.html>`_ for full details. The command :command:`directory(FIND_LIB)` can be used to find the library file.
+
+    ``IMPORTED_LOCATION_BUILD_<CONFIG>``
+      *Custom property* set to the full path to the actual library file,
+      set separately for each configuration (``RELEASE`` and/or ``DEBUG``),
+      and for usage from the build-tree context. This property is used by
+      :command:`dependency(EXPORT)` to complete the definition of an imported
+      target for external reuse.
+
+    ``IMPORTED_LOCATION_INSTALL_<CONFIG>``
+      *Custom property* set to the full path to the actual library file,
+      set separately for each configuration (``RELEASE`` and/or ``DEBUG``),
+      and for usage from the install-tree context.  This property is used by
+      :command:`dependency(EXPORT)` to complete the definition of an imported
+      target for external reuse.
 
   Example usage:
 
   .. code-block:: cmake
 
-    dependency(IMPORTED_LOCATION "mylib"
-      CONFIGURATION "DEBUG"
+    # Import libs
+    dependency(IMPORT "my_shared_lib"
+      SHARED
+      RELEASE_NAME "mylib_1.11.0"
+      DEBUG_NAME "mylibd_1.11.0"
+      ROOT_DIR "${CMAKE_SOURCE_DIR}/lib"
+      INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/mylib"
+    )
+    dependency(IMPORT "my_static_lib"
+      STATIC
+      RELEASE_NAME "mylib_1.11.0"
+      DEBUG_NAME "mylibd_1.11.0"
+      ROOT_DIR "${CMAKE_SOURCE_DIR}/lib"
+      INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/mylib"
+    )
+
+    # Set imported location for shared lib
+    dependency(SET_IMPORTED_LOCATION "my_shared_lib"
+      CONFIGURATION RELEASE
       PUBLIC
-        "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/debug/libMyLib.a>"
-        "$<INSTALL_INTERFACE:lib/libMyLib.a>"
+        "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/mylib_1.11.0.dll>"
+        "$<INSTALL_INTERFACE:lib/mylib_1.11.0.dll>"
+    )
+    dependency(SET_IMPORTED_LOCATION "my_shared_lib"
+      CONFIGURATION DEBUG
+      PUBLIC
+        "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/mylibd_1.11.0.dll>"
+        "$<INSTALL_INTERFACE:lib/mylibd_1.11.0.dll>"
+    )
+
+    # Set include directories for static lib
+    dependency(SET_IMPORTED_LOCATION "my_static_lib"
+      CONFIGURATION RELEASE
+      PUBLIC
+        "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/mylib_1.11.0.lib>"
+        "$<INSTALL_INTERFACE:lib/mylib_1.11.0.lib>"
+    )
+    dependency(SET_IMPORTED_LOCATION "my_static_lib"
+      CONFIGURATION DEBUG
+      PUBLIC
+        "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/mylibd_1.11.0.lib>"
+        "$<INSTALL_INTERFACE:lib/mylibd_1.11.0.lib>"
     )
 
 .. signature::
@@ -352,20 +424,30 @@ Usage
 
   .. code-block:: cmake
 
-    # Import target before exporting
-    dependency(IMPORT "myimportedlib-1"
+    # Import libs before exporting
+    dependency(IMPORT "my_shared_lib"
       SHARED
-      RELEASE_NAME "myimportedlib-1"
-      DEBUG_NAME "myimportedlibd-1"
+      RELEASE_NAME "mylib_1.11.0"
+      DEBUG_NAME "mylibd_1.11.0"
       ROOT_DIR "${CMAKE_SOURCE_DIR}/lib"
-      INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/myimportedlib-1"
+      INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/mylib"
     )
-    dependency(IMPORT "myimportedlib-2"
-      SHARED
-      RELEASE_NAME "myimportedlib-2"
-      DEBUG_NAME "myimportedlibd-2"
+    dependency(ADD_INCLUDE_DIRECTORIES "my_shared_lib" SET
+      PUBLIC
+        "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include/mylib>"
+        "$<INSTALL_INTERFACE:include/mylib>"
+    )
+    dependency(IMPORT "my_static_lib"
+      STATIC
+      RELEASE_NAME "mylib_1.11.0"
+      DEBUG_NAME "mylibd_1.11.0"
       ROOT_DIR "${CMAKE_SOURCE_DIR}/lib"
-      INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/myimportedlib-2"
+      INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/mylib"
+    )
+    dependency(ADD_INCLUDE_DIRECTORIES "my_static_lib" SET
+      PUBLIC
+        "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include/mylib>"
+        "$<INSTALL_INTERFACE:include/mylib>"
     )
 
     # Export from Build-Tree
@@ -412,7 +494,7 @@ include(FuncStringManip)
 # Public function of this module.
 function(dependency)
 	set(options SHARED STATIC BUILD_TREE INSTALL_TREE SET APPEND)
-	set(one_value_args IMPORT RELEASE_NAME DEBUG_NAME ROOT_DIR INCLUDE_DIR OUTPUT_FILE ADD_INCLUDE_DIRECTORIES IMPORTED_LOCATION CONFIGURATION)
+	set(one_value_args IMPORT RELEASE_NAME DEBUG_NAME ROOT_DIR INCLUDE_DIR OUTPUT_FILE ADD_INCLUDE_DIRECTORIES SET_IMPORTED_LOCATION CONFIGURATION)
 	set(multi_value_args EXPORT PUBLIC)
 	cmake_parse_arguments(DEP "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 	
@@ -426,8 +508,8 @@ function(dependency)
 		_dependency_export()
 	elseif(DEFINED DEP_ADD_INCLUDE_DIRECTORIES)
 		_dependency_add_include_directories()
-	elseif(DEFINED DEP_IMPORTED_LOCATION)
-		_dependency_imported_location()
+	elseif(DEFINED DEP_SET_IMPORTED_LOCATION)
+		_dependency_set_imported_location()
 	else()
 		message(FATAL_ERROR "Operation argument is missing")
 	endif()
@@ -538,7 +620,6 @@ macro(_dependency_add_include_directories)
 	if((NOT DEFINED DEP_PUBLIC)
 		OR ("PUBLIC" IN_LIST DEP_KEYWORDS_MISSING_VALUES))
 		message(FATAL_ERROR "PUBLIC argument is missing or need a value!")
-		message(("UCU"))
 	endif()
 
 	if(NOT TARGET "${DEP_ADD_INCLUDE_DIRECTORIES}")
@@ -580,40 +661,46 @@ endmacro()
 
 #------------------------------------------------------------------------------
 # Internal usage.
-macro(_dependency_imported_location)
-	if(NOT DEFINED DEP_IMPORTED_LOCATION)
-		message(FATAL_ERROR "IMPORTED_LOCATION argument is missing or need a value!")
+macro(_dependency_set_imported_location)
+	if(NOT DEFINED DEP_SET_IMPORTED_LOCATION)
+		message(FATAL_ERROR "SET_IMPORTED_LOCATION argument is missing or need a value!")
 	endif()
 	if("CONFIGURATION" IN_LIST DEP_KEYWORDS_MISSING_VALUES)
 		message(FATAL_ERROR "CONFIGURATION argument is missing or need a value!")
 	endif()
-	if(NOT DEFINED DEP_PUBLIC)
-		OR ("PUBLIC" IN_LIST DEP_KEYWORDS_MISSING_VALUES)
+	if((NOT DEFINED DEP_PUBLIC)
+		OR ("PUBLIC" IN_LIST DEP_KEYWORDS_MISSING_VALUES))
 		message(FATAL_ERROR "PUBLIC argument is missing or need a value!")
 	endif()
 
-	if(NOT TARGET "${DEP_IMPORTED_LOCATION}")
-		message(FATAL_ERROR "The target \"${DEP_IMPORTED_LOCATION}\" does not exists!")
+	if(NOT TARGET "${DEP_SET_IMPORTED_LOCATION}")
+		message(FATAL_ERROR "The target \"${DEP_SET_IMPORTED_LOCATION}\" does not exists!")
 	endif()
 
-	get_target_property(supported_config_types "${imported_library}" IMPORTED_CONFIGURATIONS)
-	string_manip(EXTRACT_INTERFACE DEP_PUBLIC BUILD OUTPUT_VARIABLE imported_location_build_interface)
-	string_manip(EXTRACT_INTERFACE DEP_PUBLIC INSTALL OUTPUT_VARIABLE imported_location_install_interface)
+	get_target_property(supported_config_types "${DEP_SET_IMPORTED_LOCATION}" IMPORTED_CONFIGURATIONS)
+	string_manip(EXTRACT_INTERFACE DEP_PUBLIC
+		BUILD
+		OUTPUT_VARIABLE imp_loc_build_interface
+	)
+	string_manip(EXTRACT_INTERFACE DEP_PUBLIC
+		INSTALL
+		OUTPUT_VARIABLE imp_loc_install_interface
+	)
 	if(DEFINED DEP_CONFIGURATION)
 		if(NOT "${DEP_CONFIGURATION}" IN_LIST supported_config_types)
 			message(FATAL_ERROR "The build type \"${DEP_CONFIGURATION}\" is not a supported configuration!")
 		endif()
-		set_target_properties("${DEP_IMPORTED_LOCATION}" PROPERTIES
-			IMPORTED_LOCATION_${DEP_CONFIGURATION} "${imported_location_build_interface}"
-			IMPORTED_LOCATION_BUILD_${DEP_CONFIGURATION} "${imported_location_build_interface}"
-			IMPORTED_LOCATION_INSTALL_${DEP_CONFIGURATION} "${imported_location_install_interface}"
+		set_target_properties("${DEP_SET_IMPORTED_LOCATION}" PROPERTIES
+			IMPORTED_LOCATION_${DEP_CONFIGURATION} "${imp_loc_build_interface}"
+			IMPORTED_LOCATION_BUILD_${DEP_CONFIGURATION} "${imp_loc_build_interface}"
+			IMPORTED_LOCATION_INSTALL_${DEP_CONFIGURATION} "${imp_loc_install_interface}"
 		)
 	else()
-		foreach(config_type IN ITEMS ${supported_config_types})
-			set_target_properties("${DEP_IMPORTED_LOCATION}" PROPERTIES
-				IMPORTED_LOCATION_${config_type} "${imported_location_build_interface}"
-				IMPORTED_LOCATION_BUILD_${config_type} "${imported_location_build_interface}"
-				IMPORTED_LOCATION_INSTALL_${config_type} "${imported_location_install_interface}"
+		foreach(build_type IN ITEMS ${supported_config_types})
+			set_target_properties("${DEP_SET_IMPORTED_LOCATION}" PROPERTIES
+				IMPORTED_LOCATION_${build_type} "${imp_loc_build_interface}"
+				IMPORTED_LOCATION_BUILD_${build_type} "${imp_loc_build_interface}"
+				IMPORTED_LOCATION_INSTALL_${build_type} "${imp_loc_install_interface}"
 			)
 		endforeach()
 	endif()
