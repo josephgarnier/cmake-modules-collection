@@ -5,53 +5,148 @@
 # LICENSE file in the root directory of this source tree.
 
 #[=======================================================================[.rst:
-
 Debug
 -----
+
 Operations for helping with debug. It requires CMake 3.20 or newer.
 
 Synopsis
 ^^^^^^^^
+
 .. parsed-literal::
 
-    debug(`DUMP_VARIABLES`_ [EXCLUDE_REGEX <regular_expression>])
-    debug(`DUMP_PROPERTIES`_)
-    debug(`DUMP_TARGET_PROPERTIES`_ <target_name>)
-    debug(`DUMP_PROJECT_VARIABLES`_)
+    debug(`DUMP_VARIABLES`_ [EXCLUDE_REGEX <regular-expression>])
+    debug(`DUMP_PROPERTIES`_ [])
+    debug(`DUMP_TARGET_PROPERTIES`_ <target-name>)
+    debug(`DUMP_PROJECT_VARIABLES`_ [])
 
 Usage
 ^^^^^
-.. _DUMP_VARIABLES:
-.. code-block:: cmake
 
-  debug(DUMP_VARIABLES [EXCLUDE_REGEX <regular_expression>])
+.. signature::
+  debug(DUMP_VARIABLES [EXCLUDE_REGEX <regular-expression>])
 
-Disaply all CMake variables except those that match with the optional 
-``<regular_expression>`` parameter.
+  Disaply all CMake variables except those that match with the optional
+  ``<regular-expression>`` parameter.
 
-.. _DUMP_PROPERTIES:
-.. code-block:: cmake
+  Display all defined CMake variables, optionally excluding those whose names
+  match a given regular expression.
 
-  debug(DUMP_PROPERTIES)
+  This command retrieves all variables currently defined in the CMake
+  context and prints their names and values using :cmake:command:`message() <cmake:command:message()>`.
+  The output is sorted alphabetically and contains no duplicates.
 
-Disaply all CMake properties.
+  If ``<regular-expression>`` is provided, any variable whose name matches the
+  given expression is omitted from the output.
 
-.. _DUMP_TARGET_PROPERTIES:
-.. code-block:: cmake
+  Example usage:
 
-  debug(DUMP_TARGET_PROPERTIES <target_name>)
+  .. code-block:: cmake
 
-Display all CMake properties of target ``<target_name>`` parameter.
+    debug(DUMP_VARIABLES)
+    # output is:
+    #   BUILD_SHARED_LIBS=ON
+    #   CMAKE_CURRENT_SOURCE_DIR=/home/user/project/src
+    #   CMAKE_VERSION=3.28.3
+    #   PROJECT_NAME=MyProject
+    #   ...
 
-.. _DUMP_PROJECT_VARIABLES:
-.. code-block:: cmake
+    debug(DUMP_VARIABLES
+      EXCLUDE_REGEX "^CMAKE_"
+    )
+    # output is:
+    #   BUILD_SHARED_LIBS=ON
+    #   PROJECT_NAME=MyProject
+    #   ...
 
-  debug(DUMP_PROJECT_VARIABLES)
+.. signature::
+  debug(DUMP_PROPERTIES [])
 
-Display all global variables of the project. The trick is to exploit the
-naming convention which stipulates that each variable is prefixed
-by ${PROJECT_NAME}.
+  Display all CMake properties available in the current version of CMake.
 
+  This command executes the equivalent of :cmake:option:`cmake.--help-property-list`
+  and prints each property name using :cmake:command:`message() <cmake:command:message()>`. The output
+  is sorted alphabetically.
+
+  It provides a quick reference for all built-in CMake properties, including
+  those related to targets, directories, sources, tests, cache entries, and
+  more.
+
+  This command does not inspect actual property values but rather enumerates
+  all recognized property names in the CMake environment.
+
+  Example usage:
+
+  .. code-block:: cmake
+
+    debug(DUMP_PROPERTIES)
+    # output is:
+    #   ADDITIONAL_CLEAN_FILES
+    #   ALIAS_GLOBAL
+    #   ANDROID_API
+    #   ARCHIVE_OUTPUT_DIRECTORY
+    #   AUTOMOC
+    #   ...
+
+.. signature::
+  debug(DUMP_TARGET_PROPERTIES <target-name>)
+
+  Display all defined CMake properties of the given target ``<target-name>``.
+
+  This command enumerates all known target properties supported by CMake,
+  including custom properties specific to the project. For each property set
+  on the target, its value is printed using :cmake:command:`message() <cmake:command:message()>`.
+
+  Configuration-specific properties such as :cmake:prop_tgt:`IMPORTED_LOCATION_<CONFIG> <cmake:prop_tgt:IMPORTED_LOCATION_<CONFIG>>`
+  or ``INTERFACE_INCLUDE_DIRECTORIES_<CONFIG>`` (a custom property used by :module:`FuncDependency` module) are
+  expanded for ``DEBUG`` and ``RELEASE`` configurations. Internal properties
+  like :cmake:prop_tgt:`LOCATION <cmake:prop_tgt:LOCATION>` and those
+  known to trigger errors on access are excluded from the output.
+
+  Example usage:
+
+  .. code-block:: cmake
+
+    debug(DUMP_TARGET_PROPERTIES my_library)
+    # output is:
+    #
+    #   -----
+    #   Properties for TARGET my_library:
+    #     my_library.TYPE = "STATIC_LIBRARY"
+    #     my_library.SOURCES = "src/a.cpp;src/b.cpp"
+    #     my_library.INTERFACE_INCLUDE_DIRECTORIES = "include"
+    #     ...
+    #   -----
+    #
+
+.. signature::
+  debug(DUMP_PROJECT_VARIABLES [])
+
+  Display all global CMake variables related to the current project.
+
+  This command prints the values of all defined variables whose name starts
+  with the current :cmake:variable:`PROJECT_NAME <cmake:variable:PROJECT_NAME>`. This relies on the naming
+  convention that project-specific variables are prefixed with the project
+  name followed by an underscore.
+
+  This command is useful for debugging and inspecting variables that are
+  explicitly scoped to the project. It filters out unrelated variables
+  defined by CMake or third-party scripts.
+
+  Example usage:
+
+  .. code-block:: cmake
+
+    debug(DUMP_PROJECT_VARIABLES)
+    # output is:
+    #
+    #   -----
+    #   Variables for PROJECT my_project:
+    #     my_project_SOURCE_DIR = "/home/user/my_project/src"
+    #     my_project_BUILD_DIR = "/home/user/my_project/build"
+    #     ...
+    #     -----
+    #
 #]=======================================================================]
 include_guard()
 
@@ -79,7 +174,7 @@ function(debug)
 	elseif(${DB_DUMP_PROJECT_VARIABLES})
 		_debug_dump_project_variables()
 	else()
-		message(FATAL_ERROR "Operation argument is missing")
+		message(FATAL_ERROR "Operation argument is missing!")
 	endif()
 endfunction()
 
@@ -87,14 +182,15 @@ endfunction()
 # Internal usage.
 macro(_debug_dump_variables)
 	if(NOT ${DB_DUMP_VARIABLES})
-		message(FATAL_ERROR "DUMP_VARIABLES arguments is missing")
+		message(FATAL_ERROR "DUMP_VARIABLES arguments is missing!")
 	endif()
 
 	get_cmake_property(variable_names VARIABLES)
 	list(SORT variable_names)
 	list(REMOVE_DUPLICATES variable_names)
 	foreach (variable_name IN ITEMS ${variable_names})
-		if((NOT DEFINED DB_EXCLUDE_REGEX) OR (NOT "${variable_name}" MATCHES "${DB_EXCLUDE_REGEX}"))
+		if((NOT DEFINED DB_EXCLUDE_REGEX)
+			OR (NOT "${variable_name}" MATCHES "${DB_EXCLUDE_REGEX}"))
 			message(STATUS "${variable_name}= ${${variable_name}}")
 		endif()
 	endforeach()

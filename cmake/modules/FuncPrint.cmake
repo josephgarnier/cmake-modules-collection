@@ -19,10 +19,10 @@ Synopsis
     print([<mode>] "message with format text" <argument>...)
 
   `Print Path List`_
-    print([<mode>] PATHS <file_list>... [INDENT])
+    print([<mode>] PATHS <file-path>... [INDENT])
 
   `Print String List`_
-    print([<mode>] STRINGS <string_list>... [INDENT])
+    print([<mode>] STRINGS <string>... [INDENT])
 
 Module Variables
 ^^^^^^^^^^^^^^^^
@@ -83,10 +83,10 @@ Usage
 .. _`Print Path List`:
 
 .. signature::
-  print([<mode>] PATHS <file_list>... [INDENT])
+  print([<mode>] PATHS <file-path>... [INDENT])
   :target: PATHS
 
-  Record in the log each file from the specified ``<file_list>`` after
+  Record in the log each file from the specified ``<file-path>`` list after
   converting them to paths relative to the value of the :variable:`PRINT_BASE_DIR`
   variable. This command is inspired by the :cmake:command:`message() <cmake:command:message>` command from CMake.
 
@@ -111,10 +111,10 @@ Usage
 .. _`Print String List`:
 
 .. signature::
-  print([<mode>] STRINGS <string_list>... [INDENT])
+  print([<mode>] STRINGS <string>... [INDENT])
   :target: STRINGS
 
-  Record in the log each string from the given ``<string_list>``. This command
+  Record in the log each string from the given ``<string>`` list. This command
   is inspired by the :cmake:command:`message() <cmake:command:message>` command from CMake.
 
   If specified, the optional ``<mode>`` keyword must be one of the standard

@@ -10,7 +10,7 @@
 
 #-------------------------------------------------------------------------------
 # Test of [StringManip module::EXTRACT_INTERFACE operation]:
-#    ``string_manip(EXTRACT_INTERFACE <string_var> <BUILD|INSTALL> [OUTPUT_VARIABLE <output_var>])``
+#    ``string_manip(EXTRACT_INTERFACE <string-var> <BUILD|INSTALL> [OUTPUT_VARIABLE <output-var>])``
 ct_add_test(NAME "test_string_manip_extract_interface_operation")
 function(${CMAKETEST_TEST})
 	include(FuncStringManip)

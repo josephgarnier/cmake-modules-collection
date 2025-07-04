@@ -15,18 +15,29 @@ Synopsis
 
 .. parsed-literal::
 
-    dependency(`IMPORT`_ <lib_target_name> <STATIC|SHARED> [RELEASE_NAME <raw_filename>] [DEBUG_NAME <raw_filename>] ROOT_DIR <directory_path> INCLUDE_DIR <directory_path>)
-    dependency(`ADD_INCLUDE_DIRECTORIES`_ <lib_target_name> <SET|APPEND> PUBLIC <gen_expr_list> ...)
-    dependency(`SET_IMPORTED_LOCATION`_ <lib_target_name> [CONFIGURATION <build_type>] PUBLIC <gen_expr_list> ...)
-    dependency(`EXPORT`_ <lib_target_name_list> ... <BUILD_TREE|INSTALL_TREE> [APPEND] OUTPUT_FILE <file_name>)
+    dependency(`IMPORT`_ <lib-target-name> [...])
+    dependency(`ADD_INCLUDE_DIRECTORIES`_ <lib-target-name> <SET|APPEND> PUBLIC <gen-expr>...)
+    dependency(`SET_IMPORTED_LOCATION`_ <lib-target-name> [CONFIGURATION <config_type>] PUBLIC <gen-expr>...)
+    dependency(`EXPORT`_ <lib-target-name>... <BUILD_TREE|INSTALL_TREE> [APPEND] OUTPUT_FILE <file_name>)
 
 Usage
 ^^^^^
 
 .. signature::
-  dependency(IMPORT <lib_target_name> <STATIC|SHARED> [RELEASE_NAME <raw_filename>] [DEBUG_NAME <raw_filename>] ROOT_DIR <directory_path> INCLUDE_DIR <directory_path>)
+  dependency(IMPORT <lib-target-name> [...])
 
-  Create an imported library target named ``<lib_target_name>``, which should
+  Import a depedency:
+
+  .. code-block:: cmake
+
+    dependency(IMPORT <lib-target-name>
+              <STATIC|SHARED>
+              [RELEASE_NAME <raw-filename>]
+              [DEBUG_NAME <raw-filename>]
+              ROOT_DIR <directory-path>
+              INCLUDE_DIR <directory-path>)
+
+  Create an imported library target named ``<lib-target-name>``, which should
   represent the base name of the library (without prefix or suffix), by
   locating its binary files and setting the necessary target properties. This
   command combines behavior similar to :cmake:command:`find_library() <cmake:command:find_library()>` and
@@ -34,12 +45,12 @@ Usage
 
   The command requires either the ``STATIC`` or ``SHARED`` keyword to specify
   the type of library. Only one may be used. At least one of
-  ``RELEASE_NAME <raw_filename>`` or ``DEBUG_NAME <raw_filename>`` must be
+  ``RELEASE_NAME <raw-filename>`` or ``DEBUG_NAME <raw-filename>`` must be
   provided. Both can be used. These arguments determine which configurations
   of the library will be available, typically matching values in the
   :cmake:variable:`CMAKE_CONFIGURATION_TYPES <cmake:variable:CMAKE_CONFIGURATION_TYPES>` variable.
 
-  The value of ``<raw_filename>`` should be the core name of the library file,
+  The value of ``<raw-filename>`` should be the core name of the library file,
   stripped of:
 
   * Any version numbers.
@@ -51,8 +62,8 @@ Usage
   constructed using the relevant ``CMAKE_<CONFIG>_LIBRARY_PREFIX`` and
   ``CMAKE_<CONFIG>_LIBRARY_SUFFIX``, accounting for platform conventions
   and possible version-number noise in filenames. More specifically, it tries
-  to do a matching between the ``<raw_filename>`` in format
-  ``<CMAKE_STATIC_LIBRARY_PREFIX|CMAKE_SHARED_LIBRARY_PREFIX><raw_filename>
+  to do a matching between the ``<raw-filename>`` in format
+  ``<CMAKE_STATIC_LIBRARY_PREFIX|CMAKE_SHARED_LIBRARY_PREFIX><raw-filename>
   <verions-numbers><CMAKE_STATIC_LIBRARY_SUFFIX|CMAKE_SHARED_LIBRARY_SUFFIX>``
   and each filename found striped from their numeric and special character
   version and their suffix and their prefix based on the plateform and the
@@ -90,12 +101,12 @@ Usage
     ``IMPORTED_LOCATION_BUILD_<CONFIG>``
       *Custom property* set to an empty value. Intended for build-tree specific
       overrides of the library path, for usage from the build-tree context.
-      Use :command:`dependency(IMPORTED_LOCATION)` to initialize this property.
+      Use :command:`dependency(SET_IMPORTED_LOCATION)` to initialize this property.
 
     ``IMPORTED_LOCATION_INSTALL_<CONFIG>``
       *Custom property* set to an empty value. Intended for install-time
       overrides of the library path, for usage from the install-tree context.
-      Use :command:`dependency(IMPORTED_LOCATION)` to initialize this property.
+      Use :command:`dependency(SET_IMPORTED_LOCATION)` to initialize this property.
 
     ``IMPORTED_IMPLIB_<CONFIG>``
       On DLL-based platforms (e.g. Windows), set to the full path of the
@@ -177,10 +188,10 @@ Usage
     )
 
 .. signature::
-  dependency(ADD_INCLUDE_DIRECTORIES <lib_target_name> <SET|APPEND> PUBLIC <gen_expr_list> ...)
+  dependency(ADD_INCLUDE_DIRECTORIES <lib-target-name> <SET|APPEND> PUBLIC <gen-expr>...)
 
   Set or append public include directories via :cmake:prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES <cmake:prop_tgt:INTERFACE_INCLUDE_DIRECTORIES>`
-  property to the imported target ``<lib_target_name>``. The name should
+  property to the imported target ``<lib-target-name>``. The name should
   represent the base name of the library (without prefix or suffix). This
   command works similarly to :cmake:command:`target_include_directories() <cmake:command:target_include_directories>` in CMake,
   but introduces a separation between build-time and install-time contexts for
@@ -281,10 +292,10 @@ Usage
     ``<CMAKE_INSTALL_PREFIX>`` is resolved when imported via :command:`dependency(EXPORT)`).
 
 .. signature::
-  dependency(SET_IMPORTED_LOCATION <lib_target_name> [CONFIGURATION <config_type>] PUBLIC <gen_expr_list> ...)
+  dependency(SET_IMPORTED_LOCATION <lib-target-name> [CONFIGURATION <config_type>] PUBLIC <gen-expr>...)
 
   Set the :cmake:prop_tgt:`IMPORTED_LOCATION_<CONFIG> <cmake:prop_tgt:IMPORTED_LOCATION_<CONFIG>>` property of the imported
-  target ``<lib_target_name>`` using generator expressions to provide the
+  target ``<lib-target-name>`` using generator expressions to provide the
   full path to the library file. The name should represent the base name of
   the library (without prefix or suffix).
 
@@ -378,16 +389,16 @@ Usage
     )
 
 .. signature::
-  dependency(EXPORT <lib_target_name_list> ... <BUILD_TREE|INSTALL_TREE> [APPEND] OUTPUT_FILE <file_name>)
+  dependency(EXPORT <lib-target-name>... <BUILD_TREE|INSTALL_TREE> [APPEND] OUTPUT_FILE <file_name>)
 
   Creates a file ``<file_name>`` that may be included by outside projects to
-  import targets in ``<lib_target_name_list>`` from the current project's
+  import targets in ``<lib-target-name>`` list from the current project's
   build-tree or install-tree. This command is functionally similar to using
   :cmake:command:`export(TARGETS) <cmake:command:export(targets)>` in a ``BUILD_TREE`` context and :cmake:command:`install(EXPORT) <cmake:command:install(export)>`
   in an ``INSTALL_TREE`` context, but is designed specifically to export
   imported targets with :command:`dependency(IMPORT)` instead of build targets.
 
-  The targets in ``<lib_target_name_list>`` must be previously created imported
+  The targets in ``<lib-target-name>`` list  must be previously created imported
   targets. The names should match exactly the target names used during import.
 
   One of ``BUILD_TREE`` or ``INSTALL_TREE`` must be specified to indicate the

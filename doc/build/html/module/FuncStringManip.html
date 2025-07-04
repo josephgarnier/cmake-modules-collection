@@ -17,7 +17,7 @@
     <link rel="icon" href="../_static/cmake-favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="BinTarget" href="BundleBinTarget.html" />
+    <link rel="next" title="BuildBinTarget" href="BundleBinTarget.html" />
     <link rel="prev" title="Print" href="FuncPrint.html" />
  
 
@@ -34,7 +34,7 @@
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="BundleBinTarget.html" title="BinTarget"
+          <a href="BundleBinTarget.html" title="BuildBinTarget"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="FuncPrint.html" title="Print"
@@ -65,26 +65,26 @@
 <p>Operations on strings. It requires CMake 3.20 or newer.</p>
 <section id="synopsis">
 <h2>Synopsis<a class="headerlink" href="#synopsis" title="Link to this heading">¶</a></h2>
-<pre class="literal-block">string_manip(<a class="reference internal" href="#split">SPLIT</a> &lt;string&gt; &lt;output_list_var&gt;)
-string_manip(<a class="reference internal" href="#split-transform">SPLIT_TRANSFORM</a> &lt;string_var&gt; &lt;ACTION&gt; [OUTPUT_VARIABLE &lt;output_var&gt;])
-string_manip(<a class="reference internal" href="#strip-interfaces">STRIP_INTERFACES</a> &lt;string_var&gt; [OUTPUT_VARIABLE &lt;output_var&gt;])
-string_manip(<a class="reference internal" href="#extract-interface">EXTRACT_INTERFACE</a> &lt;string_var&gt; &lt;BUILD|INSTALL&gt; [OUTPUT_VARIABLE &lt;output_var&gt;])</pre>
+<pre class="literal-block">string_manip(<a class="reference internal" href="#split">SPLIT</a> &lt;string&gt; &lt;output-list-var&gt;)
+string_manip(<a class="reference internal" href="#split-transform">SPLIT_TRANSFORM</a> &lt;string-var&gt; &lt;ACTION&gt; [OUTPUT_VARIABLE &lt;output-var&gt;])
+string_manip(<a class="reference internal" href="#strip-interfaces">STRIP_INTERFACES</a> &lt;string-var&gt; [OUTPUT_VARIABLE &lt;output-var&gt;])
+string_manip(<a class="reference internal" href="#extract-interface">EXTRACT_INTERFACE</a> &lt;string-var&gt; &lt;BUILD|INSTALL&gt; [OUTPUT_VARIABLE &lt;output-var&gt;])</pre>
 </section>
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h2>
 <dl class="cmake signature">
 <dt class="sig sig-object cmake" id="split">
-<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">string_manip(</span></span><span class="no"><span class="pre">SPLIT</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;string&gt;</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;output_list_var&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#split" title="Link to this definition">¶</a></dt>
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">string_manip(</span></span><span class="no"><span class="pre">SPLIT</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;string&gt;</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;output-list-var&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#split" title="Link to this definition">¶</a></dt>
 <dd><p>Splits the input string into a list of substrings based on specific
 pattern rules. This command analyzes the given <code class="docutils literal notranslate"><span class="pre">&lt;string&gt;</span></code> and splits
 it into components using the following criteria:</p>
 <ul class="simple">
 <li><p>Transitions between lowercase and uppercase letters
 (e.g., <code class="docutils literal notranslate"><span class="pre">MyValue</span></code> becomes <code class="docutils literal notranslate"><span class="pre">My;Value</span></code>).</p></li>
-<li><p>Non-alphanumeric characters, as defined by the <span class="target" id="index-0-command:cmake:command:string"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/string.html#make-c-identifier" title="(in CMake v4.0.3)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">string(MAKE_C_IDENTIFIER)</span></code></a>
+<li><p>Non-alphanumeric characters, as defined by the <span class="target" id="index-0-command:cmake:command:string"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/string.html#make-c-identifier" title="(in CMake v4.1.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">string(MAKE_C_IDENTIFIER)</span></code></a>
 transformation in CMake.</p></li>
 </ul>
-<p>The resulting list is stored in <code class="docutils literal notranslate"><span class="pre">&lt;output_list_var&gt;</span></code>. If no split point is
+<p>The resulting list is stored in <code class="docutils literal notranslate"><span class="pre">&lt;output-list-var&gt;</span></code>. If no split point is
 detected, the original string is returned as a single-element list.</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="c"># No split point detected</span>
@@ -114,18 +114,18 @@ detected, the original string is returned as a single-element list.</p>
 
 <dl class="cmake signature">
 <dt class="sig sig-object cmake" id="split-transform">
-<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">string_manip(</span></span><span class="no"><span class="pre">SPLIT_TRANSFORM</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;string_var&gt;</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;ACTION&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">[</span></span><span class="no"><span class="pre">OUTPUT_VARIABLE</span></span><span class="nbsp"> </span><span class="nv"><span class="pre">&lt;output_var&gt;</span></span><span class="p"><span class="pre">]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#split-transform" title="Link to this definition">¶</a></dt>
-<dd><p>Applies the <span class="target" id="index-0-command:string_manip"></span><a class="reference internal" href="#split" title="string_manip(split)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">string_manip(SPLIT)</span></code></a> operation to the value stored in <code class="docutils literal notranslate"><span class="pre">&lt;string_var&gt;</span></code>,
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">string_manip(</span></span><span class="no"><span class="pre">SPLIT_TRANSFORM</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;string-var&gt;</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;ACTION&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">[</span></span><span class="no"><span class="pre">OUTPUT_VARIABLE</span></span><span class="nbsp"> </span><span class="nv"><span class="pre">&lt;output-var&gt;</span></span><span class="p"><span class="pre">]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#split-transform" title="Link to this definition">¶</a></dt>
+<dd><p>Applies the <span class="target" id="index-0-command:string_manip"></span><a class="reference internal" href="#split" title="string_manip(split)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">string_manip(SPLIT)</span></code></a> operation to the value stored in <code class="docutils literal notranslate"><span class="pre">&lt;string-var&gt;</span></code>,
 transforms each resulting element according to the specified <code class="docutils literal notranslate"><span class="pre">&lt;ACTION&gt;</span></code>,
 then joins the list into a single string. The final result is either stored
-back in <code class="docutils literal notranslate"><span class="pre">&lt;string_var&gt;</span></code>, or in <code class="docutils literal notranslate"><span class="pre">&lt;output_var&gt;</span></code> if the <code class="docutils literal notranslate"><span class="pre">OUTPUT_VARIABLE</span></code>
+back in <code class="docutils literal notranslate"><span class="pre">&lt;string-var&gt;</span></code>, or in <code class="docutils literal notranslate"><span class="pre">&lt;output-var&gt;</span></code> if the <code class="docutils literal notranslate"><span class="pre">OUTPUT_VARIABLE</span></code>
 option is provided.</p>
 <p>The available values for <code class="docutils literal notranslate"><span class="pre">&lt;ACTION&gt;</span></code> are:</p>
 <blockquote>
 <div><dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">START_CASE</span></code></dt><dd><p>Converts each word to Start Case (first letter uppercase, others lowercase).</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">C_IDENTIFIER_UPPER</span></code></dt><dd><p>Applies a transformation inspired by <span class="target" id="index-1-command:cmake:command:string"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/string.html#make-c-identifier" title="(in CMake v4.0.3)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">string(MAKE_C_IDENTIFIER)</span></code></a>:
+<dt><code class="docutils literal notranslate"><span class="pre">C_IDENTIFIER_UPPER</span></code></dt><dd><p>Applies a transformation inspired by <span class="target" id="index-1-command:cmake:command:string"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/string.html#make-c-identifier" title="(in CMake v4.1.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">string(MAKE_C_IDENTIFIER)</span></code></a>:
 each word is converted to uppercase and suffixed with an underscore.
 If the first character is a digit, an underscore is also prepended to
 the result.</p>
@@ -157,22 +157,22 @@ list and transformed accordingly.</p>
 
 <dl class="cmake signature">
 <dt class="sig sig-object cmake" id="strip-interfaces">
-<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">string_manip(</span></span><span class="no"><span class="pre">STRIP_INTERFACES</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;string_var&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">[</span></span><span class="no"><span class="pre">OUTPUT_VARIABLE</span></span><span class="nbsp"> </span><span class="nv"><span class="pre">&lt;output_var&gt;</span></span><span class="p"><span class="pre">]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#strip-interfaces" title="Link to this definition">¶</a></dt>
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">string_manip(</span></span><span class="no"><span class="pre">STRIP_INTERFACES</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;string-var&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">[</span></span><span class="no"><span class="pre">OUTPUT_VARIABLE</span></span><span class="nbsp"> </span><span class="nv"><span class="pre">&lt;output-var&gt;</span></span><span class="p"><span class="pre">]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#strip-interfaces" title="Link to this definition">¶</a></dt>
 <dd><p>Removes CMake generator expressions of the form <code class="docutils literal notranslate"><span class="pre">$&lt;BUILD_INTERFACE:...&gt;</span></code> and
-<code class="docutils literal notranslate"><span class="pre">$&lt;INSTALL_INTERFACE:...&gt;</span></code> from the value stored in <code class="docutils literal notranslate"><span class="pre">&lt;string_var&gt;</span></code>. The
+<code class="docutils literal notranslate"><span class="pre">$&lt;INSTALL_INTERFACE:...&gt;</span></code> from the value stored in <code class="docutils literal notranslate"><span class="pre">&lt;string-var&gt;</span></code>. The
 expressions are removed entirely, including any leading semicolon if
 present before the expression.</p>
-<p>The resulting string is either stored back in <code class="docutils literal notranslate"><span class="pre">&lt;string_var&gt;</span></code>, or in
-<code class="docutils literal notranslate"><span class="pre">&lt;output_var&gt;</span></code> if the <code class="docutils literal notranslate"><span class="pre">OUTPUT_VARIABLE</span></code> option is provided.</p>
+<p>The resulting string is either stored back in <code class="docutils literal notranslate"><span class="pre">&lt;string-var&gt;</span></code>, or in
+<code class="docutils literal notranslate"><span class="pre">&lt;output-var&gt;</span></code> if the <code class="docutils literal notranslate"><span class="pre">OUTPUT_VARIABLE</span></code> option is provided.</p>
 </dd></dl>
 
 <dl class="cmake signature">
 <dt class="sig sig-object cmake" id="extract-interface">
-<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">string_manip(</span></span><span class="no"><span class="pre">EXTRACT_INTERFACE</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;string_var&gt;</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;</span></span><span class="no"><span class="pre">BUILD</span></span><span class="p"><span class="pre">|</span></span><span class="no"><span class="pre">INSTALL</span></span><span class="o"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">[</span></span><span class="no"><span class="pre">OUTPUT_VARIABLE</span></span><span class="nbsp"> </span><span class="nv"><span class="pre">&lt;output_var&gt;</span></span><span class="p"><span class="pre">]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#extract-interface" title="Link to this definition">¶</a></dt>
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">string_manip(</span></span><span class="no"><span class="pre">EXTRACT_INTERFACE</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;string-var&gt;</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;</span></span><span class="no"><span class="pre">BUILD</span></span><span class="p"><span class="pre">|</span></span><span class="no"><span class="pre">INSTALL</span></span><span class="o"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">[</span></span><span class="no"><span class="pre">OUTPUT_VARIABLE</span></span><span class="nbsp"> </span><span class="nv"><span class="pre">&lt;output-var&gt;</span></span><span class="p"><span class="pre">]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#extract-interface" title="Link to this definition">¶</a></dt>
 <dd><p>Extracts the content of either <code class="docutils literal notranslate"><span class="pre">$&lt;BUILD_INTERFACE:...&gt;</span></code> or
 <code class="docutils literal notranslate"><span class="pre">$&lt;INSTALL_INTERFACE:...&gt;</span></code> generator expressions from the value stored
-in <code class="docutils literal notranslate"><span class="pre">&lt;string_var&gt;</span></code>, depending on the specified mode.</p>
-<p>The value of <code class="docutils literal notranslate"><span class="pre">&lt;string_var&gt;</span></code> can be either a single string or a
+in <code class="docutils literal notranslate"><span class="pre">&lt;string-var&gt;</span></code>, depending on the specified mode.</p>
+<p>The value of <code class="docutils literal notranslate"><span class="pre">&lt;string-var&gt;</span></code> can be either a single string or a
 semicolon-separated list of strings. Generator expressions may be split
 across multiple list elements.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">&lt;BUILD|INSTALL&gt;</span></code> argument selects which generator expression to extract:</p>
@@ -182,8 +182,8 @@ across multiple list elements.</p>
 </ul>
 <p>When multiple matching generator expressions are found, their contents are
 concatenated into a single semicolon-separated string.</p>
-<p>The result is stored in <code class="docutils literal notranslate"><span class="pre">&lt;output_var&gt;</span></code> if the <code class="docutils literal notranslate"><span class="pre">OUTPUT_VARIABLE</span></code> option
-is specified. Otherwise, <code class="docutils literal notranslate"><span class="pre">&lt;string_var&gt;</span></code> is updated in place. If no
+<p>The result is stored in <code class="docutils literal notranslate"><span class="pre">&lt;output-var&gt;</span></code> if the <code class="docutils literal notranslate"><span class="pre">OUTPUT_VARIABLE</span></code> option
+is specified. Otherwise, <code class="docutils literal notranslate"><span class="pre">&lt;string-var&gt;</span></code> is updated in place. If no
 matching expression is found, an empty string is returned.</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="c"># Case 1: Extract from a single BUILD_INTERFACE expression in place</span>
@@ -236,7 +236,7 @@ matching expression is found, an empty string is returned.</p>
   <div>
     <h4>Next topic</h4>
     <p class="topless"><a href="BundleBinTarget.html"
-                          title="next chapter">BinTarget</a></p>
+                          title="next chapter">BuildBinTarget</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
@@ -266,7 +266,7 @@ matching expression is found, an empty string is returned.</p>
           <a href="../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="BundleBinTarget.html" title="BinTarget"
+          <a href="BundleBinTarget.html" title="BuildBinTarget"
              >next</a> |</li>
         <li class="right" >
           <a href="FuncPrint.html" title="Print"

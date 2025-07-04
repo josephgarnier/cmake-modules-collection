@@ -10,7 +10,7 @@
 
 #-------------------------------------------------------------------------------
 # Test of [Directory module::SCAN_DIRS operation]:
-#    ``directory(SCAN_DIRS <output_list_var> RECURSE <on|off> RELATIVE <on|off> ROOT_DIR <directory_path> <INCLUDE_REGEX|EXCLUDE_REGEX> <regular_expression>)``
+#    ``directory(SCAN_DIRS <output-list-var> RECURSE <on|off> RELATIVE <on|off> ROOT_DIR <directory-path> <INCLUDE_REGEX|EXCLUDE_REGEX> <regular-expression>)``
 ct_add_test(NAME "test_directory_scan_dirs_operation")
 function(${CMAKETEST_TEST})
 	include(FuncDirectory)

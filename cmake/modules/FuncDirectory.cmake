@@ -15,19 +15,29 @@ Synopsis
 
 .. parsed-literal::
 
-    directory(`SCAN`_ <output_list_var> LIST_DIRECTORIES <on|off> RELATIVE <on|off> ROOT_DIR <directory_path> <INCLUDE_REGEX|EXCLUDE_REGEX> <regular_expression>)
-    directory(`SCAN_DIRS`_ <output_list_var> RECURSE <on|off> RELATIVE <on|off> ROOT_DIR <directory_path> <INCLUDE_REGEX|EXCLUDE_REGEX> <regular_expression>)
-    directory(`FIND_LIB`_ <output_lib_var> FIND_IMPLIB <output_implib_var> NAME <raw_filename> <STATIC|SHARED> RELATIVE <on|off> ROOT_DIR <directory_path>)
+    directory(`SCAN`_ <output-list-var> [...])
+    directory(`SCAN_DIRS`_ <output-list-var> [...])
+    directory(`FIND_LIB`_ <output-lib-var> [...])
 
 Usage
 ^^^^^
 
 .. signature::
-  directory(SCAN <output_list_var> LIST_DIRECTORIES <on|off> RELATIVE <on|off> ROOT_DIR <directory_path> <INCLUDE_REGEX|EXCLUDE_REGEX> <regular_expression>)
+  directory(SCAN <output-list-var> [...])
+
+  Recursively get files and directories:
+
+  .. code-block:: cmake
+
+    directory(SCAN <output-list-var>
+             LIST_DIRECTORIES <on|off>
+             RELATIVE <on|off>
+             ROOT_DIR <directory-path>
+             <INCLUDE_REGEX|EXCLUDE_REGEX> <regular-expression>)
 
   Recursively scans files and directories under ``ROOT_DIR``, applies an
   optional filter based on ``INCLUDE_REGEX`` or ``EXCLUDE_REGEX``, and
-  stores the result in ``<output_list_var>``.
+  stores the result in ``<output-list-var>``.
 
   Paths are returned as relative to ``ROOT_DIR`` if ``RELATIVE`` is ``on``,
   or as absolute paths if ``RELATIVE`` is ``off``.
@@ -48,11 +58,21 @@ Usage
     #   src/main.cpp;src/util.cpp;lib/module.cpp
 
 .. signature::
-  directory(SCAN_DIRS <output_list_var> RECURSE <on|off> RELATIVE <on|off> ROOT_DIR <directory_path> <INCLUDE_REGEX|EXCLUDE_REGEX> <regular_expression>)
+  directory(SCAN_DIRS <output-list-var> [...])
+
+  Recursively get directories only:
+
+  .. code-block:: cmake
+
+     directory(SCAN_DIRS <output-list-var>
+              RECURSE <on|off>
+              RELATIVE <on|off>
+              ROOT_DIR <directory-path>
+              <INCLUDE_REGEX|EXCLUDE_REGEX> <regular-expression>)
 
   Scan and collect all directories under ``ROOT_DIR`` that match the regular
   expression provided with either ``INCLUDE_REGEX`` or ``EXCLUDE_REGEX``, and
-  store the result in ``<output_list_var>``.
+  store the result in ``<output-list-var>``.
 
   If ``RECURSE`` is ``on``, the function traverses subdirectories recursively.
   If ``RECURSE`` is ``off``, only the directories directly under ``ROOT_DIR``
@@ -74,7 +94,18 @@ Usage
     #   src/include;src/lib/include
 
 .. signature::
-  directory(FIND_LIB <output_lib_var> FIND_IMPLIB <output_implib_var> NAME <raw_filename> <STATIC|SHARED> RELATIVE <on|off> ROOT_DIR <directory_path>)
+  directory(FIND_LIB <output-lib-var> [...])
+  
+  Recursively search for libs:
+
+  .. code-block:: cmake
+
+    directory(FIND_LIB <output-lib-var>
+              FIND_IMPLIB <output-implib-var>
+              NAME <raw-filename>
+              <STATIC|SHARED>
+              RELATIVE <on|off>
+              ROOT_DIR <directory-path>)
 
   Search recursively in ``ROOT_DIR`` for a library and, on DLL platforms, its
   import library. The name to search for is given via ``NAME``, which should
@@ -110,14 +141,14 @@ Usage
       # CMAKE_FIND_LIBRARY_PREFIXES: ;lib
       # CMAKE_FIND_LIBRARY_SUFFIXES: .dll.lib;.lib;.a
 
-  If a matching library is found, its path is stored in ``<output_lib_var>``. If a
-  matching import library is found, its path is stored in ``<output_implib_var>``. If
+  If a matching library is found, its path is stored in ``<output-lib-var>``. If a
+  matching import library is found, its path is stored in ``<output-implib-var>``. If
   ``RELATIVE`` is set to ``on``, the results are relative to ``ROOT_DIR``.
   Otherwise, absolute paths are returned.
 
-  If no match is found, the values will be ``<output_lib_var>-NOTFOUND`` and
-  ``<output_implib_var>-NOTFOUND``. In ``STATIC`` mode,
-  ``<output_implib_var>-NOTFOUND`` is always returned, because an import
+  If no match is found, the values will be ``<output-lib-var>-NOTFOUND`` and
+  ``<output-implib-var>-NOTFOUND``. In ``STATIC`` mode,
+  ``<output-implib-var>-NOTFOUND`` is always returned, because an import
   library is only for a shared library. If multiple matches are found, a
   fatal error is raised.
   
@@ -167,7 +198,7 @@ function(directory)
 	elseif(DEFINED DIR_FIND_LIB)
 		_directory_find_lib()
 	else()
-		message(FATAL_ERROR "Operation argument is missing")
+		message(FATAL_ERROR "Operation argument is missing!")
 	endif()
 endfunction()
 

@@ -10,7 +10,7 @@
 
 #-------------------------------------------------------------------------------
 # Test of [Dependency module::EXPORT operation]:
-#    ``dependency(EXPORT <lib_target_name_list> ... <BUILD_TREE|INSTALL_TREE> [APPEND] OUTPUT_FILE <file_name>)``
+#    ``dependency(EXPORT <lib-target-name>... <BUILD_TREE|INSTALL_TREE> [APPEND] OUTPUT_FILE <file_name>)``
 ct_add_test(NAME "test_dependency_export_operation")
 function(${CMAKETEST_TEST})
 	include(FuncDependency)

@@ -10,7 +10,7 @@
 
 #-------------------------------------------------------------------------------
 # Test of [Directory module::FIND_LIB operation]:
-#    ``directory(FIND_LIB <output_lib_var> FIND_IMPLIB <output_implib_var> NAME <raw_filename> <STATIC|SHARED> RELATIVE <on|off> ROOT_DIR <directory_path>)``
+#    ``directory(FIND_LIB <output-lib-var> FIND_IMPLIB <output-implib-var> NAME <raw-filename> <STATIC|SHARED> RELATIVE <on|off> ROOT_DIR <directory-path>)``
 ct_add_test(NAME "test_directory_find_lib_operation")
 function(${CMAKETEST_TEST})
 	include(FuncDirectory)

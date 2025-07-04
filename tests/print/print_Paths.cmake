@@ -10,7 +10,7 @@
 
 #-------------------------------------------------------------------------------
 # Test of [Print module::PATHS operation]:
-#    ``print([<mode>] PATHS <file_list>... [INDENT])``
+#    ``print([<mode>] PATHS <file-path>... [INDENT])``
 ct_add_test(NAME "test_print_paths_operation")
 function(${CMAKETEST_TEST})
 	include(FuncPrint)

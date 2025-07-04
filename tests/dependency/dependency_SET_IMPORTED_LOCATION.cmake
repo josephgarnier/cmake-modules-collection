@@ -10,7 +10,7 @@
 
 #-------------------------------------------------------------------------------
 # Test of [Dependency module::IMPORTED_LOCATION operation]:
-#    ``dependency(SET_IMPORTED_LOCATION <lib_name> [CONFIGURATION <build_type>] PUBLIC <gen_expr_list> ...)``
+#    ``dependency(SET_IMPORTED_LOCATION <lib-target-name> [CONFIGURATION <config_type>] PUBLIC <gen-expr>...)``
 ct_add_test(NAME "test_dependency_set_imported_location_operation")
 function(${CMAKETEST_TEST})
 	include(FuncDependency)

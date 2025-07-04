@@ -15,21 +15,21 @@ Synopsis
 
 .. parsed-literal::
 
-    file_manip(`RELATIVE_PATH`_ <file_list_var> BASE_DIR <directory_path> [OUTPUT_VARIABLE <output_list_var>])
-    file_manip(`ABSOLUTE_PATH`_ <file_list_var> BASE_DIR <directory_path> [OUTPUT_VARIABLE <output_list_var>])
-    file_manip(`STRIP_PATH`_ <file_list_var> BASE_DIR <directory_path> [OUTPUT_VARIABLE <output_list_var>])
-    file_manip(`GET_COMPONENT`_ <file_list> ... MODE <mode> OUTPUT_VARIABLE <output_list_var>)
+    file_manip(`RELATIVE_PATH`_ <file-list-var> BASE_DIR <directory-path> [OUTPUT_VARIABLE <output-list-var>])
+    file_manip(`ABSOLUTE_PATH`_ <file-list-var> BASE_DIR <directory-path> [OUTPUT_VARIABLE <output-list-var>])
+    file_manip(`STRIP_PATH`_ <file-list-var> BASE_DIR <directory-path> [OUTPUT_VARIABLE <output-list-var>])
+    file_manip(`GET_COMPONENT`_ <file-path>... MODE <mode> OUTPUT_VARIABLE <output-list-var>)
 
 Usage
 ^^^^^
 
 .. signature::
-  file_manip(RELATIVE_PATH <file_list_var> BASE_DIR <directory_path> [OUTPUT_VARIABLE <output_list_var>])
+  file_manip(RELATIVE_PATH <file-list-var> BASE_DIR <directory-path> [OUTPUT_VARIABLE <output-list-var>])
 
   Computes the relative path from a given ``BASE_DIR`` for each file
-  in the list variable named ``<file_list_var>``. The result is stored either
-  in-place in ``<file_list_var>``, or in the variable specified by
-  ``<output_list_var>``, if the ``OUTPUT_VARIABLE`` option is provided.
+  in the list variable named ``<file-list-var>``. The result is stored either
+  in-place in ``<file-list-var>``, or in the variable specified by
+  ``<output-list-var>``, if the ``OUTPUT_VARIABLE`` option is provided.
 
   Example usage:
 
@@ -44,12 +44,12 @@ Usage
     #   src/main.cpp;include/lib.hpp
 
 .. signature::
-  file_manip(ABSOLUTE_PATH <file_list_var> BASE_DIR <directory_path> [OUTPUT_VARIABLE <output_list_var>])
+  file_manip(ABSOLUTE_PATH <file-list-var> BASE_DIR <directory-path> [OUTPUT_VARIABLE <output-list-var>])
 
   Computes the absolute path from a given ``BASE_DIR`` for each file
-  in the list variable named ``<file_list_var>``. The result is stored either
-  in-place in ``<file_list_var>``, or in the variable specified by
-  ``<output_list_var>``, if the ``OUTPUT_VARIABLE`` option is provided.
+  in the list variable named ``<file-list-var>``. The result is stored either
+  in-place in ``<file-list-var>``, or in the variable specified by
+  ``<output-list-var>``, if the ``OUTPUT_VARIABLE`` option is provided.
 
   Example usage:
 
@@ -64,12 +64,12 @@ Usage
     #   /project/src/main.cpp;/project/include/lib.h
 
 .. signature::
-  file_manip(STRIP_PATH <file_list_var> BASE_DIR <directory_path> [OUTPUT_VARIABLE <output_list_var>])
+  file_manip(STRIP_PATH <file-list-var> BASE_DIR <directory-path> [OUTPUT_VARIABLE <output-list-var>])
 
   Removes the ``BASE_DIR`` prefix from each file path in
-  ``<file_list_var>``. The result is stored either in-place in
-  ``<file_list_var>``, or in the variable specified by
-  ``<output_list_var>``, if the ``OUTPUT_VARIABLE`` option is provided. Unlike
+  ``<file-list-var>``. The result is stored either in-place in
+  ``<file-list-var>``, or in the variable specified by
+  ``<output-list-var>``, if the ``OUTPUT_VARIABLE`` option is provided. Unlike
   to :command:`file_manip(RELATIVE_PATH)`, it performs no checks on the existence
   of files. Paths are processed like any string.
 
@@ -86,10 +86,10 @@ Usage
     #   src/main.cpp;include/lib.hpp
 
 .. signature::
-  file_manip(GET_COMPONENT <file_list> ... MODE <mode> OUTPUT_VARIABLE <output_list_var>)
+  file_manip(GET_COMPONENT <file-path>... MODE <mode> OUTPUT_VARIABLE <output-list-var>)
 
-  Extracts a specific component from each path in the given ``<file_list>``
-  and stores the result in the variable specified by ``OUTPUT_VARIABLE``
+  Extracts a specific component from each path in the given ``<file-path>``
+  list and stores the result in the variable specified by ``OUTPUT_VARIABLE``
   option.
 
   The ``MODE`` argument determines which component to extract and must be one of:

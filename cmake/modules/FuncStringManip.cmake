@@ -15,16 +15,16 @@ Synopsis
 
 .. parsed-literal::
 
-    string_manip(`SPLIT`_ <string> <output_list_var>)
-    string_manip(`SPLIT_TRANSFORM`_ <string_var> <ACTION> [OUTPUT_VARIABLE <output_var>])
-    string_manip(`STRIP_INTERFACES`_ <string_var> [OUTPUT_VARIABLE <output_var>])
-    string_manip(`EXTRACT_INTERFACE`_ <string_var> <BUILD|INSTALL> [OUTPUT_VARIABLE <output_var>])
+    string_manip(`SPLIT`_ <string> <output-list-var>)
+    string_manip(`SPLIT_TRANSFORM`_ <string-var> <ACTION> [OUTPUT_VARIABLE <output-var>])
+    string_manip(`STRIP_INTERFACES`_ <string-var> [OUTPUT_VARIABLE <output-var>])
+    string_manip(`EXTRACT_INTERFACE`_ <string-var> <BUILD|INSTALL> [OUTPUT_VARIABLE <output-var>])
 
 Usage
 ^^^^^
 
 .. signature::
-  string_manip(SPLIT <string> <output_list_var>)
+  string_manip(SPLIT <string> <output-list-var>)
 
   Splits the input string into a list of substrings based on specific
   pattern rules. This command analyzes the given ``<string>`` and splits
@@ -35,7 +35,7 @@ Usage
   * Non-alphanumeric characters, as defined by the :cmake:command:`string(MAKE_C_IDENTIFIER) <cmake:command:string(make_c_identifier)>`
     transformation in CMake.
 
-  The resulting list is stored in ``<output_list_var>``. If no split point is
+  The resulting list is stored in ``<output-list-var>``. If no split point is
   detected, the original string is returned as a single-element list.
 
   Example usage:
@@ -65,12 +65,12 @@ Usage
     #   my;String;to;Split
 
 .. signature::
-  string_manip(SPLIT_TRANSFORM <string_var> <ACTION> [OUTPUT_VARIABLE <output_var>])
+  string_manip(SPLIT_TRANSFORM <string-var> <ACTION> [OUTPUT_VARIABLE <output-var>])
 
-  Applies the :command:`string_manip(SPLIT)` operation to the value stored in ``<string_var>``,
+  Applies the :command:`string_manip(SPLIT)` operation to the value stored in ``<string-var>``,
   transforms each resulting element according to the specified ``<ACTION>``,
   then joins the list into a single string. The final result is either stored
-  back in ``<string_var>``, or in ``<output_var>`` if the ``OUTPUT_VARIABLE``
+  back in ``<string-var>``, or in ``<output-var>`` if the ``OUTPUT_VARIABLE``
   option is provided.
 
   The available values for ``<ACTION>`` are:
@@ -97,24 +97,24 @@ Usage
   list and transformed accordingly.
 
 .. signature::
-  string_manip(STRIP_INTERFACES <string_var> [OUTPUT_VARIABLE <output_var>])
+  string_manip(STRIP_INTERFACES <string-var> [OUTPUT_VARIABLE <output-var>])
 
   Removes CMake generator expressions of the form ``$<BUILD_INTERFACE:...>`` and
-  ``$<INSTALL_INTERFACE:...>`` from the value stored in ``<string_var>``. The
+  ``$<INSTALL_INTERFACE:...>`` from the value stored in ``<string-var>``. The
   expressions are removed entirely, including any leading semicolon if
   present before the expression.
 
-  The resulting string is either stored back in ``<string_var>``, or in
-  ``<output_var>`` if the ``OUTPUT_VARIABLE`` option is provided.
+  The resulting string is either stored back in ``<string-var>``, or in
+  ``<output-var>`` if the ``OUTPUT_VARIABLE`` option is provided.
 
 .. signature::
-  string_manip(EXTRACT_INTERFACE <string_var> <BUILD|INSTALL> [OUTPUT_VARIABLE <output_var>])
+  string_manip(EXTRACT_INTERFACE <string-var> <BUILD|INSTALL> [OUTPUT_VARIABLE <output-var>])
 
   Extracts the content of either ``$<BUILD_INTERFACE:...>`` or
   ``$<INSTALL_INTERFACE:...>`` generator expressions from the value stored
-  in ``<string_var>``, depending on the specified mode.
+  in ``<string-var>``, depending on the specified mode.
 
-  The value of ``<string_var>`` can be either a single string or a
+  The value of ``<string-var>`` can be either a single string or a
   semicolon-separated list of strings. Generator expressions may be split
   across multiple list elements.
 
@@ -126,8 +126,8 @@ Usage
   When multiple matching generator expressions are found, their contents are
   concatenated into a single semicolon-separated string.
 
-  The result is stored in ``<output_var>`` if the ``OUTPUT_VARIABLE`` option
-  is specified. Otherwise, ``<string_var>`` is updated in place. If no
+  The result is stored in ``<output-var>`` if the ``OUTPUT_VARIABLE`` option
+  is specified. Otherwise, ``<string-var>`` is updated in place. If no
   matching expression is found, an empty string is returned.
   
   Example usage:

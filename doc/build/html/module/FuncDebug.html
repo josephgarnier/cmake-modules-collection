@@ -65,32 +65,124 @@
 <p>Operations for helping with debug. It requires CMake 3.20 or newer.</p>
 <section id="synopsis">
 <h2>Synopsis<a class="headerlink" href="#synopsis" title="Link to this heading">¶</a></h2>
-<pre class="literal-block">debug(<a class="reference internal" href="#dump-variables">DUMP_VARIABLES</a> [EXCLUDE_REGEX &lt;regular_expression&gt;])
-debug(<a class="reference internal" href="#dump-properties">DUMP_PROPERTIES</a>)
-debug(<a class="reference internal" href="#dump-target-properties">DUMP_TARGET_PROPERTIES</a> &lt;target_name&gt;)
-debug(<a class="reference internal" href="#dump-project-variables">DUMP_PROJECT_VARIABLES</a>)</pre>
+<pre class="literal-block">debug(<a class="reference internal" href="#dump-variables">DUMP_VARIABLES</a> [EXCLUDE_REGEX &lt;regular-expression&gt;])
+debug(<a class="reference internal" href="#dump-properties">DUMP_PROPERTIES</a> [])
+debug(<a class="reference internal" href="#dump-target-properties">DUMP_TARGET_PROPERTIES</a> &lt;target-name&gt;)
+debug(<a class="reference internal" href="#dump-project-variables">DUMP_PROJECT_VARIABLES</a> [])</pre>
 </section>
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h2>
-<div class="highlight-cmake notranslate" id="dump-variables"><div class="highlight"><pre><span></span><span class="nf">debug(</span><span class="no">DUMP_VARIABLES</span><span class="w"> </span><span class="p">[</span><span class="no">EXCLUDE_REGEX</span><span class="w"> </span><span class="nv">&lt;regular_expression&gt;</span><span class="p">]</span><span class="nf">)</span>
+<dl class="cmake signature">
+<dt class="sig sig-object cmake" id="dump-variables">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">debug(</span></span><span class="no"><span class="pre">DUMP_VARIABLES</span></span><span class="w"> </span><span class="p"><span class="pre">[</span></span><span class="no"><span class="pre">EXCLUDE_REGEX</span></span><span class="nbsp"> </span><span class="nv"><span class="pre">&lt;regular-expression&gt;</span></span><span class="p"><span class="pre">]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#dump-variables" title="Link to this definition">¶</a></dt>
+<dd><p>Disaply all CMake variables except those that match with the optional
+<code class="docutils literal notranslate"><span class="pre">&lt;regular-expression&gt;</span></code> parameter.</p>
+<p>Display all defined CMake variables, optionally excluding those whose names
+match a given regular expression.</p>
+<p>This command retrieves all variables currently defined in the CMake
+context and prints their names and values using <span class="target" id="index-0-command:cmake:command:message"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/message.html#command:message" title="(in CMake v4.1.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">message()</span></code></a>.
+The output is sorted alphabetically and contains no duplicates.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">&lt;regular-expression&gt;</span></code> is provided, any variable whose name matches the
+given expression is omitted from the output.</p>
+<p>Example usage:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">debug(</span><span class="no">DUMP_VARIABLES</span><span class="nf">)</span>
+<span class="c"># output is:</span>
+<span class="c">#   BUILD_SHARED_LIBS=ON</span>
+<span class="c">#   CMAKE_CURRENT_SOURCE_DIR=/home/user/project/src</span>
+<span class="c">#   CMAKE_VERSION=3.28.3</span>
+<span class="c">#   PROJECT_NAME=MyProject</span>
+<span class="c">#   ...</span>
+
+<span class="nf">debug(</span><span class="no">DUMP_VARIABLES</span>
+<span class="w">  </span><span class="no">EXCLUDE_REGEX</span><span class="w"> </span><span class="s">&quot;^CMAKE_&quot;</span>
+<span class="nf">)</span>
+<span class="c"># output is:</span>
+<span class="c">#   BUILD_SHARED_LIBS=ON</span>
+<span class="c">#   PROJECT_NAME=MyProject</span>
+<span class="c">#   ...</span>
 </pre></div>
 </div>
-<p>Disaply all CMake variables except those that match with the optional 
-<code class="docutils literal notranslate"><span class="pre">&lt;regular_expression&gt;</span></code> parameter.</p>
-<div class="highlight-cmake notranslate" id="dump-properties"><div class="highlight"><pre><span></span><span class="nf">debug(</span><span class="no">DUMP_PROPERTIES</span><span class="nf">)</span>
+</dd></dl>
+
+<dl class="cmake signature">
+<dt class="sig sig-object cmake" id="dump-properties">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">debug(</span></span><span class="no"><span class="pre">DUMP_PROPERTIES</span></span><span class="w"> </span><span class="p"><span class="pre">[]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#dump-properties" title="Link to this definition">¶</a></dt>
+<dd><p>Display all CMake properties available in the current version of CMake.</p>
+<p>This command executes the equivalent of <a class="reference external" href="https://cmake.org/cmake/help/latest/manual/cmake.1.html#cmdoption-cmake-help-property-list" title="(in CMake v4.1.0)"><code class="xref std std-option docutils literal notranslate"><span class="pre">cmake.--help-property-list</span></code></a>
+and prints each property name using <span class="target" id="index-1-command:cmake:command:message"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/message.html#command:message" title="(in CMake v4.1.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">message()</span></code></a>. The output
+is sorted alphabetically.</p>
+<p>It provides a quick reference for all built-in CMake properties, including
+those related to targets, directories, sources, tests, cache entries, and
+more.</p>
+<p>This command does not inspect actual property values but rather enumerates
+all recognized property names in the CMake environment.</p>
+<p>Example usage:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">debug(</span><span class="no">DUMP_PROPERTIES</span><span class="nf">)</span>
+<span class="c"># output is:</span>
+<span class="c">#   ADDITIONAL_CLEAN_FILES</span>
+<span class="c">#   ALIAS_GLOBAL</span>
+<span class="c">#   ANDROID_API</span>
+<span class="c">#   ARCHIVE_OUTPUT_DIRECTORY</span>
+<span class="c">#   AUTOMOC</span>
+<span class="c">#   ...</span>
 </pre></div>
 </div>
-<p>Disaply all CMake properties.</p>
-<div class="highlight-cmake notranslate" id="dump-target-properties"><div class="highlight"><pre><span></span><span class="nf">debug(</span><span class="no">DUMP_TARGET_PROPERTIES</span><span class="w"> </span><span class="nv">&lt;target_name&gt;</span><span class="nf">)</span>
+</dd></dl>
+
+<dl class="cmake signature">
+<dt class="sig sig-object cmake" id="dump-target-properties">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">debug(</span></span><span class="no"><span class="pre">DUMP_TARGET_PROPERTIES</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;target-name&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#dump-target-properties" title="Link to this definition">¶</a></dt>
+<dd><p>Display all defined CMake properties of the given target <code class="docutils literal notranslate"><span class="pre">&lt;target-name&gt;</span></code>.</p>
+<p>This command enumerates all known target properties supported by CMake,
+including custom properties specific to the project. For each property set
+on the target, its value is printed using <span class="target" id="index-2-command:cmake:command:message"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/message.html#command:message" title="(in CMake v4.1.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">message()</span></code></a>.</p>
+<p>Configuration-specific properties such as <span class="target" id="index-0-prop_tgt:cmake:prop_tgt:IMPORTED_LOCATION_&lt;CONFIG&gt;"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/prop_tgt/IMPORTED_LOCATION_CONFIG.html#prop_tgt:IMPORTED_LOCATION_&lt;CONFIG&gt;" title="(in CMake v4.1.0)"><code class="xref cmake cmake-prop_tgt docutils literal notranslate"><span class="pre">IMPORTED_LOCATION_&lt;CONFIG&gt;</span></code></a>
+or <code class="docutils literal notranslate"><span class="pre">INTERFACE_INCLUDE_DIRECTORIES_&lt;CONFIG&gt;</span></code> (a custom property used by <span class="target" id="index-0-module:FuncDependency"></span><a class="reference internal" href="FuncDependency.html#module:FuncDependency" title="FuncDependency"><code class="xref cmake cmake-module docutils literal notranslate"><span class="pre">FuncDependency</span></code></a> module) are
+expanded for <code class="docutils literal notranslate"><span class="pre">DEBUG</span></code> and <code class="docutils literal notranslate"><span class="pre">RELEASE</span></code> configurations. Internal properties
+like <span class="target" id="index-0-prop_tgt:cmake:prop_tgt:LOCATION"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/prop_tgt/LOCATION.html#prop_tgt:LOCATION" title="(in CMake v4.1.0)"><code class="xref cmake cmake-prop_tgt docutils literal notranslate"><span class="pre">LOCATION</span></code></a> and those
+known to trigger errors on access are excluded from the output.</p>
+<p>Example usage:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">debug(</span><span class="no">DUMP_TARGET_PROPERTIES</span><span class="w"> </span><span class="nb">my_library</span><span class="nf">)</span>
+<span class="c"># output is:</span>
+<span class="c">#</span>
+<span class="c">#   -----</span>
+<span class="c">#   Properties for TARGET my_library:</span>
+<span class="c">#     my_library.TYPE = &quot;STATIC_LIBRARY&quot;</span>
+<span class="c">#     my_library.SOURCES = &quot;src/a.cpp;src/b.cpp&quot;</span>
+<span class="c">#     my_library.INTERFACE_INCLUDE_DIRECTORIES = &quot;include&quot;</span>
+<span class="c">#     ...</span>
+<span class="c">#   -----</span>
+<span class="c">#</span>
 </pre></div>
 </div>
-<p>Display all CMake properties of target <code class="docutils literal notranslate"><span class="pre">&lt;target_name&gt;</span></code> parameter.</p>
-<div class="highlight-cmake notranslate" id="dump-project-variables"><div class="highlight"><pre><span></span><span class="nf">debug(</span><span class="no">DUMP_PROJECT_VARIABLES</span><span class="nf">)</span>
+</dd></dl>
+
+<dl class="cmake signature">
+<dt class="sig sig-object cmake" id="dump-project-variables">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">debug(</span></span><span class="no"><span class="pre">DUMP_PROJECT_VARIABLES</span></span><span class="w"> </span><span class="p"><span class="pre">[]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#dump-project-variables" title="Link to this definition">¶</a></dt>
+<dd><p>Display all global CMake variables related to the current project.</p>
+<p>This command prints the values of all defined variables whose name starts
+with the current <span class="target" id="index-0-variable:cmake:variable:PROJECT_NAME"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/variable/PROJECT_NAME.html#variable:PROJECT_NAME" title="(in CMake v4.1.0)"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">PROJECT_NAME</span></code></a>. This relies on the naming
+convention that project-specific variables are prefixed with the project
+name followed by an underscore.</p>
+<p>This command is useful for debugging and inspecting variables that are
+explicitly scoped to the project. It filters out unrelated variables
+defined by CMake or third-party scripts.</p>
+<p>Example usage:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">debug(</span><span class="no">DUMP_PROJECT_VARIABLES</span><span class="nf">)</span>
+<span class="c"># output is:</span>
+<span class="c">#</span>
+<span class="c">#   -----</span>
+<span class="c">#   Variables for PROJECT my_project:</span>
+<span class="c">#     my_project_SOURCE_DIR = &quot;/home/user/my_project/src&quot;</span>
+<span class="c">#     my_project_BUILD_DIR = &quot;/home/user/my_project/build&quot;</span>
+<span class="c">#     ...</span>
+<span class="c">#     -----</span>
+<span class="c">#</span>
 </pre></div>
 </div>
-<p>Display all global variables of the project. The trick is to exploit the
-naming convention which stipulates that each variable is prefixed
-by ${PROJECT_NAME}.</p>
+</dd></dl>
+
 </section>
 </section>
 

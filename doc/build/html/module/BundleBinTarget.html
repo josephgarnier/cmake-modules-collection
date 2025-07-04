@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <title>BinTarget &mdash; CMake Modules Collection</title>
+  <title>BuildBinTarget &mdash; CMake Modules Collection</title>
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3862c66" />
     <link rel="stylesheet" type="text/css" href="../_static/cmake.css?v=4d06bd55" />
@@ -47,7 +47,7 @@
     <a href="../index.html">Documentation</a> &#187;
   </li>
 
-        <li class="nav-item nav-item-this"><a href="">BinTarget</a></li> 
+        <li class="nav-item nav-item-this"><a href="">BuildBinTarget</a></li> 
       </ul>
     </div>  
 
@@ -56,95 +56,68 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <section id="bintarget">
-<span id="module:BundleBinTarget"></span><h1>BinTarget<a class="headerlink" href="#bintarget" title="Link to this heading">¶</a></h1>
-<p>Operations to fully create and configure a binary target. It requires CMake 3.20 or newer.</p>
+  <section id="buildbintarget">
+<span id="module:BundleBinTarget"></span><h1>BuildBinTarget<a class="headerlink" href="#buildbintarget" title="Link to this heading">¶</a></h1>
+<p>Operations to fully create and configure a <strong>C++ binary target</strong>. It greatly
+simplifies the most common process of creating an executable or library, by
+wrapping calls to CMake functions in higher-level functions. However, for more
+complex cases, you will need to use CMake's native commands. It requires CMake
+3.20 or newer.</p>
 <section id="synopsis">
 <h2>Synopsis<a class="headerlink" href="#synopsis" title="Link to this heading">¶</a></h2>
-<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="err">`</span><span class="nb">reset_local_bin_target_settings</span><span class="err">`</span><span class="nf">_()</span>
-<span class="err">`</span><span class="nb">add_bin_target</span><span class="err">`</span><span class="nf">_(</span><span class="no">TARGET_NAME</span><span class="w"> </span><span class="nv">&lt;target_name&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="no">STATIC</span><span class="p">|</span><span class="no">SHARED</span><span class="p">|</span><span class="no">HEADER</span><span class="p">|</span><span class="no">EXEC</span><span class="o">&gt;</span><span class="nf">)</span>
-<span class="err">`</span><span class="nb">configure_bin_target_settings</span><span class="err">`</span><span class="nf">_(</span><span class="no">TARGET_NAME</span><span class="w"> </span><span class="nv">&lt;target_name&gt;</span><span class="w"> </span><span class="no">COMPILE_DEFINITIONS</span><span class="w"> </span><span class="nv">&lt;definition_list&gt;</span><span class="w"> </span><span class="p">...</span><span class="nf">)</span>
-<span class="err">`</span><span class="nb">collect_source_files_by_location</span><span class="err">`</span><span class="nf">_(</span><span class="p">[</span><span class="no">SRC_DIR</span><span class="w"> </span><span class="nv">&lt;directory_path&gt;</span><span class="w"> </span><span class="no">SRC_SOURCE_FILES</span><span class="w"> </span><span class="nv">&lt;output_list_var&gt;</span><span class="w"> </span><span class="no">SRC_HEADER_FILES</span><span class="w"> </span><span class="nv">&lt;output_list_var&gt;</span><span class="p">]|[</span><span class="no">INCLUDE_DIR</span><span class="w"> </span><span class="nv">&lt;directory_path&gt;</span><span class="w"> </span><span class="no">INCLUDE_HEADER_FILES</span><span class="w"> </span><span class="nv">&lt;output_list_var&gt;</span><span class="p">]</span><span class="nf">)</span>
-<span class="err">`</span><span class="nb">collect_source_files_by_policy</span><span class="err">`</span><span class="nf">_(</span><span class="no">PUBLIC_HEADERS_SEPARATED</span><span class="w"> </span><span class="o">&lt;</span><span class="nb">on</span><span class="p">|</span><span class="nb">off</span><span class="o">&gt;</span><span class="w"> </span><span class="p">[</span><span class="nv">&lt;include_directory_path&gt;</span><span class="p">]</span><span class="w"> </span><span class="no">SRC_DIR</span><span class="w"> </span><span class="nv">&lt;directory_path&gt;</span><span class="w"> </span><span class="no">SRC_SOURCE_FILES</span><span class="w"> </span><span class="nv">&lt;output_list_var&gt;</span><span class="w"> </span><span class="no">PUBLIC_HEADER_DIR</span><span class="w"> </span><span class="nv">&lt;output_var&gt;</span><span class="w"> </span><span class="no">PUBLIC_HEADER_FILES</span><span class="w"> </span><span class="nv">&lt;output_list_var&gt;</span><span class="w"> </span><span class="no">PRIVATE_HEADER_DIR</span><span class="w"> </span><span class="nv">&lt;output_var&gt;</span><span class="w"> </span><span class="no">PRIVATE_HEADER_FILES</span><span class="w"> </span><span class="nv">&lt;output_list_var&gt;</span><span class="nf">)</span>
-<span class="err">`</span><span class="nb">add_sources_to_target</span><span class="err">`</span><span class="nf">_(</span><span class="no">TARGET_NAME</span><span class="w"> </span><span class="nv">&lt;target_name&gt;</span><span class="w"> </span><span class="no">SOURCE_FILES</span><span class="w"> </span><span class="nv">&lt;file_path_list&gt;</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="no">PRIVATE_HEADER_FILES</span><span class="w"> </span><span class="nv">&lt;file_path_list&gt;</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="no">PUBLIC_HEADER_FILES</span><span class="w"> </span><span class="nv">&lt;file_path_list&gt;</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="no">PROJECT_DIR</span><span class="w"> </span><span class="nv">&lt;directory_path&gt;</span><span class="nf">)</span>
-<span class="err">`</span><span class="nb">add_precompiled_header_to_target</span><span class="err">`</span><span class="nf">_(</span><span class="no">TARGET_NAME</span><span class="w"> </span><span class="nv">&lt;target_name&gt;</span><span class="w"> </span><span class="no">HEADER_FILE</span><span class="w"> </span><span class="nv">&lt;file_path&gt;</span><span class="nf">)</span>
-<span class="err">`</span><span class="nb">add_include_directories_to_target</span><span class="err">`</span><span class="nf">_(</span><span class="no">TARGET_NAME</span><span class="w"> </span><span class="nv">&lt;target_name&gt;</span><span class="w"> </span><span class="no">INCLUDE_DIRECTORIES</span><span class="w"> </span><span class="nv">&lt;directory_path_list&gt;</span><span class="w"> </span><span class="p">...</span><span class="nf">)</span>
-</pre></div>
-</div>
+<pre class="literal-block">build_bin_target(<a class="reference internal" href="#create">CREATE</a> &lt;target-name&gt; &lt;STATIC|SHARED|HEADER|EXEC&gt;)
+build_bin_target(<a class="reference internal" href="#configure-settings">CONFIGURE_SETTINGS</a> &lt;target-name&gt; [...])
+build_bin_target(<a class="reference internal" href="#add-sources">ADD_SOURCES</a> &lt;target-name&gt; [...])
+build_bin_target(<a class="reference internal" href="#add-precompiled-header">ADD_PRECOMPILED_HEADER</a> &lt;target-name&gt; HEADER_FILE &lt;file-path&gt;)
+build_bin_target(<a class="reference internal" href="#add-include-directories">ADD_INCLUDE_DIRECTORIES</a> &lt;target-name&gt; INCLUDE_DIRECTORIES &lt;directory-path&gt;...)</pre>
 </section>
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h2>
-<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">reset_local_bin_target_settings()</span>
-</pre></div>
-</div>
-<p>Reset all settings of the binary target currently under construction.</p>
-<div class="highlight-cmake notranslate" id="add-bin-target"><div class="highlight"><pre><span></span><span class="nf">add_bin_target(</span><span class="no">TARGET_NAME</span><span class="w"> </span><span class="nv">&lt;target_name&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="no">STATIC</span><span class="p">|</span><span class="no">SHARED</span><span class="p">|</span><span class="no">HEADER</span><span class="p">|</span><span class="no">EXEC</span><span class="o">&gt;</span><span class="nf">)</span>
-</pre></div>
-</div>
-<p>Add a binary target <code class="docutils literal notranslate"><span class="pre">&lt;target_name&gt;</span></code> to the project as type <code class="docutils literal notranslate"><span class="pre">STATIC</span></code>, <code class="docutils literal notranslate"><span class="pre">SHARED</span></code>, <code class="docutils literal notranslate"><span class="pre">HEADER</span></code> or <code class="docutils literal notranslate"><span class="pre">EXEC</span></code>.</p>
-<div class="highlight-cmake notranslate" id="configure-bin-target-settings"><div class="highlight"><pre><span></span><span class="nf">configure_bin_target_settings(</span><span class="no">TARGET_NAME</span><span class="w"> </span><span class="nv">&lt;target_name&gt;</span><span class="w"> </span><span class="no">COMPILE_DEFINITIONS</span><span class="w"> </span><span class="p">[</span><span class="nv">&lt;definition_list&gt;</span><span class="w"> </span><span class="p">...]</span><span class="nf">)</span>
+<dl class="cmake signature">
+<dt class="sig sig-object cmake" id="create">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">build_bin_target(</span></span><span class="no"><span class="pre">CREATE</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;target-name&gt;</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;</span></span><span class="no"><span class="pre">STATIC</span></span><span class="p"><span class="pre">|</span></span><span class="no"><span class="pre">SHARED</span></span><span class="p"><span class="pre">|</span></span><span class="no"><span class="pre">HEADER</span></span><span class="p"><span class="pre">|</span></span><span class="no"><span class="pre">EXEC</span></span><span class="o"><span class="pre">&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#create" title="Link to this definition">¶</a></dt>
+<dd><p>Add a binary target <code class="docutils literal notranslate"><span class="pre">&lt;target_name&gt;</span></code> to the project as type <code class="docutils literal notranslate"><span class="pre">STATIC</span></code>, <code class="docutils literal notranslate"><span class="pre">SHARED</span></code>, <code class="docutils literal notranslate"><span class="pre">HEADER</span></code> or <code class="docutils literal notranslate"><span class="pre">EXEC</span></code>.</p>
+</dd></dl>
+
+<dl class="cmake signature">
+<dt class="sig sig-object cmake" id="configure-settings">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">build_bin_target(</span></span><span class="no"><span class="pre">CONFIGURE_SETTINGS</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;target-name&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">[...]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#configure-settings" title="Link to this definition">¶</a></dt>
+<dd><p>Configure settings of a binary target:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">build_bin_target(</span><span class="no">CONFIGURE_SETTINGS</span><span class="w"> </span><span class="nv">&lt;target-name&gt;</span>
+<span class="w">                </span><span class="p">[</span><span class="no">COMPILER_FEATURES</span><span class="w"> </span><span class="nv">&lt;feature&gt;...</span><span class="p">]</span>
+<span class="w">                </span><span class="p">[</span><span class="no">COMPILE_DEFINITIONS</span><span class="w"> </span><span class="nv">&lt;definition&gt;...</span><span class="p">]</span>
+<span class="w">                </span><span class="p">[</span><span class="no">COMPILE_OPTIONS</span><span class="w"> </span><span class="nv">&lt;option&gt;...</span><span class="p">]</span>
+<span class="w">                </span><span class="p">[</span><span class="no">LINK_OPTIONS</span><span class="w"> </span><span class="nv">&lt;option&gt;...</span><span class="p">]</span><span class="nf">)</span>
 </pre></div>
 </div>
 <p>Configure the binary target <code class="docutils literal notranslate"><span class="pre">&lt;target_name&gt;</span></code>: add it in a folder for IDE project, set compile features (C++ standard), set compile definitions, set compile options, add link options</p>
-<div class="highlight-cmake notranslate" id="collect-source-files-by-location"><div class="highlight"><pre><span></span><span class="nf">collect_source_files_by_location(</span><span class="p">[</span><span class="no">SRC_DIR</span><span class="w"> </span><span class="nv">&lt;directory_path&gt;</span><span class="w"> </span><span class="no">SRC_SOURCE_FILES</span><span class="w"> </span><span class="nv">&lt;output_list_var&gt;</span><span class="w"> </span><span class="no">SRC_HEADER_FILES</span><span class="w"> </span><span class="nv">&lt;output_list_var&gt;</span><span class="p">]|[</span><span class="no">INCLUDE_DIR</span><span class="w"> </span><span class="nv">&lt;directory_path&gt;</span><span class="w"> </span><span class="no">INCLUDE_HEADER_FILES</span><span class="w"> </span><span class="nv">&lt;output_list_var&gt;</span><span class="p">]</span><span class="nf">)</span>
-</pre></div>
-</div>
-<p>Generates lists of source files (e.g. &quot;.cpp&quot;) and header files (e.g. &quot;.h&quot;) found in the specified directories by <code class="docutils literal notranslate"><span class="pre">SRC_DIR</span></code> and <code class="docutils literal notranslate"><span class="pre">INCLUDE_DIR</span></code>, and store them into each <code class="docutils literal notranslate"><span class="pre">&lt;output_list_var&gt;</span></code> variable.</p>
-<ul class="simple">
-<li><dl class="simple">
-<dt>If <code class="docutils literal notranslate"><span class="pre">SRC_DIR</span></code> is provided, the function searches for source and header files in the given directory:</dt><dd><ul>
-<li><p>Source files are stored in <code class="docutils literal notranslate"><span class="pre">SRC_SOURCE_FILES</span></code>.</p></li>
-<li><p>Header files are stored in <code class="docutils literal notranslate"><span class="pre">SRC_HEADER_FILES</span></code>.</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-</ul>
-<dl class="simple">
-<dt>If <code class="docutils literal notranslate"><span class="pre">INCLUDE_DIR</span></code> is provided, the function searches for header files in the specified directory:</dt><dd><ul class="simple">
-<li><p>Header files are stored in <code class="docutils literal notranslate"><span class="pre">INCLUDE_HEADER_FILES</span></code>.</p></li>
-</ul>
-</dd>
-</dl>
-<p>Both <code class="docutils literal notranslate"><span class="pre">SRC_DIR</span></code> and <code class="docutils literal notranslate"><span class="pre">INCLUDE_DIR</span></code> may be used together. In that case, files are collected from both locations into their respective output variables.</p>
-<p>At least one of <code class="docutils literal notranslate"><span class="pre">SRC_DIR</span></code> or <code class="docutils literal notranslate"><span class="pre">INCLUDE_DIR</span></code> must be specified. If neither is provided, or if their corresponding output variables are missing, an error is raised.</p>
-<div class="highlight-cmake notranslate" id="collect-source-files-by-policy"><div class="highlight"><pre><span></span><span class="nf">collect_source_files_by_policy(</span><span class="no">PUBLIC_HEADERS_SEPARATED</span><span class="w"> </span><span class="o">&lt;</span><span class="nb">on</span><span class="p">|</span><span class="nb">off</span><span class="o">&gt;</span><span class="w"> </span><span class="p">[</span><span class="nv">&lt;include_directory_path&gt;</span><span class="p">]</span><span class="w"> </span><span class="no">SRC_DIR</span><span class="w"> </span><span class="nv">&lt;directory_path&gt;</span><span class="w"> </span><span class="no">SRC_SOURCE_FILES</span><span class="w"> </span><span class="nv">&lt;output_list_var&gt;</span><span class="w"> </span><span class="no">PUBLIC_HEADER_DIR</span><span class="w"> </span><span class="nv">&lt;output_var&gt;</span><span class="w"> </span><span class="no">PUBLIC_HEADER_FILES</span><span class="w"> </span><span class="nv">&lt;output_list_var&gt;</span><span class="w"> </span><span class="no">PRIVATE_HEADER_DIR</span><span class="w"> </span><span class="nv">&lt;output_var&gt;</span><span class="w"> </span><span class="no">PRIVATE_HEADER_FILES</span><span class="w"> </span><span class="nv">&lt;output_list_var&gt;</span><span class="nf">)</span>
-</pre></div>
-</div>
-<p>Collects source (e.g., <code class="docutils literal notranslate"><span class="pre">.cpp</span></code>) and header (e.g. <code class="docutils literal notranslate"><span class="pre">.h</span></code>) files from specified directories, applying a policy (<a href="#id17"><span class="problematic" id="id18">``</span></a>PUBLIC_HEADERS_SEPARATED```value) that determines how public and private headers are handled.</p>
-<p>This function generates a list of all source files (e.g.,``.cpp``) in the directory specified by <code class="docutils literal notranslate"><span class="pre">SRC_DIR</span></code> and stores the list into <code class="docutils literal notranslate"><span class="pre">SRC_SOURCE_FILES</span></code>. The source file collection is not affected by the PUBLIC_HEADERS_SEPARATED policy.</p>
-<p>Header file handling depends on the value of <code class="docutils literal notranslate"><span class="pre">PUBLIC_HEADERS_SEPARATED</span></code>:</p>
-<ul class="simple">
-<li><dl class="simple">
-<dt>If <code class="docutils literal notranslate"><span class="pre">PUBLIC_HEADERS_SEPARATED</span></code> is set to <code class="docutils literal notranslate"><span class="pre">on</span></code>, public and private headers are considered to be in separate directories:</dt><dd><ul>
-<li><p>Public headers are expected to reside in <code class="docutils literal notranslate"><span class="pre">&lt;include_directory_path&gt;</span></code>, typically a subdirectory of <code class="docutils literal notranslate"><span class="pre">include/</span></code>. These files are stored in <code class="docutils literal notranslate"><span class="pre">PUBLIC_HEADER_FILES</span></code>, and <code class="docutils literal notranslate"><span class="pre">PUBLIC_HEADER_DIR</span></code> is set to <code class="docutils literal notranslate"><span class="pre">&lt;include_directory_path&gt;</span></code>.</p></li>
-<li><p>Private headers are searched in <code class="docutils literal notranslate"><span class="pre">SRC_DIR</span></code>. These files are stored in <code class="docutils literal notranslate"><span class="pre">PRIVATE_HEADER_FILES</span></code>, and <code class="docutils literal notranslate"><span class="pre">PRIVATE_HEADER_DIR</span></code> is set to <code class="docutils literal notranslate"><span class="pre">SRC_DIR</span></code>.</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>If <code class="docutils literal notranslate"><span class="pre">PUBLIC_HEADERS_SEPARATED</span></code> is set to <code class="docutils literal notranslate"><span class="pre">off</span></code>, all headers are treated as public and are expected to reside in <code class="docutils literal notranslate"><span class="pre">SRC_DIR</span></code>:</dt><dd><ul>
-<li><p>The function searches <code class="docutils literal notranslate"><span class="pre">SRC_DIR</span></code> for header files, stores them in <code class="docutils literal notranslate"><span class="pre">PUBLIC_HEADER_FILES</span></code>, and sets <code class="docutils literal notranslate"><span class="pre">PUBLIC_HEADER_DIR</span></code> to <code class="docutils literal notranslate"><span class="pre">SRC_DIR</span></code>.</p></li>
-<li><p>In this mode, <code class="docutils literal notranslate"><span class="pre">&lt;include_directory_path&gt;</span></code> is ignored, and <code class="docutils literal notranslate"><span class="pre">PRIVATE_HEADER_FILES</span></code> and <code class="docutils literal notranslate"><span class="pre">PRIVATE_HEADER_DIR</span></code> are set to empty.</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-</ul>
-<p>An error is raised if <code class="docutils literal notranslate"><span class="pre">PUBLIC_HEADERS_SEPARATED</span></code> is <code class="docutils literal notranslate"><span class="pre">on</span></code> but <code class="docutils literal notranslate"><span class="pre">&lt;include_directory_path&gt;</span></code> is either empty or not exists.</p>
-<div class="highlight-cmake notranslate" id="add-sources-to-target"><div class="highlight"><pre><span></span><span class="nf">add_sources_to_target(</span><span class="no">TARGET_NAME</span><span class="w"> </span><span class="nv">&lt;target_name&gt;</span><span class="w"> </span><span class="no">SOURCE_FILES</span><span class="w"> </span><span class="nv">&lt;file_path_list&gt;</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="no">PRIVATE_HEADER_FILES</span><span class="w"> </span><span class="nv">&lt;file_path_list&gt;</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="no">PUBLIC_HEADER_FILES</span><span class="w"> </span><span class="nv">&lt;file_path_list&gt;</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="no">PROJECT_DIR</span><span class="w"> </span><span class="nv">&lt;directory_path&gt;</span><span class="nf">)</span>
+</dd></dl>
+
+<dl class="cmake signature">
+<dt class="sig sig-object cmake" id="add-sources">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">build_bin_target(</span></span><span class="no"><span class="pre">ADD_SOURCES</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;target-name&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">[...]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#add-sources" title="Link to this definition">¶</a></dt>
+<dd><p>Add sources to a binary target:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">build_bin_target(</span><span class="no">ADD_SOURCES</span><span class="w"> </span><span class="nv">&lt;target-name&gt;</span>
+<span class="w">                </span><span class="no">SOURCE_FILES</span><span class="w"> </span><span class="nv">&lt;file-path&gt;...</span>
+<span class="w">                </span><span class="no">PRIVATE_HEADER_FILES</span><span class="w"> </span><span class="nv">&lt;file-path&gt;...</span>
+<span class="w">                </span><span class="no">PUBLIC_HEADER_FILES</span><span class="w"> </span><span class="nv">&lt;file-path&gt;...</span><span class="nf">)</span>
 </pre></div>
 </div>
 <p>Assign sources of <code class="docutils literal notranslate"><span class="pre">SOURCE_FILES</span></code>, <code class="docutils literal notranslate"><span class="pre">PRIVATE_HEADER_FILES</span></code> and headers of <code class="docutils literal notranslate"><span class="pre">PUBLIC_HEADER_FILES</span></code> to the target <code class="docutils literal notranslate"><span class="pre">&lt;target_name&gt;</span></code>, and define a grouping for source files in IDE project generation in <code class="docutils literal notranslate"><span class="pre">PROJECT_DIR</span></code>.</p>
-<div class="highlight-cmake notranslate" id="add-precompiled-header-to-target"><div class="highlight"><pre><span></span><span class="nf">add_precompiled_header_to_target(</span><span class="no">TARGET_NAME</span><span class="w"> </span><span class="nv">&lt;target_name&gt;</span><span class="w"> </span><span class="no">HEADER_FILE</span><span class="w"> </span><span class="nv">&lt;file_path&gt;</span><span class="nf">)</span>
-</pre></div>
-</div>
-<p>Add a precompiled header file <code class="docutils literal notranslate"><span class="pre">&lt;file_path&gt;</span></code> to the target <code class="docutils literal notranslate"><span class="pre">&lt;target_name&gt;</span></code>.</p>
-<div class="highlight-cmake notranslate" id="add-include-directories-to-target"><div class="highlight"><pre><span></span><span class="nf">add_include_directories_to_target(</span><span class="no">TARGET_NAME</span><span class="w"> </span><span class="nv">&lt;target_name&gt;</span><span class="w"> </span><span class="no">INCLUDE_DIRECTORIES</span><span class="w"> </span><span class="nv">&lt;directory_path_list&gt;</span><span class="w"> </span><span class="p">...</span><span class="nf">)</span>
-</pre></div>
-</div>
-<p>Add include directories <code class="docutils literal notranslate"><span class="pre">&lt;directory_path_list&gt;</span></code> to the target <code class="docutils literal notranslate"><span class="pre">&lt;target_name&gt;</span></code>.</p>
+</dd></dl>
+
+<dl class="cmake signature">
+<dt class="sig sig-object cmake" id="add-precompiled-header">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">build_bin_target(</span></span><span class="no"><span class="pre">ADD_PRECOMPILED_HEADER</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;target-name&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">HEADER_FILE</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;file-path&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#add-precompiled-header" title="Link to this definition">¶</a></dt>
+<dd><p>Add a precompiled header file <code class="docutils literal notranslate"><span class="pre">&lt;file_path&gt;</span></code> to the target <code class="docutils literal notranslate"><span class="pre">&lt;target_name&gt;</span></code>.</p>
+</dd></dl>
+
+<dl class="cmake signature">
+<dt class="sig sig-object cmake" id="add-include-directories">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">build_bin_target(</span></span><span class="no"><span class="pre">ADD_INCLUDE_DIRECTORIES</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;target-name&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">INCLUDE_DIRECTORIES</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;directory-path&gt;...</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#add-include-directories" title="Link to this definition">¶</a></dt>
+<dd><p>Add include directories <code class="docutils literal notranslate"><span class="pre">&lt;directory_path_list&gt;</span></code> to the target <code class="docutils literal notranslate"><span class="pre">&lt;target_name&gt;</span></code>.</p>
+</dd></dl>
+
 </section>
 </section>
 
@@ -158,7 +131,7 @@
   <div>
     <h3>Table of Contents</h3>
     <ul>
-<li><a class="reference internal" href="#">BinTarget</a><ul>
+<li><a class="reference internal" href="#">BuildBinTarget</a><ul>
 <li><a class="reference internal" href="#synopsis">Synopsis</a></li>
 <li><a class="reference internal" href="#usage">Usage</a></li>
 </ul>
@@ -213,7 +186,7 @@
     <a href="../index.html">Documentation</a> &#187;
   </li>
 
-        <li class="nav-item nav-item-this"><a href="">BinTarget</a></li> 
+        <li class="nav-item nav-item-this"><a href="">BuildBinTarget</a></li> 
       </ul>
     </div>
 
