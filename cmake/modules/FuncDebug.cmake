@@ -147,7 +147,66 @@ Usage
     #     ...
     #     -----
     #
+
+Additional commands
+^^^^^^^^^^^^^^^^^^^
+
+CMake provides convenience commands, primarily intended for debugging, to
+print various information about the CMake environment.
+
+* Printing the values of properties for the specified targets, source files,
+  directories, tests, or cache entries:
+
+  .. code-block:: cmake
+
+    include(CMakePrintHelpers)
+    cmake_print_properties(<[TARGETS <target-name>...] |
+                          [SOURCES <file-path>...] |
+                          [DIRECTORIES <dir-path>...] |
+                          [TESTS <test-name>...] |
+                          [CACHE_ENTRIES <entry-name>...]>
+                          PROPERTIES <property-name>...
+    )
+
+  Check `the documentation <https://cmake.org/cmake/help/latest/module/CMakePrintHelpers.html>`__ for more informations.
+
+* Printing each variable name followed by its value:
+
+  .. code-block:: cmake
+
+    include(CMakePrintHelpers)
+    cmake_print_variables(<var>...)
+
+  Check `the documentation <https://cmake.org/cmake/help/latest/module/CMakePrintHelpers.html>`__ for more informations.
+
+* Printing system information and various internal CMake variables for
+  diagnostics:
+
+  .. code-block:: cmake
+
+    include(CMakePrintSystemInformation)
+
+  Check `the documentation <https://cmake.org/cmake/help/latest/module/CMakePrintSystemInformation.html>`__ for more informations.
+
+* Print a dependency graph of the targets:
+
+  .. code-block:: cmake
+
+    set_property(GLOBAL PROPERTY GLOBAL_DEPENDS_DEBUG_MODE 1)
+
+  Check `the documentation <https://cmake.org/cmake/help/latest/prop_gbl/GLOBAL_DEPENDS_DEBUG_MODE.html>`__ for more informations.
+
+* Since generator expressions are evaluated during generation of the
+  buildsystem, and not during processing of ``CMakeLists.txt`` files, this
+  command allows to interpret  a generator expression:
+
+  .. code-block:: cmake
+
+    file(GENERATE OUTPUT debug.txt CONTENT "$<...>")
+
+  Check `the documentation <https://cmake.org/cmake/help/latest/manual/cmake-generator-expressions.7.html#debugging>`__ for more informations.
 #]=======================================================================]
+
 include_guard()
 
 cmake_minimum_required (VERSION 3.20 FATAL_ERROR)
@@ -303,26 +362,3 @@ macro(_debug_dump_project_variables)
 	message("-----")
 	message("")
 endmacro()
-
-#------------------------------------------------------------------------------
-# Some usefull cmake functions
-#------------------------------------------------------------------------------
-
-# For printing properties and variables (@see https://cmake.org/cmake/help/latest/module/CMakePrintHelpers.html
-# and https://cmake.org/cmake/help/latest/manual/cmake-properties.7.html)
-#cmake_print_properties([TARGETS target1 ..  targetN]
-#	[SOURCES source1 .. sourceN]
-#	[DIRECTORIES dir1 .. dirN]
-#	[TESTS test1 .. testN]
-#	[CACHE_ENTRIES entry1 .. entryN]
-#	PROPERTIES prop1 .. propN )
-#cmake_print_variables(var1 var2 ..  varN)
-
-# For printing system information (@see https://cmake.org/cmake/help/latest/module/CMakePrintSystemInformation.html)
-#include(CMakePrintSystemInformation)
-
-# For printing a graph of dependencies of the targets (@see https://cmake.org/cmake/help/latest/prop_gbl/GLOBAL_DEPENDS_DEBUG_MODE.html)
-#set_property(GLOBAL PROPERTY GLOBAL_DEPENDS_DEBUG_MODE 1)
-
-# For testing generator expressions (@see https://cmake.org/cmake/help/latest/manual/cmake-generator-expressions.7.html#debugging)
-#file(GENERATE OUTPUT debug.txt CONTENT "$<...>")
