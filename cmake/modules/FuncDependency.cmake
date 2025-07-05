@@ -8,7 +8,7 @@
 Dependency
 ----------
 
-Operations to manipule dependencies. They mainly encapsulate the numerous function calls required to `import and export dependencies <https://cmake.org/cmake/help/latest/guide/importing-exporting/index.html>`_. It requires CMake 3.20 or newer.
+Operations to manipule dependencies. They mainly encapsulate the numerous function calls required to `import and export dependencies <https://cmake.org/cmake/help/latest/guide/importing-exporting/index.html>`__. It requires CMake 3.20 or newer.
 
 Synopsis
 ^^^^^^^^
@@ -82,7 +82,7 @@ Usage
     ``INTERFACE_INCLUDE_DIRECTORIES``
       Set to the directory given by ``INCLUDE_DIR``. This path is propagated
       to consumers of the imported target during build and link phases. See
-      the `CMake doc <https://cmake.org/cmake/help/latest/prop_tgt/INTERFACE_INCLUDE_DIRECTORIES.html>`_ for full details.
+      the `CMake doc <https://cmake.org/cmake/help/latest/prop_tgt/INTERFACE_INCLUDE_DIRECTORIES.html>`__ for full details.
 
     ``INTERFACE_INCLUDE_DIRECTORIES_BUILD``
       Set to an empty value. This is a *custom property*, not used by CMake
@@ -96,7 +96,7 @@ Usage
 
     ``IMPORTED_LOCATION_<CONFIG>``
       The full path to the actual library file (e.g. ``.so``, ``.dll``, ``.a``, ``.lib``),
-      set separately for each configuration (``RELEASE`` and/or ``DEBUG``). See the `CMake doc <https://cmake.org/cmake/help/latest/prop_tgt/IMPORTED_LOCATION_CONFIG.html>`_ for full details.
+      set separately for each configuration (``RELEASE`` and/or ``DEBUG``). See the `CMake doc <https://cmake.org/cmake/help/latest/prop_tgt/IMPORTED_LOCATION_CONFIG.html>`__ for full details.
 
     ``IMPORTED_LOCATION_BUILD_<CONFIG>``
       *Custom property* set to an empty value. Intended for build-tree specific
@@ -113,16 +113,16 @@ Usage
       import library file (e.g. ``.dll.a``, ``.a``, ``.lib``) for the corresponding
       configuration. For static libraries, this property is set to empty,
       because an import library is only for a shared library. See the
-      `CMake doc <https://cmake.org/cmake/help/latest/prop_tgt/IMPORTED_IMPLIB_CONFIG.html>`_ for full details.
+      `CMake doc <https://cmake.org/cmake/help/latest/prop_tgt/IMPORTED_IMPLIB_CONFIG.html>`__ for full details.
 
     ``IMPORTED_SONAME_<CONFIG>``
       Set to the filename of the resolved library (without path), allowing
       CMake to handle runtime linking and version resolution. See the
-      `CMake doc <https://cmake.org/cmake/help/latest/prop_tgt/IMPORTED_SONAME_CONFIG.html>`_ for full details.
+      `CMake doc <https://cmake.org/cmake/help/latest/prop_tgt/IMPORTED_SONAME_CONFIG.html>`__ for full details.
 
     ``IMPORTED_CONFIGURATIONS``
       Appended with each configuration for which a library was found and
-      configured (e.g. ``RELEASE``, ``DEBUG``). See the `CMake doc <https://cmake.org/cmake/help/latest/prop_tgt/IMPORTED_CONFIGURATIONS.html>`_ for full
+      configured (e.g. ``RELEASE``, ``DEBUG``). See the `CMake doc <https://cmake.org/cmake/help/latest/prop_tgt/IMPORTED_CONFIGURATIONS.html>`__ for full
       details.
 
   Example usage:
@@ -204,7 +204,7 @@ Usage
 
   The behavior differs from standard CMake in that it stores build and install
   include paths separately using generator expressions (see 
-  `how write build specification with generator expressions <https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html#include-directories-and-usage-requirements>`_).
+  `how write build specification with generator expressions <https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html#include-directories-and-usage-requirements>`__).
 
   The ``PUBLIC`` keyword indicates that the specified directories apply to the
   usage requirements of the target (i.e., will be propagated to consumers of
@@ -223,7 +223,7 @@ Usage
       This standard property determines the public include directories seen
       by consumers of the library. This will be populated using only the
       build-specific include paths (i.e., extracted from
-      ``$<BUILD_INTERFACE:...>``). See the `CMake doc <https://cmake.org/cmake/help/latest/prop_tgt/INTERFACE_INCLUDE_DIRECTORIES.html>`_ for full details.
+      ``$<BUILD_INTERFACE:...>``). See the `CMake doc <https://cmake.org/cmake/help/latest/prop_tgt/INTERFACE_INCLUDE_DIRECTORIES.html>`__ for full details.
 
     ``INTERFACE_INCLUDE_DIRECTORIES_BUILD``
       A *custom property* used internally to distinguish the build-time
@@ -316,7 +316,7 @@ Usage
   The paths following it **must use generator expressions** like
   ``$<BUILD_INTERFACE:...>`` and ``$<INSTALL_INTERFACE:...>`` to distinguish
   between build and install phases. (see 
-  `how write build specification with generator expressions <https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html#build-specification-with-generator-expressions>`_).
+  `how write build specification with generator expressions <https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html#build-specification-with-generator-expressions>`__).
 
   These expressions are evaluated to determine the value of the following
   CMake properties set by this command:
@@ -324,7 +324,7 @@ Usage
     ``IMPORTED_LOCATION_<CONFIG>``
       The full path to the actual library file (e.g. ``.so``, ``.dll``, ``.a``, ``.lib``),
       set separately for each configuration (``RELEASE`` and/or ``DEBUG``).
-      See the `CMake doc <https://cmake.org/cmake/help/latest/prop_tgt/IMPORTED_LOCATION.html>`_ for full details. The command :command:`directory(FIND_LIB)` can be used to find the library file.
+      See the `CMake doc <https://cmake.org/cmake/help/latest/prop_tgt/IMPORTED_LOCATION.html>`__ for full details. The command :command:`directory(FIND_LIB)` can be used to find the library file.
 
     ``IMPORTED_LOCATION_BUILD_<CONFIG>``
       *Custom property* set to the full path to the actual library file,
@@ -495,6 +495,7 @@ Usage
 
     include("${CMAKE_CURRENT_LIST_DIR}/InternalDependencyTargets.cmake")
 #]=======================================================================]
+
 include_guard()
 
 cmake_minimum_required (VERSION 3.20 FATAL_ERROR)

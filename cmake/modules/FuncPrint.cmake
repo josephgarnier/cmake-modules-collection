@@ -42,7 +42,7 @@ Usage
 
   Record the specified message text in the log, optionally specifying a message
   mode. This command is inspired by the :cmake:command:`message() <cmake:command:message>` command from CMake and
-  the C `printf() <https://linux.die.net/man/3/printf>`_ function.
+  the C `printf() <https://linux.die.net/man/3/printf>`__ function.
 
   If specified, the optional ``<mode>`` keyword must be one of the standard
   message modes accepted by the :cmake:command:`message() <cmake:command:message>` command, such as ``STATUS``, ``WARNING``, ``ERROR``, etc.
@@ -133,6 +133,7 @@ Usage
     # output is:
     #   one ; two ; three
 #]=======================================================================]
+
 include_guard()
 
 cmake_minimum_required (VERSION 3.20 FATAL_ERROR)
