@@ -18,6 +18,8 @@ Synopsis
     directory(`SCAN`_ <output-list-var> [...])
     directory(`SCAN_DIRS`_ <output-list-var> [...])
     directory(`FIND_LIB`_ <output-lib-var> [...])
+    directory(`COLLECT_SOURCES_BY_LOCATION`_ [...])
+    directory(`COLLECT_SOURCES_BY_POLICY`_ [...])
 
 Usage
 ^^^^^
@@ -173,6 +175,127 @@ Usage
     # output is:
     #   lib=lib/zlib1.dll
     #   implib=lib/zlib1.lib
+
+.. signature::
+  directory(COLLECT_SOURCES_BY_LOCATION [...])
+
+  Recursively get source and header file in a dir:
+
+  .. code-block:: cmake
+
+    directory(COLLECT_SOURCES_BY_LOCATION
+              [SRC_DIR <dir-path>
+              SRC_SOURCE_FILES <output-list-var>
+              SRC_HEADER_FILES <output-list-var>]
+              [INCLUDE_DIR <dir-path>
+              INCLUDE_HEADER_FILES <output-list-var>])
+
+  Recursively collect source and header files from specified directories
+  and store them in output variables.
+
+  If the ``SRC_DIR`` option is specified, the command searches the directory
+  recursively for C++ source files with the following extensions:
+  ``.cpp``, ``.cc``, or ``.cxx``, and header files with the extensions
+  ``.h``, ``.hpp``, ``.hxx``, ``.inl``, or ``.tpp``.
+
+  Source files found in ``SRC_DIR`` are assigned to the variable specified
+  by ``SRC_SOURCE_FILES``, and header files are assigned to the variable
+  specified by ``SRC_HEADER_FILES``.
+
+  If the ``INCLUDE_DIR`` option is specified, only header files are
+  collected recursively using the same extensions as above. These are
+  assigned to the variable specified by ``INCLUDE_HEADER_FILES``.
+
+  Both ``SRC_DIR`` and ``INCLUDE_DIR`` may be specified simultaneously.
+  In that case, files are collected from both locations and stored into
+  their respective output variables.
+
+  At least one of ``SRC_DIR`` or ``INCLUDE_DIR`` must be provided. If
+  neither is specified, or if any of the corresponding output variable
+  arguments are missing, the command raises a fatal error.
+
+  Example usage:
+
+  .. code-block:: cmake
+
+    directory(COLLECT_SOURCES_BY_LOCATION
+              SRC_DIR "${CMAKE_SOURCE_DIR}/src"
+              SRC_SOURCE_FILES src_sources
+              SRC_HEADER_FILES src_headers
+              INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include"
+              INCLUDE_HEADER_FILES include_headers)
+
+    # Or
+    directory(COLLECT_SOURCES_BY_LOCATION
+              SRC_DIR "${CMAKE_SOURCE_DIR}/src"
+              SRC_SOURCE_FILES src_sources
+              SRC_HEADER_FILES src_headers)
+
+    # Or
+    directory(INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include"
+              INCLUDE_HEADER_FILES include_headers)
+
+.. signature::
+  directory(COLLECT_SOURCES_BY_POLICY [...])
+
+  Recursively get source and header file according to a policy:
+
+  .. code-block:: cmake
+
+    directory(COLLECT_SOURCES_BY_POLICY
+              PUBLIC_HEADERS_SEPARATED <on|off> [<include-dir-path>]
+              SRC_DIR <dir-path>
+              SRC_SOURCE_FILES <output-list-var>
+              PUBLIC_HEADER_DIR <output-var>
+              PUBLIC_HEADER_FILES <output-list-var>
+              PRIVATE_HEADER_DIR <output-var>
+              PRIVATE_HEADER_FILES <output-list-var>)
+
+  Recursively collect source and header files from specified directories
+  according to a header separation policy.
+
+  This command collects source files with extensions ``.cpp``, ``.cc``,
+  or ``.cxx`` from the directory specified by ``SRC_DIR`` and stores them
+  in the variable referenced by ``SRC_SOURCE_FILES``.
+
+  The behavior for header files depends on the policy value given to
+  ``PUBLIC_HEADERS_SEPARATED``:
+
+  * If ``PUBLIC_HEADERS_SEPARATED on <include-dir-path>`` is specified:
+
+    * Public headers are collected from ``<include-dir-path>`` and stored
+      in the variable referenced by ``PUBLIC_HEADER_FILES``.
+    * The variable referenced by ``PUBLIC_HEADER_DIR`` is set to
+      ``<include-dir-path>``.
+    * Private headers are collected from ``SRC_DIR`` and stored in the
+      variable referenced by ``PRIVATE_HEADER_FILES``.
+    * The variable referenced by ``PRIVATE_HEADER_DIR`` is set to
+      ``SRC_DIR``.
+
+  * If ``PUBLIC_HEADERS_SEPARATED off`` is specified:
+
+    * All headers are treated as public and collected from ``SRC_DIR``.
+    * The variable referenced by ``PUBLIC_HEADER_FILES`` contains the
+      header file list.
+    * The variable referenced by ``PUBLIC_HEADER_DIR`` is set to ``SRC_DIR``.
+    * The variables referenced by ``PRIVATE_HEADER_DIR`` and
+      ``PRIVATE_HEADER_FILES`` are set to empty.
+
+  If the policy is set to ``on``, but ``<include-dir-path>`` is missing or
+  does not refer to an existing directory, a fatal error is raised.
+
+  Example usage:
+
+  .. code-block:: cmake
+
+    directory(COLLECT_SOURCES_BY_POLICY
+              PUBLIC_HEADERS_SEPARATED on "${CMAKE_SOURCE_DIR}/include/mylib"
+              SRC_DIR "${CMAKE_SOURCE_DIR}/src"
+              SRC_SOURCE_FILES sources
+              PUBLIC_HEADER_DIR public_headers_dir
+              PUBLIC_HEADER_FILES public_headers
+              PRIVATE_HEADER_DIR private_headers_dir
+              PRIVATE_HEADER_FILES private_headers)
 #]=======================================================================]
 
 include_guard()
@@ -182,21 +305,24 @@ cmake_minimum_required (VERSION 3.20 FATAL_ERROR)
 #------------------------------------------------------------------------------
 # Public function of this module.
 function(directory)
-	set(options SHARED STATIC)
-	set(one_value_args SCAN SCAN_DIRS LIST_DIRECTORIES RELATIVE ROOT_DIR INCLUDE_REGEX EXCLUDE_REGEX RECURSE FIND_LIB FIND_IMPLIB NAME)
-	set(multi_value_args "")
+	set(options SHARED STATIC COLLECT_SOURCES_BY_LOCATION COLLECT_SOURCES_BY_POLICY)
+	set(one_value_args SCAN SCAN_DIRS LIST_DIRECTORIES RELATIVE ROOT_DIR INCLUDE_REGEX EXCLUDE_REGEX RECURSE FIND_LIB FIND_IMPLIB NAME SRC_DIR INCLUDE_DIR SRC_SOURCE_FILES SRC_HEADER_FILES INCLUDE_HEADER_FILES PUBLIC_HEADER_DIR PUBLIC_HEADER_FILES PRIVATE_HEADER_DIR PRIVATE_HEADER_FILES)
+	set(multi_value_args PUBLIC_HEADERS_SEPARATED)
 	cmake_parse_arguments(DIR "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 	
 	if(DEFINED DIR_UNPARSED_ARGUMENTS)
 		message(FATAL_ERROR "Unrecognized arguments: \"${DIR_UNPARSED_ARGUMENTS}\"")
 	endif()
-
 	if(DEFINED DIR_SCAN)
 		_directory_scan()
 	elseif(DEFINED DIR_SCAN_DIRS)
 		_directory_scan_dirs()
 	elseif(DEFINED DIR_FIND_LIB)
 		_directory_find_lib()
+	elseif(${DIR_COLLECT_SOURCES_BY_LOCATION})
+		_directory_collect_sources_by_location()
+	elseif(${DIR_COLLECT_SOURCES_BY_POLICY})
+		_directory_collect_sources_by_policy()
 	else()
 		message(FATAL_ERROR "Operation argument is missing!")
 	endif()
@@ -400,4 +526,153 @@ macro(_directory_find_lib)
 
 	set(${DIR_FIND_LIB} "${library_found_path}" PARENT_SCOPE)
 	set(${DIR_FIND_IMPLIB} "${import_library_found_path}" PARENT_SCOPE)
+endmacro()
+
+#------------------------------------------------------------------------------
+# Internal usage.
+macro(_directory_collect_sources_by_location)
+	if((NOT DEFINED DIR_SRC_DIR) AND (NOT DEFINED DIR_INCLUDE_DIR))
+		message(FATAL_ERROR "At least one of SRC_DIR|INCLUDE_DIR argument is needed!")
+	endif()
+	if("SRC_DIR" IN_LIST DIR_KEYWORDS_MISSING_VALUES)
+		message(FATAL_ERROR "SRC_DIR argument need a value!")
+	endif()
+	if("INCLUDE_DIR" IN_LIST DIR_KEYWORDS_MISSING_VALUES)
+		message(FATAL_ERROR "INCLUDE_DIR argument need a value!")
+	endif()
+	if(DEFINED DIR_SRC_DIR)
+		if((NOT EXISTS "${DIR_SRC_DIR}")
+			OR (NOT IS_DIRECTORY "${DIR_SRC_DIR}"))
+			message(FATAL_ERROR "Given path: ${DIR_SRC_DIR} does not refer to an existing path or directory on disk!")
+		endif()
+		if(NOT DEFINED DIR_SRC_SOURCE_FILES)
+			message(FATAL_ERROR "SRC_SOURCE_FILES arguments is missing or need a value!")
+		endif()
+		if(NOT DEFINED DIR_SRC_HEADER_FILES)
+			message(FATAL_ERROR "SRC_HEADER_FILES arguments is missing or need a value!")
+		endif()
+	endif()
+	if(DEFINED DIR_INCLUDE_DIR)
+		if((NOT EXISTS "${DIR_INCLUDE_DIR}")
+			OR (NOT IS_DIRECTORY "${DIR_INCLUDE_DIR}"))
+			message(FATAL_ERROR "Given path: ${DIR_INCLUDE_DIR} does not refer to an existing path or directory on disk!")
+		endif()
+		if(NOT DEFINED DIR_INCLUDE_HEADER_FILES)
+			message(FATAL_ERROR "INCLUDE_HEADER_FILES arguments is missing or need a value!")
+		endif()
+	endif()
+
+	# Get files
+	if(DEFINED DIR_SRC_DIR)
+		# Get the list of absolute paths to source files (.cpp|.cc|.cxx) stored
+		# inside `SRC_DIR` directory
+		set(src_source_file_list "")
+		directory(SCAN src_source_file_list
+			LIST_DIRECTORIES off
+			RELATIVE off
+			ROOT_DIR "${DIR_SRC_DIR}"
+			INCLUDE_REGEX ".*[.]cpp$|.*[.]cc$|.*[.]cxx$"
+		)
+		set(${DIR_SRC_SOURCE_FILES} "${src_source_file_list}" PARENT_SCOPE)
+
+		# Get the list of absolute path to header files (.h|.hpp|.hxx|.inl|.tpp) stored
+		# inside `SRC_DIR` directory
+		set(src_header_file_list "")
+		directory(SCAN src_header_file_list
+			LIST_DIRECTORIES off
+			RELATIVE off
+			ROOT_DIR "${DIR_SRC_DIR}"
+			INCLUDE_REGEX ".*[.]h$|.*[.]hpp$|.*[.]hxx$|.*[.]inl$|.*[.]tpp$"
+		)
+		set(${DIR_SRC_HEADER_FILES} "${src_header_file_list}" PARENT_SCOPE)
+	endif()
+	
+	if(DEFINED DIR_INCLUDE_DIR)
+		# Get the list of absolute path to header files (.h|.hpp|.hxx|.inl|.tpp) stored
+		# inside `INCLUDE_DIR` directory
+		set(include_header_file_list "")
+		directory(SCAN include_header_file_list
+			LIST_DIRECTORIES off
+			RELATIVE off
+			ROOT_DIR "${DIR_INCLUDE_DIR}"
+			INCLUDE_REGEX ".*[.]h$|.*[.]hpp$|.*[.]hxx$|.*[.]inl$|.*[.]tpp$"
+		)
+		set(${DIR_INCLUDE_HEADER_FILES} "${include_header_file_list}" PARENT_SCOPE)
+	endif()
+endmacro()
+
+#------------------------------------------------------------------------------
+# Internal usage.
+macro(_directory_collect_sources_by_policy)
+	if(NOT DEFINED DIR_SRC_DIR)
+		message(FATAL_ERROR "SRC_DIR arguments is missing or need a value!")
+	endif()
+	if(NOT DEFINED DIR_SRC_SOURCE_FILES)
+		message(FATAL_ERROR "SRC_SOURCE_FILES arguments is missing!")
+	endif()
+	if(NOT DEFINED DIR_PUBLIC_HEADER_DIR)
+		message(FATAL_ERROR "PUBLIC_HEADER_DIR arguments is missing!")
+	endif()
+	if(NOT DEFINED DIR_PUBLIC_HEADER_FILES)
+		message(FATAL_ERROR "PUBLIC_HEADER_FILES arguments is missing!")
+	endif()
+	if(NOT DEFINED DIR_PRIVATE_HEADER_DIR)
+		message(FATAL_ERROR "PRIVATE_HEADER_DIR arguments is missing!")
+	endif()
+	if(NOT DEFINED DIR_PRIVATE_HEADER_FILES)
+		message(FATAL_ERROR "PRIVATE_HEADER_FILES arguments is missing!")
+	endif()
+	
+	# Check PUBLIC_HEADERS_SEPARATED args
+	if(NOT DEFINED DIR_PUBLIC_HEADERS_SEPARATED)
+		message(FATAL_ERROR "PUBLIC_HEADERS_SEPARATED arguments is missing!")
+	endif()
+	list(GET DIR_PUBLIC_HEADERS_SEPARATED 0 is_headers_separated)
+	if((NOT ${is_headers_separated} STREQUAL "on")
+		AND (NOT ${is_headers_separated} STREQUAL "off"))
+		message(FATAL_ERROR "PUBLIC_HEADERS_SEPARATED arguments is wrong!")
+	endif()
+	if(${is_headers_separated})
+		# Check if the PUBLIC_HEADERS_SEPARATED argument is well formatted
+		list(LENGTH DIR_PUBLIC_HEADERS_SEPARATED nb_args_PUBLIC_HEADERS_SEPARATED)
+		if(NOT ${nb_args_PUBLIC_HEADERS_SEPARATED} EQUAL 2)
+			message(FATAL_ERROR "PUBLIC_HEADERS_SEPARATED argument is missing or wrong!")
+		endif()
+		
+		# Check if `<include-dir-path>` exists
+		list(GET DIR_PUBLIC_HEADERS_SEPARATED 1 include_dir_path)
+		if((NOT EXISTS "${include_dir_path}")
+			OR (NOT IS_DIRECTORY "${include_dir_path}"))
+			message(FATAL_ERROR "Given path: ${include_dir_path} does not refer to an existing path or directory on disk!")
+		endif()
+	endif()
+	
+	# Collect files
+	if(${is_headers_separated})
+		directory(COLLECT_SOURCES_BY_LOCATION
+			SRC_DIR "${DIR_SRC_DIR}"
+			SRC_SOURCE_FILES src_source_file_list
+			SRC_HEADER_FILES src_header_file_list
+			INCLUDE_DIR "${include_dir_path}"
+			INCLUDE_HEADER_FILES include_header_file_list
+		)
+		set(${DIR_SRC_SOURCE_FILES} "${src_source_file_list}" PARENT_SCOPE)
+		set(${DIR_PUBLIC_HEADER_DIR} "${include_dir_path}" PARENT_SCOPE)
+		set(${DIR_PUBLIC_HEADER_FILES} "${include_header_file_list}" PARENT_SCOPE)
+		set(${DIR_PRIVATE_HEADER_DIR} "${DIR_SRC_DIR}" PARENT_SCOPE)
+		set(${DIR_PRIVATE_HEADER_FILES} "${src_header_file_list}" PARENT_SCOPE)
+		message(STATUS "Considering headers from \"include/\" as public and from \"src/\" as private")
+	else()
+		directory(COLLECT_SOURCES_BY_LOCATION
+			SRC_DIR "${DIR_SRC_DIR}"
+			SRC_SOURCE_FILES src_source_file_list
+			SRC_HEADER_FILES src_header_file_list
+		)
+		set(${DIR_SRC_SOURCE_FILES} "${src_source_file_list}" PARENT_SCOPE)
+		set(${DIR_PUBLIC_HEADER_DIR} "${DIR_SRC_DIR}" PARENT_SCOPE)
+		set(${DIR_PUBLIC_HEADER_FILES} "${src_header_file_list}" PARENT_SCOPE)
+		set(${DIR_PRIVATE_HEADER_DIR} "" PARENT_SCOPE)
+		set(${DIR_PRIVATE_HEADER_FILES} "" PARENT_SCOPE)
+		message(STATUS "Considering headers from \"src/\" as public, ignoring \"include/\"")
+	endif()
 endmacro()
