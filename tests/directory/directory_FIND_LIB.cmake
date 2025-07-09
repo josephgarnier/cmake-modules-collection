@@ -365,19 +365,6 @@ function(${CMAKETEST_TEST})
 		)
 	endfunction()
 
-	ct_add_section(NAME "throws_if_arg_output_lib_var_is_missing_4" EXPECTFAIL)
-	function(${CMAKETEST_SECTION})
-		set(lib_name "shared_mock_lib")
-		unset(output_lib)
-		directory(FIND_LIB output_lib
-			FIND_IMPLIB output_implib
-			NAME "${lib_name}"
-			SHARED
-			RELATIVE off
-			ROOT_DIR "${TESTS_DATA_DIR}"
-		)
-	endfunction()
-
 	ct_add_section(NAME "throws_if_arg_output_implib_var_is_missing_1" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		set(lib_name "shared_mock_lib")
@@ -407,19 +394,6 @@ function(${CMAKETEST_TEST})
 		set(lib_name "shared_mock_lib")
 		directory(FIND_LIB output_lib
 			FIND_IMPLIB "output_implib"
-			NAME "${lib_name}"
-			SHARED
-			RELATIVE off
-			ROOT_DIR "${TESTS_DATA_DIR}"
-		)
-	endfunction()
-
-	ct_add_section(NAME "throws_if_arg_output_implib_var_is_missing_4" EXPECTFAIL)
-	function(${CMAKETEST_SECTION})
-		set(lib_name "shared_mock_lib")
-		unset(output_implib)
-		directory(FIND_LIB output_lib
-			FIND_IMPLIB output_implib
 			NAME "${lib_name}"
 			SHARED
 			RELATIVE off

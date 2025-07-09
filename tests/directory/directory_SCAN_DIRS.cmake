@@ -195,17 +195,6 @@ function(${CMAKETEST_TEST})
 		)
 	endfunction()
 
-	ct_add_section(NAME "throws_if_arg_output_list_var_is_missing_4" EXPECTFAIL)
-	function(${CMAKETEST_SECTION})
-		unset(output)
-		directory(SCAN_DIRS output
-			RECURSE on
-			RELATIVE off
-			ROOT_DIR "${TESTS_DATA_DIR}/src"
-			INCLUDE_REGEX ".*"
-		)
-	endfunction()
-	
 	ct_add_section(NAME "throws_if_arg_recurse_is_missing_1" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		directory(SCAN_DIRS output
