@@ -88,7 +88,7 @@ Usage
     directory(SCAN_DIRS matched_dirs
               RECURSE on
               RELATIVE on
-              ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}"
+              ROOT_DIR "${CMAKE_SOURCE_DIR}"
               INCLUDE_REGEX "include")
     # output is:
     #   src/include;src/lib/include
