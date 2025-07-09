@@ -10,7 +10,7 @@
 
 #-------------------------------------------------------------------------------
 # Test of [Print module::LISTS operation]:
-#    ``print([<mode>] STRINGS <string>... [INDENT])``
+#    print([<mode>] STRINGS <string>... [INDENT])
 ct_add_test(NAME "test_print_strings_operation")
 function(${CMAKETEST_TEST})
 	include(FuncPrint)

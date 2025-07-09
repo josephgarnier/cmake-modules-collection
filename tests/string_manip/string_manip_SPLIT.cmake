@@ -10,7 +10,7 @@
 
 #-------------------------------------------------------------------------------
 # Test of [StringManip module::SPLIT operation]:
-#    ``string_manip(SPLIT <string> <output-list-var>)``
+#    string_manip(SPLIT <string> <output-list-var>)
 ct_add_test(NAME "test_string_manip_split_operation")
 function(${CMAKETEST_TEST})
 	include(FuncStringManip)

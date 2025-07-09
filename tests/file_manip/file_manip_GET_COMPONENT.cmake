@@ -10,7 +10,9 @@
 
 #-------------------------------------------------------------------------------
 # Test of [FileManip module::GET_COMPONENT operation]:
-#    ``file_manip(GET_COMPONENT <file-path>... MODE <mode> OUTPUT_VARIABLE <output-list-var>)``
+#    file_manip(GET_COMPONENT <file-path>...
+#              MODE <mode>
+#              OUTPUT_VARIABLE <output-list-var>)
 ct_add_test(NAME "test_file_manip_get_component_operation")
 function(${CMAKETEST_TEST})
 	include(FuncFileManip)

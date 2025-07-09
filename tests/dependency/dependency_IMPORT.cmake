@@ -10,7 +10,12 @@
 
 #-------------------------------------------------------------------------------
 # Test of [Dependency module::IMPORT operation]:
-#    ``dependency(IMPORT <lib-target-name> <STATIC|SHARED> [RELEASE_NAME <raw-filename>] [DEBUG_NAME <raw-filename>] ROOT_DIR <directory-path> INCLUDE_DIR <directory-path>)``
+#    dependency(IMPORT <lib-target-name>
+#              <STATIC|SHARED>
+#              [RELEASE_NAME <raw-filename>]
+#              [DEBUG_NAME <raw-filename>]
+#              ROOT_DIR <directory-path>
+#              INCLUDE_DIR <directory-path>)
 ct_add_test(NAME "test_dependency_import_operation")
 function(${CMAKETEST_TEST})
 	include(FuncDependency)

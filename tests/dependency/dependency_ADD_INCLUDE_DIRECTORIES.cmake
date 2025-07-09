@@ -10,7 +10,9 @@
 
 #-------------------------------------------------------------------------------
 # Test of [Dependency module::ADD_INCLUDE_DIRECTORIES operation]:
-#    ``dependency(ADD_INCLUDE_DIRECTORIES <lib-target-name> <SET|APPEND> PUBLIC <gen-expr>...)``
+#    dependency(ADD_INCLUDE_DIRECTORIES <lib-target-name>
+#              <SET|APPEND>
+#              PUBLIC <gen-expr>...)
 ct_add_test(NAME "test_dependency_add_include_directories_operation")
 function(${CMAKETEST_TEST})
 	include(FuncDependency)
