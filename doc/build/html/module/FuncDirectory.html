@@ -67,7 +67,9 @@
 <h2>Synopsis<a class="headerlink" href="#synopsis" title="Link to this heading">¶</a></h2>
 <pre class="literal-block">directory(<a class="reference internal" href="#scan">SCAN</a> &lt;output-list-var&gt; [...])
 directory(<a class="reference internal" href="#scan-dirs">SCAN_DIRS</a> &lt;output-list-var&gt; [...])
-directory(<a class="reference internal" href="#find-lib">FIND_LIB</a> &lt;output-lib-var&gt; [...])</pre>
+directory(<a class="reference internal" href="#find-lib">FIND_LIB</a> &lt;output-lib-var&gt; [...])
+directory(<a class="reference internal" href="#collect-sources-by-location">COLLECT_SOURCES_BY_LOCATION</a> [...])
+directory(<a class="reference internal" href="#collect-sources-by-policy">COLLECT_SOURCES_BY_POLICY</a> [...])</pre>
 </section>
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h2>
@@ -124,7 +126,7 @@ are considered.</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">directory(</span><span class="no">SCAN_DIRS</span><span class="w"> </span><span class="nb">matched_dirs</span>
 <span class="w">          </span><span class="no">RECURSE</span><span class="w"> </span><span class="nb">on</span>
 <span class="w">          </span><span class="no">RELATIVE</span><span class="w"> </span><span class="nb">on</span>
-<span class="w">          </span><span class="no">ROOT_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_CURRENT_SOURCE_DIR}&quot;</span>
+<span class="w">          </span><span class="no">ROOT_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}&quot;</span>
 <span class="w">          </span><span class="no">INCLUDE_REGEX</span><span class="w"> </span><span class="s">&quot;include&quot;</span><span class="nf">)</span>
 <span class="c"># output is:</span>
 <span class="c">#   src/include;src/lib/include</span>
@@ -201,6 +203,117 @@ sufficient.</p>
 <span class="c"># output is:</span>
 <span class="c">#   lib=lib/zlib1.dll</span>
 <span class="c">#   implib=lib/zlib1.lib</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="cmake signature">
+<dt class="sig sig-object cmake" id="collect-sources-by-location">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">directory(</span></span><span class="no"><span class="pre">COLLECT_SOURCES_BY_LOCATION</span></span><span class="w"> </span><span class="p"><span class="pre">[...]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#collect-sources-by-location" title="Link to this definition">¶</a></dt>
+<dd><p>Recursively get source and header file in a dir:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">directory(</span><span class="no">COLLECT_SOURCES_BY_LOCATION</span>
+<span class="w">          </span><span class="p">[</span><span class="no">SRC_DIR</span><span class="w"> </span><span class="nv">&lt;dir-path&gt;</span>
+<span class="w">          </span><span class="no">SRC_SOURCE_FILES</span><span class="w"> </span><span class="nv">&lt;output-list-var&gt;</span>
+<span class="w">          </span><span class="no">SRC_HEADER_FILES</span><span class="w"> </span><span class="nv">&lt;output-list-var&gt;</span><span class="p">]</span>
+<span class="w">          </span><span class="p">[</span><span class="no">INCLUDE_DIR</span><span class="w"> </span><span class="nv">&lt;dir-path&gt;</span>
+<span class="w">          </span><span class="no">INCLUDE_HEADER_FILES</span><span class="w"> </span><span class="nv">&lt;output-list-var&gt;</span><span class="p">]</span><span class="nf">)</span>
+</pre></div>
+</div>
+<p>Recursively collect source and header files from specified directories
+and store them in output variables.</p>
+<p>If the <code class="docutils literal notranslate"><span class="pre">SRC_DIR</span></code> option is specified, the command searches the directory
+recursively for C++ source files with the following extensions:
+<code class="docutils literal notranslate"><span class="pre">.cpp</span></code>, <code class="docutils literal notranslate"><span class="pre">.cc</span></code>, or <code class="docutils literal notranslate"><span class="pre">.cxx</span></code>, and header files with the extensions
+<code class="docutils literal notranslate"><span class="pre">.h</span></code>, <code class="docutils literal notranslate"><span class="pre">.hpp</span></code>, <code class="docutils literal notranslate"><span class="pre">.hxx</span></code>, <code class="docutils literal notranslate"><span class="pre">.inl</span></code>, or <code class="docutils literal notranslate"><span class="pre">.tpp</span></code>.</p>
+<p>Source files found in <code class="docutils literal notranslate"><span class="pre">SRC_DIR</span></code> are assigned to the variable specified
+by <code class="docutils literal notranslate"><span class="pre">SRC_SOURCE_FILES</span></code>, and header files are assigned to the variable
+specified by <code class="docutils literal notranslate"><span class="pre">SRC_HEADER_FILES</span></code>.</p>
+<p>If the <code class="docutils literal notranslate"><span class="pre">INCLUDE_DIR</span></code> option is specified, only header files are
+collected recursively using the same extensions as above. These are
+assigned to the variable specified by <code class="docutils literal notranslate"><span class="pre">INCLUDE_HEADER_FILES</span></code>.</p>
+<p>Both <code class="docutils literal notranslate"><span class="pre">SRC_DIR</span></code> and <code class="docutils literal notranslate"><span class="pre">INCLUDE_DIR</span></code> may be specified simultaneously.
+In that case, files are collected from both locations and stored into
+their respective output variables.</p>
+<p>At least one of <code class="docutils literal notranslate"><span class="pre">SRC_DIR</span></code> or <code class="docutils literal notranslate"><span class="pre">INCLUDE_DIR</span></code> must be provided. If
+neither is specified, or if any of the corresponding output variable
+arguments are missing, the command raises a fatal error.</p>
+<p>Example usage:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">directory(</span><span class="no">COLLECT_SOURCES_BY_LOCATION</span>
+<span class="w">          </span><span class="no">SRC_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src&quot;</span>
+<span class="w">          </span><span class="no">SRC_SOURCE_FILES</span><span class="w"> </span><span class="nb">src_sources</span>
+<span class="w">          </span><span class="no">SRC_HEADER_FILES</span><span class="w"> </span><span class="nb">src_headers</span>
+<span class="w">          </span><span class="no">INCLUDE_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/include&quot;</span>
+<span class="w">          </span><span class="no">INCLUDE_HEADER_FILES</span><span class="w"> </span><span class="nb">include_headers</span><span class="nf">)</span>
+
+<span class="c"># Or</span>
+<span class="nf">directory(</span><span class="no">COLLECT_SOURCES_BY_LOCATION</span>
+<span class="w">          </span><span class="no">SRC_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src&quot;</span>
+<span class="w">          </span><span class="no">SRC_SOURCE_FILES</span><span class="w"> </span><span class="nb">src_sources</span>
+<span class="w">          </span><span class="no">SRC_HEADER_FILES</span><span class="w"> </span><span class="nb">src_headers</span><span class="nf">)</span>
+
+<span class="c"># Or</span>
+<span class="nf">directory(</span><span class="no">INCLUDE_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/include&quot;</span>
+<span class="w">          </span><span class="no">INCLUDE_HEADER_FILES</span><span class="w"> </span><span class="nb">include_headers</span><span class="nf">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="cmake signature">
+<dt class="sig sig-object cmake" id="collect-sources-by-policy">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">directory(</span></span><span class="no"><span class="pre">COLLECT_SOURCES_BY_POLICY</span></span><span class="w"> </span><span class="p"><span class="pre">[...]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#collect-sources-by-policy" title="Link to this definition">¶</a></dt>
+<dd><p>Recursively get source and header file according to a policy:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">directory(</span><span class="no">COLLECT_SOURCES_BY_POLICY</span>
+<span class="w">          </span><span class="no">PUBLIC_HEADERS_SEPARATED</span><span class="w"> </span><span class="o">&lt;</span><span class="nb">on</span><span class="p">|</span><span class="nb">off</span><span class="o">&gt;</span><span class="w"> </span><span class="p">[</span><span class="nv">&lt;include-dir-path&gt;</span><span class="p">]</span>
+<span class="w">          </span><span class="no">SRC_DIR</span><span class="w"> </span><span class="nv">&lt;dir-path&gt;</span>
+<span class="w">          </span><span class="no">SRC_SOURCE_FILES</span><span class="w"> </span><span class="nv">&lt;output-list-var&gt;</span>
+<span class="w">          </span><span class="no">PUBLIC_HEADER_DIR</span><span class="w"> </span><span class="nv">&lt;output-var&gt;</span>
+<span class="w">          </span><span class="no">PUBLIC_HEADER_FILES</span><span class="w"> </span><span class="nv">&lt;output-list-var&gt;</span>
+<span class="w">          </span><span class="no">PRIVATE_HEADER_DIR</span><span class="w"> </span><span class="nv">&lt;output-var&gt;</span>
+<span class="w">          </span><span class="no">PRIVATE_HEADER_FILES</span><span class="w"> </span><span class="nv">&lt;output-list-var&gt;</span><span class="nf">)</span>
+</pre></div>
+</div>
+<p>Recursively collect source and header files from specified directories
+according to a header separation policy.</p>
+<p>This command collects source files with extensions <code class="docutils literal notranslate"><span class="pre">.cpp</span></code>, <code class="docutils literal notranslate"><span class="pre">.cc</span></code>,
+or <code class="docutils literal notranslate"><span class="pre">.cxx</span></code> from the directory specified by <code class="docutils literal notranslate"><span class="pre">SRC_DIR</span></code> and stores them
+in the variable referenced by <code class="docutils literal notranslate"><span class="pre">SRC_SOURCE_FILES</span></code>.</p>
+<p>The behavior for header files depends on the policy value given to
+<code class="docutils literal notranslate"><span class="pre">PUBLIC_HEADERS_SEPARATED</span></code>:</p>
+<ul class="simple">
+<li><p>If <code class="docutils literal notranslate"><span class="pre">PUBLIC_HEADERS_SEPARATED</span> <span class="pre">on</span> <span class="pre">&lt;include-dir-path&gt;</span></code> is specified:</p>
+<ul>
+<li><p>Public headers are collected from <code class="docutils literal notranslate"><span class="pre">&lt;include-dir-path&gt;</span></code> and stored
+in the variable referenced by <code class="docutils literal notranslate"><span class="pre">PUBLIC_HEADER_FILES</span></code>.</p></li>
+<li><p>The variable referenced by <code class="docutils literal notranslate"><span class="pre">PUBLIC_HEADER_DIR</span></code> is set to
+<code class="docutils literal notranslate"><span class="pre">&lt;include-dir-path&gt;</span></code>.</p></li>
+<li><p>Private headers are collected from <code class="docutils literal notranslate"><span class="pre">SRC_DIR</span></code> and stored in the
+variable referenced by <code class="docutils literal notranslate"><span class="pre">PRIVATE_HEADER_FILES</span></code>.</p></li>
+<li><p>The variable referenced by <code class="docutils literal notranslate"><span class="pre">PRIVATE_HEADER_DIR</span></code> is set to
+<code class="docutils literal notranslate"><span class="pre">SRC_DIR</span></code>.</p></li>
+</ul>
+</li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">PUBLIC_HEADERS_SEPARATED</span> <span class="pre">off</span></code> is specified:</p>
+<ul>
+<li><p>All headers are treated as public and collected from <code class="docutils literal notranslate"><span class="pre">SRC_DIR</span></code>.</p></li>
+<li><p>The variable referenced by <code class="docutils literal notranslate"><span class="pre">PUBLIC_HEADER_FILES</span></code> contains the
+header file list.</p></li>
+<li><p>The variable referenced by <code class="docutils literal notranslate"><span class="pre">PUBLIC_HEADER_DIR</span></code> is set to <code class="docutils literal notranslate"><span class="pre">SRC_DIR</span></code>.</p></li>
+<li><p>The variables referenced by <code class="docutils literal notranslate"><span class="pre">PRIVATE_HEADER_DIR</span></code> and
+<code class="docutils literal notranslate"><span class="pre">PRIVATE_HEADER_FILES</span></code> are set to empty.</p></li>
+</ul>
+</li>
+</ul>
+<p>If the policy is set to <code class="docutils literal notranslate"><span class="pre">on</span></code>, but <code class="docutils literal notranslate"><span class="pre">&lt;include-dir-path&gt;</span></code> is missing or
+does not refer to an existing directory, a fatal error is raised.</p>
+<p>Example usage:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">directory(</span><span class="no">COLLECT_SOURCES_BY_POLICY</span>
+<span class="w">          </span><span class="no">PUBLIC_HEADERS_SEPARATED</span><span class="w"> </span><span class="nb">on</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/include/mylib&quot;</span>
+<span class="w">          </span><span class="no">SRC_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src&quot;</span>
+<span class="w">          </span><span class="no">SRC_SOURCE_FILES</span><span class="w"> </span><span class="nb">sources</span>
+<span class="w">          </span><span class="no">PUBLIC_HEADER_DIR</span><span class="w"> </span><span class="nb">public_headers_dir</span>
+<span class="w">          </span><span class="no">PUBLIC_HEADER_FILES</span><span class="w"> </span><span class="nb">public_headers</span>
+<span class="w">          </span><span class="no">PRIVATE_HEADER_DIR</span><span class="w"> </span><span class="nb">private_headers_dir</span>
+<span class="w">          </span><span class="no">PRIVATE_HEADER_FILES</span><span class="w"> </span><span class="nb">private_headers</span><span class="nf">)</span>
 </pre></div>
 </div>
 </dd></dl>

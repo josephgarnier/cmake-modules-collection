@@ -40,4 +40,4 @@ module may include multiple commands.
 .. toctree::
    :maxdepth: 1
 
-   /module/BundleBinTarget
+   /module/BinTarget

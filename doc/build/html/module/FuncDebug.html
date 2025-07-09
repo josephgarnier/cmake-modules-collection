@@ -184,6 +184,55 @@ defined by CMake or third-party scripts.</p>
 </dd></dl>
 
 </section>
+<section id="additional-commands">
+<h2>Additional commands<a class="headerlink" href="#additional-commands" title="Link to this heading">¶</a></h2>
+<p>CMake provides convenience commands, primarily intended for debugging, to
+print various information about the CMake environment.</p>
+<ul>
+<li><p>Printing the values of properties for the specified targets, source files,
+directories, tests, or cache entries:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">include(</span><span class="nb">CMakePrintHelpers</span><span class="nf">)</span>
+<span class="nf">cmake_print_properties(</span><span class="o">&lt;</span><span class="p">[</span><span class="no">TARGETS</span><span class="w"> </span><span class="nv">&lt;target-name&gt;...</span><span class="p">]</span><span class="w"> </span><span class="p">|</span>
+<span class="w">                      </span><span class="p">[</span><span class="no">SOURCES</span><span class="w"> </span><span class="nv">&lt;file-path&gt;...</span><span class="p">]</span><span class="w"> </span><span class="p">|</span>
+<span class="w">                      </span><span class="p">[</span><span class="no">DIRECTORIES</span><span class="w"> </span><span class="nv">&lt;dir-path&gt;...</span><span class="p">]</span><span class="w"> </span><span class="p">|</span>
+<span class="w">                      </span><span class="p">[</span><span class="no">TESTS</span><span class="w"> </span><span class="nv">&lt;test-name&gt;...</span><span class="p">]</span><span class="w"> </span><span class="p">|</span>
+<span class="w">                      </span><span class="p">[</span><span class="no">CACHE_ENTRIES</span><span class="w"> </span><span class="nv">&lt;entry-name&gt;...</span><span class="p">]</span><span class="o">&gt;</span>
+<span class="w">                      </span><span class="no">PROPERTIES</span><span class="w"> </span><span class="nv">&lt;property-name&gt;...</span>
+<span class="nf">)</span>
+</pre></div>
+</div>
+<p>Check <a class="reference external" href="https://cmake.org/cmake/help/latest/module/CMakePrintHelpers.html">the documentation</a> for more informations.</p>
+</li>
+<li><p>Printing each variable name followed by its value:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">include(</span><span class="nb">CMakePrintHelpers</span><span class="nf">)</span>
+<span class="nf">cmake_print_variables(</span><span class="nv">&lt;var&gt;...</span><span class="nf">)</span>
+</pre></div>
+</div>
+<p>Check <a class="reference external" href="https://cmake.org/cmake/help/latest/module/CMakePrintHelpers.html">the documentation</a> for more informations.</p>
+</li>
+<li><p>Printing system information and various internal CMake variables for
+diagnostics:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">include(</span><span class="nb">CMakePrintSystemInformation</span><span class="nf">)</span>
+</pre></div>
+</div>
+<p>Check <a class="reference external" href="https://cmake.org/cmake/help/latest/module/CMakePrintSystemInformation.html">the documentation</a> for more informations.</p>
+</li>
+<li><p>Print a dependency graph of the targets:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">set_property(</span><span class="no">GLOBAL</span><span class="w"> </span><span class="no">PROPERTY</span><span class="w"> </span><span class="no">GLOBAL_DEPENDS_DEBUG_MODE</span><span class="w"> </span><span class="m">1</span><span class="nf">)</span>
+</pre></div>
+</div>
+<p>Check <a class="reference external" href="https://cmake.org/cmake/help/latest/prop_gbl/GLOBAL_DEPENDS_DEBUG_MODE.html">the documentation</a> for more informations.</p>
+</li>
+<li><p>Since generator expressions are evaluated during generation of the
+buildsystem, and not during processing of <code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code> files, this
+command allows to interpret  a generator expression:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">file(</span><span class="no">GENERATE</span><span class="w"> </span><span class="no">OUTPUT</span><span class="w"> </span><span class="nb">debug.txt</span><span class="w"> </span><span class="no">CONTENT</span><span class="w"> </span><span class="s">&quot;$&lt;...&gt;&quot;</span><span class="nf">)</span>
+</pre></div>
+</div>
+<p>Check <a class="reference external" href="https://cmake.org/cmake/help/latest/manual/cmake-generator-expressions.7.html#debugging">the documentation</a> for more informations.</p>
+</li>
+</ul>
+</section>
 </section>
 
 
@@ -199,6 +248,7 @@ defined by CMake or third-party scripts.</p>
 <li><a class="reference internal" href="#">Debug</a><ul>
 <li><a class="reference internal" href="#synopsis">Synopsis</a></li>
 <li><a class="reference internal" href="#usage">Usage</a></li>
+<li><a class="reference internal" href="#additional-commands">Additional commands</a></li>
 </ul>
 </li>
 </ul>
