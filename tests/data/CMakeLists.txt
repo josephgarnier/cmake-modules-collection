@@ -29,9 +29,9 @@ set(SOURCE_FILES
 	"${SRC_DIR}/sub_2/source_sub_2.cpp")
 set(PUBLIC_HEADER_DIR "${INCLUDE_DIR}")
 set(PUBLIC_HEADER_FILES
-"${PUBLIC_HEADER_DIR}/include_1.h"
-"${PUBLIC_HEADER_DIR}/include_2.h"
-"${PUBLIC_HEADER_DIR}/include_pch.h")
+	"${PUBLIC_HEADER_DIR}/include_1.h"
+	"${PUBLIC_HEADER_DIR}/include_2.h"
+	"${PUBLIC_HEADER_DIR}/include_pch.h")
 set(PRIVATE_HEADER_DIR "${SRC_DIR}")
 set(PRIVATE_HEADER_FILES
 	"${PRIVATE_HEADER_DIR}/source_1.h"	
