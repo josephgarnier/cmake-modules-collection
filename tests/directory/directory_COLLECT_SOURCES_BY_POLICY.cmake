@@ -49,7 +49,7 @@ function(${CMAKETEST_TEST})
 	ct_add_section(NAME "get_with_headers_separated")
 	function(${CMAKETEST_SECTION})
 		directory(COLLECT_SOURCES_BY_POLICY
-			PUBLIC_HEADERS_SEPARATED "on" "${TESTS_DATA_DIR}/include"
+			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR "${TESTS_DATA_DIR}/src"
 			SRC_SOURCE_FILES src_sources
 			PUBLIC_HEADER_DIR public_header_dir
@@ -72,7 +72,7 @@ function(${CMAKETEST_TEST})
 	ct_add_section(NAME "get_without_headers_separated")
 	function(${CMAKETEST_SECTION})
 		directory(COLLECT_SOURCES_BY_POLICY
-			PUBLIC_HEADERS_SEPARATED "off"
+			PUBLIC_HEADERS_SEPARATED off
 			SRC_DIR "${TESTS_DATA_DIR}/src"
 			SRC_SOURCE_FILES src_sources
 			PUBLIC_HEADER_DIR public_header_dir
@@ -92,7 +92,7 @@ function(${CMAKETEST_TEST})
 		ct_assert_equal(private_header_files "")
 
 		directory(COLLECT_SOURCES_BY_POLICY
-			PUBLIC_HEADERS_SEPARATED "off"  "${TESTS_DATA_DIR}/include"
+			PUBLIC_HEADERS_SEPARATED off "${TESTS_DATA_DIR}/include"
 			SRC_DIR "${TESTS_DATA_DIR}/src"
 			SRC_SOURCE_FILES src_sources
 			PUBLIC_HEADER_DIR public_header_dir
@@ -167,7 +167,7 @@ function(${CMAKETEST_TEST})
 	ct_add_section(NAME "throws_if_arg_public_headers_separated_is_missing_4" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		directory(COLLECT_SOURCES_BY_POLICY
-			PUBLIC_HEADERS_SEPARATED "on"
+			PUBLIC_HEADERS_SEPARATED on
 			SRC_DIR "${TESTS_DATA_DIR}/src"
 			SRC_SOURCE_FILES src_sources
 			PUBLIC_HEADER_DIR public_header_dir
@@ -180,7 +180,7 @@ function(${CMAKETEST_TEST})
 	ct_add_section(NAME "throws_if_arg_public_headers_separated_is_missing_5" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		directory(COLLECT_SOURCES_BY_POLICY
-			PUBLIC_HEADERS_SEPARATED "on" ""
+			PUBLIC_HEADERS_SEPARATED on ""
 			SRC_DIR "${TESTS_DATA_DIR}/src"
 			SRC_SOURCE_FILES src_sources
 			PUBLIC_HEADER_DIR public_header_dir
@@ -193,7 +193,7 @@ function(${CMAKETEST_TEST})
 	ct_add_section(NAME "throws_if_arg_public_headers_separated_dir_does_not_exists" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		directory(COLLECT_SOURCES_BY_POLICY
-			PUBLIC_HEADERS_SEPARATED "on" "fake/directory"
+			PUBLIC_HEADERS_SEPARATED on "fake/directory"
 			SRC_DIR "${TESTS_DATA_DIR}/src"
 			SRC_SOURCE_FILES src_sources
 			PUBLIC_HEADER_DIR public_header_dir
@@ -206,7 +206,7 @@ function(${CMAKETEST_TEST})
 	ct_add_section(NAME "throws_if_arg_src_dir_is_missing_1" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		directory(COLLECT_SOURCES_BY_POLICY
-			PUBLIC_HEADERS_SEPARATED "on" "${TESTS_DATA_DIR}/include"
+			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_SOURCE_FILES src_sources
 			PUBLIC_HEADER_DIR public_header_dir
 			PUBLIC_HEADER_FILES public_header_files
@@ -218,7 +218,7 @@ function(${CMAKETEST_TEST})
 	ct_add_section(NAME "throws_if_arg_src_dir_is_missing_2" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		directory(COLLECT_SOURCES_BY_POLICY
-			PUBLIC_HEADERS_SEPARATED "on" "${TESTS_DATA_DIR}/include"
+			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR
 			SRC_SOURCE_FILES src_sources
 			PUBLIC_HEADER_DIR public_header_dir
@@ -231,7 +231,7 @@ function(${CMAKETEST_TEST})
 	ct_add_section(NAME "throws_if_arg_src_dir_is_missing_3" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		directory(COLLECT_SOURCES_BY_POLICY
-			PUBLIC_HEADERS_SEPARATED "on" "${TESTS_DATA_DIR}/include"
+			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR ""
 			SRC_SOURCE_FILES src_sources
 			PUBLIC_HEADER_DIR public_header_dir
@@ -244,7 +244,7 @@ function(${CMAKETEST_TEST})
 	ct_add_section(NAME "throws_if_arg_src_dir_does_not_exists" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		directory(COLLECT_SOURCES_BY_POLICY
-			PUBLIC_HEADERS_SEPARATED "on" "${TESTS_DATA_DIR}/include"
+			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR "fake/directory"
 			SRC_SOURCE_FILES src_sources
 			PUBLIC_HEADER_DIR public_header_dir
@@ -257,7 +257,7 @@ function(${CMAKETEST_TEST})
 	ct_add_section(NAME "throws_if_arg_src_source_files_var_is_missing_1" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		directory(COLLECT_SOURCES_BY_POLICY
-			PUBLIC_HEADERS_SEPARATED "on" "${TESTS_DATA_DIR}/include"
+			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR "${TESTS_DATA_DIR}/src"
 			PUBLIC_HEADER_DIR public_header_dir
 			PUBLIC_HEADER_FILES public_header_files
@@ -269,7 +269,7 @@ function(${CMAKETEST_TEST})
 	ct_add_section(NAME "throws_if_arg_src_source_files_var_is_missing_2" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		directory(COLLECT_SOURCES_BY_POLICY
-			PUBLIC_HEADERS_SEPARATED "on" "${TESTS_DATA_DIR}/include"
+			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR "${TESTS_DATA_DIR}/src"
 			SRC_SOURCE_FILES
 			PUBLIC_HEADER_DIR public_header_dir
@@ -282,7 +282,7 @@ function(${CMAKETEST_TEST})
 	ct_add_section(NAME "throws_if_arg_src_source_files_var_is_missing_3" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		directory(COLLECT_SOURCES_BY_POLICY
-			PUBLIC_HEADERS_SEPARATED "on" "${TESTS_DATA_DIR}/include"
+			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR "${TESTS_DATA_DIR}/src"
 			SRC_SOURCE_FILES ""
 			PUBLIC_HEADER_DIR public_header_dir
@@ -295,7 +295,7 @@ function(${CMAKETEST_TEST})
 	ct_add_section(NAME "throws_if_arg_src_source_files_var_is_missing_4" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		directory(COLLECT_SOURCES_BY_POLICY
-			PUBLIC_HEADERS_SEPARATED "on" "${TESTS_DATA_DIR}/include"
+			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR "${TESTS_DATA_DIR}/src"
 			SRC_SOURCE_FILES "src_sources"
 			PUBLIC_HEADER_DIR public_header_dir
@@ -308,7 +308,7 @@ function(${CMAKETEST_TEST})
 	ct_add_section(NAME "throws_if_arg_public_header_dir_var_is_missing_1" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		directory(COLLECT_SOURCES_BY_POLICY
-			PUBLIC_HEADERS_SEPARATED "on" "${TESTS_DATA_DIR}/include"
+			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR "${TESTS_DATA_DIR}/src"
 			SRC_SOURCE_FILES src_sources
 			PUBLIC_HEADER_FILES public_header_files
@@ -320,7 +320,7 @@ function(${CMAKETEST_TEST})
 	ct_add_section(NAME "throws_if_arg_public_header_dir_var_is_missing_2" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		directory(COLLECT_SOURCES_BY_POLICY
-			PUBLIC_HEADERS_SEPARATED "on" "${TESTS_DATA_DIR}/include"
+			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR "${TESTS_DATA_DIR}/src"
 			SRC_SOURCE_FILES src_sources
 			PUBLIC_HEADER_DIR
@@ -333,7 +333,7 @@ function(${CMAKETEST_TEST})
 	ct_add_section(NAME "throws_if_arg_public_header_dir_var_is_missing_3" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		directory(COLLECT_SOURCES_BY_POLICY
-			PUBLIC_HEADERS_SEPARATED "on" "${TESTS_DATA_DIR}/include"
+			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR "${TESTS_DATA_DIR}/src"
 			SRC_SOURCE_FILES src_sources
 			PUBLIC_HEADER_DIR ""
@@ -346,7 +346,7 @@ function(${CMAKETEST_TEST})
 	ct_add_section(NAME "throws_if_arg_public_header_dir_var_is_missing_4" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		directory(COLLECT_SOURCES_BY_POLICY
-			PUBLIC_HEADERS_SEPARATED "on" "${TESTS_DATA_DIR}/include"
+			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR "${TESTS_DATA_DIR}/src"
 			SRC_SOURCE_FILES src_sources
 			PUBLIC_HEADER_DIR "public_header_dir"
@@ -359,7 +359,7 @@ function(${CMAKETEST_TEST})
 	ct_add_section(NAME "throws_if_arg_public_header_files_var_is_missing_1" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		directory(COLLECT_SOURCES_BY_POLICY
-			PUBLIC_HEADERS_SEPARATED "on" "${TESTS_DATA_DIR}/include"
+			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR "${TESTS_DATA_DIR}/src"
 			SRC_SOURCE_FILES src_sources
 			PUBLIC_HEADER_DIR public_header_dir
@@ -371,7 +371,7 @@ function(${CMAKETEST_TEST})
 	ct_add_section(NAME "throws_if_arg_public_header_files_var_is_missing_2" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		directory(COLLECT_SOURCES_BY_POLICY
-			PUBLIC_HEADERS_SEPARATED "on" "${TESTS_DATA_DIR}/include"
+			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR "${TESTS_DATA_DIR}/src"
 			SRC_SOURCE_FILES src_sources
 			PUBLIC_HEADER_DIR public_header_dir
@@ -384,7 +384,7 @@ function(${CMAKETEST_TEST})
 	ct_add_section(NAME "throws_if_arg_public_header_files_var_is_missing_3" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		directory(COLLECT_SOURCES_BY_POLICY
-			PUBLIC_HEADERS_SEPARATED "on" "${TESTS_DATA_DIR}/include"
+			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR "${TESTS_DATA_DIR}/src"
 			SRC_SOURCE_FILES src_sources
 			PUBLIC_HEADER_DIR public_header_dir
@@ -397,7 +397,7 @@ function(${CMAKETEST_TEST})
 	ct_add_section(NAME "throws_if_arg_public_header_files_var_is_missing_4" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		directory(COLLECT_SOURCES_BY_POLICY
-			PUBLIC_HEADERS_SEPARATED "on" "${TESTS_DATA_DIR}/include"
+			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR "${TESTS_DATA_DIR}/src"
 			SRC_SOURCE_FILES src_sources
 			PUBLIC_HEADER_DIR public_header_dir
@@ -410,7 +410,7 @@ function(${CMAKETEST_TEST})
 	ct_add_section(NAME "throws_if_arg_private_header_dir_var_is_missing_1" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		directory(COLLECT_SOURCES_BY_POLICY
-			PUBLIC_HEADERS_SEPARATED "on" "${TESTS_DATA_DIR}/include"
+			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR "${TESTS_DATA_DIR}/src"
 			SRC_SOURCE_FILES src_sources
 			PUBLIC_HEADER_DIR public_header_dir
@@ -422,7 +422,7 @@ function(${CMAKETEST_TEST})
 	ct_add_section(NAME "throws_if_arg_private_header_dir_var_is_missing_2" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		directory(COLLECT_SOURCES_BY_POLICY
-			PUBLIC_HEADERS_SEPARATED "on" "${TESTS_DATA_DIR}/include"
+			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR "${TESTS_DATA_DIR}/src"
 			SRC_SOURCE_FILES src_sources
 			PUBLIC_HEADER_DIR public_header_dir
@@ -435,7 +435,7 @@ function(${CMAKETEST_TEST})
 	ct_add_section(NAME "throws_if_arg_private_header_dir_var_is_missing_3" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		directory(COLLECT_SOURCES_BY_POLICY
-			PUBLIC_HEADERS_SEPARATED "on" "${TESTS_DATA_DIR}/include"
+			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR "${TESTS_DATA_DIR}/src"
 			SRC_SOURCE_FILES src_sources
 			PUBLIC_HEADER_DIR public_header_dir
@@ -448,7 +448,7 @@ function(${CMAKETEST_TEST})
 	ct_add_section(NAME "throws_if_arg_private_header_dir_var_is_missing_4" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		directory(COLLECT_SOURCES_BY_POLICY
-			PUBLIC_HEADERS_SEPARATED "on" "${TESTS_DATA_DIR}/include"
+			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR "${TESTS_DATA_DIR}/src"
 			SRC_SOURCE_FILES src_sources
 			PUBLIC_HEADER_DIR public_header_dir
@@ -461,7 +461,7 @@ function(${CMAKETEST_TEST})
 	ct_add_section(NAME "throws_if_arg_private_header_files_var_is_missing_1" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		directory(COLLECT_SOURCES_BY_POLICY
-			PUBLIC_HEADERS_SEPARATED "on" "${TESTS_DATA_DIR}/include"
+			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR "${TESTS_DATA_DIR}/src"
 			SRC_SOURCE_FILES src_sources
 			PUBLIC_HEADER_DIR public_header_dir
@@ -473,7 +473,7 @@ function(${CMAKETEST_TEST})
 	ct_add_section(NAME "throws_if_arg_private_header_files_var_is_missing_2" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		directory(COLLECT_SOURCES_BY_POLICY
-			PUBLIC_HEADERS_SEPARATED "on" "${TESTS_DATA_DIR}/include"
+			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR "${TESTS_DATA_DIR}/src"
 			SRC_SOURCE_FILES src_sources
 			PUBLIC_HEADER_DIR public_header_dir
@@ -486,7 +486,7 @@ function(${CMAKETEST_TEST})
 	ct_add_section(NAME "throws_if_arg_private_header_files_var_is_missing_3" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		directory(COLLECT_SOURCES_BY_POLICY
-			PUBLIC_HEADERS_SEPARATED "on" "${TESTS_DATA_DIR}/include"
+			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR "${TESTS_DATA_DIR}/src"
 			SRC_SOURCE_FILES src_sources
 			PUBLIC_HEADER_DIR public_header_dir
@@ -499,7 +499,7 @@ function(${CMAKETEST_TEST})
 	ct_add_section(NAME "throws_if_arg_private_header_files_var_is_missing_4" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		directory(COLLECT_SOURCES_BY_POLICY
-			PUBLIC_HEADERS_SEPARATED "on" "${TESTS_DATA_DIR}/include"
+			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR "${TESTS_DATA_DIR}/src"
 			SRC_SOURCE_FILES src_sources
 			PUBLIC_HEADER_DIR public_header_dir
