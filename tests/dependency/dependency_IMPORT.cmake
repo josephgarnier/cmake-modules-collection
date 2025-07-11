@@ -258,6 +258,16 @@ function(${CMAKETEST_TEST})
 		)
 	endfunction()
 
+	ct_add_section(NAME "throws_if_arg_target_already_exists" EXPECTFAIL)
+	function(${CMAKETEST_SECTION})
+		dependency(IMPORT "imp_shared_mock_lib-1"
+			SHARED
+			${build_type_arg}
+			ROOT_DIR "${TESTS_DATA_DIR}"
+			INCLUDE_DIR "${TESTS_DATA_DIR}/include"
+		)
+	endfunction()
+
 	ct_add_section(NAME "throws_if_arg_binary_type_is_missing" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		dependency(IMPORT "${lib_target_name}"
