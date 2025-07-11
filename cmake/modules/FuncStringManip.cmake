@@ -15,10 +15,10 @@ Synopsis
 
 .. parsed-literal::
 
-    string_manip(`SPLIT`_ <string> <output-list-var>)
-    string_manip(`SPLIT_TRANSFORM`_ <string-var> <ACTION> [OUTPUT_VARIABLE <output-var>])
-    string_manip(`STRIP_INTERFACES`_ <string-var> [OUTPUT_VARIABLE <output-var>])
-    string_manip(`EXTRACT_INTERFACE`_ <string-var> <BUILD|INSTALL> [OUTPUT_VARIABLE <output-var>])
+  string_manip(`SPLIT`_ <string> <output-list-var>)
+  string_manip(`SPLIT_TRANSFORM`_ <string-var> <ACTION> [OUTPUT_VARIABLE <output-var>])
+  string_manip(`STRIP_INTERFACES`_ <string-var> [OUTPUT_VARIABLE <output-var>])
+  string_manip(`EXTRACT_INTERFACE`_ <string-var> <BUILD|INSTALL> [OUTPUT_VARIABLE <output-var>])
 
 Usage
 ^^^^^

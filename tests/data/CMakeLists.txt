@@ -43,7 +43,7 @@ set(PRIVATE_HEADER_FILES
 	"${PRIVATE_HEADER_DIR}/sub_2/source_sub_2.h")
 set(PRECOMPILED_HEADER_FILE "${PUBLIC_HEADER_DIR}/include_pch.h")
 
-####################### Configure system and architecture info ##############
+####################### Configure system and architecture info ################
 if(NOT CMAKE_SYSTEM_PROCESSOR)
 	set(CMAKE_SYSTEM_PROCESSOR ${CMAKE_HOST_SYSTEM_PROCESSOR})
 endif()

@@ -15,11 +15,11 @@ Synopsis
 
 .. parsed-literal::
 
-    directory(`SCAN`_ <output-list-var> [...])
-    directory(`SCAN_DIRS`_ <output-list-var> [...])
-    directory(`FIND_LIB`_ <output-lib-var> [...])
-    directory(`COLLECT_SOURCES_BY_LOCATION`_ [...])
-    directory(`COLLECT_SOURCES_BY_POLICY`_ [...])
+  directory(`SCAN`_ <output-list-var> [...])
+  directory(`SCAN_DIRS`_ <output-list-var> [...])
+  directory(`FIND_LIB`_ <output-lib-var> [...])
+  directory(`COLLECT_SOURCES_BY_LOCATION`_ [...])
+  directory(`COLLECT_SOURCES_BY_POLICY`_ [...])
 
 Usage
 ^^^^^
@@ -52,10 +52,11 @@ Usage
   .. code-block:: cmake
 
     directory(SCAN result_list
-              LIST_DIRECTORIES off
-              RELATIVE on
-              ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}"
-              INCLUDE_REGEX ".*[.]cpp$|.*[.]cc$|.*[.]cxx$")
+      LIST_DIRECTORIES off
+      RELATIVE on
+      ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}"
+      INCLUDE_REGEX ".*[.]cpp$|.*[.]cc$|.*[.]cxx$"
+    )
     # output is:
     #   src/main.cpp;src/util.cpp;lib/module.cpp
 
@@ -88,10 +89,11 @@ Usage
   .. code-block:: cmake
 
     directory(SCAN_DIRS matched_dirs
-              RECURSE on
-              RELATIVE on
-              ROOT_DIR "${CMAKE_SOURCE_DIR}"
-              INCLUDE_REGEX "include")
+      RECURSE on
+      RELATIVE on
+      ROOT_DIR "${CMAKE_SOURCE_DIR}"
+      INCLUDE_REGEX "include"
+    )
     # output is:
     #   src/include;src/lib/include
 
@@ -167,11 +169,12 @@ Usage
   .. code-block:: cmake
 
     directory(FIND_LIB mylib_path
-              FIND_IMPLIB mylib_import
-              NAME "zlib1"
-              SHARED
-              RELATIVE on
-              ROOT_DIR "${CMAKE_SOURCE_DIR}/libs")
+      FIND_IMPLIB mylib_import
+      NAME "zlib1"
+      SHARED
+      RELATIVE on
+      ROOT_DIR "${CMAKE_SOURCE_DIR}/libs"
+    )
     # output is:
     #   lib=lib/zlib1.dll
     #   implib=lib/zlib1.lib
@@ -219,21 +222,24 @@ Usage
   .. code-block:: cmake
 
     directory(COLLECT_SOURCES_BY_LOCATION
-              SRC_DIR "${CMAKE_SOURCE_DIR}/src"
-              SRC_SOURCE_FILES src_sources
-              SRC_HEADER_FILES src_headers
-              INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include"
-              INCLUDE_HEADER_FILES include_headers)
+      SRC_DIR "${CMAKE_SOURCE_DIR}/src"
+      SRC_SOURCE_FILES src_sources
+      SRC_HEADER_FILES src_headers
+      INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include"
+      INCLUDE_HEADER_FILES include_headers
+    )
 
     # Or
     directory(COLLECT_SOURCES_BY_LOCATION
-              SRC_DIR "${CMAKE_SOURCE_DIR}/src"
-              SRC_SOURCE_FILES src_sources
-              SRC_HEADER_FILES src_headers)
+      SRC_DIR "${CMAKE_SOURCE_DIR}/src"
+      SRC_SOURCE_FILES src_sources
+      SRC_HEADER_FILES src_headers
+    )
 
     # Or
     directory(INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include"
-              INCLUDE_HEADER_FILES include_headers)
+      INCLUDE_HEADER_FILES include_headers
+    )
 
 .. signature::
   directory(COLLECT_SOURCES_BY_POLICY [...])
@@ -289,13 +295,14 @@ Usage
   .. code-block:: cmake
 
     directory(COLLECT_SOURCES_BY_POLICY
-              PUBLIC_HEADERS_SEPARATED on "${CMAKE_SOURCE_DIR}/include/mylib"
-              SRC_DIR "${CMAKE_SOURCE_DIR}/src"
-              SRC_SOURCE_FILES sources
-              PUBLIC_HEADER_DIR public_headers_dir
-              PUBLIC_HEADER_FILES public_headers
-              PRIVATE_HEADER_DIR private_headers_dir
-              PRIVATE_HEADER_FILES private_headers)
+      PUBLIC_HEADERS_SEPARATED on "${CMAKE_SOURCE_DIR}/include/mylib"
+      SRC_DIR "${CMAKE_SOURCE_DIR}/src"
+      SRC_SOURCE_FILES sources
+      PUBLIC_HEADER_DIR public_headers_dir
+      PUBLIC_HEADER_FILES public_headers
+      PRIVATE_HEADER_DIR private_headers_dir
+      PRIVATE_HEADER_FILES private_headers
+    )
 #]=======================================================================]
 
 include_guard()

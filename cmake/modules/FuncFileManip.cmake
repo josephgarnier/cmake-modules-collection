@@ -15,10 +15,10 @@ Synopsis
 
 .. parsed-literal::
 
-    file_manip(`RELATIVE_PATH`_ <file-list-var> BASE_DIR <directory-path> [OUTPUT_VARIABLE <output-list-var>])
-    file_manip(`ABSOLUTE_PATH`_ <file-list-var> BASE_DIR <directory-path> [OUTPUT_VARIABLE <output-list-var>])
-    file_manip(`STRIP_PATH`_ <file-list-var> BASE_DIR <directory-path> [OUTPUT_VARIABLE <output-list-var>])
-    file_manip(`GET_COMPONENT`_ <file-path>... MODE <mode> OUTPUT_VARIABLE <output-list-var>)
+  file_manip(`RELATIVE_PATH`_ <file-list-var> BASE_DIR <directory-path> [OUTPUT_VARIABLE <output-list-var>])
+  file_manip(`ABSOLUTE_PATH`_ <file-list-var> BASE_DIR <directory-path> [OUTPUT_VARIABLE <output-list-var>])
+  file_manip(`STRIP_PATH`_ <file-list-var> BASE_DIR <directory-path> [OUTPUT_VARIABLE <output-list-var>])
+  file_manip(`GET_COMPONENT`_ <file-path>... MODE <mode> OUTPUT_VARIABLE <output-list-var>)
 
 Usage
 ^^^^^

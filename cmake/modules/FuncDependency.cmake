@@ -15,10 +15,10 @@ Synopsis
 
 .. parsed-literal::
 
-    dependency(`IMPORT`_ <lib-target-name> [...])
-    dependency(`ADD_INCLUDE_DIRECTORIES`_ <lib-target-name> <SET|APPEND> PUBLIC <gen-expr>...)
-    dependency(`SET_IMPORTED_LOCATION`_ <lib-target-name> [CONFIGURATION <config_type>] PUBLIC <gen-expr>...)
-    dependency(`EXPORT`_ <lib-target-name>... <BUILD_TREE|INSTALL_TREE> [APPEND] OUTPUT_FILE <file_name>)
+  dependency(`IMPORT`_ <lib-target-name> [...])
+  dependency(`ADD_INCLUDE_DIRECTORIES`_ <lib-target-name> <SET|APPEND> PUBLIC <gen-expr>...)
+  dependency(`SET_IMPORTED_LOCATION`_ <lib-target-name> [CONFIGURATION <config_type>] PUBLIC <gen-expr>...)
+  dependency(`EXPORT`_ <lib-target-name>... <BUILD_TREE|INSTALL_TREE> [APPEND] OUTPUT_FILE <file_name>)
 
 Usage
 ^^^^^
@@ -140,22 +140,22 @@ Usage
     # Is more or less equivalent to:
     add_library("my_shared_lib" SHARED IMPORTED)
     set_target_properties("my_shared_lib" PROPERTIES
-        INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_SOURCE_DIR}/include/mylib"
-        INTERFACE_INCLUDE_DIRECTORIES_BUILD ""
-        INTERFACE_INCLUDE_DIRECTORIES_INSTALL ""
+      INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_SOURCE_DIR}/include/mylib"
+      INTERFACE_INCLUDE_DIRECTORIES_BUILD ""
+      INTERFACE_INCLUDE_DIRECTORIES_INSTALL ""
     )
     find_library(lib NAMES "mylib_1.11.0")
     find_library(implib NAMES "mylibd_1.11.0")
     cmake_path(GET lib FILENAME lib_name)
     set_target_properties("my_shared_lib" PROPERTIES
-        IMPORTED_LOCATION_RELEASE "${lib}"
-        IMPORTED_LOCATION_BUILD_RELEASE ""
-        IMPORTED_LOCATION_INSTALL_RELEASE ""
-        IMPORTED_IMPLIB_RELEASE "${implib}"
-        IMPORTED_SONAME_RELEASE "${lib_name}"
+      IMPORTED_LOCATION_RELEASE "${lib}"
+      IMPORTED_LOCATION_BUILD_RELEASE ""
+      IMPORTED_LOCATION_INSTALL_RELEASE ""
+      IMPORTED_IMPLIB_RELEASE "${implib}"
+      IMPORTED_SONAME_RELEASE "${lib_name}"
     )
     set_property(TARGET "my_shared_lib"
-        APPEND PROPERTY IMPORTED_CONFIGURATIONS "${CMAKE_BUILD_TYPE}"
+      APPEND PROPERTY IMPORTED_CONFIGURATIONS "${CMAKE_BUILD_TYPE}"
     )
 
     # Import static lib
@@ -169,22 +169,22 @@ Usage
     # Is more or less equivalent to:
     add_library("my_shared_lib" SHARED IMPORTED)
     set_target_properties("my_shared_lib" PROPERTIES
-        INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_SOURCE_DIR}/include/mylib"
-        INTERFACE_INCLUDE_DIRECTORIES_BUILD ""
-        INTERFACE_INCLUDE_DIRECTORIES_INSTALL ""
+      INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_SOURCE_DIR}/include/mylib"
+      INTERFACE_INCLUDE_DIRECTORIES_BUILD ""
+      INTERFACE_INCLUDE_DIRECTORIES_INSTALL ""
     )
     find_library(lib NAMES "mylib_1.11.0")
     find_library(implib NAMES "mylibd_1.11.0")
     cmake_path(GET lib FILENAME lib_name)
     set_target_properties("my_shared_lib" PROPERTIES
-        IMPORTED_LOCATION_RELEASE "${lib}"
-        IMPORTED_LOCATION_BUILD_RELEASE ""
-        IMPORTED_LOCATION_INSTALL_RELEASE ""
-        IMPORTED_IMPLIB_RELEASE "${implib}"
-        IMPORTED_SONAME_RELEASE "${lib_name}"
+      IMPORTED_LOCATION_RELEASE "${lib}"
+      IMPORTED_LOCATION_BUILD_RELEASE ""
+      IMPORTED_LOCATION_INSTALL_RELEASE ""
+      IMPORTED_IMPLIB_RELEASE "${implib}"
+      IMPORTED_SONAME_RELEASE "${lib_name}"
     )
     set_property(TARGET "my_shared_lib"
-        APPEND PROPERTY IMPORTED_CONFIGURATIONS "${CMAKE_BUILD_TYPE}"
+      APPEND PROPERTY IMPORTED_CONFIGURATIONS "${CMAKE_BUILD_TYPE}"
     )
 
 .. signature::
@@ -196,7 +196,7 @@ Usage
   command works similarly to :cmake:command:`target_include_directories() <cmake:command:target_include_directories>` in CMake,
   but introduces a separation between build-time and install-time contexts for
   imported dependencies.
-  
+
   This command is intended for targets that have been previously declared
   using :command:`dependency(IMPORT)`, and is typically used in conjunction
   with :command:`dependency(EXPORT)` to complete the definition of
@@ -214,8 +214,8 @@ Usage
 
   The command accepts the following mutually exclusive modifiers:
 
-  - ``SET``: Replaces any existing include directories.
-  - ``APPEND``: Adds to the current list of include directories.
+  * ``SET``: Replaces any existing include directories.
+  * ``APPEND``: Adds to the current list of include directories.
 
   This command internally sets or appends the following CMake properties on the target:
 
@@ -267,9 +267,9 @@ Usage
     )
     # Is more or less equivalent to:
     target_include_directories(static_mock_lib
-        PUBLIC
-            "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include/mylib>"
-            "$<INSTALL_INTERFACE:include/mylib>"
+      PUBLIC
+          "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include/mylib>"
+          "$<INSTALL_INTERFACE:include/mylib>"
     )
 
     # Set include directories for static lib
@@ -280,9 +280,9 @@ Usage
     )
     # Is more or less equivalent to:
     target_include_directories(static_mock_lib
-        PUBLIC
-            "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include/mylib>"
-            "$<INSTALL_INTERFACE:include/mylib>"
+      PUBLIC
+          "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include/mylib>"
+          "$<INSTALL_INTERFACE:include/mylib>"
     )
 
   This example sets ``my_shared_lib`` and ``my_static_lib`` to expose:
