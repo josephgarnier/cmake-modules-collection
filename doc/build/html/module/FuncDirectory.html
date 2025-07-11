@@ -93,10 +93,11 @@ or as absolute paths if <code class="docutils literal notranslate"><span class="
 the result. If <code class="docutils literal notranslate"><span class="pre">LIST_DIRECTORIES</span></code> is <code class="docutils literal notranslate"><span class="pre">off</span></code>, only files are listed.</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">directory(</span><span class="no">SCAN</span><span class="w"> </span><span class="nb">result_list</span>
-<span class="w">          </span><span class="no">LIST_DIRECTORIES</span><span class="w"> </span><span class="nb">off</span>
-<span class="w">          </span><span class="no">RELATIVE</span><span class="w"> </span><span class="nb">on</span>
-<span class="w">          </span><span class="no">ROOT_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_CURRENT_SOURCE_DIR}&quot;</span>
-<span class="w">          </span><span class="no">INCLUDE_REGEX</span><span class="w"> </span><span class="s">&quot;.*[.]cpp$|.*[.]cc$|.*[.]cxx$&quot;</span><span class="nf">)</span>
+<span class="w">  </span><span class="no">LIST_DIRECTORIES</span><span class="w"> </span><span class="nb">off</span>
+<span class="w">  </span><span class="no">RELATIVE</span><span class="w"> </span><span class="nb">on</span>
+<span class="w">  </span><span class="no">ROOT_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_CURRENT_SOURCE_DIR}&quot;</span>
+<span class="w">  </span><span class="no">INCLUDE_REGEX</span><span class="w"> </span><span class="s">&quot;.*[.]cpp$|.*[.]cc$|.*[.]cxx$&quot;</span>
+<span class="nf">)</span>
 <span class="c"># output is:</span>
 <span class="c">#   src/main.cpp;src/util.cpp;lib/module.cpp</span>
 </pre></div>
@@ -124,10 +125,11 @@ are considered.</p>
 <code class="docutils literal notranslate"><span class="pre">RELATIVE</span></code> is <code class="docutils literal notranslate"><span class="pre">on</span></code>, or as absolute paths if <code class="docutils literal notranslate"><span class="pre">RELATIVE</span></code> is <code class="docutils literal notranslate"><span class="pre">off</span></code>.</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">directory(</span><span class="no">SCAN_DIRS</span><span class="w"> </span><span class="nb">matched_dirs</span>
-<span class="w">          </span><span class="no">RECURSE</span><span class="w"> </span><span class="nb">on</span>
-<span class="w">          </span><span class="no">RELATIVE</span><span class="w"> </span><span class="nb">on</span>
-<span class="w">          </span><span class="no">ROOT_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}&quot;</span>
-<span class="w">          </span><span class="no">INCLUDE_REGEX</span><span class="w"> </span><span class="s">&quot;include&quot;</span><span class="nf">)</span>
+<span class="w">  </span><span class="no">RECURSE</span><span class="w"> </span><span class="nb">on</span>
+<span class="w">  </span><span class="no">RELATIVE</span><span class="w"> </span><span class="nb">on</span>
+<span class="w">  </span><span class="no">ROOT_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}&quot;</span>
+<span class="w">  </span><span class="no">INCLUDE_REGEX</span><span class="w"> </span><span class="s">&quot;include&quot;</span>
+<span class="nf">)</span>
 <span class="c"># output is:</span>
 <span class="c">#   src/include;src/lib/include</span>
 </pre></div>
@@ -195,11 +197,12 @@ or custom build setups where standard <span class="target" id="index-1-command:c
 sufficient.</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">directory(</span><span class="no">FIND_LIB</span><span class="w"> </span><span class="nb">mylib_path</span>
-<span class="w">          </span><span class="no">FIND_IMPLIB</span><span class="w"> </span><span class="nb">mylib_import</span>
-<span class="w">          </span><span class="no">NAME</span><span class="w"> </span><span class="s">&quot;zlib1&quot;</span>
-<span class="w">          </span><span class="no">SHARED</span>
-<span class="w">          </span><span class="no">RELATIVE</span><span class="w"> </span><span class="nb">on</span>
-<span class="w">          </span><span class="no">ROOT_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/libs&quot;</span><span class="nf">)</span>
+<span class="w">  </span><span class="no">FIND_IMPLIB</span><span class="w"> </span><span class="nb">mylib_import</span>
+<span class="w">  </span><span class="no">NAME</span><span class="w"> </span><span class="s">&quot;zlib1&quot;</span>
+<span class="w">  </span><span class="no">SHARED</span>
+<span class="w">  </span><span class="no">RELATIVE</span><span class="w"> </span><span class="nb">on</span>
+<span class="w">  </span><span class="no">ROOT_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/libs&quot;</span>
+<span class="nf">)</span>
 <span class="c"># output is:</span>
 <span class="c">#   lib=lib/zlib1.dll</span>
 <span class="c">#   implib=lib/zlib1.lib</span>
@@ -239,21 +242,24 @@ neither is specified, or if any of the corresponding output variable
 arguments are missing, the command raises a fatal error.</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">directory(</span><span class="no">COLLECT_SOURCES_BY_LOCATION</span>
-<span class="w">          </span><span class="no">SRC_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src&quot;</span>
-<span class="w">          </span><span class="no">SRC_SOURCE_FILES</span><span class="w"> </span><span class="nb">src_sources</span>
-<span class="w">          </span><span class="no">SRC_HEADER_FILES</span><span class="w"> </span><span class="nb">src_headers</span>
-<span class="w">          </span><span class="no">INCLUDE_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/include&quot;</span>
-<span class="w">          </span><span class="no">INCLUDE_HEADER_FILES</span><span class="w"> </span><span class="nb">include_headers</span><span class="nf">)</span>
+<span class="w">  </span><span class="no">SRC_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src&quot;</span>
+<span class="w">  </span><span class="no">SRC_SOURCE_FILES</span><span class="w"> </span><span class="nb">src_sources</span>
+<span class="w">  </span><span class="no">SRC_HEADER_FILES</span><span class="w"> </span><span class="nb">src_headers</span>
+<span class="w">  </span><span class="no">INCLUDE_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/include&quot;</span>
+<span class="w">  </span><span class="no">INCLUDE_HEADER_FILES</span><span class="w"> </span><span class="nb">include_headers</span>
+<span class="nf">)</span>
 
 <span class="c"># Or</span>
 <span class="nf">directory(</span><span class="no">COLLECT_SOURCES_BY_LOCATION</span>
-<span class="w">          </span><span class="no">SRC_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src&quot;</span>
-<span class="w">          </span><span class="no">SRC_SOURCE_FILES</span><span class="w"> </span><span class="nb">src_sources</span>
-<span class="w">          </span><span class="no">SRC_HEADER_FILES</span><span class="w"> </span><span class="nb">src_headers</span><span class="nf">)</span>
+<span class="w">  </span><span class="no">SRC_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src&quot;</span>
+<span class="w">  </span><span class="no">SRC_SOURCE_FILES</span><span class="w"> </span><span class="nb">src_sources</span>
+<span class="w">  </span><span class="no">SRC_HEADER_FILES</span><span class="w"> </span><span class="nb">src_headers</span>
+<span class="nf">)</span>
 
 <span class="c"># Or</span>
 <span class="nf">directory(</span><span class="no">INCLUDE_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/include&quot;</span>
-<span class="w">          </span><span class="no">INCLUDE_HEADER_FILES</span><span class="w"> </span><span class="nb">include_headers</span><span class="nf">)</span>
+<span class="w">  </span><span class="no">INCLUDE_HEADER_FILES</span><span class="w"> </span><span class="nb">include_headers</span>
+<span class="nf">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -307,13 +313,14 @@ header file list.</p></li>
 does not refer to an existing directory, a fatal error is raised.</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">directory(</span><span class="no">COLLECT_SOURCES_BY_POLICY</span>
-<span class="w">          </span><span class="no">PUBLIC_HEADERS_SEPARATED</span><span class="w"> </span><span class="nb">on</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/include/mylib&quot;</span>
-<span class="w">          </span><span class="no">SRC_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src&quot;</span>
-<span class="w">          </span><span class="no">SRC_SOURCE_FILES</span><span class="w"> </span><span class="nb">sources</span>
-<span class="w">          </span><span class="no">PUBLIC_HEADER_DIR</span><span class="w"> </span><span class="nb">public_headers_dir</span>
-<span class="w">          </span><span class="no">PUBLIC_HEADER_FILES</span><span class="w"> </span><span class="nb">public_headers</span>
-<span class="w">          </span><span class="no">PRIVATE_HEADER_DIR</span><span class="w"> </span><span class="nb">private_headers_dir</span>
-<span class="w">          </span><span class="no">PRIVATE_HEADER_FILES</span><span class="w"> </span><span class="nb">private_headers</span><span class="nf">)</span>
+<span class="w">  </span><span class="no">PUBLIC_HEADERS_SEPARATED</span><span class="w"> </span><span class="nb">on</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/include/mylib&quot;</span>
+<span class="w">  </span><span class="no">SRC_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src&quot;</span>
+<span class="w">  </span><span class="no">SRC_SOURCE_FILES</span><span class="w"> </span><span class="nb">sources</span>
+<span class="w">  </span><span class="no">PUBLIC_HEADER_DIR</span><span class="w"> </span><span class="nb">public_headers_dir</span>
+<span class="w">  </span><span class="no">PUBLIC_HEADER_FILES</span><span class="w"> </span><span class="nb">public_headers</span>
+<span class="w">  </span><span class="no">PRIVATE_HEADER_DIR</span><span class="w"> </span><span class="nb">private_headers_dir</span>
+<span class="w">  </span><span class="no">PRIVATE_HEADER_FILES</span><span class="w"> </span><span class="nb">private_headers</span>
+<span class="nf">)</span>
 </pre></div>
 </div>
 </dd></dl>

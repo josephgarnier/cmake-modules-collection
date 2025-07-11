@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>BuildBinTarget &mdash; CMake Modules Collection</title>
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3862c66" />
+    <link rel="stylesheet" type="text/css" href="../_static/cmake.css?v=4d06bd55" />
+    
+    <script src="../_static/documentation_options.js?v=977c7dfd"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../_static/cmake-favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="StringManip" href="FuncStringManip.html" />
+ 
+
+  </head><body>
+    <input id="sidebar-check" type="checkbox" />
+    <label id="sidebar-overlay" for="sidebar-check"></label>
+
+
+
+    <div class="related relbar1" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="FuncStringManip.html" title="StringManip"
+             accesskey="P">previous</a> |</li>
+  <li>
+    <label class="sidebar-toggle" for="sidebar-check"></label>
+  </li>
+  <li class="rootlink">
+    <img src="../_static/cmake-logo-16.png" width="16" height="16" alt=""/>
+    <a href="https://cmake.org/">CMake 4.0.1</a>
+    <span class="reldelim1"> &#187;</span>
+  </li>
+  <li>
+    <a href="../index.html">Documentation</a> &#187;
+  </li>
+
+        <li class="nav-item nav-item-this"><a href="">BuildBinTarget</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="buildbintarget">
+<span id="module:BuildBinTarget"></span><h1>BuildBinTarget<a class="headerlink" href="#buildbintarget" title="Link to this heading">¶</a></h1>
+<p>Operations to fully create and configure a <em>C++</em> binary target. It greatly
+simplifies the most common process of creating an executable or library, by
+wrapping calls to CMake functions in higher-level functions. However, for more
+complex cases, you will need to use CMake's native commands. It requires CMake
+3.20 or newer.</p>
+<section id="synopsis">
+<h2>Synopsis<a class="headerlink" href="#synopsis" title="Link to this heading">¶</a></h2>
+<pre class="literal-block">build_bin_target(<a class="reference internal" href="#create">CREATE</a> &lt;target-name&gt; &lt;STATIC|SHARED|HEADER|EXEC&gt;)
+build_bin_target(<a class="reference internal" href="#configure-settings">CONFIGURE_SETTINGS</a> &lt;target-name&gt; [...])
+build_bin_target(<a class="reference internal" href="#add-sources">ADD_SOURCES</a> &lt;target-name&gt; [...])
+build_bin_target(<a class="reference internal" href="#add-precompiled-header">ADD_PRECOMPILED_HEADER</a> &lt;target-name&gt; HEADER_FILE &lt;file-path&gt;)
+build_bin_target(<a class="reference internal" href="#add-include-directories">ADD_INCLUDE_DIRECTORIES</a> &lt;target-name&gt; INCLUDE_DIRECTORIES &lt;directory-path&gt;...)</pre>
+</section>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h2>
+<dl class="cmake signature">
+<dt class="sig sig-object cmake" id="create">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">build_bin_target(</span></span><span class="no"><span class="pre">CREATE</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;target-name&gt;</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;</span></span><span class="no"><span class="pre">STATIC</span></span><span class="p"><span class="pre">|</span></span><span class="no"><span class="pre">SHARED</span></span><span class="p"><span class="pre">|</span></span><span class="no"><span class="pre">HEADER</span></span><span class="p"><span class="pre">|</span></span><span class="no"><span class="pre">EXEC</span></span><span class="o"><span class="pre">&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#create" title="Link to this definition">¶</a></dt>
+<dd><p>Create a binary target named <code class="docutils literal notranslate"><span class="pre">&lt;target-name&gt;</span></code> and add it to the current
+CMake project, according to the specified binary type: <code class="docutils literal notranslate"><span class="pre">STATIC</span></code>, <code class="docutils literal notranslate"><span class="pre">SHARED</span></code>
+, <code class="docutils literal notranslate"><span class="pre">HEADER</span></code>, <code class="docutils literal notranslate"><span class="pre">EXEC</span></code>.</p>
+<p>Example usage:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">build_bin_target(</span><span class="no">CREATE</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span><span class="w"> </span><span class="no">STATIC</span><span class="nf">)</span>
+<span class="nf">build_bin_target(</span><span class="no">CREATE</span><span class="w"> </span><span class="s">&quot;my_shared_lib&quot;</span><span class="w"> </span><span class="no">SHARED</span><span class="nf">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="cmake signature">
+<dt class="sig sig-object cmake" id="configure-settings">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">build_bin_target(</span></span><span class="no"><span class="pre">CONFIGURE_SETTINGS</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;target-name&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">[...]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#configure-settings" title="Link to this definition">¶</a></dt>
+<dd><p>Configure settings for an existing binary target:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">build_bin_target(</span><span class="no">CONFIGURE_SETTINGS</span><span class="w"> </span><span class="nv">&lt;target-name&gt;</span>
+<span class="w">                </span><span class="p">[</span><span class="no">COMPILER_FEATURES</span><span class="w"> </span><span class="nv">&lt;feature&gt;...</span><span class="p">]</span>
+<span class="w">                </span><span class="p">[</span><span class="no">COMPILE_DEFINITIONS</span><span class="w"> </span><span class="nv">&lt;definition&gt;...</span><span class="p">]</span>
+<span class="w">                </span><span class="p">[</span><span class="no">COMPILE_OPTIONS</span><span class="w"> </span><span class="nv">&lt;option&gt;...</span><span class="p">]</span>
+<span class="w">                </span><span class="p">[</span><span class="no">LINK_OPTIONS</span><span class="w"> </span><span class="nv">&lt;option&gt;...</span><span class="p">]</span><span class="nf">)</span>
+</pre></div>
+</div>
+<p>This command updates compile and link settings of a previously created
+target <code class="docutils literal notranslate"><span class="pre">&lt;target-name&gt;</span></code>. The following configuration options are supported:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">COMPILER_FEATURES</span></code>: Add required compiler features (e.g., <code class="docutils literal notranslate"><span class="pre">cxx_std_20</span></code>,
+<code class="docutils literal notranslate"><span class="pre">cxx_lambda</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">COMPILE_DEFINITIONS</span></code>: Add preprocessor definitions (e.g., <code class="docutils literal notranslate"><span class="pre">MY_DEFINE</span></code>
+or <code class="docutils literal notranslate"><span class="pre">MY_DEFINE=42</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">COMPILE_OPTIONS</span></code>: Add compiler command-line options (e.g., <code class="docutils literal notranslate"><span class="pre">-Wall</span></code>,
+<code class="docutils literal notranslate"><span class="pre">/W4</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LINK_OPTIONS</span></code>: Add linker command-line options (e.g., <code class="docutils literal notranslate"><span class="pre">-s</span></code>,
+<code class="docutils literal notranslate"><span class="pre">/INCREMENTAL:NO</span></code>).</p></li>
+</ul>
+<p>The target is also assigned to a default folder for improved IDE integration.
+All options are optional and may appear in any order. If a section is
+missing, it is simply ignored without warning.</p>
+<p>This command is intended for targets that have been previously created
+using <span class="target" id="index-0-command:build_bin_target"></span><a class="reference internal" href="#create" title="build_bin_target(create)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">build_bin_target(CREATE)</span></code></a>.</p>
+<p>Example usage:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">build_bin_target(</span><span class="no">CREATE</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span><span class="w"> </span><span class="no">STATIC</span><span class="nf">)</span>
+<span class="nf">build_bin_target(</span><span class="no">CONFIGURE_SETTINGS</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span>
+<span class="w">  </span><span class="no">COMPILER_FEATURES</span><span class="w"> </span><span class="s">&quot;cxx_std_20&quot;</span>
+<span class="w">  </span><span class="no">COMPILE_DEFINITIONS</span><span class="w"> </span><span class="s">&quot;MY_DEFINE&quot;</span>
+<span class="w">  </span><span class="no">COMPILE_OPTIONS</span><span class="w"> </span><span class="s">&quot;-Wall&quot;</span><span class="w"> </span><span class="s">&quot;-Wextra&quot;</span>
+<span class="w">  </span><span class="no">LINK_OPTIONS</span><span class="w"> </span><span class="s">&quot;-s&quot;</span>
+<span class="nf">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="cmake signature">
+<dt class="sig sig-object cmake" id="add-sources">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">build_bin_target(</span></span><span class="no"><span class="pre">ADD_SOURCES</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;target-name&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">[...]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#add-sources" title="Link to this definition">¶</a></dt>
+<dd><p>Add source and header files to an existing binary target:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">build_bin_target(</span><span class="no">ADD_SOURCES</span><span class="w"> </span><span class="nv">&lt;target-name&gt;</span>
+<span class="w">                </span><span class="no">SOURCE_FILES</span><span class="w"> </span><span class="nv">&lt;file-path&gt;...</span>
+<span class="w">                </span><span class="no">PRIVATE_HEADER_FILES</span><span class="w"> </span><span class="nv">&lt;file-path&gt;...</span>
+<span class="w">                </span><span class="no">PUBLIC_HEADER_FILES</span><span class="w"> </span><span class="nv">&lt;file-path&gt;...</span><span class="nf">)</span>
+</pre></div>
+</div>
+<p>Assigns implementation and header files to the given binary target
+<code class="docutils literal notranslate"><span class="pre">&lt;target-name&gt;</span></code> with <code class="docutils literal notranslate"><span class="pre">PRIVATE</span></code> visibility:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">SOURCE_FILES</span></code>: A list of source files (e.g., <code class="docutils literal notranslate"><span class="pre">.cpp</span></code>, <code class="docutils literal notranslate"><span class="pre">.c</span></code>)
+typically located in the <code class="docutils literal notranslate"><span class="pre">src/</span></code> directory.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PRIVATE_HEADER_FILES</span></code>: A list of private headers (e.g., <code class="docutils literal notranslate"><span class="pre">.h</span></code>)
+typically located in the <code class="docutils literal notranslate"><span class="pre">src/</span></code> directory.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PUBLIC_HEADER_FILES</span></code>: A list of public headers, usually found in an
+<code class="docutils literal notranslate"><span class="pre">include/</span></code> directory.</p></li>
+</ul>
+<p>It also defines a logical grouping of source files in IDEs (e.g., Visual
+Studio) using <span class="target" id="index-0-command:cmake:command:source_group"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/source_group.html#command:source_group" title="(in CMake v4.1.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">source_group()</span></code></a>, based on the project's source tree.</p>
+<p>This command is intended for targets that have been previously created
+using <span class="target" id="index-1-command:build_bin_target"></span><a class="reference internal" href="#create" title="build_bin_target(create)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">build_bin_target(CREATE)</span></code></a>, and is typically used in conjunction
+with <span class="target" id="index-0-command:directory"></span><a class="reference internal" href="FuncDirectory.html#collect-sources-by-policy" title="directory(collect_sources_by_policy)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">directory(COLLECT_SOURCES_BY_POLICY)</span></code></a> to get the required
+files.</p>
+<p>Example usage:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">build_bin_target(</span><span class="no">CREATE</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span><span class="w"> </span><span class="no">STATIC</span><span class="nf">)</span>
+<span class="nf">build_bin_target(</span><span class="no">ADD_SOURCES</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span>
+<span class="w">  </span><span class="no">SOURCE_FILES</span><span class="w"> </span><span class="s">&quot;src/main.cpp&quot;</span><span class="w"> </span><span class="s">&quot;src/util.cpp&quot;</span><span class="w"> </span><span class="s">&quot;src/source_1.cpp&quot;</span>
+<span class="w">  </span><span class="no">PRIVATE_HEADER_FILES</span><span class="w"> </span><span class="s">&quot;src/util.h&quot;</span><span class="w"> </span><span class="s">&quot;src/source_1.h&quot;</span>
+<span class="w">  </span><span class="no">PUBLIC_HEADER_FILES</span><span class="w"> </span><span class="s">&quot;include/lib_1.h&quot;</span><span class="w"> </span><span class="s">&quot;include/lib_2.h&quot;</span>
+<span class="nf">)</span>
+
+<span class="c"># Full example</span>
+<span class="nf">build_bin_target(</span><span class="no">CREATE</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span><span class="w"> </span><span class="no">STATIC</span><span class="nf">)</span>
+<span class="nf">build_bin_target(</span><span class="no">CONFIGURE_SETTINGS</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span>
+<span class="w">  </span><span class="no">COMPILER_FEATURES</span><span class="w"> </span><span class="s">&quot;cxx_std_20&quot;</span>
+<span class="w">  </span><span class="no">COMPILE_DEFINITIONS</span><span class="w"> </span><span class="s">&quot;MY_DEFINE&quot;</span>
+<span class="w">  </span><span class="no">COMPILE_OPTIONS</span><span class="w"> </span><span class="s">&quot;-Wall&quot;</span><span class="w"> </span><span class="s">&quot;-Wextra&quot;</span>
+<span class="w">  </span><span class="no">LINK_OPTIONS</span><span class="w"> </span><span class="s">&quot;-s&quot;</span>
+<span class="nf">)</span>
+<span class="nf">directory(</span><span class="no">COLLECT_SOURCES_BY_POLICY</span>
+<span class="w">  </span><span class="no">PUBLIC_HEADERS_SEPARATED</span><span class="w"> </span><span class="nb">on</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/include/mylib&quot;</span>
+<span class="w">  </span><span class="no">SRC_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src&quot;</span>
+<span class="w">  </span><span class="no">SRC_SOURCE_FILES</span><span class="w"> </span><span class="nb">sources</span>
+<span class="w">  </span><span class="no">PUBLIC_HEADER_DIR</span><span class="w"> </span><span class="nb">public_headers_dir</span>
+<span class="w">  </span><span class="no">PUBLIC_HEADER_FILES</span><span class="w"> </span><span class="nb">public_headers</span>
+<span class="w">  </span><span class="no">PRIVATE_HEADER_DIR</span><span class="w"> </span><span class="nb">private_headers_dir</span>
+<span class="w">  </span><span class="no">PRIVATE_HEADER_FILES</span><span class="w"> </span><span class="nb">private_headers</span>
+<span class="nf">)</span>
+<span class="nf">build_bin_target(</span><span class="no">ADD_SOURCES</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span>
+<span class="w">  </span><span class="no">SOURCE_FILES</span><span class="w"> </span><span class="s">&quot;${sources}&quot;</span>
+<span class="w">  </span><span class="no">PRIVATE_HEADER_FILES</span><span class="w"> </span><span class="s">&quot;${private_headers}&quot;</span>
+<span class="w">  </span><span class="no">PUBLIC_HEADER_FILES</span><span class="w"> </span><span class="s">&quot;${public_headers}&quot;</span>
+<span class="nf">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="cmake signature">
+<dt class="sig sig-object cmake" id="add-precompiled-header">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">build_bin_target(</span></span><span class="no"><span class="pre">ADD_PRECOMPILED_HEADER</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;target-name&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">HEADER_FILE</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;file-path&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#add-precompiled-header" title="Link to this definition">¶</a></dt>
+<dd><p>Add a precompiled header file (PCH) <code class="docutils literal notranslate"><span class="pre">&lt;file_path&gt;</span></code> to an existing binary
+target <code class="docutils literal notranslate"><span class="pre">&lt;target_name&gt;</span></code> with <code class="docutils literal notranslate"><span class="pre">PRIVATE</span></code> visibility.</p>
+<p>This command is intended for targets that have been previously created
+using <span class="target" id="index-2-command:build_bin_target"></span><a class="reference internal" href="#create" title="build_bin_target(create)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">build_bin_target(CREATE)</span></code></a>.</p>
+<p>Example usage:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">build_bin_target(</span><span class="no">CREATE</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span><span class="w"> </span><span class="no">STATIC</span><span class="nf">)</span>
+<span class="nf">build_bin_target(</span><span class="no">ADD_PRECOMPILED_HEADER</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span>
+<span class="w">  </span><span class="no">HEADER_FILE</span><span class="w"> </span><span class="s">&quot;src/header_pch.h&quot;</span><span class="nf">)</span>
+
+<span class="c"># Full example</span>
+<span class="nf">build_bin_target(</span><span class="no">CREATE</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span><span class="w"> </span><span class="no">STATIC</span><span class="nf">)</span>
+<span class="nf">build_bin_target(</span><span class="no">CONFIGURE_SETTINGS</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span>
+<span class="w">  </span><span class="no">COMPILER_FEATURES</span><span class="w"> </span><span class="s">&quot;cxx_std_20&quot;</span>
+<span class="w">  </span><span class="no">COMPILE_DEFINITIONS</span><span class="w"> </span><span class="s">&quot;MY_DEFINE&quot;</span>
+<span class="w">  </span><span class="no">COMPILE_OPTIONS</span><span class="w"> </span><span class="s">&quot;-Wall&quot;</span><span class="w"> </span><span class="s">&quot;-Wextra&quot;</span>
+<span class="w">  </span><span class="no">LINK_OPTIONS</span><span class="w"> </span><span class="s">&quot;-s&quot;</span>
+<span class="nf">)</span>
+<span class="nf">directory(</span><span class="no">COLLECT_SOURCES_BY_POLICY</span>
+<span class="w">  </span><span class="no">PUBLIC_HEADERS_SEPARATED</span><span class="w"> </span><span class="nb">on</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/include/mylib&quot;</span>
+<span class="w">  </span><span class="no">SRC_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src&quot;</span>
+<span class="w">  </span><span class="no">SRC_SOURCE_FILES</span><span class="w"> </span><span class="nb">sources</span>
+<span class="w">  </span><span class="no">PUBLIC_HEADER_DIR</span><span class="w"> </span><span class="nb">public_headers_dir</span>
+<span class="w">  </span><span class="no">PUBLIC_HEADER_FILES</span><span class="w"> </span><span class="nb">public_headers</span>
+<span class="w">  </span><span class="no">PRIVATE_HEADER_DIR</span><span class="w"> </span><span class="nb">private_headers_dir</span>
+<span class="w">  </span><span class="no">PRIVATE_HEADER_FILES</span><span class="w"> </span><span class="nb">private_headers</span>
+<span class="nf">)</span>
+<span class="nf">build_bin_target(</span><span class="no">ADD_SOURCES</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span>
+<span class="w">  </span><span class="no">SOURCE_FILES</span><span class="w"> </span><span class="s">&quot;${sources}&quot;</span>
+<span class="w">  </span><span class="no">PRIVATE_HEADER_FILES</span><span class="w"> </span><span class="s">&quot;${private_headers}&quot;</span>
+<span class="w">  </span><span class="no">PUBLIC_HEADER_FILES</span><span class="w"> </span><span class="s">&quot;${public_headers}&quot;</span>
+<span class="nf">)</span>
+<span class="nf">build_bin_target(</span><span class="no">ADD_PRECOMPILED_HEADER</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span>
+<span class="w">  </span><span class="no">HEADER_FILE</span><span class="w"> </span><span class="s">&quot;src/header_pch.h&quot;</span><span class="nf">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="cmake signature">
+<dt class="sig sig-object cmake" id="add-include-directories">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">build_bin_target(</span></span><span class="no"><span class="pre">ADD_INCLUDE_DIRECTORIES</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;target-name&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">INCLUDE_DIRECTORIES</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;directory-path&gt;...</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#add-include-directories" title="Link to this definition">¶</a></dt>
+<dd><p>Add include directories to an existing binary target <code class="docutils literal notranslate"><span class="pre">&lt;target_name&gt;</span></code> with
+<code class="docutils literal notranslate"><span class="pre">PRIVATE</span></code> visibility.</p>
+<p>This command is intended for targets that have been previously created
+using <span class="target" id="index-3-command:build_bin_target"></span><a class="reference internal" href="#create" title="build_bin_target(create)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">build_bin_target(CREATE)</span></code></a>, and is typically used in conjunction
+with <span class="target" id="index-1-command:directory"></span><a class="reference internal" href="FuncDirectory.html#collect-sources-by-policy" title="directory(collect_sources_by_policy)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">directory(COLLECT_SOURCES_BY_POLICY)</span></code></a> to get the required
+files.</p>
+<p>Example usage:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">build_bin_target(</span><span class="no">CREATE</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span><span class="w"> </span><span class="no">STATIC</span><span class="nf">)</span>
+<span class="nf">build_bin_target(</span><span class="no">ADD_INCLUDE_DIRECTORIES</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span>
+<span class="w">  </span><span class="no">INCLUDE_DIRECTORIES</span><span class="w"> </span><span class="s">&quot;include&quot;</span><span class="nf">)</span>
+
+<span class="c"># Full example</span>
+<span class="nf">build_bin_target(</span><span class="no">CREATE</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span><span class="w"> </span><span class="no">STATIC</span><span class="nf">)</span>
+<span class="nf">build_bin_target(</span><span class="no">CONFIGURE_SETTINGS</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span>
+<span class="w">  </span><span class="no">COMPILER_FEATURES</span><span class="w"> </span><span class="s">&quot;cxx_std_20&quot;</span>
+<span class="w">  </span><span class="no">COMPILE_DEFINITIONS</span><span class="w"> </span><span class="s">&quot;MY_DEFINE&quot;</span>
+<span class="w">  </span><span class="no">COMPILE_OPTIONS</span><span class="w"> </span><span class="s">&quot;-Wall&quot;</span><span class="w"> </span><span class="s">&quot;-Wextra&quot;</span>
+<span class="w">  </span><span class="no">LINK_OPTIONS</span><span class="w"> </span><span class="s">&quot;-s&quot;</span>
+<span class="nf">)</span>
+<span class="nf">directory(</span><span class="no">COLLECT_SOURCES_BY_POLICY</span>
+<span class="w">  </span><span class="no">PUBLIC_HEADERS_SEPARATED</span><span class="w"> </span><span class="nb">on</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/include/mylib&quot;</span>
+<span class="w">  </span><span class="no">SRC_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src&quot;</span>
+<span class="w">  </span><span class="no">SRC_SOURCE_FILES</span><span class="w"> </span><span class="nb">sources</span>
+<span class="w">  </span><span class="no">PUBLIC_HEADER_DIR</span><span class="w"> </span><span class="nb">public_headers_dir</span>
+<span class="w">  </span><span class="no">PUBLIC_HEADER_FILES</span><span class="w"> </span><span class="nb">public_headers</span>
+<span class="w">  </span><span class="no">PRIVATE_HEADER_DIR</span><span class="w"> </span><span class="nb">private_headers_dir</span>
+<span class="w">  </span><span class="no">PRIVATE_HEADER_FILES</span><span class="w"> </span><span class="nb">private_headers</span>
+<span class="nf">)</span>
+<span class="nf">build_bin_target(</span><span class="no">ADD_SOURCES</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span>
+<span class="w">  </span><span class="no">SOURCE_FILES</span><span class="w"> </span><span class="s">&quot;${sources}&quot;</span>
+<span class="w">  </span><span class="no">PRIVATE_HEADER_FILES</span><span class="w"> </span><span class="s">&quot;${private_headers}&quot;</span>
+<span class="w">  </span><span class="no">PUBLIC_HEADER_FILES</span><span class="w"> </span><span class="s">&quot;${public_headers}&quot;</span>
+<span class="nf">)</span>
+<span class="nf">build_bin_target(</span><span class="no">ADD_PRECOMPILED_HEADER</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span>
+<span class="w">  </span><span class="no">HEADER_FILE</span><span class="w"> </span><span class="s">&quot;src/header_pch.h&quot;</span><span class="nf">)</span>
+<span class="nf">build_bin_target(</span><span class="no">ADD_INCLUDE_DIRECTORIES</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span>
+<span class="w">  </span><span class="no">INCLUDE_DIRECTORIES</span><span class="w"> </span><span class="s">&quot;$&lt;$&lt;BOOL:${private_headers_dir}&gt;:${private_headers_dir}&gt;&quot;</span><span class="w"> </span><span class="s">&quot;${public_headers_dir}&quot;</span><span class="nf">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3>Table of Contents</h3>
+    <ul>
+<li><a class="reference internal" href="#">BuildBinTarget</a><ul>
+<li><a class="reference internal" href="#synopsis">Synopsis</a></li>
+<li><a class="reference internal" href="#usage">Usage</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="FuncStringManip.html"
+                          title="previous chapter">StringManip</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/module/BuildBinTarget.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="FuncStringManip.html" title="StringManip"
+             >previous</a> |</li>
+  <li>
+    <label class="sidebar-toggle" for="sidebar-check"></label>
+  </li>
+  <li class="rootlink">
+    <img src="../_static/cmake-logo-16.png" width="16" height="16" alt=""/>
+    <a href="https://cmake.org/">CMake 4.0.1</a>
+    <span class="reldelim1"> &#187;</span>
+  </li>
+  <li>
+    <a href="../index.html">Documentation</a> &#187;
+  </li>
+
+        <li class="nav-item nav-item-this"><a href="">BuildBinTarget</a></li> 
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025, Joseph Garnier.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+<script type="text/javascript">
+(function() {
+  "use strict";
+  const hide = () => document.getElementById("sidebar-check").checked = false;
+  addEventListener("keydown", e => (e.key === "Escape") && hide());
+  addEventListener("click", e => (e.target.tagName === "A") && hide());
+  addEventListener("hashchange", hide)
+})();
+</script>
+  </body>
+</html>

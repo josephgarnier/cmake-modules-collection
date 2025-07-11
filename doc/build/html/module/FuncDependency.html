@@ -173,22 +173,22 @@ details.</p>
 <span class="c"># Is more or less equivalent to:</span>
 <span class="nf">add_library(</span><span class="s">&quot;my_shared_lib&quot;</span><span class="w"> </span><span class="no">SHARED</span><span class="w"> </span><span class="no">IMPORTED</span><span class="nf">)</span>
 <span class="nf">set_target_properties(</span><span class="s">&quot;my_shared_lib&quot;</span><span class="w"> </span><span class="no">PROPERTIES</span>
-<span class="w">    </span><span class="no">INTERFACE_INCLUDE_DIRECTORIES</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/include/mylib&quot;</span>
-<span class="w">    </span><span class="no">INTERFACE_INCLUDE_DIRECTORIES_BUILD</span><span class="w"> </span><span class="s">&quot;&quot;</span>
-<span class="w">    </span><span class="no">INTERFACE_INCLUDE_DIRECTORIES_INSTALL</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">  </span><span class="no">INTERFACE_INCLUDE_DIRECTORIES</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/include/mylib&quot;</span>
+<span class="w">  </span><span class="no">INTERFACE_INCLUDE_DIRECTORIES_BUILD</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">  </span><span class="no">INTERFACE_INCLUDE_DIRECTORIES_INSTALL</span><span class="w"> </span><span class="s">&quot;&quot;</span>
 <span class="nf">)</span>
 <span class="nf">find_library(</span><span class="nb">lib</span><span class="w"> </span><span class="no">NAMES</span><span class="w"> </span><span class="s">&quot;mylib_1.11.0&quot;</span><span class="nf">)</span>
 <span class="nf">find_library(</span><span class="nb">implib</span><span class="w"> </span><span class="no">NAMES</span><span class="w"> </span><span class="s">&quot;mylibd_1.11.0&quot;</span><span class="nf">)</span>
 <span class="nf">cmake_path(</span><span class="no">GET</span><span class="w"> </span><span class="nb">lib</span><span class="w"> </span><span class="no">FILENAME</span><span class="w"> </span><span class="nb">lib_name</span><span class="nf">)</span>
 <span class="nf">set_target_properties(</span><span class="s">&quot;my_shared_lib&quot;</span><span class="w"> </span><span class="no">PROPERTIES</span>
-<span class="w">    </span><span class="no">IMPORTED_LOCATION_RELEASE</span><span class="w"> </span><span class="s">&quot;${lib}&quot;</span>
-<span class="w">    </span><span class="no">IMPORTED_LOCATION_BUILD_RELEASE</span><span class="w"> </span><span class="s">&quot;&quot;</span>
-<span class="w">    </span><span class="no">IMPORTED_LOCATION_INSTALL_RELEASE</span><span class="w"> </span><span class="s">&quot;&quot;</span>
-<span class="w">    </span><span class="no">IMPORTED_IMPLIB_RELEASE</span><span class="w"> </span><span class="s">&quot;${implib}&quot;</span>
-<span class="w">    </span><span class="no">IMPORTED_SONAME_RELEASE</span><span class="w"> </span><span class="s">&quot;${lib_name}&quot;</span>
+<span class="w">  </span><span class="no">IMPORTED_LOCATION_RELEASE</span><span class="w"> </span><span class="s">&quot;${lib}&quot;</span>
+<span class="w">  </span><span class="no">IMPORTED_LOCATION_BUILD_RELEASE</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">  </span><span class="no">IMPORTED_LOCATION_INSTALL_RELEASE</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">  </span><span class="no">IMPORTED_IMPLIB_RELEASE</span><span class="w"> </span><span class="s">&quot;${implib}&quot;</span>
+<span class="w">  </span><span class="no">IMPORTED_SONAME_RELEASE</span><span class="w"> </span><span class="s">&quot;${lib_name}&quot;</span>
 <span class="nf">)</span>
 <span class="nf">set_property(</span><span class="no">TARGET</span><span class="w"> </span><span class="s">&quot;my_shared_lib&quot;</span>
-<span class="w">    </span><span class="no">APPEND</span><span class="w"> </span><span class="no">PROPERTY</span><span class="w"> </span><span class="no">IMPORTED_CONFIGURATIONS</span><span class="w"> </span><span class="s">&quot;${CMAKE_BUILD_TYPE}&quot;</span>
+<span class="w">  </span><span class="no">APPEND</span><span class="w"> </span><span class="no">PROPERTY</span><span class="w"> </span><span class="no">IMPORTED_CONFIGURATIONS</span><span class="w"> </span><span class="s">&quot;${CMAKE_BUILD_TYPE}&quot;</span>
 <span class="nf">)</span>
 
 <span class="c"># Import static lib</span>
@@ -202,22 +202,22 @@ details.</p>
 <span class="c"># Is more or less equivalent to:</span>
 <span class="nf">add_library(</span><span class="s">&quot;my_shared_lib&quot;</span><span class="w"> </span><span class="no">SHARED</span><span class="w"> </span><span class="no">IMPORTED</span><span class="nf">)</span>
 <span class="nf">set_target_properties(</span><span class="s">&quot;my_shared_lib&quot;</span><span class="w"> </span><span class="no">PROPERTIES</span>
-<span class="w">    </span><span class="no">INTERFACE_INCLUDE_DIRECTORIES</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/include/mylib&quot;</span>
-<span class="w">    </span><span class="no">INTERFACE_INCLUDE_DIRECTORIES_BUILD</span><span class="w"> </span><span class="s">&quot;&quot;</span>
-<span class="w">    </span><span class="no">INTERFACE_INCLUDE_DIRECTORIES_INSTALL</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">  </span><span class="no">INTERFACE_INCLUDE_DIRECTORIES</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/include/mylib&quot;</span>
+<span class="w">  </span><span class="no">INTERFACE_INCLUDE_DIRECTORIES_BUILD</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">  </span><span class="no">INTERFACE_INCLUDE_DIRECTORIES_INSTALL</span><span class="w"> </span><span class="s">&quot;&quot;</span>
 <span class="nf">)</span>
 <span class="nf">find_library(</span><span class="nb">lib</span><span class="w"> </span><span class="no">NAMES</span><span class="w"> </span><span class="s">&quot;mylib_1.11.0&quot;</span><span class="nf">)</span>
 <span class="nf">find_library(</span><span class="nb">implib</span><span class="w"> </span><span class="no">NAMES</span><span class="w"> </span><span class="s">&quot;mylibd_1.11.0&quot;</span><span class="nf">)</span>
 <span class="nf">cmake_path(</span><span class="no">GET</span><span class="w"> </span><span class="nb">lib</span><span class="w"> </span><span class="no">FILENAME</span><span class="w"> </span><span class="nb">lib_name</span><span class="nf">)</span>
 <span class="nf">set_target_properties(</span><span class="s">&quot;my_shared_lib&quot;</span><span class="w"> </span><span class="no">PROPERTIES</span>
-<span class="w">    </span><span class="no">IMPORTED_LOCATION_RELEASE</span><span class="w"> </span><span class="s">&quot;${lib}&quot;</span>
-<span class="w">    </span><span class="no">IMPORTED_LOCATION_BUILD_RELEASE</span><span class="w"> </span><span class="s">&quot;&quot;</span>
-<span class="w">    </span><span class="no">IMPORTED_LOCATION_INSTALL_RELEASE</span><span class="w"> </span><span class="s">&quot;&quot;</span>
-<span class="w">    </span><span class="no">IMPORTED_IMPLIB_RELEASE</span><span class="w"> </span><span class="s">&quot;${implib}&quot;</span>
-<span class="w">    </span><span class="no">IMPORTED_SONAME_RELEASE</span><span class="w"> </span><span class="s">&quot;${lib_name}&quot;</span>
+<span class="w">  </span><span class="no">IMPORTED_LOCATION_RELEASE</span><span class="w"> </span><span class="s">&quot;${lib}&quot;</span>
+<span class="w">  </span><span class="no">IMPORTED_LOCATION_BUILD_RELEASE</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">  </span><span class="no">IMPORTED_LOCATION_INSTALL_RELEASE</span><span class="w"> </span><span class="s">&quot;&quot;</span>
+<span class="w">  </span><span class="no">IMPORTED_IMPLIB_RELEASE</span><span class="w"> </span><span class="s">&quot;${implib}&quot;</span>
+<span class="w">  </span><span class="no">IMPORTED_SONAME_RELEASE</span><span class="w"> </span><span class="s">&quot;${lib_name}&quot;</span>
 <span class="nf">)</span>
 <span class="nf">set_property(</span><span class="no">TARGET</span><span class="w"> </span><span class="s">&quot;my_shared_lib&quot;</span>
-<span class="w">    </span><span class="no">APPEND</span><span class="w"> </span><span class="no">PROPERTY</span><span class="w"> </span><span class="no">IMPORTED_CONFIGURATIONS</span><span class="w"> </span><span class="s">&quot;${CMAKE_BUILD_TYPE}&quot;</span>
+<span class="w">  </span><span class="no">APPEND</span><span class="w"> </span><span class="no">PROPERTY</span><span class="w"> </span><span class="no">IMPORTED_CONFIGURATIONS</span><span class="w"> </span><span class="s">&quot;${CMAKE_BUILD_TYPE}&quot;</span>
 <span class="nf">)</span>
 </pre></div>
 </div>
@@ -295,9 +295,9 @@ CMake itself but are later re-injected into export files generated by
 <span class="nf">)</span>
 <span class="c"># Is more or less equivalent to:</span>
 <span class="nf">target_include_directories(</span><span class="nb">static_mock_lib</span>
-<span class="w">    </span><span class="no">PUBLIC</span>
-<span class="w">        </span><span class="s">&quot;$&lt;BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include/mylib&gt;&quot;</span>
-<span class="w">        </span><span class="s">&quot;$&lt;INSTALL_INTERFACE:include/mylib&gt;&quot;</span>
+<span class="w">  </span><span class="no">PUBLIC</span>
+<span class="w">      </span><span class="s">&quot;$&lt;BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include/mylib&gt;&quot;</span>
+<span class="w">      </span><span class="s">&quot;$&lt;INSTALL_INTERFACE:include/mylib&gt;&quot;</span>
 <span class="nf">)</span>
 
 <span class="c"># Set include directories for static lib</span>
@@ -308,9 +308,9 @@ CMake itself but are later re-injected into export files generated by
 <span class="nf">)</span>
 <span class="c"># Is more or less equivalent to:</span>
 <span class="nf">target_include_directories(</span><span class="nb">static_mock_lib</span>
-<span class="w">    </span><span class="no">PUBLIC</span>
-<span class="w">        </span><span class="s">&quot;$&lt;BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include/mylib&gt;&quot;</span>
-<span class="w">        </span><span class="s">&quot;$&lt;INSTALL_INTERFACE:include/mylib&gt;&quot;</span>
+<span class="w">  </span><span class="no">PUBLIC</span>
+<span class="w">      </span><span class="s">&quot;$&lt;BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include/mylib&gt;&quot;</span>
+<span class="w">      </span><span class="s">&quot;$&lt;INSTALL_INTERFACE:include/mylib&gt;&quot;</span>
 <span class="nf">)</span>
 </pre></div>
 </div>
