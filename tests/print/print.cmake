@@ -12,7 +12,7 @@
 # Test of [Print module::Public command]
 ct_add_test(NAME "test_print")
 function(${CMAKETEST_TEST})
-	include(FuncPrint)
+	include(Print)
 
 	ct_add_section(NAME "public_command")
 	function(${CMAKETEST_SECTION})

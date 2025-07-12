@@ -15,7 +15,7 @@
 #              [OUTPUT_VARIABLE <output-list-var>])
 ct_add_test(NAME "test_file_manip_strip_path_operation")
 function(${CMAKETEST_TEST})
-	include(FuncFileManip)
+	include(FileManip)
 
 	# Functionalities checking
 	ct_add_section(NAME "path_to_existing_files")

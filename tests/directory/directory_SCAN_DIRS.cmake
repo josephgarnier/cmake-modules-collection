@@ -17,7 +17,7 @@
 #              <INCLUDE_REGEX|EXCLUDE_REGEX> <regular-expression>)
 ct_add_test(NAME "test_directory_scan_dirs_operation")
 function(${CMAKETEST_TEST})
-	include(FuncDirectory)
+	include(Directory)
 
 	# Functionalities checking
 	ct_add_section(NAME "list_recursively")

@@ -18,7 +18,7 @@
 #             ROOT_DIR <directory-path>)
 ct_add_test(NAME "test_directory_find_lib_operation")
 function(${CMAKETEST_TEST})
-	include(FuncDirectory)
+	include(Directory)
 
 	macro(_build_test_regex LIB_NAME LIB_BINARY_TYPE)
 		# Select appropriate prefix/suffix sets based on the requested library type

@@ -98,7 +98,7 @@ Usage
   on the target, its value is printed using :cmake:command:`message() <cmake:command:message()>`.
 
   Configuration-specific properties such as :cmake:prop_tgt:`IMPORTED_LOCATION_<CONFIG> <cmake:prop_tgt:IMPORTED_LOCATION_<CONFIG>>`
-  or ``INTERFACE_INCLUDE_DIRECTORIES_<CONFIG>`` (a custom property used by :module:`FuncDependency` module) are
+  or ``INTERFACE_INCLUDE_DIRECTORIES_<CONFIG>`` (a custom property used by :module:`Dependency` module) are
   expanded for ``DEBUG`` and ``RELEASE`` configurations. Internal properties
   like :cmake:prop_tgt:`LOCATION <cmake:prop_tgt:LOCATION>` and those
   known to trigger errors on access are excluded from the output.

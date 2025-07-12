@@ -12,7 +12,7 @@
 # Test of [Directory module::Public command]:
 ct_add_test(NAME "test_directory")
 function(${CMAKETEST_TEST})
-	include(FuncDirectory)
+	include(Directory)
 
 	ct_add_section(NAME "public_command")
 	function(${CMAKETEST_SECTION})

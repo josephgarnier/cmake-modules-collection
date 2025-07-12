@@ -12,7 +12,7 @@
 # Test of [Dependency module::Public command]:
 ct_add_test(NAME "test_dependency")
 function(${CMAKETEST_TEST})
-	include(FuncDependency)
+	include(Dependency)
 
 	ct_add_section(NAME "public_command")
 	function(${CMAKETEST_SECTION})

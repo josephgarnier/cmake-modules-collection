@@ -499,8 +499,8 @@ Usage
 include_guard()
 
 cmake_minimum_required (VERSION 3.20 FATAL_ERROR)
-include(FuncDirectory)
-include(FuncStringManip)
+include(Directory)
+include(StringManip)
 
 #------------------------------------------------------------------------------
 # Public function of this module.

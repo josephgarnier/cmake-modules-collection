@@ -13,7 +13,7 @@
 #    print([<mode>] PATHS <file-path>... [INDENT])
 ct_add_test(NAME "test_print_paths_operation")
 function(${CMAKETEST_TEST})
-	include(FuncPrint)
+	include(Print)
 
 	# Functionalities checking
 	ct_add_section(NAME "no_mode")

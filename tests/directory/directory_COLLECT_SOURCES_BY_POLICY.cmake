@@ -20,7 +20,7 @@
 #             PRIVATE_HEADER_FILES <output-list-var>)
 ct_add_test(NAME "test_directory_collect_sources_by_policy_operation")
 function(${CMAKETEST_TEST})
-	include(FuncDirectory)
+	include(Directory)
 
 	# Set global test variables
 	set(expected_src_sources_output

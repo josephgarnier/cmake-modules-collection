@@ -12,7 +12,7 @@
 # Test of [FileManip module::Public command]:
 ct_add_test(NAME "test_file_manip")
 function(${CMAKETEST_TEST})
-	include(FuncFileManip)
+	include(FileManip)
 
 	ct_add_section(NAME "public_command")
 	function(${CMAKETEST_SECTION})

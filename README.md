@@ -23,7 +23,7 @@ This collection of CMake modules provides macros and functions that extend offic
 ## ✨ Features
 
 - Modern CMake code.
-- Well-documented for ease of use.
+- Well-documented on a [dedicted doc website](https://josephgarnier.github.io/cmake-modules-collection/) for ease of use.
 - Reliable code thanks to extensive unit testing, written using [CMakeTest](https://github.com/CMakePP/CMakeTest).
 - A coding and documentation style similar to official CMake modules.
 
@@ -31,42 +31,43 @@ This collection of CMake modules provides macros and functions that extend offic
 
 The following dependencies are **required** to execute the modules and must be installed:
 
-- **CMake v4.0.1+** - can be found [here](https://cmake.org/).
+- **CMake v4.0.1 or higher** - can be found [here](https://cmake.org/).
 - **C++ compiler** (any version) - e.g., [GCC v15.2+](https://gcc.gnu.org/), [Clang C++ v19.1.3+](https://clang.llvm.org/cxx_status.html) or [MSVC](https://visualstudio.microsoft.com). The project is developed with the GCC compiler, and its dependencies are provided pre-compiled with GCC.
 
-These *optional dependencies* are only required to contribute to this project or to run it in standalone mode:
+The following dependencies are *used by the project* and *delivered* with it:
 
-- **Python 3.12.9+** (for doc generation).
-- **Sphinx 8.2.3+** (for doc generation) - can be found [here](https://www.sphinx-doc.org/en/master/usage/installation.html) or use `requirements.txt` in `doc/` folder.
-- **Sphinx Domain for Modern CMake** (for doc generation) - can be found [here](https://github.com/scikit-build/moderncmakedomain) or use `requirements.txt` in `doc/` folder.
-- **doc8** (for doc style checking) - can be found [here](https://github.com/PyCQA/doc8) or use `requirements.txt` in `doc/` folder.
-- For **Visual Studio Code users**, these extensions are commanded:
-  - [ms-vscode.cpptools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools) (for C/C++ support)
-  - [ms-vscode.cmake-tools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools) (for CMake support)
-  - [lextudio.restructuredtext](https://marketplace.visualstudio.com/items?itemName=lextudio.restructuredtext) (for reStrcturedText support)
+- **CMakeTest** - can be found [here](https://github.com/CMakePP/CMakeTest).
 
-The following dependencies are *used by the project*, but already delivered with it:
+The following dependencies are **optional** and only required to contribute to this project and to run it in standalone mode:
 
-- [CMakeTest](https://github.com/CMakePP/CMakeTest) (for unit tests).
+| Name | Min. Version | Usage | Optional | Comment |
+|---|---|---|---|---|
+| Python | >=3.12.9 | Doc generation | Yes ||
+| [Sphinx](https://www.sphinx-doc.org/en/master/usage/installation.html) | >=8.2.3 |  Doc generation | Yes | Can be installed from `requirements.txt` in `doc/` folder |
+| [Sphinx Domain for Modern CMake](https://github.com/scikit-build/moderncmakedomain) | - | Doc generation | Yes | Can be installed from `requirements.txt` in `doc/` folder |
+| [doc8](https://github.com/PyCQA/doc8) | - | Doc style checking | Yes | Can be installed from `requirements.txt` in `doc/` folder |
+
+
+
+In addition for **Visual Studio Code users**, these extensions are recommended to help with development:
+
+  - [ms-vscode.cpptools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools): add C/C++ support.
+  - [ms-vscode.cmake-tools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools): add CMake support.
+  - [lextudio.restructuredtext](https://marketplace.visualstudio.com/items?itemName=lextudio.restructuredtext): add reStrcturedText support.
 
 ## 💫 Module overview
 
 ### Module structure
 
-**Note**: Before proceeding, it is recommended to understand the [difference between a function and a macro](https://cmake.org/cmake/help/latest/command/macro.html#macro-vs-function) in CMake.
+> \[!NOTE]
+>
+> Before reading, it is recommended to understand the [difference between a function and a macro](https://cmake.org/cmake/help/latest/command/macro.html#macro-vs-function) in CMake.
 
-A module is a text file with the `.cmake` extension that provides a [CMake command](https://cmake.org/cmake/help/latest/manual/cmake-commands.7.html) for performing various types of data manipulation within a build project.
+A module is a text file with the `.cmake` extension that provides a [CMake command](https://cmake.org/cmake/help/latest/manual/cmake-commands.7.html) for performing various types of data manipulation within a build project. The general format of a module filename is `<module-name>.cmake`, where `<module-name>` uses PascalCase (also called UpperCamelCase), e.g., `StringManip`. 
 
-This collection provides two types of modules, distinguished by a prefix in the filename:
+Each module provides a single public function responsible for dispatching multiple operations, internally using private macros. In the "public" interface, CMake `function()` are preferred over `macro()` due to better encapsulation and its own variable scope.
 
-- The ***Function*-type** module, prefixed with `Func`, provide a single public function responsible for dispatching multiple operations, internally using private macros. Only one public command is exposed per module.
-- The ***Bundle*-type** module, prefixed with `Bundle`, contains a set of functions and macros designed to operate on a common object, in a way that reflects object-oriented programming. Each function defines a separate command, and a module may include multiple commands.
-
-The general format of a module filename is `<Func|Bundle><module-name>.cmake`, where `<module-name>` uses PascalCase (also called UpperCamelCase), e.g., `StringManip`.
-
-In the "public" interface of modules, CMake `function()` are preferred over `macro()` due to better encapsulation and its own variable scope.
-
-The public function of a *Function*-type module follows a **signature and call pattern** identical to what is found in official CMake [modules](https://cmake.org/cmake/help/latest/manual/cmake-modules.7.html) and [commands](https://cmake.org/cmake/help/latest/manual/cmake-commands.7.html), such as the [`string()`](https://cmake.org/cmake/help/latest/command/string.html) command:
+The public function follows a signature and call pattern identical to what is found in official CMake [modules](https://cmake.org/cmake/help/latest/manual/cmake-modules.7.html) and [commands](https://cmake.org/cmake/help/latest/manual/cmake-commands.7.html), such as the [`string()`](https://cmake.org/cmake/help/latest/command/string.html) command:
 
 ```cmake
 <command-name>(<operation-name> [<option>|<options>...] [<input-params>...] [<output-params>...])
@@ -84,23 +85,23 @@ where :
 
 The structure of this function signature results from the use of the CMake command `cmake_parse_arguments` to parse the function's arguments. The official [command documentation](https://cmake.org/cmake/help/latest/command/cmake_parse_arguments.html) provides further explanations on the concepts mentioned above.
 
-Within the public function of a module, the first parameter `<operation-name>` acts as a **dispatcher**, routing the execution flow to the internal macro that implements the requested operation. Therefore, the function’s role is limited to parsing arguments, initializing scoped variables, and calling an internal macro.
+Within the public function, the first parameter `<operation-name>` acts as a dispatcher, routing the execution flow to the internal macro that implements the requested operation. Therefore, the function’s role is limited to parsing arguments, initializing scoped variables, and calling an internal macro.
 
 Regarding **module documentation**, just like the code follows a style consistent with official CMake conventions, the documentation also aims to follow the [*CMake Documentation Guide*](https://github.com/Kitware/CMake/blob/master/Help/dev/documentation.rst). It is written in *reStructuredText* format and placed at the top of the file. The visual style replicates [the official one](https://github.com/Kitware/CMake/tree/master/Utilities/Sphinx).
 
 ### Module description
 
-Detailed module documentation is available by opening the `doc/build/html/index.html` file in a browser or [this Website](https://josephgarnier.github.io/cmake-modules-collection/).
+Detailed module documentation is available by opening the `doc/build/html/index.html` file in a browser and on [the doc website](https://josephgarnier.github.io/cmake-modules-collection/).
 
-| Name | Type | Description | Location |
-|---|---|---|---|
-| `Debug` | Function | Operations for helping with debug ([more details](https://josephgarnier.github.io/cmake-modules-collection/module/FuncDebug.html)) | `cmake/modules/FuncDebug.cmake` |
-| `Dependency` | Function | Operations to manipule dependencies ([more details](https://josephgarnier.github.io/cmake-modules-collection/module/FuncDependency.html)) | `cmake/modules/FuncDependency.cmake` |
-| `Directory` | Function | Operations to manipule directories ([more details](https://josephgarnier.github.io/cmake-modules-collection/module/FuncDirectory.html)) | `cmake/modules/FuncDirectory.cmake` |
-| `FileManip` | Function | Operations on files ([more details](https://josephgarnier.github.io/cmake-modules-collection/module/FuncFileManip.html)) | `cmake/modules/FuncFileManip.cmake` |
-| `Print` | Function | Log a message ([more details](https://josephgarnier.github.io/cmake-modules-collection/module/FuncPrint.html)) | `cmake/modules/FuncPrint.cmake` |
-| `StringManip` | Function | Operations on strings ([more details](https://josephgarnier.github.io/cmake-modules-collection/module/FuncStringManip.html)) | `cmake/modules/FuncStringManip.cmake` |
-| `BinTarget` | Bundle | Operations to fully create and configure a binary target ([more details](https://josephgarnier.github.io/cmake-modules-collection/module/BundleBinTarget.html)) | `cmake/modules/BundleBinTarget.cmake` |
+| Name | Description | Location |
+|---|---|---|
+| `BuildBinTarget` | Operations to fully create and configure a binary target ([more details](https://josephgarnier.github.io/cmake-modules-collection/module/BundleBinTarget.html)) | `cmake/modules/BundleBinTarget.cmake` |
+| `Debug` | Operations for helping with debug ([more details](https://josephgarnier.github.io/cmake-modules-collection/module/Debug.html)) | `cmake/modules/Debug.cmake` |
+| `Dependency` | Operations to manipule dependencies ([more details](https://josephgarnier.github.io/cmake-modules-collection/module/Dependency.html)) | `cmake/modules/Dependency.cmake` |
+| `Directory` | Operations to manipule directories ([more details](https://josephgarnier.github.io/cmake-modules-collection/module/Directory.html)) | `cmake/modules/Directory.cmake` |
+| `FileManip` | Operations on files ([more details](https://josephgarnier.github.io/cmake-modules-collection/module/FileManip.html)) | `cmake/modules/FileManip.cmake` |
+| `Print` | Log a message ([more details](https://josephgarnier.github.io/cmake-modules-collection/module/Print.html)) | `cmake/modules/Print.cmake` |
+| `StringManip` | Operations on strings ([more details](https://josephgarnier.github.io/cmake-modules-collection/module/StringManip.html)) | `cmake/modules/StringManip.cmake` |
 
 ## 🧩 Integration
 

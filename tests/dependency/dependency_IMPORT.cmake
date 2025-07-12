@@ -18,7 +18,7 @@
 #              INCLUDE_DIR <directory-path>)
 ct_add_test(NAME "test_dependency_import_operation")
 function(${CMAKETEST_TEST})
-	include(FuncDependency)
+	include(Dependency)
 
 	# Functionalities checking
 	ct_add_section(NAME "import_static_lib")

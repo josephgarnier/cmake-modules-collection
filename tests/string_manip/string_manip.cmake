@@ -12,7 +12,7 @@
 # Test of [StringManip module::Public command]
 ct_add_test(NAME "test_string_manip")
 function(${CMAKETEST_TEST})
-	include(FuncStringManip)
+	include(StringManip)
 
 	ct_add_section(NAME "public_command")
 	function(${CMAKETEST_SECTION})

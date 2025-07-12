@@ -13,7 +13,7 @@
 #    print([<mode>] "message with format text" <argument>...)
 ct_add_test(NAME "test_print_formated_message_operation")
 function(${CMAKETEST_TEST})
-	include(FuncPrint)
+	include(Print)
 
 	# Functionalities checking
 	ct_add_section(NAME "message_without_directive")

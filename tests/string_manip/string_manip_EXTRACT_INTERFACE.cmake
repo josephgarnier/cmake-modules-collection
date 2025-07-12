@@ -15,7 +15,7 @@
 #                [OUTPUT_VARIABLE <output-var>])
 ct_add_test(NAME "test_string_manip_extract_interface_operation")
 function(${CMAKETEST_TEST})
-	include(FuncStringManip)
+	include(StringManip)
 
 	# Functionalities checking
 	ct_add_section(NAME "extract_build_interface")

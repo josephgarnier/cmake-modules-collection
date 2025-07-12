@@ -13,7 +13,7 @@
 #    string_manip(STRIP_INTERFACES <string-var> [OUTPUT_VARIABLE <output-var>])
 ct_add_test(NAME "test_string_manip_strip_interfaces_operation")
 function(${CMAKETEST_TEST})
-	include(FuncStringManip)
+	include(StringManip)
 
 	# Functionalities checking
 	ct_add_section(NAME "strip_interfaces")

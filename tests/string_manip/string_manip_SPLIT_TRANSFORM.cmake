@@ -13,7 +13,7 @@
 #    string_manip(SPLIT_TRANSFORM <string-var> <ACTION> [OUTPUT_VARIABLE <output-var>])
 ct_add_test(NAME "test_string_manip_split_transform_operation")
 function(${CMAKETEST_TEST})
-	include(FuncStringManip)
+	include(StringManip)
 
 	# Functionalities checking
 	ct_add_section(NAME "start_case_action")

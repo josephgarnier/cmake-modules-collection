@@ -16,12 +16,12 @@
 #              OUTPUT_FILE <file_name>)
 ct_add_test(NAME "test_dependency_export_operation")
 function(${CMAKETEST_TEST})
-	include(FuncDependency)
+	include(Dependency)
 
 	set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install")
 	# Simulate a call to `dependency(IMPORT)`, then `dependency(ADD_INCLUDE_DIRECTORIES)`, then `dependency(IMPORTED_LOCATION)`
 	macro(_import_mock_libs)
-		include(FuncDirectory)
+		include(Directory)
 
 		# Import static lib
 		add_library("imp_static_mock_lib" STATIC IMPORTED)

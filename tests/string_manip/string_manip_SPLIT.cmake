@@ -13,7 +13,7 @@
 #    string_manip(SPLIT <string> <output-list-var>)
 ct_add_test(NAME "test_string_manip_split_operation")
 function(${CMAKETEST_TEST})
-	include(FuncStringManip)
+	include(StringManip)
 
 	# Functionalities checking
 	ct_add_section(NAME "no_split_point_detected")

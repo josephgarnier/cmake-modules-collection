@@ -13,7 +13,7 @@
 #    print([<mode>] STRINGS <string>... [INDENT])
 ct_add_test(NAME "test_print_strings_operation")
 function(${CMAKETEST_TEST})
-	include(FuncPrint)
+	include(Print)
 
 	# Functionalities checking
 	ct_add_section(NAME "print_without_mode")

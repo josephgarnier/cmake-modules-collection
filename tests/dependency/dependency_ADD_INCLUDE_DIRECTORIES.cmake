@@ -15,11 +15,11 @@
 #              PUBLIC <gen-expr>...)
 ct_add_test(NAME "test_dependency_add_include_directories_operation")
 function(${CMAKETEST_TEST})
-	include(FuncDependency)
+	include(Dependency)
 
 	# Simulate a call to `dependency(IMPORT)`
 	macro(_import_mock_libs)
-		include(FuncDirectory)
+		include(Directory)
 
 		# Import static lib
 		add_library("imp_static_mock_lib" STATIC IMPORTED)
