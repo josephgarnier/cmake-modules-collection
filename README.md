@@ -34,32 +34,28 @@ The following dependencies are **required** to execute the modules and must be i
 - **CMake v4.0.1 or higher** - can be found [here](https://cmake.org/).
 - **C++ compiler** (any version) - e.g., [GCC v15.2+](https://gcc.gnu.org/), [Clang C++ v19.1.3+](https://clang.llvm.org/cxx_status.html) or [MSVC](https://visualstudio.microsoft.com). The project is developed with the GCC compiler, and its dependencies are provided pre-compiled with GCC.
 
-The following dependencies are *used by the project* and *delivered* with it:
-
-- **CMakeTest** - can be found [here](https://github.com/CMakePP/CMakeTest).
-
 The following dependencies are **optional** and only required to contribute to this project and to run it in standalone mode:
 
-| Name | Min. Version | Usage | Optional | Comment |
-|---|---|---|---|---|
-| Python | >=3.12.9 | Doc generation | Yes ||
-| [Sphinx](https://www.sphinx-doc.org/en/master/usage/installation.html) | >=8.2.3 |  Doc generation | Yes | Can be installed from `requirements.txt` in `doc/` folder |
-| [Sphinx Domain for Modern CMake](https://github.com/scikit-build/moderncmakedomain) | - | Doc generation | Yes | Can be installed from `requirements.txt` in `doc/` folder |
-| [doc8](https://github.com/PyCQA/doc8) | - | Doc style checking | Yes | Can be installed from `requirements.txt` in `doc/` folder |
+- Python >= 3.12.9 (for doc generation).
+- Sphinx >= 8.2.3 (for doc generation) - can be found [here](https://www.sphinx-doc.org/en/master/usage/installation.html) or installed from `requirements.txt` in `doc/` folder.
+- Sphinx Domain for Modern CMake (for doc generation) - can be found [here](https://github.com/scikit-build/moderncmakedomain) or installed from `requirements.txt` in `doc/` folder.
+- doc8 (for doc style checking) - can be found [here](https://github.com/PyCQA/doc8) or installed from `requirements.txt` in `doc/` folder.
 
+The following dependencies are **used and delivered** by the project:
 
+- CMakeTest - can be found [here](https://github.com/CMakePP/CMakeTest).
 
-In addition for **Visual Studio Code users**, these extensions are recommended to help with development:
+In addition for **Visual Studio Code users** these extensions are recommended to help with development:
 
-  - [ms-vscode.cpptools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools): add C/C++ support.
-  - [ms-vscode.cmake-tools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools): add CMake support.
-  - [lextudio.restructuredtext](https://marketplace.visualstudio.com/items?itemName=lextudio.restructuredtext): add reStrcturedText support.
+- [ms-vscode.cpptools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools): add C/C++ support.
+- [ms-vscode.cmake-tools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools): add CMake support.
+- [lextudio.restructuredtext](https://marketplace.visualstudio.com/items?itemName=lextudio.restructuredtext): add reStrcturedText support.
 
 ## 💫 Module overview
 
 ### Module structure
 
-> \[!NOTE]
+> [!note]
 >
 > Before reading, it is recommended to understand the [difference between a function and a macro](https://cmake.org/cmake/help/latest/command/macro.html#macro-vs-function) in CMake.
 
