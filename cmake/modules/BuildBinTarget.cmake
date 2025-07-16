@@ -67,6 +67,9 @@ Usage
   * ``LINK_OPTIONS``: Add linker command-line options (e.g., ``-s``,
     ``/INCREMENTAL:NO``).
 
+  At the first call, the command sets the :cmake:prop_tgt:`CXX_STANDARD <cmake:prop_tgt:CXX_STANDARD>` property
+    using the value of :cmake:variable:`CMAKE_CXX_STANDARD <cmake:variable:CMAKE_CXX_STANDARD>`, which must be defined.
+
   The target is also assigned to a default folder for improved IDE integration.
   All options are optional and may appear in any order. If a section is
   missing, it is simply ignored without warning.
@@ -333,15 +336,29 @@ macro(_build_bin_target_config_settings)
 	if("LINK_OPTIONS" IN_LIST BBT_KEYWORDS_MISSING_VALUES)
 		message(FATAL_ERROR "LINK_OPTIONS argument is missing or need a value!")
 	endif()
-
+	if(NOT DEFINED CMAKE_CXX_STANDARD)
+		message(FATAL_ERROR "CMAKE_CXX_STANDARD is not set!")
+	endif()
+	
 	# Add the bin target in a folder for IDE project
 	set_target_properties("${BBT_CONFIGURE_SETTINGS}" PROPERTIES FOLDER "")
 	
-	# Set compile features (C++ standard)
+	# Add C++ standard in target compiler features
+	get_target_property(compiler_features "${BBT_CONFIGURE_SETTINGS}" COMPILE_FEATURES)
+	set(cxx_standard "cxx_std_${CMAKE_CXX_STANDARD}")
+	if(NOT compiler_features STREQUAL "NOTFOUND")
+		list(FIND compiler_features "${cxx_standard}" index_of)
+	else()
+		set(index_of -1)
+	endif()
+	if(index_of EQUAL -1)
+		target_compile_features("${BBT_CONFIGURE_SETTINGS}" PRIVATE "${cxx_standard}")
+	endif()
+
+	# Add input target compiler features
 	if(DEFINED BBT_COMPILER_FEATURES)
 		target_compile_features("${BBT_CONFIGURE_SETTINGS}"
 			PRIVATE
-				"cxx_std_${CMAKE_CXX_STANDARD}"
 				"${BBT_COMPILER_FEATURES}"
 		)
 		message(STATUS "C++ standard set to: C++${CMAKE_CXX_STANDARD}")
@@ -350,7 +367,7 @@ macro(_build_bin_target_config_settings)
 		message(STATUS "Applied compile features: (none)")
 	endif()
 
-	# Set compile definitions
+	# Add input target compile definitions
 	if(DEFINED BBT_COMPILE_DEFINITIONS)
 		target_compile_definitions("${BBT_CONFIGURE_SETTINGS}"
 			PRIVATE
@@ -361,9 +378,9 @@ macro(_build_bin_target_config_settings)
 		message(STATUS "Applied compile definitions: (none)")
 	endif()
 	
-	# Set compile options
+	# Add input target compile options
 	if(DEFINED BBT_COMPILE_OPTIONS)
-		target_compile_options("${arg_TARGET_NAME}"
+		target_compile_options("${BBT_CONFIGURE_SETTINGS}"
 			PRIVATE
 				"${BBT_COMPILE_OPTIONS}"
 		)
@@ -372,9 +389,9 @@ macro(_build_bin_target_config_settings)
 		message(STATUS "Applied compile options: (none)")
 	endif()
 
-	# Add link options
+	# Add input target link options
 	if(DEFINED BBT_LINK_OPTIONS)
-		target_link_options("${arg_TARGET_NAME}"
+		target_link_options("${BBT_CONFIGURE_SETTINGS}"
 			PRIVATE
 				"${LINK_OPTIONS}"
 		)
