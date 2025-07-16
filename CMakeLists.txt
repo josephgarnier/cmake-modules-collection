@@ -56,6 +56,21 @@ foreach(folder IN ITEMS ${${PROJECT_NAME}_PROJECT_DIRS})
 	endif()
 endforeach()
 
+####################### Configure system and architecture info ################
+if(NOT CMAKE_SYSTEM_PROCESSOR)
+	set(CMAKE_SYSTEM_PROCESSOR ${CMAKE_HOST_SYSTEM_PROCESSOR})
+endif()
+message(STATUS "Processor architecture is: ${CMAKE_SYSTEM_PROCESSOR}")
+set(SYSTEM_NAME "${CMAKE_SYSTEM_NAME}-${CMAKE_CXX_COMPILER_ID}-${CMAKE_SYSTEM_PROCESSOR}")
+string(TOLOWER ${SYSTEM_NAME} SYSTEM_NAME)
+message(STATUS "System name set to: ${SYSTEM_NAME}")
+
+####################### Set C++ standard and build type #######################
+set(CMAKE_CXX_STANDARD "20")
+message(STATUS "C++ standard version set to: C++${CMAKE_CXX_STANDARD}")
+set(CMAKE_BUILD_TYPE "RELEASE")
+message(STATUS "Build type set to: ${CMAKE_BUILD_TYPE}")
+
 ####################### Add module test #######################################
 set(BUILD_TESTING on)
 if("${BUILD_TESTING}")
