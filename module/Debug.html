@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Debug &mdash; CMake Modules Collection</title>
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3862c66" />
+    <link rel="stylesheet" type="text/css" href="../_static/cmake.css?v=4d06bd55" />
+    
+    <script src="../_static/documentation_options.js?v=977c7dfd"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../_static/cmake-favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Dependency" href="Dependency.html" />
+    <link rel="prev" title="BuildBinTarget" href="BuildBinTarget.html" />
+ 
+
+  </head><body>
+    <input id="sidebar-check" type="checkbox" />
+    <label id="sidebar-overlay" for="sidebar-check"></label>
+
+
+
+    <div class="related relbar1" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="Dependency.html" title="Dependency"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="BuildBinTarget.html" title="BuildBinTarget"
+             accesskey="P">previous</a> |</li>
+  <li>
+    <label class="sidebar-toggle" for="sidebar-check"></label>
+  </li>
+  <li class="rootlink">
+    <img src="../_static/cmake-logo-16.png" width="16" height="16" alt=""/>
+    <a href="https://cmake.org/">CMake 4.0.1</a>
+    <span class="reldelim1"> &#187;</span>
+  </li>
+  <li>
+    <a href="../index.html">Documentation</a> &#187;
+  </li>
+
+        <li class="nav-item nav-item-this"><a href="">Debug</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="debug">
+<span id="module:Debug"></span><h1>Debug<a class="headerlink" href="#debug" title="Link to this heading">¶</a></h1>
+<p>Operations for helping with debug. It requires CMake 3.20 or newer.</p>
+<section id="synopsis">
+<h2>Synopsis<a class="headerlink" href="#synopsis" title="Link to this heading">¶</a></h2>
+<pre class="literal-block">debug(<a class="reference internal" href="#dump-variables">DUMP_VARIABLES</a> [EXCLUDE_REGEX &lt;regular-expression&gt;])
+debug(<a class="reference internal" href="#dump-properties">DUMP_PROPERTIES</a> [])
+debug(<a class="reference internal" href="#dump-target-properties">DUMP_TARGET_PROPERTIES</a> &lt;target-name&gt;)
+debug(<a class="reference internal" href="#dump-project-variables">DUMP_PROJECT_VARIABLES</a> [])</pre>
+</section>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h2>
+<dl class="cmake signature">
+<dt class="sig sig-object cmake" id="dump-variables">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">debug(</span></span><span class="no"><span class="pre">DUMP_VARIABLES</span></span><span class="w"> </span><span class="p"><span class="pre">[</span></span><span class="no"><span class="pre">EXCLUDE_REGEX</span></span><span class="nbsp"> </span><span class="nv"><span class="pre">&lt;regular-expression&gt;</span></span><span class="p"><span class="pre">]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#dump-variables" title="Link to this definition">¶</a></dt>
+<dd><p>Disaply all CMake variables except those that match with the optional
+<code class="docutils literal notranslate"><span class="pre">&lt;regular-expression&gt;</span></code> parameter.</p>
+<p>Display all defined CMake variables, optionally excluding those whose names
+match a given regular expression.</p>
+<p>This command retrieves all variables currently defined in the CMake
+context and prints their names and values using <span class="target" id="index-0-command:cmake:command:message"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/message.html#command:message" title="(in CMake v4.1.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">message()</span></code></a>.
+The output is sorted alphabetically and contains no duplicates.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">&lt;regular-expression&gt;</span></code> is provided, any variable whose name matches the
+given expression is omitted from the output.</p>
+<p>Example usage:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">debug(</span><span class="no">DUMP_VARIABLES</span><span class="nf">)</span>
+<span class="c"># output is:</span>
+<span class="c">#   BUILD_SHARED_LIBS=ON</span>
+<span class="c">#   CMAKE_CURRENT_SOURCE_DIR=/home/user/project/src</span>
+<span class="c">#   CMAKE_VERSION=3.28.3</span>
+<span class="c">#   PROJECT_NAME=MyProject</span>
+<span class="c">#   ...</span>
+
+<span class="nf">debug(</span><span class="no">DUMP_VARIABLES</span>
+<span class="w">  </span><span class="no">EXCLUDE_REGEX</span><span class="w"> </span><span class="s">&quot;^CMAKE_&quot;</span>
+<span class="nf">)</span>
+<span class="c"># output is:</span>
+<span class="c">#   BUILD_SHARED_LIBS=ON</span>
+<span class="c">#   PROJECT_NAME=MyProject</span>
+<span class="c">#   ...</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="cmake signature">
+<dt class="sig sig-object cmake" id="dump-properties">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">debug(</span></span><span class="no"><span class="pre">DUMP_PROPERTIES</span></span><span class="w"> </span><span class="p"><span class="pre">[]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#dump-properties" title="Link to this definition">¶</a></dt>
+<dd><p>Display all CMake properties available in the current version of CMake.</p>
+<p>This command executes the equivalent of <a class="reference external" href="https://cmake.org/cmake/help/latest/manual/cmake.1.html#cmdoption-cmake-help-property-list" title="(in CMake v4.1.0)"><code class="xref std std-option docutils literal notranslate"><span class="pre">cmake.--help-property-list</span></code></a>
+and prints each property name using <span class="target" id="index-1-command:cmake:command:message"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/message.html#command:message" title="(in CMake v4.1.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">message()</span></code></a>. The output
+is sorted alphabetically.</p>
+<p>It provides a quick reference for all built-in CMake properties, including
+those related to targets, directories, sources, tests, cache entries, and
+more.</p>
+<p>This command does not inspect actual property values but rather enumerates
+all recognized property names in the CMake environment.</p>
+<p>Example usage:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">debug(</span><span class="no">DUMP_PROPERTIES</span><span class="nf">)</span>
+<span class="c"># output is:</span>
+<span class="c">#   ADDITIONAL_CLEAN_FILES</span>
+<span class="c">#   ALIAS_GLOBAL</span>
+<span class="c">#   ANDROID_API</span>
+<span class="c">#   ARCHIVE_OUTPUT_DIRECTORY</span>
+<span class="c">#   AUTOMOC</span>
+<span class="c">#   ...</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="cmake signature">
+<dt class="sig sig-object cmake" id="dump-target-properties">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">debug(</span></span><span class="no"><span class="pre">DUMP_TARGET_PROPERTIES</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;target-name&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#dump-target-properties" title="Link to this definition">¶</a></dt>
+<dd><p>Display all defined CMake properties of the given target <code class="docutils literal notranslate"><span class="pre">&lt;target-name&gt;</span></code>.</p>
+<p>This command enumerates all known target properties supported by CMake,
+including custom properties specific to the project. For each property set
+on the target, its value is printed using <span class="target" id="index-2-command:cmake:command:message"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/message.html#command:message" title="(in CMake v4.1.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">message()</span></code></a>.</p>
+<p>Configuration-specific properties such as <span class="target" id="index-0-prop_tgt:cmake:prop_tgt:IMPORTED_LOCATION_&lt;CONFIG&gt;"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/prop_tgt/IMPORTED_LOCATION_CONFIG.html#prop_tgt:IMPORTED_LOCATION_&lt;CONFIG&gt;" title="(in CMake v4.1.0)"><code class="xref cmake cmake-prop_tgt docutils literal notranslate"><span class="pre">IMPORTED_LOCATION_&lt;CONFIG&gt;</span></code></a>
+or <code class="docutils literal notranslate"><span class="pre">INTERFACE_INCLUDE_DIRECTORIES_&lt;CONFIG&gt;</span></code> (a custom property used by <span class="target" id="index-0-module:Dependency"></span><a class="reference internal" href="Dependency.html#module:Dependency" title="Dependency"><code class="xref cmake cmake-module docutils literal notranslate"><span class="pre">Dependency</span></code></a> module) are
+expanded for <code class="docutils literal notranslate"><span class="pre">DEBUG</span></code> and <code class="docutils literal notranslate"><span class="pre">RELEASE</span></code> configurations. Internal properties
+like <span class="target" id="index-0-prop_tgt:cmake:prop_tgt:LOCATION"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/prop_tgt/LOCATION.html#prop_tgt:LOCATION" title="(in CMake v4.1.0)"><code class="xref cmake cmake-prop_tgt docutils literal notranslate"><span class="pre">LOCATION</span></code></a> and those
+known to trigger errors on access are excluded from the output.</p>
+<p>Example usage:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">debug(</span><span class="no">DUMP_TARGET_PROPERTIES</span><span class="w"> </span><span class="nb">my_library</span><span class="nf">)</span>
+<span class="c"># output is:</span>
+<span class="c">#</span>
+<span class="c">#   -----</span>
+<span class="c">#   Properties for TARGET my_library:</span>
+<span class="c">#     my_library.TYPE = &quot;STATIC_LIBRARY&quot;</span>
+<span class="c">#     my_library.SOURCES = &quot;src/a.cpp;src/b.cpp&quot;</span>
+<span class="c">#     my_library.INTERFACE_INCLUDE_DIRECTORIES = &quot;include&quot;</span>
+<span class="c">#     ...</span>
+<span class="c">#   -----</span>
+<span class="c">#</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="cmake signature">
+<dt class="sig sig-object cmake" id="dump-project-variables">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">debug(</span></span><span class="no"><span class="pre">DUMP_PROJECT_VARIABLES</span></span><span class="w"> </span><span class="p"><span class="pre">[]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#dump-project-variables" title="Link to this definition">¶</a></dt>
+<dd><p>Display all global CMake variables related to the current project.</p>
+<p>This command prints the values of all defined variables whose name starts
+with the current <span class="target" id="index-0-variable:cmake:variable:PROJECT_NAME"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/variable/PROJECT_NAME.html#variable:PROJECT_NAME" title="(in CMake v4.1.0)"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">PROJECT_NAME</span></code></a>. This relies on the naming
+convention that project-specific variables are prefixed with the project
+name followed by an underscore.</p>
+<p>This command is useful for debugging and inspecting variables that are
+explicitly scoped to the project. It filters out unrelated variables
+defined by CMake or third-party scripts.</p>
+<p>Example usage:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">debug(</span><span class="no">DUMP_PROJECT_VARIABLES</span><span class="nf">)</span>
+<span class="c"># output is:</span>
+<span class="c">#</span>
+<span class="c">#   -----</span>
+<span class="c">#   Variables for PROJECT my_project:</span>
+<span class="c">#     my_project_SOURCE_DIR = &quot;/home/user/my_project/src&quot;</span>
+<span class="c">#     my_project_BUILD_DIR = &quot;/home/user/my_project/build&quot;</span>
+<span class="c">#     ...</span>
+<span class="c">#     -----</span>
+<span class="c">#</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+<section id="additional-commands">
+<h2>Additional commands<a class="headerlink" href="#additional-commands" title="Link to this heading">¶</a></h2>
+<p>CMake provides convenience commands, primarily intended for debugging, to
+print various information about the CMake environment.</p>
+<ul>
+<li><p>Printing the values of properties for the specified targets, source files,
+directories, tests, or cache entries:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">include(</span><span class="nb">CMakePrintHelpers</span><span class="nf">)</span>
+<span class="nf">cmake_print_properties(</span><span class="o">&lt;</span><span class="p">[</span><span class="no">TARGETS</span><span class="w"> </span><span class="nv">&lt;target-name&gt;...</span><span class="p">]</span><span class="w"> </span><span class="p">|</span>
+<span class="w">                      </span><span class="p">[</span><span class="no">SOURCES</span><span class="w"> </span><span class="nv">&lt;file-path&gt;...</span><span class="p">]</span><span class="w"> </span><span class="p">|</span>
+<span class="w">                      </span><span class="p">[</span><span class="no">DIRECTORIES</span><span class="w"> </span><span class="nv">&lt;dir-path&gt;...</span><span class="p">]</span><span class="w"> </span><span class="p">|</span>
+<span class="w">                      </span><span class="p">[</span><span class="no">TESTS</span><span class="w"> </span><span class="nv">&lt;test-name&gt;...</span><span class="p">]</span><span class="w"> </span><span class="p">|</span>
+<span class="w">                      </span><span class="p">[</span><span class="no">CACHE_ENTRIES</span><span class="w"> </span><span class="nv">&lt;entry-name&gt;...</span><span class="p">]</span><span class="o">&gt;</span>
+<span class="w">                      </span><span class="no">PROPERTIES</span><span class="w"> </span><span class="nv">&lt;property-name&gt;...</span>
+<span class="nf">)</span>
+</pre></div>
+</div>
+<p>Check <a class="reference external" href="https://cmake.org/cmake/help/latest/module/CMakePrintHelpers.html">the documentation</a> for more informations.</p>
+</li>
+<li><p>Printing each variable name followed by its value:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">include(</span><span class="nb">CMakePrintHelpers</span><span class="nf">)</span>
+<span class="nf">cmake_print_variables(</span><span class="nv">&lt;var&gt;...</span><span class="nf">)</span>
+</pre></div>
+</div>
+<p>Check <a class="reference external" href="https://cmake.org/cmake/help/latest/module/CMakePrintHelpers.html">the documentation</a> for more informations.</p>
+</li>
+<li><p>Printing system information and various internal CMake variables for
+diagnostics:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">include(</span><span class="nb">CMakePrintSystemInformation</span><span class="nf">)</span>
+</pre></div>
+</div>
+<p>Check <a class="reference external" href="https://cmake.org/cmake/help/latest/module/CMakePrintSystemInformation.html">the documentation</a> for more informations.</p>
+</li>
+<li><p>Print a dependency graph of the targets:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">set_property(</span><span class="no">GLOBAL</span><span class="w"> </span><span class="no">PROPERTY</span><span class="w"> </span><span class="no">GLOBAL_DEPENDS_DEBUG_MODE</span><span class="w"> </span><span class="m">1</span><span class="nf">)</span>
+</pre></div>
+</div>
+<p>Check <a class="reference external" href="https://cmake.org/cmake/help/latest/prop_gbl/GLOBAL_DEPENDS_DEBUG_MODE.html">the documentation</a> for more informations.</p>
+</li>
+<li><p>Since generator expressions are evaluated during generation of the
+buildsystem, and not during processing of <code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code> files, this
+command allows to interpret  a generator expression:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">file(</span><span class="no">GENERATE</span><span class="w"> </span><span class="no">OUTPUT</span><span class="w"> </span><span class="nb">debug.txt</span><span class="w"> </span><span class="no">CONTENT</span><span class="w"> </span><span class="s">&quot;$&lt;...&gt;&quot;</span><span class="nf">)</span>
+</pre></div>
+</div>
+<p>Check <a class="reference external" href="https://cmake.org/cmake/help/latest/manual/cmake-generator-expressions.7.html#debugging">the documentation</a> for more informations.</p>
+</li>
+</ul>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3>Table of Contents</h3>
+    <ul>
+<li><a class="reference internal" href="#">Debug</a><ul>
+<li><a class="reference internal" href="#synopsis">Synopsis</a></li>
+<li><a class="reference internal" href="#usage">Usage</a></li>
+<li><a class="reference internal" href="#additional-commands">Additional commands</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="BuildBinTarget.html"
+                          title="previous chapter">BuildBinTarget</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="Dependency.html"
+                          title="next chapter">Dependency</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/module/Debug.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="Dependency.html" title="Dependency"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="BuildBinTarget.html" title="BuildBinTarget"
+             >previous</a> |</li>
+  <li>
+    <label class="sidebar-toggle" for="sidebar-check"></label>
+  </li>
+  <li class="rootlink">
+    <img src="../_static/cmake-logo-16.png" width="16" height="16" alt=""/>
+    <a href="https://cmake.org/">CMake 4.0.1</a>
+    <span class="reldelim1"> &#187;</span>
+  </li>
+  <li>
+    <a href="../index.html">Documentation</a> &#187;
+  </li>
+
+        <li class="nav-item nav-item-this"><a href="">Debug</a></li> 
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025, Joseph Garnier.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+<script type="text/javascript">
+(function() {
+  "use strict";
+  const hide = () => document.getElementById("sidebar-check").checked = false;
+  addEventListener("keydown", e => (e.key === "Escape") && hide());
+  addEventListener("click", e => (e.target.tagName === "A") && hide());
+  addEventListener("hashchange", hide)
+})();
+</script>
+  </body>
+</html>
