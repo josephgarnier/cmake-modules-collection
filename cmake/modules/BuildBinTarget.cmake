@@ -359,7 +359,7 @@ macro(_build_bin_target_config_settings)
 	if(DEFINED BBT_COMPILER_FEATURES)
 		target_compile_features("${BBT_CONFIGURE_SETTINGS}"
 			PRIVATE
-				"${BBT_COMPILER_FEATURES}"
+				${BBT_COMPILER_FEATURES} # don't add quote (but yeah, it's inconsistent with the other CMake functions)
 		)
 		message(STATUS "C++ standard set to: C++${CMAKE_CXX_STANDARD}")
 		message(STATUS "Applied compile features: ${BBT_COMPILER_FEATURES}")
@@ -391,11 +391,15 @@ macro(_build_bin_target_config_settings)
 
 	# Add input target link options
 	if(DEFINED BBT_LINK_OPTIONS)
+		get_target_property(bin_type "${BBT_CONFIGURE_SETTINGS}" TYPE)
+		if(bin_type STREQUAL "STATIC_LIBRARY")
+			message(FATAL_ERROR "No link options can be added to a static library!")
+		endif()
 		target_link_options("${BBT_CONFIGURE_SETTINGS}"
 			PRIVATE
-				"${LINK_OPTIONS}"
+				"${BBT_LINK_OPTIONS}"
 		)
-		message(STATUS "Applied link options: ${LINK_OPTIONS}")
+		message(STATUS "Applied link options: ${BBT_LINK_OPTIONS}")
 	else()
 		message(STATUS "Applied link options: (none)")
 	endif()
@@ -478,15 +482,17 @@ macro(_build_bin_target_add_include_dirs)
 		message(FATAL_ERROR "INCLUDE_DIRECTORIES argument is missing or need a value!")
 	endif()
 	
-	target_include_directories("${BBT_ADD_INCLUDE_DIRECTORIES}"
-		# @see https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html#build-specification-and-usage-requirements
-		# and https://stackoverflow.com/questions/26243169/cmake-target-include-directories-meaning-of-scope
-		# and https://cmake.org/pipermail/cmake/2017-October/066457.html.
-		# If PRIVATE is specified for a certain option/property, then that option/property will only impact
-		# the current target. If PUBLIC is specified, then the option/property impacts both the current
-		# target and any others that link to it. If INTERFACE is specified, then the option/property does
-		# not impact the current target but will propagate to other targets that link to it.
-		PRIVATE
-			"${BBT_INCLUDE_DIRECTORIES}"
-	)
+	if(DEFINED BBT_INCLUDE_DIRECTORIES)
+		target_include_directories("${BBT_ADD_INCLUDE_DIRECTORIES}"
+			# @see https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html#build-specification-and-usage-requirements
+			# and https://stackoverflow.com/questions/26243169/cmake-target-include-directories-meaning-of-scope
+			# and https://cmake.org/pipermail/cmake/2017-October/066457.html.
+			# If PRIVATE is specified for a certain option/property, then that option/property will only impact
+			# the current target. If PUBLIC is specified, then the option/property impacts both the current
+			# target and any others that link to it. If INTERFACE is specified, then the option/property does
+			# not impact the current target but will propagate to other targets that link to it.
+			PRIVATE
+				"${BBT_INCLUDE_DIRECTORIES}"
+		)
+	endif()
 endmacro()
