@@ -23,7 +23,7 @@ Synopsis
   build_bin_target(`CONFIGURE_SETTINGS`_ <target-name> [...])
   build_bin_target(`ADD_SOURCES`_ <target-name> [...])
   build_bin_target(`ADD_PRECOMPILED_HEADER`_ <target-name> HEADER_FILE <file-path>)
-  build_bin_target(`ADD_INCLUDE_DIRECTORIES`_ <target-name> INCLUDE_DIRECTORIES <directory-path>...)
+  build_bin_target(`ADD_INCLUDE_DIRECTORIES`_ <target-name> INCLUDE_DIRECTORIES [<directory-path>...])
 
 Usage
 ^^^^^
@@ -56,23 +56,27 @@ Usage
                     [LINK_OPTIONS <option>...])
 
   This command updates compile and link settings of a previously created
-  target ``<target-name>``. The following configuration options are supported:
+  target ``<target-name>`` with ``PRIVATE`` visibility. The following
+  configuration options are supported:
 
   * ``COMPILER_FEATURES``: Add required compiler features (e.g., ``cxx_std_20``,
-    ``cxx_lambda``).
+    ``cxx_lambda``) with :cmake:command:`target_compile_features() <cmake:command:target_compile_features>`
+    and populates the :cmake:prop_tgt:`COMPILE_FEATURES <cmake:prop_tgt:COMPILE_FEATURES>` target property.
   * ``COMPILE_DEFINITIONS``: Add preprocessor definitions (e.g., ``MY_DEFINE``
-    or ``MY_DEFINE=42``).
+    or ``MY_DEFINE=42``) with :cmake:command:`target_compile_definitions() <cmake:command:target_compile_definitions>`
+    and populates :cmake:prop_tgt:`COMPILE_OPTIONS <cmake:prop_tgt:COMPILE_DEFINITIONS>` target property.
   * ``COMPILE_OPTIONS``: Add compiler command-line options (e.g., ``-Wall``,
-    ``/W4``).
+    ``/W4``) with :cmake:command:`target_compile_options() <cmake:command:target_compile_options>`
+    and populates :cmake:prop_tgt:`COMPILE_OPTIONS <cmake:prop_tgt:COMPILE_OPTIONS>` target property.
   * ``LINK_OPTIONS``: Add linker command-line options (e.g., ``-s``,
-    ``/INCREMENTAL:NO``).
+    ``/INCREMENTAL:NO``) with :cmake:command:`target_link_options() <cmake:command:target_link_options>`
+    and populates :cmake:prop_tgt:`LINK_OPTIONS <cmake:prop_tgt:LINK_OPTIONS>` target property.
 
   At the first call, the command sets the :cmake:prop_tgt:`CXX_STANDARD <cmake:prop_tgt:CXX_STANDARD>` property
-    using the value of :cmake:variable:`CMAKE_CXX_STANDARD <cmake:variable:CMAKE_CXX_STANDARD>`, which must be defined.
-
-  The target is also assigned to a default folder for improved IDE integration.
-  All options are optional and may appear in any order. If a section is
-  missing, it is simply ignored without warning.
+  using the value of :cmake:variable:`CMAKE_CXX_STANDARD <cmake:variable:CMAKE_CXX_STANDARD>`, which must be defined.
+  The target is also assigned to a default folder for improved IDE
+  integration. All options are optional and may appear in any order. If a
+  section is missing, it is simply ignored without warning.
 
   This command is intended for targets that have been previously created
   using :command:`build_bin_target(CREATE)`.
@@ -97,9 +101,9 @@ Usage
   .. code-block:: cmake
 
     build_bin_target(ADD_SOURCES <target-name>
-                    SOURCE_FILES <file-path>...
-                    PRIVATE_HEADER_FILES <file-path>...
-                    PUBLIC_HEADER_FILES <file-path>...)
+                    SOURCE_FILES [<file-path>...]
+                    PRIVATE_HEADER_FILES [<file-path>...]
+                    PUBLIC_HEADER_FILES [<file-path>...])
 
   Assigns implementation and header files to the given binary target
   ``<target-name>`` with ``PRIVATE`` visibility:
@@ -111,8 +115,11 @@ Usage
   * ``PUBLIC_HEADER_FILES``: A list of public headers, usually found in an
     ``include/`` directory.
 
-  It also defines a logical grouping of source files in IDEs (e.g., Visual
-  Studio) using :cmake:command:`source_group() <cmake:command:source_group>`, based on the project's source tree.
+  These files are added to the target with :cmake:command:`target_sources() <cmake:command:target_sources>` to populate
+  the :cmake:prop_tgt:`SOURCES <cmake:prop_tgt:SOURCES>` target property.
+  The command also defines a logical grouping of source files in IDEs (e.g.,
+  Visual Studio) using :cmake:command:`source_group() <cmake:command:source_group>`, based on the
+  project's source tree.
 
   This command is intended for targets that have been previously created
   using :command:`build_bin_target(CREATE)`, and is typically used in conjunction
@@ -130,14 +137,8 @@ Usage
       PUBLIC_HEADER_FILES "include/lib_1.h" "include/lib_2.h"
     )
 
-    # Full example
+    # Or with `directory(COLLECT_SOURCES_BY_POLICY)`
     build_bin_target(CREATE "my_static_lib" STATIC)
-    build_bin_target(CONFIGURE_SETTINGS "my_static_lib"
-      COMPILER_FEATURES "cxx_std_20"
-      COMPILE_DEFINITIONS "MY_DEFINE"
-      COMPILE_OPTIONS "-Wall" "-Wextra"
-      LINK_OPTIONS "-s"
-    )
     directory(COLLECT_SOURCES_BY_POLICY
       PUBLIC_HEADERS_SEPARATED on "${CMAKE_SOURCE_DIR}/include/mylib"
       SRC_DIR "${CMAKE_SOURCE_DIR}/src"
@@ -157,7 +158,9 @@ Usage
   build_bin_target(ADD_PRECOMPILED_HEADER <target-name> HEADER_FILE <file-path>)
 
   Add a precompiled header file (PCH) ``<file_path>`` to an existing binary
-  target ``<target_name>`` with ``PRIVATE`` visibility.
+  target ``<target_name>`` with ``PRIVATE`` visibility. The file is added to
+  the target with :cmake:command:`target_precompile_headers() <cmake:command:target_precompile_headers>` to populate the
+  :cmake:prop_tgt:`PRECOMPILE_HEADERS <cmake:prop_tgt:PRECOMPILE_HEADERS>` target property.
 
   This command is intended for targets that have been previously created
   using :command:`build_bin_target(CREATE)`.
@@ -168,38 +171,16 @@ Usage
 
     build_bin_target(CREATE "my_static_lib" STATIC)
     build_bin_target(ADD_PRECOMPILED_HEADER "my_static_lib"
-      HEADER_FILE "src/header_pch.h")
-
-    # Full example
-    build_bin_target(CREATE "my_static_lib" STATIC)
-    build_bin_target(CONFIGURE_SETTINGS "my_static_lib"
-      COMPILER_FEATURES "cxx_std_20"
-      COMPILE_DEFINITIONS "MY_DEFINE"
-      COMPILE_OPTIONS "-Wall" "-Wextra"
-      LINK_OPTIONS "-s"
+      HEADER_FILE "src/header_pch.h"
     )
-    directory(COLLECT_SOURCES_BY_POLICY
-      PUBLIC_HEADERS_SEPARATED on "${CMAKE_SOURCE_DIR}/include/mylib"
-      SRC_DIR "${CMAKE_SOURCE_DIR}/src"
-      SRC_SOURCE_FILES sources
-      PUBLIC_HEADER_DIR public_headers_dir
-      PUBLIC_HEADER_FILES public_headers
-      PRIVATE_HEADER_DIR private_headers_dir
-      PRIVATE_HEADER_FILES private_headers
-    )
-    build_bin_target(ADD_SOURCES "my_static_lib"
-      SOURCE_FILES "${sources}"
-      PRIVATE_HEADER_FILES "${private_headers}"
-      PUBLIC_HEADER_FILES "${public_headers}"
-    )
-    build_bin_target(ADD_PRECOMPILED_HEADER "my_static_lib"
-      HEADER_FILE "src/header_pch.h")
 
 .. signature::
-  build_bin_target(ADD_INCLUDE_DIRECTORIES <target-name> INCLUDE_DIRECTORIES <directory-path>...)
+  build_bin_target(ADD_INCLUDE_DIRECTORIES <target-name> INCLUDE_DIRECTORIES [<directory-path>...])
 
   Add include directories to an existing binary target ``<target_name>`` with
-  ``PRIVATE`` visibility.
+  ``PRIVATE`` visibility. The file is added to the target with
+  :cmake:command:`target_include_directories() <cmake:command:target_include_directories>` to populate the
+  :cmake:prop_tgt:`INCLUDE_DIRECTORIES <cmake:prop_tgt:INCLUDE_DIRECTORIES>` target property.
 
   This command is intended for targets that have been previously created
   using :command:`build_bin_target(CREATE)`, and is typically used in conjunction
@@ -212,34 +193,44 @@ Usage
 
     build_bin_target(CREATE "my_static_lib" STATIC)
     build_bin_target(ADD_INCLUDE_DIRECTORIES "my_static_lib"
-      INCLUDE_DIRECTORIES "include")
+      INCLUDE_DIRECTORIES "include"
+    )
 
-    # Full example
-    build_bin_target(CREATE "my_static_lib" STATIC)
-    build_bin_target(CONFIGURE_SETTINGS "my_static_lib"
-      COMPILER_FEATURES "cxx_std_20"
-      COMPILE_DEFINITIONS "MY_DEFINE"
-      COMPILE_OPTIONS "-Wall" "-Wextra"
-      LINK_OPTIONS "-s"
-    )
-    directory(COLLECT_SOURCES_BY_POLICY
-      PUBLIC_HEADERS_SEPARATED on "${CMAKE_SOURCE_DIR}/include/mylib"
-      SRC_DIR "${CMAKE_SOURCE_DIR}/src"
-      SRC_SOURCE_FILES sources
-      PUBLIC_HEADER_DIR public_headers_dir
-      PUBLIC_HEADER_FILES public_headers
-      PRIVATE_HEADER_DIR private_headers_dir
-      PRIVATE_HEADER_FILES private_headers
-    )
-    build_bin_target(ADD_SOURCES "my_static_lib"
-      SOURCE_FILES "${sources}"
-      PRIVATE_HEADER_FILES "${private_headers}"
-      PUBLIC_HEADER_FILES "${public_headers}"
-    )
-    build_bin_target(ADD_PRECOMPILED_HEADER "my_static_lib"
-      HEADER_FILE "src/header_pch.h")
-    build_bin_target(ADD_INCLUDE_DIRECTORIES "my_static_lib"
-      INCLUDE_DIRECTORIES "$<$<BOOL:${private_headers_dir}>:${private_headers_dir}>" "${public_headers_dir}")
+Full example
+^^^^^^^^^^^^
+
+This example shows how to call the module functions to create a complete
+binary.
+
+.. code-block:: cmake
+
+  build_bin_target(CREATE "my_static_lib" STATIC)
+  build_bin_target(CONFIGURE_SETTINGS "my_static_lib"
+    COMPILER_FEATURES "cxx_std_20"
+    COMPILE_DEFINITIONS "MY_DEFINE"
+    COMPILE_OPTIONS "-Wall" "-Wextra"
+    LINK_OPTIONS "-s"
+  )
+  directory(COLLECT_SOURCES_BY_POLICY
+    PUBLIC_HEADERS_SEPARATED on "${CMAKE_SOURCE_DIR}/include/mylib"
+    SRC_DIR "${CMAKE_SOURCE_DIR}/src"
+    SRC_SOURCE_FILES sources
+    PUBLIC_HEADER_DIR public_headers_dir
+    PUBLIC_HEADER_FILES public_headers
+    PRIVATE_HEADER_DIR private_headers_dir
+    PRIVATE_HEADER_FILES private_headers
+  )
+  build_bin_target(ADD_SOURCES "my_static_lib"
+    SOURCE_FILES "${sources}"
+    PRIVATE_HEADER_FILES "${private_headers}"
+    PUBLIC_HEADER_FILES "${public_headers}"
+  )
+  build_bin_target(ADD_PRECOMPILED_HEADER "my_static_lib"
+    HEADER_FILE "src/header_pch.h"
+  )
+  build_bin_target(ADD_INCLUDE_DIRECTORIES "my_static_lib"
+    INCLUDE_DIRECTORIES "$<$<BOOL:${private_headers_dir}>:${private_headers_dir}>" "${public_headers_dir}"
+  )
 #]=======================================================================]
 
 include_guard()
@@ -339,7 +330,7 @@ macro(_build_bin_target_config_settings)
 	if(NOT DEFINED CMAKE_CXX_STANDARD)
 		message(FATAL_ERROR "CMAKE_CXX_STANDARD is not set!")
 	endif()
-	
+
 	# Add the bin target in a folder for IDE project
 	set_target_properties("${BBT_CONFIGURE_SETTINGS}" PROPERTIES FOLDER "")
 	
