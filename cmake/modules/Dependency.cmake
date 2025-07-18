@@ -607,11 +607,11 @@ macro(_dependency_import)
 		# Add library properties for release
 		cmake_path(GET lib FILENAME lib_name)
 		set_target_properties("${DEP_IMPORT}" PROPERTIES
-			IMPORTED_LOCATION_RELEASE "${lib}" # Only for '.so|.dll|.a|.lib'. For usage from source-tree
-			IMPORTED_LOCATION_BUILD_RELEASE "" # Custom property for usage from build-tree
-			IMPORTED_LOCATION_INSTALL_RELEASE "" # Custom property for usage from install-tree
-			IMPORTED_IMPLIB_RELEASE "${implib}" # Only for '.dll.a|.a|.lib' on DLL platforms
-			IMPORTED_SONAME_RELEASE "${lib_name}"
+			IMPORTED_LOCATION_${build_type} "${lib}" # Only for '.so|.dll|.a|.lib'. For usage from source-tree
+			IMPORTED_LOCATION_BUILD_${build_type} "" # Custom property for usage from build-tree
+			IMPORTED_LOCATION_INSTALL_${build_type} "" # Custom property for usage from install-tree
+			IMPORTED_IMPLIB_${build_type} "${implib}" # Only for '.dll.a|.a|.lib' on DLL platforms
+			IMPORTED_SONAME_${build_type} "${lib_name}"
 		)
 		set_property(TARGET "${DEP_IMPORT}"
 			APPEND PROPERTY IMPORTED_CONFIGURATIONS "${build_type}"
