@@ -91,14 +91,18 @@ function(${CMAKETEST_TEST})
 
 	# To call before each test
 	macro(_set_up_test)
-		# Reset properties set by `dependency(ADD_INCLUDE_DIRECTORIES)`
-		set_property(TARGET "imp_static_mock_lib" PROPERTY INTERFACE_INCLUDE_DIRECTORIES)
-		set_property(TARGET "imp_static_mock_lib" PROPERTY INTERFACE_INCLUDE_DIRECTORIES_BUILD)
-		set_property(TARGET "imp_static_mock_lib" PROPERTY INTERFACE_INCLUDE_DIRECTORIES_INSTALL)
+		# Set to empty the properties changed by `dependency(ADD_INCLUDE_DIRECTORIES)`
+		set_target_properties("imp_static_mock_lib" PROPERTIES
+			INTERFACE_INCLUDE_DIRECTORIES ""
+			INTERFACE_INCLUDE_DIRECTORIES_BUILD ""
+			INTERFACE_INCLUDE_DIRECTORIES_INSTALL ""
+		)
+		set_target_properties("imp_shared_mock_lib" PROPERTIES
+			INTERFACE_INCLUDE_DIRECTORIES ""
+			INTERFACE_INCLUDE_DIRECTORIES_BUILD ""
+			INTERFACE_INCLUDE_DIRECTORIES_INSTALL ""
+		)
 
-		set_property(TARGET "imp_shared_mock_lib" PROPERTY INTERFACE_INCLUDE_DIRECTORIES)
-		set_property(TARGET "imp_shared_mock_lib" PROPERTY INTERFACE_INCLUDE_DIRECTORIES_BUILD)
-		set_property(TARGET "imp_shared_mock_lib" PROPERTY INTERFACE_INCLUDE_DIRECTORIES_INSTALL)
 	endmacro()
 
 	# Functionalities checking

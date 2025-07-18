@@ -101,20 +101,23 @@ function(${CMAKETEST_TEST})
 
 	# To call before each test
 	macro(_set_up_test)
-		# Reset properties set by `dependency(SET_IMPORTED_LOCATION)`
-		set_property(TARGET "imp_static_mock_lib" PROPERTY IMPORTED_LOCATION_RELEASE)
-		set_property(TARGET "imp_static_mock_lib" PROPERTY IMPORTED_LOCATION_BUILD_RELEASE)
-		set_property(TARGET "imp_static_mock_lib" PROPERTY IMPORTED_LOCATION_INSTALL_RELEASE)
-		set_property(TARGET "imp_static_mock_lib" PROPERTY IMPORTED_LOCATION_DEBUG)
-		set_property(TARGET "imp_static_mock_lib" PROPERTY IMPORTED_LOCATION_BUILD_DEBUG)
-		set_property(TARGET "imp_static_mock_lib" PROPERTY IMPORTED_LOCATION_INSTALL_DEBUG)
-
-		set_property(TARGET "imp_shared_mock_lib" PROPERTY IMPORTED_LOCATION_RELEASE)
-		set_property(TARGET "imp_shared_mock_lib" PROPERTY IMPORTED_LOCATION_BUILD_RELEASE)
-		set_property(TARGET "imp_shared_mock_lib" PROPERTY IMPORTED_LOCATION_INSTALL_RELEASE)
-		set_property(TARGET "imp_shared_mock_lib" PROPERTY IMPORTED_LOCATION_DEBUG)
-		set_property(TARGET "imp_shared_mock_lib" PROPERTY IMPORTED_LOCATION_BUILD_DEBUG)
-		set_property(TARGET "imp_shared_mock_lib" PROPERTY IMPORTED_LOCATION_INSTALL_DEBUG)
+		# Set to empty the properties changed by `dependency(SET_IMPORTED_LOCATION)`
+		set_target_properties("imp_static_mock_lib" PROPERTIES
+			IMPORTED_LOCATION_RELEASE ""
+			IMPORTED_LOCATION_BUILD_RELEASE ""
+			IMPORTED_LOCATION_INSTALL_RELEASE ""
+			IMPORTED_LOCATION_DEBUG ""
+			IMPORTED_LOCATION_BUILD_DEBUG ""
+			IMPORTED_LOCATION_INSTALL_DEBUG ""
+		)
+		set_target_properties("imp_shared_mock_lib" PROPERTIES
+			IMPORTED_LOCATION_RELEASE ""
+			IMPORTED_LOCATION_BUILD_RELEASE ""
+			IMPORTED_LOCATION_INSTALL_RELEASE ""
+			IMPORTED_LOCATION_DEBUG ""
+			IMPORTED_LOCATION_BUILD_DEBUG ""
+			IMPORTED_LOCATION_INSTALL_DEBUG ""
+		)
 	endmacro()
 
 	# Functionalities checking
