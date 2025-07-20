@@ -22,11 +22,12 @@ function(${CMAKETEST_TEST})
 	# Simulate a call to `dependency(IMPORT)`, then `dependency(ADD_INCLUDE_DIRECTORIES)`, then `dependency(IMPORTED_LOCATION)`
 	macro(_import_mock_libs)
 		include(Directory)
+		string(TOUPPER "${CMAKE_BUILD_TYPE}" cmake_build_type_upper)
 
 		# Import static lib
 		add_library("imp_static_mock_lib" STATIC IMPORTED)
 		set(lib_base_filename "static_mock_lib")
-		if("${CMAKE_BUILD_TYPE}" STREQUAL "DEBUG")
+		if("${cmake_build_type_upper}" STREQUAL "DEBUG")
 			set(lib_base_filename "static_mock_libd")
 		endif()
 		set_target_properties("imp_static_mock_lib" PROPERTIES
@@ -47,11 +48,11 @@ function(${CMAKETEST_TEST})
 
 		cmake_path(GET lib_file_path FILENAME lib_file_name)
 		set_target_properties("imp_static_mock_lib" PROPERTIES
-			IMPORTED_LOCATION_${CMAKE_BUILD_TYPE} "${lib_file_path}"
-			IMPORTED_LOCATION_BUILD_${CMAKE_BUILD_TYPE} "${lib_file_path}"
-			IMPORTED_LOCATION_INSTALL_${CMAKE_BUILD_TYPE} "lib/${lib_file_name}"
-			IMPORTED_IMPLIB_${CMAKE_BUILD_TYPE} "${implib_file_path}"
-			IMPORTED_SONAME_${CMAKE_BUILD_TYPE} "${lib_file_name}"
+			IMPORTED_LOCATION_${cmake_build_type_upper} "${lib_file_path}"
+			IMPORTED_LOCATION_BUILD_${cmake_build_type_upper} "${lib_file_path}"
+			IMPORTED_LOCATION_INSTALL_${cmake_build_type_upper} "lib/${lib_file_name}"
+			IMPORTED_IMPLIB_${cmake_build_type_upper} "${implib_file_path}"
+			IMPORTED_SONAME_${cmake_build_type_upper} "${lib_file_name}"
 		)
 		set_property(TARGET "imp_static_mock_lib"
 			APPEND PROPERTY IMPORTED_CONFIGURATIONS "${CMAKE_BUILD_TYPE}"
@@ -77,11 +78,11 @@ function(${CMAKETEST_TEST})
 		)
 		cmake_path(GET lib_file_path FILENAME lib_file_name)
 		set_target_properties("imp_shared_mock_lib" PROPERTIES
-			IMPORTED_LOCATION_${CMAKE_BUILD_TYPE} "${lib_file_path}"
-			IMPORTED_LOCATION_BUILD_${CMAKE_BUILD_TYPE} "${lib_file_path}"
-			IMPORTED_LOCATION_INSTALL_${CMAKE_BUILD_TYPE} "lib/${lib_file_name}"
-			IMPORTED_IMPLIB_${CMAKE_BUILD_TYPE} "${implib_file_path}"
-			IMPORTED_SONAME_${CMAKE_BUILD_TYPE} "${lib_file_name}"
+			IMPORTED_LOCATION_${cmake_build_type_upper} "${lib_file_path}"
+			IMPORTED_LOCATION_BUILD_${cmake_build_type_upper} "${lib_file_path}"
+			IMPORTED_LOCATION_INSTALL_${cmake_build_type_upper} "lib/${lib_file_name}"
+			IMPORTED_IMPLIB_${cmake_build_type_upper} "${implib_file_path}"
+			IMPORTED_SONAME_${cmake_build_type_upper} "${lib_file_name}"
 		)
 		set_property(TARGET "imp_shared_mock_lib"
 			APPEND PROPERTY IMPORTED_CONFIGURATIONS "${CMAKE_BUILD_TYPE}"

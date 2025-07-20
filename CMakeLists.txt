@@ -68,7 +68,9 @@ message(STATUS "System name set to: ${SYSTEM_NAME}")
 ####################### Set C++ standard and build type #######################
 set(CMAKE_CXX_STANDARD "20")
 message(STATUS "C++ standard version set to: C++${CMAKE_CXX_STANDARD}")
-set(CMAKE_BUILD_TYPE "RELEASE")
+if(NOT DEFINED CMAKE_BUILD_TYPE)
+	set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Build type" FORCE)
+endif()
 message(STATUS "Build type set to: ${CMAKE_BUILD_TYPE}")
 
 ####################### Add module test #######################################
