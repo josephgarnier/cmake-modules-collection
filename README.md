@@ -1,17 +1,21 @@
+<div style="text-align: center;">
+
 # CMake Modules Collection
 
-<p align="center">
+</div>
+
+<p style="text-align: center;">
 <strong>A collection of modules for a more practical use of CMake.</strong>
 </p>
 
-<p align="center">
+<p style="text-align: center;">
 <a rel="license" href="https://www.gnu.org/licenses/gpl-3.0.en.html"><img alt="Static Badge" src="https://img.shields.io/badge/licence-GNU_GPLv3-brightgreen">
 </a> <img alt="Static Badge" src="https://img.shields.io/badge/plateform-Windows%20%7C%20Linux%20%7C%20Mac-lightgrey"> <img alt="Static Badge" src="https://img.shields.io/badge/language-CMake%20%7C%20C%2B%2B-blue"> <img alt="Static Badge" src="https://img.shields.io/badge/status-in_dev-orange">
 </p>
 
 This collection of CMake modules provides macros and functions that extend official functionality or wrap it in higher-level abstractions to make writing CMake code faster and easier. Each module is documented and tested using the unit-testing framework [CMakeTest](https://github.com/CMakePP/CMakeTest).
 
-<p align="center">
+<p style="text-align: center;">
 <a href="#-features">Features</a> &nbsp;&bull;&nbsp;
 <a href="#-requirements">Requirements</a> &nbsp;&bull;&nbsp;
 <a href="#-module-overview">Module overview</a> &nbsp;&bull;&nbsp;
@@ -143,11 +147,11 @@ To integrate the CMake module collection into a development project using CMake 
 
 ## 💻 Development
 
-Several *commands* and *scripts* are available for the development of this project, including: build system generation and cleanup, documentation generation, test execution.
+Several *commands* and *scripts* are available for the development of this project, including: build system generation and cleanup, documentation generation, test execution. The scripts are stored in the project root, and the commands can be run from a command prompt.
 
-Commands are also written as **Visual Studio Code tasks** in `.vscode/tasks.json` and can be launched from the [command palette](https://code.visualstudio.com/docs/editor/tasks). Many of them can also be run from the [Visual Studio Code CMake Tools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools). Scripts are stored in the project root.
+If you are a VS Code user, all commands have been written as **Visual Studio Code tasks** in `.vscode/tasks.json` and can be launched from the [command palette](https://code.visualstudio.com/docs/editor/tasks). Many of them can also be run from the [Visual Studio Code CMake Tools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools).
 
-The use of commands and scripts is described below, they must be run from the root project directory:
+The use of commands and scripts is described below, in the order of execution of a complete and classic sequence of build phases. They must be executed from the root project directory:
 
 - To **clean** the buildsystem (remove content of `build/`, `doc/` and `bin/`):
 
@@ -244,7 +248,7 @@ The use of commands and scripts is described below, they must be run from the ro
   - VS Code task: `CMake: Clean and Rebuild all`.
   </details>
 
-- To **execute the `test`** build phases (call the CMake command 'ctest'):
+- To **execute the `test`** build phase (call the CMake command 'ctest'):
 
   <details>
   <summary>see details</summary>
@@ -260,7 +264,7 @@ The use of commands and scripts is described below, they must be run from the ro
   - VS Code task: `CMake: Test`.
   </details>
 
-- To **execute the `doc`** build phases (call the CMake target 'doc'):
+- To **execute the `doc`** build phase (call the CMake target 'doc'):
 
   <details>
   <summary>see details</summary>
