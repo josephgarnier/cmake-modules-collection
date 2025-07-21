@@ -166,11 +166,16 @@
     {
       "label": "CMake: Doc",
       "detail": "Generate modules doc",
-      "type": "shell",
+      "type": "cmake",
       "options": {
-        "cwd": "${workspaceFolder}/build/x64-Release-Win-GCC"
+        "cwd": "${workspaceFolder}/build"
       },
-      "command": "cmake --build . --target doc",
+      "command": "build",
+      "targets": [
+        "doc"
+      ],
+      "preset": "${command:cmake.activeBuildPresetName}",
+      "group": "build",
       "presentation": {
         "echo": true,
         "reveal": "always",
@@ -184,11 +189,12 @@
     {
       "label": "CMake: Install",
       "detail": "Install exportable files",
-      "type": "shell",
+      "type": "cmake",
       "options": {
-        "cwd": "${workspaceFolder}/build/x64-Release-Win-GCC"
+        "cwd": "${workspaceFolder}/build"
       },
-      "command": "cmake --build . --target install",
+      "command": "install",
+      "preset": "${command:cmake.activeBuildPresetName}",
       "presentation": {
         "echo": true,
         "reveal": "always",
