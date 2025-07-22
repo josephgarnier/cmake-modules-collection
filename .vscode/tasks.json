@@ -207,7 +207,7 @@
     },
     {
       "label": "CMake: Workflow",
-      "detail": "Builld default targets (all) and run module tests",
+      "detail": "Build default targets (all) and run module tests",
       "type": "cmake",
       "options": {
         "cwd": "${workspaceFolder}/build"

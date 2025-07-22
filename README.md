@@ -174,7 +174,7 @@ The use of commands and scripts is described below, in the order of execution of
 
   <details>
   <summary>see details</summary>
-  
+
   ```bash
   # On Linux/MacOS
   ./run-cmake.sh
@@ -231,7 +231,7 @@ The use of commands and scripts is described below, in the order of execution of
 
   # Run the CMake target 'all' in verbose mode
   cmake --build --preset "<build-preset-name>" --verbose
-  
+
   # Run the CMake target 'all' without preset
   cmake --build ./build/<preset-build-folder> --target all
 
@@ -253,7 +253,7 @@ The use of commands and scripts is described below, in the order of execution of
 
   # Run the CMake target 'all' after the target 'clean' in verbose mode
   cmake --build --preset "<build-preset-name>" --target all --clean-first --verbose
-  
+
   # Run the CMake target 'all' after the target 'clean' without preset
   cmake --build ./build/<preset-build-folder> --target all --clean-first
 
@@ -272,13 +272,13 @@ The use of commands and scripts is described below, in the order of execution of
   ```bash
   # Run the CMake command 'ctest'
   ctest --preset "<test-preset-name>"
-  
+
   # Run the CMake command 'ctest' while displaying much more information
   ctest --preset "<test-preset-name>" --extra-verbose --debug
-  
+
   # Run the CMake command 'ctest' without preset
   ctest --test-dir ./build/<preset-build-folder>
-  
+
   # Run the CMake command 'ctest' while displaying much more information without preset
   ctest --test-dir ./build/<preset-build-folder> --extra-verbose --debug
   ```
@@ -294,7 +294,7 @@ The use of commands and scripts is described below, in the order of execution of
   ```bash
   # Run the CMake target 'doc'
   cmake --build --preset "<build-preset-name>" --target doc
-  
+
   # Run the CMake target 'doc' without preset
   cmake --build ./build/<preset-build-folder> --target doc
   ```
@@ -311,7 +311,7 @@ The use of commands and scripts is described below, in the order of execution of
   ```bash
   # Run the CMake target 'install'
   cmake --build --preset "<build-preset-name>" --target install
-  
+
   # Run the CMake target 'install' without preset
   cmake --build ./build/<preset-build-folder> --target install
   ```
@@ -336,17 +336,17 @@ The use of commands and scripts is described below, in the order of execution of
 
   <details>
   <summary>see details</summary>
-  
+
   ```bash
   # List what targets has been generated
   cmake --build ./build/<preset-build-folder> --target help
 
   # List variables in the cache and their descriptions
   cmake -LAH ./build/<preset-build-folder>
-  
+
   # Print all available test labels without running any tests
   ctest --preset "<test-preset-name>" --extra-verbose --debug --print-labels
-  
+
   # Showing all links of CMake Intersphinx mapping file
   python -m sphinx.ext.intersphinx https://cmake.org/cmake/help/latest/objects.inv
   ```
