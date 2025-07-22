@@ -11,7 +11,7 @@
 #-------------------------------------------------------------------------------
 # Test of [BuildBinTarget module::CONFIGURE_SETTINGS operation]:
 #    build_bin_target(CONFIGURE_SETTINGS <target-name>
-#                    [COMPILER_FEATURES <feature>...]
+#                    [COMPILE_FEATURES <feature>...]
 #                    [COMPILE_DEFINITIONS <definition>...]
 #                    [COMPILE_OPTIONS <option>...]
 #                    [LINK_OPTIONS <option>...])
@@ -72,7 +72,7 @@ function(${CMAKETEST_TEST})
 			INTERFACE_COMPILE_FEATURES)
 	endfunction()
 
-	ct_add_section(NAME "configure_compiler_features")
+	ct_add_section(NAME "configure_compile_features")
 	function(${CMAKETEST_SECTION})
 
 		ct_add_section(NAME "cxx_standard_is_not_duplicated")
@@ -81,7 +81,7 @@ function(${CMAKETEST_TEST})
 			build_bin_target(CONFIGURE_SETTINGS "new_static_mock_lib")
 			build_bin_target(CONFIGURE_SETTINGS "new_static_mock_lib")
 			build_bin_target(CONFIGURE_SETTINGS "new_static_mock_lib"
-				COMPILER_FEATURES "cxx_thread_local")
+				COMPILE_FEATURES "cxx_thread_local")
 			get_target_property(output_bin_property "new_static_mock_lib"
 				COMPILE_FEATURES)
 			ct_assert_list(output_bin_property)
@@ -92,7 +92,7 @@ function(${CMAKETEST_TEST})
 			build_bin_target(CONFIGURE_SETTINGS "new_shared_mock_lib")
 			build_bin_target(CONFIGURE_SETTINGS "new_shared_mock_lib")
 			build_bin_target(CONFIGURE_SETTINGS "new_shared_mock_lib"
-				COMPILER_FEATURES "cxx_thread_local")
+				COMPILE_FEATURES "cxx_thread_local")
 			get_target_property(output_bin_property "new_shared_mock_lib"
 				COMPILE_FEATURES)
 			ct_assert_list(output_bin_property)
@@ -101,11 +101,11 @@ function(${CMAKETEST_TEST})
 				INTERFACE_COMPILE_FEATURES)
 		endfunction()
 
-		ct_add_section(NAME "add_compiler_features")
+		ct_add_section(NAME "add_compile_features")
 		function(${CMAKETEST_SECTION})
 			_set_up_test()
 			build_bin_target(CONFIGURE_SETTINGS "new_static_mock_lib"
-				COMPILER_FEATURES "cxx_thread_local" "cxx_trailing_return_types")
+				COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types")
 			get_target_property(output_bin_property "new_static_mock_lib"
 				COMPILE_FEATURES)
 			ct_assert_list(output_bin_property)
@@ -114,7 +114,7 @@ function(${CMAKETEST_TEST})
 				INTERFACE_COMPILE_FEATURES)
 
 			build_bin_target(CONFIGURE_SETTINGS "new_shared_mock_lib"
-				COMPILER_FEATURES "cxx_thread_local" "cxx_trailing_return_types")
+				COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types")
 			get_target_property(output_bin_property "new_shared_mock_lib"
 				COMPILE_FEATURES)
 			ct_assert_list(output_bin_property)
@@ -123,13 +123,13 @@ function(${CMAKETEST_TEST})
 				INTERFACE_COMPILE_FEATURES)
 		endfunction()
 
-		ct_add_section(NAME "append_compiler_features")
+		ct_add_section(NAME "append_compile_features")
 		function(${CMAKETEST_SECTION})
 			_set_up_test()
 			build_bin_target(CONFIGURE_SETTINGS "new_static_mock_lib"
-				COMPILER_FEATURES "cxx_thread_local")
+				COMPILE_FEATURES "cxx_thread_local")
 			build_bin_target(CONFIGURE_SETTINGS "new_static_mock_lib"
-				COMPILER_FEATURES "cxx_trailing_return_types")
+				COMPILE_FEATURES "cxx_trailing_return_types")
 			get_target_property(output_bin_property "new_static_mock_lib"
 				COMPILE_FEATURES)
 			ct_assert_list(output_bin_property)
@@ -138,9 +138,9 @@ function(${CMAKETEST_TEST})
 				INTERFACE_COMPILE_FEATURES)
 
 			build_bin_target(CONFIGURE_SETTINGS "new_shared_mock_lib"
-				COMPILER_FEATURES "cxx_thread_local")
+				COMPILE_FEATURES "cxx_thread_local")
 			build_bin_target(CONFIGURE_SETTINGS "new_shared_mock_lib"
-				COMPILER_FEATURES "cxx_trailing_return_types")
+				COMPILE_FEATURES "cxx_trailing_return_types")
 			get_target_property(output_bin_property "new_shared_mock_lib"
 				COMPILE_FEATURES)
 			ct_assert_list(output_bin_property)
@@ -293,7 +293,7 @@ function(${CMAKETEST_TEST})
 	ct_add_section(NAME "throws_if_arg_target_is_missing_1" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		build_bin_target(CONFIGURE_SETTINGS
-			COMPILER_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
+			COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
 			COMPILE_DEFINITIONS "DEFINE_ONE" "DEFINE_TWO"
 			COMPILE_OPTIONS "-Wall" "-Wextra"
 			LINK_OPTIONS "-s" "-z"
@@ -303,7 +303,7 @@ function(${CMAKETEST_TEST})
 	ct_add_section(NAME "throws_if_arg_target_is_missing_2" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		build_bin_target(CONFIGURE_SETTINGS ""
-			COMPILER_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
+			COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
 			COMPILE_DEFINITIONS "DEFINE_ONE" "DEFINE_TWO"
 			COMPILE_OPTIONS "-Wall" "-Wextra"
 			LINK_OPTIONS "-s" "-z"
@@ -313,27 +313,27 @@ function(${CMAKETEST_TEST})
 	ct_add_section(NAME "throws_if_arg_target_is_unknown" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		build_bin_target(CONFIGURE_SETTINGS "unknown_target"
-			COMPILER_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
+			COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
 			COMPILE_DEFINITIONS "DEFINE_ONE" "DEFINE_TWO"
 			COMPILE_OPTIONS "-Wall" "-Wextra"
 			LINK_OPTIONS "-s" "-z"
 		)
 	endfunction()
 
-	ct_add_section(NAME "throws_if_arg_compiler_features_is_missing_1" EXPECTFAIL)
+	ct_add_section(NAME "throws_if_arg_compile_features_is_missing_1" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		build_bin_target(CONFIGURE_SETTINGS "new_static_mock_lib"
-			COMPILER_FEATURES
+			COMPILE_FEATURES
 			COMPILE_DEFINITIONS "DEFINE_ONE" "DEFINE_TWO"
 			COMPILE_OPTIONS "-Wall" "-Wextra"
 			LINK_OPTIONS "-s" "-z"
 		)
 	endfunction()
 
-	ct_add_section(NAME "throws_if_arg_compiler_features_is_missing_2" EXPECTFAIL)
+	ct_add_section(NAME "throws_if_arg_compile_features_is_missing_2" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		build_bin_target(CONFIGURE_SETTINGS "new_static_mock_lib"
-			COMPILER_FEATURES ""
+			COMPILE_FEATURES ""
 			COMPILE_DEFINITIONS "DEFINE_ONE" "DEFINE_TWO"
 			COMPILE_OPTIONS "-Wall" "-Wextra"
 			LINK_OPTIONS "-s" "-z"
@@ -343,7 +343,7 @@ function(${CMAKETEST_TEST})
 	ct_add_section(NAME "throws_if_arg_compile_definitions_is_missing_1" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		build_bin_target(CONFIGURE_SETTINGS "new_static_mock_lib"
-			COMPILER_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
+			COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
 			COMPILE_DEFINITIONS
 			COMPILE_OPTIONS "-Wall" "-Wextra"
 			LINK_OPTIONS "-s" "-z"
@@ -353,7 +353,7 @@ function(${CMAKETEST_TEST})
 	ct_add_section(NAME "throws_if_arg_compile_definitions_is_missing_2" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		build_bin_target(CONFIGURE_SETTINGS "new_static_mock_lib"
-			COMPILER_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
+			COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
 			COMPILE_DEFINITIONS ""
 			COMPILE_OPTIONS "-Wall" "-Wextra"
 			LINK_OPTIONS "-s" "-z"
@@ -363,7 +363,7 @@ function(${CMAKETEST_TEST})
 	ct_add_section(NAME "throws_if_arg_compile_options_is_missing_1" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		build_bin_target(CONFIGURE_SETTINGS "new_static_mock_lib"
-			COMPILER_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
+			COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
 			COMPILE_DEFINITIONS "DEFINE_ONE" "DEFINE_TWO"
 			COMPILE_OPTIONS
 			LINK_OPTIONS "-s" "-z"
@@ -373,7 +373,7 @@ function(${CMAKETEST_TEST})
 	ct_add_section(NAME "throws_if_arg_compile_options_is_missing_2" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		build_bin_target(CONFIGURE_SETTINGS "new_static_mock_lib"
-			COMPILER_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
+			COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
 			COMPILE_DEFINITIONS "DEFINE_ONE" "DEFINE_TWO"
 			COMPILE_OPTIONS ""
 			LINK_OPTIONS "-s" "-z"
@@ -383,7 +383,7 @@ function(${CMAKETEST_TEST})
 	ct_add_section(NAME "throws_if_arg_link_options_is_missing_1" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		build_bin_target(CONFIGURE_SETTINGS "new_static_mock_lib"
-			COMPILER_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
+			COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
 			COMPILE_DEFINITIONS "DEFINE_ONE" "DEFINE_TWO"
 			COMPILE_OPTIONS "-Wall" "-Wextra"
 			LINK_OPTIONS
@@ -393,7 +393,7 @@ function(${CMAKETEST_TEST})
 	ct_add_section(NAME "throws_if_arg_link_options_is_missing_2" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		build_bin_target(CONFIGURE_SETTINGS "new_static_mock_lib"
-			COMPILER_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
+			COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
 			COMPILE_DEFINITIONS "DEFINE_ONE" "DEFINE_TWO"
 			COMPILE_OPTIONS "-Wall" "-Wextra"
 			LINK_OPTIONS ""
@@ -404,7 +404,7 @@ function(${CMAKETEST_TEST})
 	function(${CMAKETEST_SECTION})
 		unset(CMAKE_CXX_STANDARD)
 		build_bin_target(CONFIGURE_SETTINGS "new_static_mock_lib"
-			COMPILER_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
+			COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
 			COMPILE_DEFINITIONS "DEFINE_ONE" "DEFINE_TWO"
 			COMPILE_OPTIONS "-Wall" "-Wextra"
 			LINK_OPTIONS "-s" "-z"
@@ -415,7 +415,7 @@ function(${CMAKETEST_TEST})
 	function(${CMAKETEST_SECTION})
 		set(CMAKE_CXX_STANDARD "")
 		build_bin_target(CONFIGURE_SETTINGS "new_static_mock_lib"
-			COMPILER_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
+			COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
 			COMPILE_DEFINITIONS "DEFINE_ONE" "DEFINE_TWO"
 			COMPILE_OPTIONS "-Wall" "-Wextra"
 			LINK_OPTIONS "-s" "-z"

@@ -50,7 +50,7 @@ Usage
   .. code-block:: cmake
 
     build_bin_target(CONFIGURE_SETTINGS <target-name>
-                    [COMPILER_FEATURES <feature>...]
+                    [COMPILE_FEATURES <feature>...]
                     [COMPILE_DEFINITIONS <definition>...]
                     [COMPILE_OPTIONS <option>...]
                     [LINK_OPTIONS <option>...])
@@ -59,7 +59,7 @@ Usage
   target ``<target-name>`` with ``PRIVATE`` visibility. The following
   configuration options are supported:
 
-  * ``COMPILER_FEATURES``: Add required compiler features (e.g., ``cxx_std_20``,
+  * ``COMPILE_FEATURES``: Add required compile features (e.g., ``cxx_std_20``,
     ``cxx_lambda``) with :cmake:command:`target_compile_features() <cmake:command:target_compile_features>`
     and populates the :cmake:prop_tgt:`COMPILE_FEATURES <cmake:prop_tgt:COMPILE_FEATURES>` target property.
   * ``COMPILE_DEFINITIONS``: Add preprocessor definitions (e.g., ``MY_DEFINE``
@@ -87,7 +87,7 @@ Usage
 
     build_bin_target(CREATE "my_static_lib" STATIC)
     build_bin_target(CONFIGURE_SETTINGS "my_static_lib"
-      COMPILER_FEATURES "cxx_std_20"
+      COMPILE_FEATURES "cxx_std_20"
       COMPILE_DEFINITIONS "MY_DEFINE"
       COMPILE_OPTIONS "-Wall" "-Wextra"
       LINK_OPTIONS "-s"
@@ -206,7 +206,7 @@ binary.
 
   build_bin_target(CREATE "my_static_lib" STATIC)
   build_bin_target(CONFIGURE_SETTINGS "my_static_lib"
-    COMPILER_FEATURES "cxx_std_20"
+    COMPILE_FEATURES "cxx_std_20"
     COMPILE_DEFINITIONS "MY_DEFINE"
     COMPILE_OPTIONS "-Wall" "-Wextra"
     LINK_OPTIONS "-s"
@@ -242,7 +242,7 @@ cmake_minimum_required (VERSION 3.20 FATAL_ERROR)
 function(build_bin_target)
 	set(options STATIC SHARED HEADER EXEC)
 	set(one_value_args CREATE CONFIGURE_SETTINGS ADD_SOURCES ADD_PRECOMPILED_HEADER HEADER_FILE ADD_INCLUDE_DIRECTORIES)
-	set(multi_value_args COMPILER_FEATURES COMPILE_DEFINITIONS COMPILE_OPTIONS LINK_OPTIONS SOURCE_FILES PRIVATE_HEADER_FILES PUBLIC_HEADER_FILES INCLUDE_DIRECTORIES)
+	set(multi_value_args COMPILE_FEATURES COMPILE_DEFINITIONS COMPILE_OPTIONS LINK_OPTIONS SOURCE_FILES PRIVATE_HEADER_FILES PUBLIC_HEADER_FILES INCLUDE_DIRECTORIES)
 	cmake_parse_arguments(BBT "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 	
 	if(DEFINED BBT_UNPARSED_ARGUMENTS)
@@ -315,8 +315,8 @@ macro(_build_bin_target_config_settings)
 	if(NOT TARGET "${BBT_CONFIGURE_SETTINGS}")
 		message(FATAL_ERROR "The target \"${BBT_CONFIGURE_SETTINGS}\" does not exists!")
 	endif()
-	if("COMPILER_FEATURES" IN_LIST BBT_KEYWORDS_MISSING_VALUES)
-		message(FATAL_ERROR "COMPILER_FEATURES argument is missing or need a value!")
+	if("COMPILE_FEATURES" IN_LIST BBT_KEYWORDS_MISSING_VALUES)
+		message(FATAL_ERROR "COMPILE_FEATURES argument is missing or need a value!")
 	endif()
 	if("COMPILE_DEFINITIONS" IN_LIST BBT_KEYWORDS_MISSING_VALUES)
 		message(FATAL_ERROR "COMPILE_DEFINITIONS argument is missing or need a value!")
@@ -334,11 +334,11 @@ macro(_build_bin_target_config_settings)
 	# Add the bin target in a folder for IDE project
 	set_target_properties("${BBT_CONFIGURE_SETTINGS}" PROPERTIES FOLDER "")
 	
-	# Add C++ standard in target compiler features
-	get_target_property(compiler_features "${BBT_CONFIGURE_SETTINGS}" COMPILE_FEATURES)
+	# Add C++ standard in target compile features
+	get_target_property(compile_features "${BBT_CONFIGURE_SETTINGS}" COMPILE_FEATURES)
 	set(cxx_standard "cxx_std_${CMAKE_CXX_STANDARD}")
-	if(NOT compiler_features STREQUAL "NOTFOUND")
-		list(FIND compiler_features "${cxx_standard}" index_of)
+	if(NOT compile_features STREQUAL "NOTFOUND")
+		list(FIND compile_features "${cxx_standard}" index_of)
 	else()
 		set(index_of -1)
 	endif()
@@ -346,14 +346,14 @@ macro(_build_bin_target_config_settings)
 		target_compile_features("${BBT_CONFIGURE_SETTINGS}" PRIVATE "${cxx_standard}")
 	endif()
 
-	# Add input target compiler features
-	if(DEFINED BBT_COMPILER_FEATURES)
+	# Add input target compile features
+	if(DEFINED BBT_COMPILE_FEATURES)
 		target_compile_features("${BBT_CONFIGURE_SETTINGS}"
 			PRIVATE
-				${BBT_COMPILER_FEATURES} # don't add quote (but yeah, it's inconsistent with the other CMake functions)
+				${BBT_COMPILE_FEATURES} # don't add quote (but yeah, it's inconsistent with the other CMake functions)
 		)
 		message(STATUS "C++ standard set to: C++${CMAKE_CXX_STANDARD}")
-		message(STATUS "Applied compile features: ${BBT_COMPILER_FEATURES}")
+		message(STATUS "Applied compile features: ${BBT_COMPILE_FEATURES}")
 	else()
 		message(STATUS "Applied compile features: (none)")
 	endif()
