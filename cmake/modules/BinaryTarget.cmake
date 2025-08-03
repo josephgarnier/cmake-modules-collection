@@ -5,8 +5,8 @@
 # LICENSE file in the root directory of this source tree.
 
 #[=======================================================================[.rst:
-BuildBinTarget
---------------
+BinaryTarget
+------------
 
 Operations to fully create and configure a *C++* binary target. It greatly
 simplifies the most common process of creating an executable or library, by
@@ -19,17 +19,17 @@ Synopsis
 
 .. parsed-literal::
 
-  build_bin_target(`CREATE`_ <target-name> <STATIC|SHARED|HEADER|EXEC>)
-  build_bin_target(`CONFIGURE_SETTINGS`_ <target-name> [...])
-  build_bin_target(`ADD_SOURCES`_ <target-name> [...])
-  build_bin_target(`ADD_PRECOMPILED_HEADER`_ <target-name> HEADER_FILE <file-path>)
-  build_bin_target(`ADD_INCLUDE_DIRECTORIES`_ <target-name> INCLUDE_DIRECTORIES [<directory-path>...])
+  binary_target(`CREATE`_ <target-name> <STATIC|SHARED|HEADER|EXEC>)
+  binary_target(`CONFIGURE_SETTINGS`_ <target-name> [...])
+  binary_target(`ADD_SOURCES`_ <target-name> [...])
+  binary_target(`ADD_PRECOMPILED_HEADER`_ <target-name> HEADER_FILE <file-path>)
+  binary_target(`ADD_INCLUDE_DIRECTORIES`_ <target-name> INCLUDE_DIRECTORIES [<directory-path>...])
 
 Usage
 ^^^^^
 
 .. signature::
-  build_bin_target(CREATE <target-name> <STATIC|SHARED|HEADER|EXEC>)
+  binary_target(CREATE <target-name> <STATIC|SHARED|HEADER|EXEC>)
 
   Create a binary target named ``<target-name>`` and add it to the current
   CMake project, according to the specified binary type: ``STATIC``, ``SHARED``
@@ -39,17 +39,17 @@ Usage
 
   .. code-block:: cmake
 
-    build_bin_target(CREATE "my_static_lib" STATIC)
-    build_bin_target(CREATE "my_shared_lib" SHARED)
+    binary_target(CREATE "my_static_lib" STATIC)
+    binary_target(CREATE "my_shared_lib" SHARED)
 
 .. signature::
-  build_bin_target(CONFIGURE_SETTINGS <target-name> [...])
+  binary_target(CONFIGURE_SETTINGS <target-name> [...])
 
   Configure settings for an existing binary target:
 
   .. code-block:: cmake
 
-    build_bin_target(CONFIGURE_SETTINGS <target-name>
+    binary_target(CONFIGURE_SETTINGS <target-name>
                     [COMPILE_FEATURES <feature>...]
                     [COMPILE_DEFINITIONS <definition>...]
                     [COMPILE_OPTIONS <option>...]
@@ -79,14 +79,14 @@ Usage
   section is missing, it is simply ignored without warning.
 
   This command is intended for targets that have been previously created
-  using :command:`build_bin_target(CREATE)`.
+  using :command:`binary_target(CREATE)`.
 
   Example usage:
 
   .. code-block:: cmake
 
-    build_bin_target(CREATE "my_static_lib" STATIC)
-    build_bin_target(CONFIGURE_SETTINGS "my_static_lib"
+    binary_target(CREATE "my_static_lib" STATIC)
+    binary_target(CONFIGURE_SETTINGS "my_static_lib"
       COMPILE_FEATURES "cxx_std_20"
       COMPILE_DEFINITIONS "MY_DEFINE"
       COMPILE_OPTIONS "-Wall" "-Wextra"
@@ -94,13 +94,13 @@ Usage
     )
 
 .. signature::
-  build_bin_target(ADD_SOURCES <target-name> [...])
+  binary_target(ADD_SOURCES <target-name> [...])
 
   Add source and header files to an existing binary target:
 
   .. code-block:: cmake
 
-    build_bin_target(ADD_SOURCES <target-name>
+    binary_target(ADD_SOURCES <target-name>
                     SOURCE_FILES [<file-path>...]
                     PRIVATE_HEADER_FILES [<file-path>...]
                     PUBLIC_HEADER_FILES [<file-path>...])
@@ -122,7 +122,7 @@ Usage
   project's source tree.
 
   This command is intended for targets that have been previously created
-  using :command:`build_bin_target(CREATE)`, and is typically used in conjunction
+  using :command:`binary_target(CREATE)`, and is typically used in conjunction
   with :command:`directory(COLLECT_SOURCES_BY_POLICY)` to get the required
   files.
 
@@ -130,15 +130,15 @@ Usage
 
   .. code-block:: cmake
 
-    build_bin_target(CREATE "my_static_lib" STATIC)
-    build_bin_target(ADD_SOURCES "my_static_lib"
+    binary_target(CREATE "my_static_lib" STATIC)
+    binary_target(ADD_SOURCES "my_static_lib"
       SOURCE_FILES "src/main.cpp" "src/util.cpp" "src/source_1.cpp"
       PRIVATE_HEADER_FILES "src/util.h" "src/source_1.h"
       PUBLIC_HEADER_FILES "include/lib_1.h" "include/lib_2.h"
     )
 
     # Or with `directory(COLLECT_SOURCES_BY_POLICY)`
-    build_bin_target(CREATE "my_static_lib" STATIC)
+    binary_target(CREATE "my_static_lib" STATIC)
     directory(COLLECT_SOURCES_BY_POLICY
       PUBLIC_HEADERS_SEPARATED on "${CMAKE_SOURCE_DIR}/include/mylib"
       SRC_DIR "${CMAKE_SOURCE_DIR}/src"
@@ -148,14 +148,14 @@ Usage
       PRIVATE_HEADER_DIR private_headers_dir
       PRIVATE_HEADER_FILES private_headers
     )
-    build_bin_target(ADD_SOURCES "my_static_lib"
+    binary_target(ADD_SOURCES "my_static_lib"
       SOURCE_FILES "${sources}"
       PRIVATE_HEADER_FILES "${private_headers}"
       PUBLIC_HEADER_FILES "${public_headers}"
     )
 
 .. signature::
-  build_bin_target(ADD_PRECOMPILED_HEADER <target-name> HEADER_FILE <file-path>)
+  binary_target(ADD_PRECOMPILED_HEADER <target-name> HEADER_FILE <file-path>)
 
   Add a precompiled header file (PCH) ``<file_path>`` to an existing binary
   target ``<target_name>`` with ``PRIVATE`` visibility. The file is added to
@@ -163,19 +163,19 @@ Usage
   :cmake:prop_tgt:`PRECOMPILE_HEADERS <cmake:prop_tgt:PRECOMPILE_HEADERS>` target property.
 
   This command is intended for targets that have been previously created
-  using :command:`build_bin_target(CREATE)`.
+  using :command:`binary_target(CREATE)`.
 
   Example usage:
 
   .. code-block:: cmake
 
-    build_bin_target(CREATE "my_static_lib" STATIC)
-    build_bin_target(ADD_PRECOMPILED_HEADER "my_static_lib"
+    binary_target(CREATE "my_static_lib" STATIC)
+    binary_target(ADD_PRECOMPILED_HEADER "my_static_lib"
       HEADER_FILE "src/header_pch.h"
     )
 
 .. signature::
-  build_bin_target(ADD_INCLUDE_DIRECTORIES <target-name> INCLUDE_DIRECTORIES [<directory-path>...])
+  binary_target(ADD_INCLUDE_DIRECTORIES <target-name> INCLUDE_DIRECTORIES [<directory-path>...])
 
   Add include directories to an existing binary target ``<target_name>`` with
   ``PRIVATE`` visibility. The file is added to the target with
@@ -183,7 +183,7 @@ Usage
   :cmake:prop_tgt:`INCLUDE_DIRECTORIES <cmake:prop_tgt:INCLUDE_DIRECTORIES>` target property.
 
   This command is intended for targets that have been previously created
-  using :command:`build_bin_target(CREATE)`, and is typically used in conjunction
+  using :command:`binary_target(CREATE)`, and is typically used in conjunction
   with :command:`directory(COLLECT_SOURCES_BY_POLICY)` to get the required
   files.
 
@@ -191,8 +191,8 @@ Usage
 
   .. code-block:: cmake
 
-    build_bin_target(CREATE "my_static_lib" STATIC)
-    build_bin_target(ADD_INCLUDE_DIRECTORIES "my_static_lib"
+    binary_target(CREATE "my_static_lib" STATIC)
+    binary_target(ADD_INCLUDE_DIRECTORIES "my_static_lib"
       INCLUDE_DIRECTORIES "include"
     )
 
@@ -204,8 +204,8 @@ binary.
 
 .. code-block:: cmake
 
-  build_bin_target(CREATE "my_static_lib" STATIC)
-  build_bin_target(CONFIGURE_SETTINGS "my_static_lib"
+  binary_target(CREATE "my_static_lib" STATIC)
+  binary_target(CONFIGURE_SETTINGS "my_static_lib"
     COMPILE_FEATURES "cxx_std_20"
     COMPILE_DEFINITIONS "MY_DEFINE"
     COMPILE_OPTIONS "-Wall" "-Wextra"
@@ -220,15 +220,15 @@ binary.
     PRIVATE_HEADER_DIR private_headers_dir
     PRIVATE_HEADER_FILES private_headers
   )
-  build_bin_target(ADD_SOURCES "my_static_lib"
+  binary_target(ADD_SOURCES "my_static_lib"
     SOURCE_FILES "${sources}"
     PRIVATE_HEADER_FILES "${private_headers}"
     PUBLIC_HEADER_FILES "${public_headers}"
   )
-  build_bin_target(ADD_PRECOMPILED_HEADER "my_static_lib"
+  binary_target(ADD_PRECOMPILED_HEADER "my_static_lib"
     HEADER_FILE "src/header_pch.h"
   )
-  build_bin_target(ADD_INCLUDE_DIRECTORIES "my_static_lib"
+  binary_target(ADD_INCLUDE_DIRECTORIES "my_static_lib"
     INCLUDE_DIRECTORIES "$<$<BOOL:${private_headers_dir}>:${private_headers_dir}>" "${public_headers_dir}"
   )
 #]=======================================================================]
@@ -239,7 +239,7 @@ cmake_minimum_required (VERSION 3.20 FATAL_ERROR)
 
 #------------------------------------------------------------------------------
 # Public function of this module
-function(build_bin_target)
+function(binary_target)
 	set(options STATIC SHARED HEADER EXEC)
 	set(one_value_args CREATE CONFIGURE_SETTINGS ADD_SOURCES ADD_PRECOMPILED_HEADER HEADER_FILE ADD_INCLUDE_DIRECTORIES)
 	set(multi_value_args COMPILE_FEATURES COMPILE_DEFINITIONS COMPILE_OPTIONS LINK_OPTIONS SOURCE_FILES PRIVATE_HEADER_FILES PUBLIC_HEADER_FILES INCLUDE_DIRECTORIES)
@@ -249,15 +249,15 @@ function(build_bin_target)
 		message(FATAL_ERROR "Unrecognized arguments: \"${BBT_UNPARSED_ARGUMENTS}\"")
 	endif()
 	if(DEFINED BBT_CREATE)
-		_build_bin_target_create()
+		_binary_target_create()
 	elseif(DEFINED BBT_CONFIGURE_SETTINGS)
-		_build_bin_target_config_settings()
+		_binary_target_config_settings()
 	elseif(DEFINED BBT_ADD_SOURCES)
-		_build_bin_target_add_sources()
+		_binary_target_add_sources()
 	elseif(DEFINED BBT_ADD_PRECOMPILED_HEADER)
-		_build_bin_target_add_pre_header()
+		_binary_target_add_pre_header()
 	elseif(DEFINED BBT_ADD_INCLUDE_DIRECTORIES)
-		_build_bin_target_add_include_dirs()
+		_binary_target_add_include_dirs()
 	else()
 		message(FATAL_ERROR "The operation name or arguments are missing!")
 	endif()
@@ -265,7 +265,7 @@ endfunction()
 
 #------------------------------------------------------------------------------
 # Internal usage
-macro(_build_bin_target_create)
+macro(_binary_target_create)
 	if(NOT DEFINED BBT_CREATE)
 		message(FATAL_ERROR "CREATE argument is missing or need a value!")
 	endif()
@@ -308,7 +308,7 @@ endmacro()
 
 #------------------------------------------------------------------------------
 # Internal usage
-macro(_build_bin_target_config_settings)
+macro(_binary_target_config_settings)
 	if(NOT DEFINED BBT_CONFIGURE_SETTINGS)
 		message(FATAL_ERROR "CONFIGURE_SETTINGS argument is missing or need a value!")
 	endif()
@@ -398,7 +398,7 @@ endmacro()
 
 #------------------------------------------------------------------------------
 # Internal usage
-macro(_build_bin_target_add_sources)
+macro(_binary_target_add_sources)
 	if(NOT DEFINED BBT_ADD_SOURCES)
 		message(FATAL_ERROR "ADD_SOURCES argument is missing or need a value!")
 	endif()
@@ -439,7 +439,7 @@ endmacro()
 
 #------------------------------------------------------------------------------
 # Internal usage
-macro(_build_bin_target_add_pre_header)
+macro(_binary_target_add_pre_header)
 	if(NOT DEFINED BBT_ADD_PRECOMPILED_HEADER)
 		message(FATAL_ERROR "ADD_PRECOMPILED_HEADER argument is missing or need a value!")
 	endif()
@@ -461,7 +461,7 @@ endmacro()
 
 #------------------------------------------------------------------------------
 # Internal usage
-macro(_build_bin_target_add_include_dirs)
+macro(_binary_target_add_include_dirs)
 	if(NOT DEFINED BBT_ADD_INCLUDE_DIRECTORIES)
 		message(FATAL_ERROR "ADD_INCLUDE_DIRECTORIES argument is missing or need a value!")
 	endif()

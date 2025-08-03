@@ -18,7 +18,7 @@ is exposed per module.
 .. toctree::
    :maxdepth: 1
 
-   /module/BuildBinTarget
+   /module/BinaryTarget
    /module/Debug
    /module/Dependency
    /module/Directory

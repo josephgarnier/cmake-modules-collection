@@ -9,11 +9,11 @@
 # See README file in the root directory of this source tree.
 
 #-------------------------------------------------------------------------------
-# Test of [BuildBinTarget module::ADD_INCLUDE_DIRECTORIES operation]:
-#    build_bin_target(ADD_INCLUDE_DIRECTORIES <target-name> INCLUDE_DIRECTORIES [<directory-path>...])
-ct_add_test(NAME "test_build_bin_target_add_include_directories_operation")
+# Test of [BinaryTarget module::ADD_INCLUDE_DIRECTORIES operation]:
+#    binary_target(ADD_INCLUDE_DIRECTORIES <target-name> INCLUDE_DIRECTORIES [<directory-path>...])
+ct_add_test(NAME "test_binary_target_add_include_directories_operation")
 function(${CMAKETEST_TEST})
-	include(BuildBinTarget)
+	include(BinaryTarget)
 
 	# Create a mock bin static target for tests
 	macro(_create_mock_bins)
@@ -29,7 +29,7 @@ function(${CMAKETEST_TEST})
 
 	# To call before each test
 	macro(_set_up_test)
-		# Reset properties set by `build_bin_target(ADD_INCLUDE_DIRECTORIES)`
+		# Reset properties set by `binary_target(ADD_INCLUDE_DIRECTORIES)`
 		set_property(TARGET "new_static_mock_lib" PROPERTY INCLUDE_DIRECTORIES)
 		set_property(TARGET "new_static_mock_lib" PROPERTY INTERFACE_INCLUDE_DIRECTORIES)
 
@@ -44,13 +44,13 @@ function(${CMAKETEST_TEST})
 	ct_add_section(NAME "add_no_dir")
 	function(${CMAKETEST_SECTION})
 		_set_up_test()
-		build_bin_target(ADD_INCLUDE_DIRECTORIES "new_static_mock_lib" INCLUDE_DIRECTORIES "")
+		binary_target(ADD_INCLUDE_DIRECTORIES "new_static_mock_lib" INCLUDE_DIRECTORIES "")
 		ct_assert_target_does_not_have_property("new_static_mock_lib"
 			INCLUDE_DIRECTORIES)
 		ct_assert_target_does_not_have_property("new_static_mock_lib"
 			INTERFACE_INCLUDE_DIRECTORIES)
 
-		build_bin_target(ADD_INCLUDE_DIRECTORIES "new_shared_mock_lib" INCLUDE_DIRECTORIES "")
+		binary_target(ADD_INCLUDE_DIRECTORIES "new_shared_mock_lib" INCLUDE_DIRECTORIES "")
 		ct_assert_target_does_not_have_property("new_shared_mock_lib"
 			INCLUDE_DIRECTORIES)
 		ct_assert_target_does_not_have_property("new_shared_mock_lib"
@@ -60,7 +60,7 @@ function(${CMAKETEST_TEST})
 	ct_add_section(NAME "add_header_dirs")
 	function(${CMAKETEST_SECTION})
 		_set_up_test()
-		build_bin_target(ADD_INCLUDE_DIRECTORIES "new_static_mock_lib" INCLUDE_DIRECTORIES "${input_public_header_dir}")
+		binary_target(ADD_INCLUDE_DIRECTORIES "new_static_mock_lib" INCLUDE_DIRECTORIES "${input_public_header_dir}")
 		get_target_property(output_bin_property "new_static_mock_lib"
 			INCLUDE_DIRECTORIES)
 		ct_assert_string(output_bin_property)
@@ -68,7 +68,7 @@ function(${CMAKETEST_TEST})
 		ct_assert_target_does_not_have_property("new_static_mock_lib"
 			INTERFACE_INCLUDE_DIRECTORIES)
 
-		build_bin_target(ADD_INCLUDE_DIRECTORIES "new_shared_mock_lib" INCLUDE_DIRECTORIES "${input_public_header_dir}")
+		binary_target(ADD_INCLUDE_DIRECTORIES "new_shared_mock_lib" INCLUDE_DIRECTORIES "${input_public_header_dir}")
 		get_target_property(output_bin_property "new_shared_mock_lib"
 			INCLUDE_DIRECTORIES)
 		ct_assert_string(output_bin_property)
@@ -80,26 +80,26 @@ function(${CMAKETEST_TEST})
 	# Errors checking
 	ct_add_section(NAME "throws_if_arg_target_is_missing_1" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
-		build_bin_target(ADD_INCLUDE_DIRECTORIES INCLUDE_DIRECTORIES "${input_public_header_dir}")
+		binary_target(ADD_INCLUDE_DIRECTORIES INCLUDE_DIRECTORIES "${input_public_header_dir}")
 	endfunction()
 
 	ct_add_section(NAME "throws_if_arg_target_is_missing_2" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
-		build_bin_target(ADD_INCLUDE_DIRECTORIES "" INCLUDE_DIRECTORIES "${input_public_header_dir}")
+		binary_target(ADD_INCLUDE_DIRECTORIES "" INCLUDE_DIRECTORIES "${input_public_header_dir}")
 	endfunction()
 
 	ct_add_section(NAME "throws_if_arg_target_is_unknown" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
-		build_bin_target(ADD_INCLUDE_DIRECTORIES "unknown_target" INCLUDE_DIRECTORIES "${input_public_header_dir}")
+		binary_target(ADD_INCLUDE_DIRECTORIES "unknown_target" INCLUDE_DIRECTORIES "${input_public_header_dir}")
 	endfunction()
 
 	ct_add_section(NAME "throws_if_arg_include_directories_is_missing_1" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
-		build_bin_target(ADD_INCLUDE_DIRECTORIES "new_static_mock_lib")
+		binary_target(ADD_INCLUDE_DIRECTORIES "new_static_mock_lib")
 	endfunction()
 
 	ct_add_section(NAME "throws_if_arg_include_directories_is_missing_2" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
-		build_bin_target(ADD_INCLUDE_DIRECTORIES "new_static_mock_lib" INCLUDE_DIRECTORIES)
+		binary_target(ADD_INCLUDE_DIRECTORIES "new_static_mock_lib" INCLUDE_DIRECTORIES)
 	endfunction()
 endfunction()

@@ -95,7 +95,7 @@ Detailed module documentation is available by opening the `doc/build/html/index.
 
 | Name | Description | Location |
 |---|---|---|
-| `BuildBinTarget` | Operations to fully create and configure a binary target ([more details](https://josephgarnier.github.io/cmake-modules-collection/module/BundleBinTarget.html)) | `cmake/modules/BundleBinTarget.cmake` |
+| `BinaryTarget` | Operations to fully create and configure a binary target ([more details](https://josephgarnier.github.io/cmake-modules-collection/module/BinaryTarget.html)) | `cmake/modules/BinaryTarget.cmake` |
 | `Debug` | Operations for helping with debug ([more details](https://josephgarnier.github.io/cmake-modules-collection/module/Debug.html)) | `cmake/modules/Debug.cmake` |
 | `Dependency` | Operations to manipule dependencies ([more details](https://josephgarnier.github.io/cmake-modules-collection/module/Dependency.html)) | `cmake/modules/Dependency.cmake` |
 | `Directory` | Operations to manipule directories ([more details](https://josephgarnier.github.io/cmake-modules-collection/module/Directory.html)) | `cmake/modules/Directory.cmake` |

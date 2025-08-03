@@ -9,18 +9,18 @@
 # See README file in the root directory of this source tree.
 
 #-------------------------------------------------------------------------------
-# Test of [BuildBinTarget module::CREATE operation]:
-#    build_bin_target(CREATE <target-name> <STATIC|SHARED|HEADER|EXEC>)
-ct_add_test(NAME "test_build_bin_target_create_operation")
+# Test of [BinaryTarget module::CREATE operation]:
+#    binary_target(CREATE <target-name> <STATIC|SHARED|HEADER|EXEC>)
+ct_add_test(NAME "test_binary_target_create_operation")
 function(${CMAKETEST_TEST})
-	include(BuildBinTarget)
+	include(BinaryTarget)
 
 	# Functionalities checking
 	ct_add_section(NAME "create_static_lib")
 	function(${CMAKETEST_SECTION})
 		set(bin_target_name "static_mock_lib")
 		ct_assert_target_does_not_exist("${bin_target_name}")
-		build_bin_target(CREATE "${bin_target_name}" STATIC)
+		binary_target(CREATE "${bin_target_name}" STATIC)
 		target_sources("${bin_target_name}" PRIVATE "${TESTS_DATA_DIR}/src/main.cpp") # A target needs at least one source to avoid an error
 		ct_assert_target_exists("${bin_target_name}")
 		get_target_property(output_bin_property "${bin_target_name}" TYPE)
@@ -31,7 +31,7 @@ function(${CMAKETEST_TEST})
 	function(${CMAKETEST_SECTION})
 		set(bin_target_name "shared_mock_lib")
 		ct_assert_target_does_not_exist("${bin_target_name}")
-		build_bin_target(CREATE "${bin_target_name}" SHARED)
+		binary_target(CREATE "${bin_target_name}" SHARED)
 		target_sources("${bin_target_name}" PRIVATE "${TESTS_DATA_DIR}/src/main.cpp") # A target needs at least one source to avoid an error
 		ct_assert_target_exists("${bin_target_name}")
 		get_target_property(output_bin_property "${bin_target_name}" TYPE)
@@ -42,7 +42,7 @@ function(${CMAKETEST_TEST})
 	function(${CMAKETEST_SECTION})
 		set(bin_target_name "header_mock_lib")
 		ct_assert_target_does_not_exist("${bin_target_name}")
-		build_bin_target(CREATE "${bin_target_name}" HEADER)
+		binary_target(CREATE "${bin_target_name}" HEADER)
 		target_sources("${bin_target_name}" PRIVATE "${TESTS_DATA_DIR}/src/main.cpp") # A target needs at least one source to avoid an error
 		ct_assert_target_exists("${bin_target_name}")
 		get_target_property(output_bin_property "${bin_target_name}" TYPE)
@@ -53,7 +53,7 @@ function(${CMAKETEST_TEST})
 	function(${CMAKETEST_SECTION})
 		set(bin_target_name "exec_mock_lib")
 		ct_assert_target_does_not_exist("${bin_target_name}")
-		build_bin_target(CREATE "${bin_target_name}" EXEC)
+		binary_target(CREATE "${bin_target_name}" EXEC)
 		target_sources("${bin_target_name}" PRIVATE "${TESTS_DATA_DIR}/src/main.cpp") # A target needs at least one source to avoid an error
 		ct_assert_target_exists("${bin_target_name}")
 		get_target_property(output_bin_property "${bin_target_name}" TYPE)
@@ -63,16 +63,16 @@ function(${CMAKETEST_TEST})
 	# Errors checking
 	ct_add_section(NAME "throws_if_arg_target_is_missing_1" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
-		build_bin_target(CREATE STATIC)
+		binary_target(CREATE STATIC)
 	endfunction()
 
 	ct_add_section(NAME "throws_if_arg_target_is_missing_2" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
-		build_bin_target(CREATE "" STATIC)
+		binary_target(CREATE "" STATIC)
 	endfunction()
 
 	ct_add_section(NAME "throws_if_arg_target_already_exists" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
-		build_bin_target(CREATE "static_mock_lib" STATIC)
+		binary_target(CREATE "static_mock_lib" STATIC)
 	endfunction()
 endfunction()

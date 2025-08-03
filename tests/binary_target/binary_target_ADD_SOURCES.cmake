@@ -9,14 +9,14 @@
 # See README file in the root directory of this source tree.
 
 #-------------------------------------------------------------------------------
-# Test of [BuildBinTarget module::ADD_SOURCES operation]:
-#    build_bin_target(ADD_SOURCES <target-name>
+# Test of [BinaryTarget module::ADD_SOURCES operation]:
+#    binary_target(ADD_SOURCES <target-name>
 #                    SOURCE_FILES [<file-path>...]
 #                    PRIVATE_HEADER_FILES [<file-path>...]
 #                    PUBLIC_HEADER_FILES [<file-path>...])
-ct_add_test(NAME "test_build_bin_target_add_sources_operation")
+ct_add_test(NAME "test_binary_target_add_sources_operation")
 function(${CMAKETEST_TEST})
-	include(BuildBinTarget)
+	include(BinaryTarget)
 
 	# Create a mock bin static target for tests
 	macro(_create_mock_bins)
@@ -29,7 +29,7 @@ function(${CMAKETEST_TEST})
 
 	# To call before each test
 	macro(_set_up_test)
-		# Reset properties set by `build_bin_target(ADD_SOURCES)`
+		# Reset properties set by `binary_target(ADD_SOURCES)`
 		set_property(TARGET "new_static_mock_lib" PROPERTY SOURCES)
 		set_property(TARGET "new_static_mock_lib" PROPERTY INTERFACE_SOURCES)
 
@@ -65,7 +65,7 @@ function(${CMAKETEST_TEST})
 	ct_add_section(NAME "add_no_file")
 	function(${CMAKETEST_SECTION})
 		_set_up_test()
-		build_bin_target(ADD_SOURCES "new_static_mock_lib"
+		binary_target(ADD_SOURCES "new_static_mock_lib"
 			SOURCE_FILES ""
 			PRIVATE_HEADER_FILES ""
 			PUBLIC_HEADER_FILES ""
@@ -76,7 +76,7 @@ function(${CMAKETEST_TEST})
 			INTERFACE_SOURCES)
 		target_sources("new_static_mock_lib" PRIVATE "${TESTS_DATA_DIR}/src/main.cpp") # A target needs at least one source to avoid an error
 
-		build_bin_target(ADD_SOURCES "new_shared_mock_lib"
+		binary_target(ADD_SOURCES "new_shared_mock_lib"
 			SOURCE_FILES ""
 			PRIVATE_HEADER_FILES ""
 			PUBLIC_HEADER_FILES ""
@@ -91,7 +91,7 @@ function(${CMAKETEST_TEST})
 	ct_add_section(NAME "add_source_and_header_files")
 	function(${CMAKETEST_SECTION})
 		_set_up_test()
-		build_bin_target(ADD_SOURCES "new_static_mock_lib"
+		binary_target(ADD_SOURCES "new_static_mock_lib"
 			SOURCE_FILES "${input_sources}"
 			PRIVATE_HEADER_FILES "${input_private_headers}"
 			PUBLIC_HEADER_FILES "${input_public_headers}"
@@ -103,7 +103,7 @@ function(${CMAKETEST_TEST})
 		ct_assert_target_does_not_have_property("new_static_mock_lib"
 			INTERFACE_SOURCES)
 
-		build_bin_target(ADD_SOURCES "new_shared_mock_lib"
+		binary_target(ADD_SOURCES "new_shared_mock_lib"
 			SOURCE_FILES "${input_sources}"
 			PRIVATE_HEADER_FILES "${input_private_headers}"
 			PUBLIC_HEADER_FILES "${input_public_headers}"
@@ -119,7 +119,7 @@ function(${CMAKETEST_TEST})
 	# # Errors checking
 	ct_add_section(NAME "throws_if_arg_target_is_missing_1" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
-		build_bin_target(ADD_SOURCES
+		binary_target(ADD_SOURCES
 			SOURCE_FILES "${input_sources}"
 			PRIVATE_HEADER_FILES "${input_private_headers}"
 			PUBLIC_HEADER_FILES "${input_public_headers}"
@@ -128,7 +128,7 @@ function(${CMAKETEST_TEST})
 
 	ct_add_section(NAME "throws_if_arg_target_is_missing_2" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
-		build_bin_target(ADD_SOURCES ""
+		binary_target(ADD_SOURCES ""
 			SOURCE_FILES "${input_sources}"
 			PRIVATE_HEADER_FILES "${input_private_headers}"
 			PUBLIC_HEADER_FILES "${input_public_headers}"
@@ -137,7 +137,7 @@ function(${CMAKETEST_TEST})
 
 	ct_add_section(NAME "throws_if_arg_target_is_unknown" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
-		build_bin_target(ADD_SOURCES "unknown_target"
+		binary_target(ADD_SOURCES "unknown_target"
 			SOURCE_FILES "${input_sources}"
 			PRIVATE_HEADER_FILES "${input_private_headers}"
 			PUBLIC_HEADER_FILES "${input_public_headers}"
@@ -146,7 +146,7 @@ function(${CMAKETEST_TEST})
 
 	ct_add_section(NAME "throws_if_arg_source_files_is_missing_1" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
-		build_bin_target(ADD_SOURCES "new_static_mock_lib"
+		binary_target(ADD_SOURCES "new_static_mock_lib"
 			PRIVATE_HEADER_FILES "${input_private_headers}"
 			PUBLIC_HEADER_FILES "${input_public_headers}"
 		)
@@ -154,7 +154,7 @@ function(${CMAKETEST_TEST})
 
 	ct_add_section(NAME "throws_if_arg_source_files_is_missing_2" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
-		build_bin_target(ADD_SOURCES "new_static_mock_lib"
+		binary_target(ADD_SOURCES "new_static_mock_lib"
 			SOURCE_FILES
 			PRIVATE_HEADER_FILES "${input_private_headers}"
 			PUBLIC_HEADER_FILES "${input_public_headers}"
@@ -163,7 +163,7 @@ function(${CMAKETEST_TEST})
 
 	ct_add_section(NAME "throws_if_arg_private_header_files_is_missing_1" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
-		build_bin_target(ADD_SOURCES "new_static_mock_lib"
+		binary_target(ADD_SOURCES "new_static_mock_lib"
 			SOURCE_FILES "${input_sources}"
 			PUBLIC_HEADER_FILES "${input_public_headers}"
 		)
@@ -171,7 +171,7 @@ function(${CMAKETEST_TEST})
 
 	ct_add_section(NAME "throws_if_arg_private_header_files_is_missing_2" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
-		build_bin_target(ADD_SOURCES "new_static_mock_lib"
+		binary_target(ADD_SOURCES "new_static_mock_lib"
 			SOURCE_FILES "${input_sources}"
 			PRIVATE_HEADER_FILES
 			PUBLIC_HEADER_FILES "${input_public_headers}"
@@ -180,7 +180,7 @@ function(${CMAKETEST_TEST})
 
 	ct_add_section(NAME "throws_if_arg_public_header_files_is_missing_1" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
-		build_bin_target(ADD_SOURCES "new_static_mock_lib"
+		binary_target(ADD_SOURCES "new_static_mock_lib"
 			SOURCE_FILES "${input_sources}"
 			PRIVATE_HEADER_FILES "${input_private_headers}"
 		)
@@ -188,7 +188,7 @@ function(${CMAKETEST_TEST})
 
 	ct_add_section(NAME "throws_if_arg_public_header_files_is_missing_2" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
-		build_bin_target(ADD_SOURCES "new_static_mock_lib"
+		binary_target(ADD_SOURCES "new_static_mock_lib"
 			SOURCE_FILES "${input_sources}"
 			PRIVATE_HEADER_FILES "${input_private_headers}"
 			PUBLIC_HEADER_FILES
