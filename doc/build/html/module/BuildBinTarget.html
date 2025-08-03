@@ -95,7 +95,7 @@ CMake project, according to the specified binary type: <code class="docutils lit
 <span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">build_bin_target(</span></span><span class="no"><span class="pre">CONFIGURE_SETTINGS</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;target-name&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">[...]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#configure-settings" title="Link to this definition">¶</a></dt>
 <dd><p>Configure settings for an existing binary target:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">build_bin_target(</span><span class="no">CONFIGURE_SETTINGS</span><span class="w"> </span><span class="nv">&lt;target-name&gt;</span>
-<span class="w">                </span><span class="p">[</span><span class="no">COMPILER_FEATURES</span><span class="w"> </span><span class="nv">&lt;feature&gt;...</span><span class="p">]</span>
+<span class="w">                </span><span class="p">[</span><span class="no">COMPILE_FEATURES</span><span class="w"> </span><span class="nv">&lt;feature&gt;...</span><span class="p">]</span>
 <span class="w">                </span><span class="p">[</span><span class="no">COMPILE_DEFINITIONS</span><span class="w"> </span><span class="nv">&lt;definition&gt;...</span><span class="p">]</span>
 <span class="w">                </span><span class="p">[</span><span class="no">COMPILE_OPTIONS</span><span class="w"> </span><span class="nv">&lt;option&gt;...</span><span class="p">]</span>
 <span class="w">                </span><span class="p">[</span><span class="no">LINK_OPTIONS</span><span class="w"> </span><span class="nv">&lt;option&gt;...</span><span class="p">]</span><span class="nf">)</span>
@@ -105,7 +105,7 @@ CMake project, according to the specified binary type: <code class="docutils lit
 target <code class="docutils literal notranslate"><span class="pre">&lt;target-name&gt;</span></code> with <code class="docutils literal notranslate"><span class="pre">PRIVATE</span></code> visibility. The following
 configuration options are supported:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">COMPILER_FEATURES</span></code>: Add required compiler features (e.g., <code class="docutils literal notranslate"><span class="pre">cxx_std_20</span></code>,
+<li><p><code class="docutils literal notranslate"><span class="pre">COMPILE_FEATURES</span></code>: Add required compile features (e.g., <code class="docutils literal notranslate"><span class="pre">cxx_std_20</span></code>,
 <code class="docutils literal notranslate"><span class="pre">cxx_lambda</span></code>) with <span class="target" id="index-0-command:cmake:command:target_compile_features"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/target_compile_features.html#command:target_compile_features" title="(in CMake v4.1.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_compile_features()</span></code></a>
 and populates the <span class="target" id="index-0-prop_tgt:cmake:prop_tgt:COMPILE_FEATURES"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/prop_tgt/COMPILE_FEATURES.html#prop_tgt:COMPILE_FEATURES" title="(in CMake v4.1.0)"><code class="xref cmake cmake-prop_tgt docutils literal notranslate"><span class="pre">COMPILE_FEATURES</span></code></a> target property.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">COMPILE_DEFINITIONS</span></code>: Add preprocessor definitions (e.g., <code class="docutils literal notranslate"><span class="pre">MY_DEFINE</span></code>
@@ -128,7 +128,7 @@ using <span class="target" id="index-0-command:build_bin_target"></span><a class
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">build_bin_target(</span><span class="no">CREATE</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span><span class="w"> </span><span class="no">STATIC</span><span class="nf">)</span>
 <span class="nf">build_bin_target(</span><span class="no">CONFIGURE_SETTINGS</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span>
-<span class="w">  </span><span class="no">COMPILER_FEATURES</span><span class="w"> </span><span class="s">&quot;cxx_std_20&quot;</span>
+<span class="w">  </span><span class="no">COMPILE_FEATURES</span><span class="w"> </span><span class="s">&quot;cxx_std_20&quot;</span>
 <span class="w">  </span><span class="no">COMPILE_DEFINITIONS</span><span class="w"> </span><span class="s">&quot;MY_DEFINE&quot;</span>
 <span class="w">  </span><span class="no">COMPILE_OPTIONS</span><span class="w"> </span><span class="s">&quot;-Wall&quot;</span><span class="w"> </span><span class="s">&quot;-Wextra&quot;</span>
 <span class="w">  </span><span class="no">LINK_OPTIONS</span><span class="w"> </span><span class="s">&quot;-s&quot;</span>
@@ -239,7 +239,7 @@ files.</p>
 binary.</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">build_bin_target(</span><span class="no">CREATE</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span><span class="w"> </span><span class="no">STATIC</span><span class="nf">)</span>
 <span class="nf">build_bin_target(</span><span class="no">CONFIGURE_SETTINGS</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span>
-<span class="w">  </span><span class="no">COMPILER_FEATURES</span><span class="w"> </span><span class="s">&quot;cxx_std_20&quot;</span>
+<span class="w">  </span><span class="no">COMPILE_FEATURES</span><span class="w"> </span><span class="s">&quot;cxx_std_20&quot;</span>
 <span class="w">  </span><span class="no">COMPILE_DEFINITIONS</span><span class="w"> </span><span class="s">&quot;MY_DEFINE&quot;</span>
 <span class="w">  </span><span class="no">COMPILE_OPTIONS</span><span class="w"> </span><span class="s">&quot;-Wall&quot;</span><span class="w"> </span><span class="s">&quot;-Wextra&quot;</span>
 <span class="w">  </span><span class="no">LINK_OPTIONS</span><span class="w"> </span><span class="s">&quot;-s&quot;</span>

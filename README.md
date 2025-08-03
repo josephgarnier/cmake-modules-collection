@@ -100,6 +100,7 @@ Detailed module documentation is available by opening the `doc/build/html/index.
 | `Dependency` | Operations to manipule dependencies ([more details](https://josephgarnier.github.io/cmake-modules-collection/module/Dependency.html)) | `cmake/modules/Dependency.cmake` |
 | `Directory` | Operations to manipule directories ([more details](https://josephgarnier.github.io/cmake-modules-collection/module/Directory.html)) | `cmake/modules/Directory.cmake` |
 | `FileManip` | Operations on files ([more details](https://josephgarnier.github.io/cmake-modules-collection/module/FileManip.html)) | `cmake/modules/FileManip.cmake` |
+| `Map` | Operations to manipulate key/value pairs stored as map ([more details](https://josephgarnier.github.io/cmake-modules-collection/module/Map.html)) | `cmake/modules/Map.cmake` |
 | `Print` | Log a message ([more details](https://josephgarnier.github.io/cmake-modules-collection/module/Print.html)) | `cmake/modules/Print.cmake` |
 | `StringManip` | Operations on strings ([more details](https://josephgarnier.github.io/cmake-modules-collection/module/StringManip.html)) | `cmake/modules/StringManip.cmake` |
 

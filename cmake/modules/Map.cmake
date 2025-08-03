@@ -8,14 +8,15 @@
 Map
 ---
 
-Operations to manipulate maps. It requires CMake 3.20 or newer.
+Provides operations to manipulate key/value pairs stored as map. It requires
+CMake 3.20 or newer.
 
 Synopsis
 ^^^^^^^^
 
 .. parsed-literal::
 
-  `Reading`
+  `Reading`_
     map(`SIZE`_ <map-var> <output-var>)
     map(`GET`_ <map-var> <key> <output-var>)
     map(`KEYS`_ <map-var> <output-list-var>)
@@ -31,56 +32,77 @@ Synopsis
     map(`ADD`_ <map-var> <key> <value>)
     map(`REMOVE`_ <map-var> <key>)
 
+Introduction
+^^^^^^^^^^^^
+
+A map is represented as a :cmake:command:`list() <cmake:command:list>` of
+strings, where each string must contain a single colon (``:``) separating the
+key from its value (e.g. ``<key>:<value>``). Malformed entries, such as those
+with no colon, empty key, or multiple colons, are ignored in most operations.
+A warning is emitted when malformed entries are encountered.
+
 Reading
 ^^^^^^^
 
 .. signature::
   map(SIZE <map-var> <output-var>)
 
-  Get the number of key/value pairs in the map.
+  Store in ``output-var`` the number of valid key/value pairs in the map
+  ``map-var``. Entries with invalid format are ignored.
 
   Example usage:
 
   .. code-block:: cmake
 
-    map(ADD my_map "fruit 1" "apple")
-    map(ADD my_map "fruit 2" "banana")
-    map(ADD my_map "fruit 3" "orange")
-    map(SIZE map map_size)
-    # map_size = 3
+    set(input_map "one:1" "two:2" "three:" "four:4:4" "invalid" ":missing key")
+    map(SIZE input_map size)
+    # map_size = 4, the two last entries are invalid and ignored, but "four:4:4"
+    # is valid
 
 .. signature::
   map(GET <map-var> <key> <output-var>)
 
-  Get the value for the given key.
+  Store in ``output-var`` the value associated with ``key`` in ``map-var``.
+  If the key is not found or malformed in the list, ``output-var`` is set to
+  ``<output-var>-NOTFOUND``.
 
   Example usage:
 
   .. code-block:: cmake
 
-    map(GET map "key" map_value)
+    set(input_map "one:1" "two:2" "three:" "four:4:4" "invalid" ":missing key")
+    map(GET input_map "four" value)
+    # value = 4:4
+    map(GET input_map "invalid" value)
+    # value = value-NOTFOUND
 
 .. signature::
   map(KEYS <map-var> <output-list-var>)
 
-  Get the list of keys in the map.
+  Store in ``output-list-var`` the list of keys found in ``map-var``. Entries
+  with invalid format are ignored.
 
   Example usage:
 
   .. code-block:: cmake
 
-    map(KEYS map map_keys)
+    set(input_map "one:1" "two:2" "three:" "four:4:4" "invalid" ":missing key")
+    map(KEYS input_map map_keys)
+    # keys = one;two;three;four
 
 .. signature::
   map(VALUES <map-var> <output-list-var>)
 
-  Get the list of values in the map.
+  Store in ``output-list-var`` the list of values from ``map-var``. Entries
+  with invalid format are ignored.
 
   Example usage:
 
   .. code-block:: cmake
 
-    map(VALUES map map_values)
+    set(input_map "one:1" "two:2" "three:" "four:4:4" "invalid" ":missing key")
+    map(VALUES input_map map_values)
+    # map_values = 1;2;;4:4
 
 Search
 ^^^^^^
@@ -88,35 +110,56 @@ Search
 .. signature::
   map(FIND <map-var> <value> <output-list-var>)
 
-  Get the list of keys that have the given value.
+  Store in ``output-list-var`` the list of keys whose associated value matches
+  ``value`` in ``map-var``. Entries with invalid format are ignored.
 
   Example usage:
 
   .. code-block:: cmake
 
-    map(FIND map "value" map_keys)
+    set(input_map "one:1" "two:2" "three:" "four:4:4" "invalid" ":missing key")
+    map(FIND input_map "2" map_keys)
+    # map_keys = two
+    map(FIND input_map "" map_keys)
+    # map_keys = three
 
 .. signature::
   map(HAS_KEY <map-var> <key> <output-var>)
 
-  Check if the map contains the given key.
+  Check if the map ``map-var`` contains the given key ``key``, and store ``on``
+  in ``output-var`` if found, ``off`` otherwise. Entries with invalid format
+  are ignored.
 
   Example usage:
 
   .. code-block:: cmake
 
-    map(HAS_KEY map "key" map_has_key)
+    set(input_map "one:1" "two:2" "three:" "four:4:4" "invalid" ":missing key")
+    map(HAS_KEY input_map "two" map_has_key)
+    # map_has_key = on
+    map(HAS_KEY input_map "five" map_has_key)
+    # map_has_key = off
+    map(HAS_KEY input_map "invalid" map_has_key)
+    # map_has_key = off
 
 .. signature::
   map(HAS_VALUE <map-var> <value> <output-var>)
 
-  Check if the map contains the given value.
+  Check if the map ``map-var`` contains at least one entry with value ``value``
+  , and store ``on`` in ``output-var`` if found, ``off`` otherwise. Entries
+  with invalid format are ignored.
 
   Example usage:
 
   .. code-block:: cmake
 
-    map(HAS_VALUE map "value" map_has_value)
+    set(input_map "one:1" "two:2" "three:" "four:4:4" "invalid" ":missing key")
+    map(HAS_VALUE input_map "2" map_has_value)
+    # map_has_value = on
+    map(HAS_VALUE input_map "5" map_has_value)
+    # map_has_value = off
+    map(HAS_VALUE input_map "missing key" map_has_value)
+    # map_has_value = off
 
 Modification
 ^^^^^^^^^^^^
@@ -124,35 +167,50 @@ Modification
 .. signature::
   map(SET <map-var> <key> <value>)
 
-  Set the value for the given key.
+  Set the value associated with ``key`` in ``map-var`` to ``value``. If the key
+  exists, it is updated. Otherwise, a new entry is appended. Entries already
+  stored in ``map-var`` with invalid format are ignored.
 
   Example usage:
 
   .. code-block:: cmake
 
-    map(SET map "key" "value")
+    set(input_map "one:1" "two:2" "three:" "invalid" ":missing key")
+    map(SET input_map "three" "3")
+    map(SET input_map "four" "4:4")
+    # input_map = one:1;two:2;three:3;invalid;:missing key;four:4:4
 
 .. signature::
   map(ADD <map-var> <key> <value>)
 
-  Add a key/value pair to the map.
+  Append a key/value pair to the map ``map-var``, only if ``key`` does not
+  already exist. Entries already stored in ``map-var`` with invalid format are
+  ignored.
 
   Example usage:
 
   .. code-block:: cmake
 
-    map(ADD map "key" "value")
+    set(input_map "one:1" "two:2" "three:" "invalid" ":missing key")
+    map(ADD input_map "three" "3")
+    # No change, "three" already exists
+    map(ADD input_map "four" "4:4")
+    # input_map = one:1;two:2;three:;invalid;:missing key;four:4:4
 
 .. signature::
   map(REMOVE <map-var> <key>)
 
-  Remove a key/value pair from the map.
+  Remove a key/value pair that matches ``key`` in the map ``map-var``. If the
+  key does not exist, ``map-var`` is unchanged. Entries already stored in
+  ``map-var`` with invalid format are ignored.
 
   Example usage:
 
   .. code-block:: cmake
 
-    map(REMOVE map "key")
+    set(input_map "one:1" "two:2" "three:" "four:4:4" "invalid" ":missing key")
+    map(REMOVE input_map "two")
+    # input_map = one:1;three:;four:4:4;invalid;:missing key
 #]=======================================================================]
 
 include_guard()

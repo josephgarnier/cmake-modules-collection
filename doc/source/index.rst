@@ -23,5 +23,6 @@ is exposed per module.
    /module/Dependency
    /module/Directory
    /module/FileManip
+   /module/Map
    /module/Print
    /module/StringManip
