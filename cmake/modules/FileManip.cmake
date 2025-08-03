@@ -115,7 +115,7 @@ include_guard()
 cmake_minimum_required (VERSION 3.20 FATAL_ERROR)
 
 #------------------------------------------------------------------------------
-# Public function of this module.
+# Public function of this module
 function(file_manip)
 	set(options "")
 	set(one_value_args RELATIVE_PATH ABSOLUTE_PATH STRIP_PATH BASE_DIR MODE OUTPUT_VARIABLE)
@@ -142,12 +142,12 @@ function(file_manip)
 			message(FATAL_ERROR "MODE arguments is missing!")
 		endif()
 	else()
-		message(FATAL_ERROR "Operation argument is missing!")
+		message(FATAL_ERROR "The operation name or arguments are missing!")
 	endif()
 endfunction()
 
 #------------------------------------------------------------------------------
-# Internal usage.
+# Internal usage
 macro(_file_manip_relative_path)
 	if(NOT DEFINED FM_RELATIVE_PATH)
 		message(FATAL_ERROR "RELATIVE_PATH arguments is missing!")
@@ -176,7 +176,7 @@ macro(_file_manip_relative_path)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage.
+# Internal usage
 macro(_file_manip_absolute_path)
 	if(NOT DEFINED FM_ABSOLUTE_PATH)
 		message(FATAL_ERROR "ABSOLUTE_PATH arguments is missing!")
@@ -205,7 +205,7 @@ macro(_file_manip_absolute_path)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage.
+# Internal usage
 macro(_file_manip_strip_path)
 	if(NOT DEFINED FM_STRIP_PATH)
 		message(FATAL_ERROR "STRIP_PATH arguments is missing!")
@@ -228,7 +228,7 @@ macro(_file_manip_strip_path)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage.
+# Internal usage
 macro(_file_manip_get_component_directory)
 	if((NOT DEFINED FM_GET_COMPONENT)
 		AND (NOT "GET_COMPONENT" IN_LIST FM_KEYWORDS_MISSING_VALUES))
@@ -251,7 +251,7 @@ macro(_file_manip_get_component_directory)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage.
+# Internal usage
 macro(_file_manip_get_component_name)
 	if((NOT DEFINED FM_GET_COMPONENT)
 		AND (NOT "GET_COMPONENT" IN_LIST FM_KEYWORDS_MISSING_VALUES))

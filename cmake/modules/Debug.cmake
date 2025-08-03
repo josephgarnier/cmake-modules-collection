@@ -213,7 +213,7 @@ cmake_minimum_required (VERSION 3.20 FATAL_ERROR)
 include(CMakePrintHelpers)
 
 #------------------------------------------------------------------------------
-# Public function of this module.
+# Public function of this module
 function(debug)
 	set(options DUMP_VARIABLES DUMP_PROPERTIES DUMP_PROJECT_VARIABLES)
 	set(one_value_args EXCLUDE_REGEX DUMP_TARGET_PROPERTIES)
@@ -221,7 +221,7 @@ function(debug)
 	cmake_parse_arguments(DB "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 	
 	if(DEFINED DB_UNPARSED_ARGUMENTS)
-		message(FATAL_ERROR "Unrecognized arguments: \"${DB_UNPARSED_ARGUMENTS}\"")
+		message(FATAL_ERROR "Unrecognized arguments: \"${DB_UNPARSED_ARGUMENTS}\"!")
 	endif()
 
 	if(${DB_DUMP_VARIABLES})
@@ -233,12 +233,12 @@ function(debug)
 	elseif(${DB_DUMP_PROJECT_VARIABLES})
 		_debug_dump_project_variables()
 	else()
-		message(FATAL_ERROR "Operation argument is missing!")
+		message(FATAL_ERROR "The operation name or arguments are missing!")
 	endif()
 endfunction()
 
 #------------------------------------------------------------------------------
-# Internal usage.
+# Internal usage
 macro(_debug_dump_variables)
 	if(NOT ${DB_DUMP_VARIABLES})
 		message(FATAL_ERROR "DUMP_VARIABLES arguments is missing!")
@@ -256,10 +256,10 @@ macro(_debug_dump_variables)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage.
+# Internal usage
 macro(_debug_dump_properties)
 	if(NOT ${DB_DUMP_PROPERTIES})
-		message(FATAL_ERROR "DUMP_PROPERTIES arguments is missing")
+		message(FATAL_ERROR "DUMP_PROPERTIES arguments is missing!")
 	endif()
 
 	execute_process(COMMAND
@@ -276,13 +276,13 @@ macro(_debug_dump_properties)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage.
+# Internal usage
 macro(_debug_dump_target_properties)
 	if(NOT DEFINED DB_DUMP_TARGET_PROPERTIES)
-		message(FATAL_ERROR "DB_DUMP_TARGET_PROPERTIES arguments is missing")
+		message(FATAL_ERROR "DB_DUMP_TARGET_PROPERTIES arguments is missing!")
 	endif()
 	if(NOT TARGET "${DB_DUMP_TARGET_PROPERTIES}")
-		message(FATAL_ERROR "There is no target named \"${DB_DUMP_TARGET_PROPERTIES}\"")
+		message(FATAL_ERROR "There is no target named \"${DB_DUMP_TARGET_PROPERTIES}\"!")
 	endif()
 
 	# Get all propreties that cmake supports
@@ -338,10 +338,10 @@ macro(_debug_dump_target_properties)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage.
+# Internal usage
 macro(_debug_dump_project_variables)
 	if(NOT ${DB_DUMP_PROJECT_VARIABLES})
-		message(FATAL_ERROR "DUMP_PROJECT_VARIABLES arguments is missing")
+		message(FATAL_ERROR "DUMP_PROJECT_VARIABLES arguments is missing!")
 	endif()
 
 	get_cmake_property(variable_names VARIABLES)

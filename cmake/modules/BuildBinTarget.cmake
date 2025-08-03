@@ -1,4 +1,4 @@
-# Copyright 2019-present, Joseph Garnier
+# Copyright 2025-present, Joseph Garnier
 # All rights reserved.
 #
 # This source code is licensed under the license found in the
@@ -238,7 +238,7 @@ include_guard()
 cmake_minimum_required (VERSION 3.20 FATAL_ERROR)
 
 #------------------------------------------------------------------------------
-# Public function of this module.
+# Public function of this module
 function(build_bin_target)
 	set(options STATIC SHARED HEADER EXEC)
 	set(one_value_args CREATE CONFIGURE_SETTINGS ADD_SOURCES ADD_PRECOMPILED_HEADER HEADER_FILE ADD_INCLUDE_DIRECTORIES)
@@ -259,12 +259,12 @@ function(build_bin_target)
 	elseif(DEFINED BBT_ADD_INCLUDE_DIRECTORIES)
 		_build_bin_target_add_include_dirs()
 	else()
-		message(FATAL_ERROR "Operation argument is missing!")
+		message(FATAL_ERROR "The operation name or arguments are missing!")
 	endif()
 endfunction()
 
 #------------------------------------------------------------------------------
-# Internal usage.
+# Internal usage
 macro(_build_bin_target_create)
 	if(NOT DEFINED BBT_CREATE)
 		message(FATAL_ERROR "CREATE argument is missing or need a value!")
@@ -307,7 +307,7 @@ macro(_build_bin_target_create)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage.
+# Internal usage
 macro(_build_bin_target_config_settings)
 	if(NOT DEFINED BBT_CONFIGURE_SETTINGS)
 		message(FATAL_ERROR "CONFIGURE_SETTINGS argument is missing or need a value!")
@@ -397,7 +397,7 @@ macro(_build_bin_target_config_settings)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage.
+# Internal usage
 macro(_build_bin_target_add_sources)
 	if(NOT DEFINED BBT_ADD_SOURCES)
 		message(FATAL_ERROR "ADD_SOURCES argument is missing or need a value!")
@@ -438,7 +438,7 @@ macro(_build_bin_target_add_sources)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage.
+# Internal usage
 macro(_build_bin_target_add_pre_header)
 	if(NOT DEFINED BBT_ADD_PRECOMPILED_HEADER)
 		message(FATAL_ERROR "ADD_PRECOMPILED_HEADER argument is missing or need a value!")
@@ -460,7 +460,7 @@ macro(_build_bin_target_add_pre_header)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage.
+# Internal usage
 macro(_build_bin_target_add_include_dirs)
 	if(NOT DEFINED BBT_ADD_INCLUDE_DIRECTORIES)
 		message(FATAL_ERROR "ADD_INCLUDE_DIRECTORIES argument is missing or need a value!")

@@ -142,7 +142,7 @@ cmake_minimum_required (VERSION 3.20 FATAL_ERROR)
 set(PRINT_BASE_DIR "${CMAKE_SOURCE_DIR}")
 
 #------------------------------------------------------------------------------
-# Public function of this module.
+# Public function of this module
 function(print)
 	set(options FATAL_ERROR SEND_ERROR WARNING AUTHOR_WARNING DEPRECATION NOTICE STATUS VERBOSE DEBUG TRACE INDENT)
 	set(one_value_args "")
@@ -154,7 +154,7 @@ function(print)
 	set(PRT_ARGV "")
 	set(PRT_ARGC ${ARGC})
 	set(PRT_ARGC_MAX_INDEX "")
-	math(EXPR PRT_ARGC_MAX_INDEX "${ARGC}-1") # need this variable because the max index is included in range of foreach.
+	math(EXPR PRT_ARGC_MAX_INDEX "${ARGC}-1") # Need this variable because the max index is included in range of foreach.
 	foreach(arg_index RANGE ${PRT_ARGC_MAX_INDEX})
 		set(PRT_ARGV${arg_index} "${ARGV${arg_index}}")
 		list(APPEND PRT_ARGV "${ARGV${arg_index}}")
@@ -170,7 +170,7 @@ function(print)
 endfunction()
 
 #------------------------------------------------------------------------------
-# Internal usage.
+# Internal usage
 macro(_print_formated_message)
 	# Error when no arguments are given.
 	if(${PRT_ARGC} EQUAL 0)
@@ -220,7 +220,7 @@ macro(_print_formated_message)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage.
+# Internal usage
 macro(_substitute_directives)
 	set(message_head "")
 	set(message_tail "${message}")
@@ -235,7 +235,7 @@ macro(_substitute_directives)
 			break()
 		endif()
 		string(SUBSTRING "${message_tail}" 0 ${pos_first} message_cursor)
-		math(EXPR pos_first "${pos_first}+1") # +1 because the first char @ is excluded.
+		math(EXPR pos_first "${pos_first}+1") # Skip the first @ char
 		string(SUBSTRING "${message_tail}" ${pos_first}+1 -1 message_tail)
 		string(APPEND message_head "${message_cursor}")
 
@@ -244,7 +244,7 @@ macro(_substitute_directives)
 			break()
 		endif()
 		string(SUBSTRING "${message_tail}" 0 ${pos_second} message_cursor)
-		math(EXPR pos_second "${pos_second}+1") # +1 because the second char @ is excluded.
+		math(EXPR pos_second "${pos_second}+1") # Skip the second @ char
 		string(SUBSTRING "${message_tail}" ${pos_second} -1 message_tail)
 
 		# Substitute the directive by its value
@@ -271,21 +271,21 @@ macro(_substitute_directives)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage.
+# Internal usage
 macro(_print_path_list)
 	if(DEFINED PRT_UNPARSED_ARGUMENTS)
-		message(FATAL_ERROR "Unrecognized arguments: \"${PRT_UNPARSED_ARGUMENTS}\"")
+		message(FATAL_ERROR "Unrecognized arguments: \"${PRT_UNPARSED_ARGUMENTS}\"!")
 	endif()
 	if((NOT DEFINED PRT_PATHS)
 		AND (NOT "PATHS" IN_LIST PRT_KEYWORDS_MISSING_VALUES))
-		message(FATAL_ERROR "PATHS arguments is missing")
+		message(FATAL_ERROR "PATHS arguments is missing!")
 	endif()
 	
 	set(mode "")
 	set(message "")
 	
 	# If the first of PRT_ARGV (index 0) is a mode from "options", set the
-	# mode var.
+	# mode var
 	if("${PRT_ARGV0}" IN_LIST options)
 		set(mode "${PRT_ARGV0}")
 	endif()
@@ -313,21 +313,21 @@ macro(_print_path_list)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage.
+# Internal usage
 macro(_print_string_list)
 	if(DEFINED PRT_UNPARSED_ARGUMENTS)
-		message(FATAL_ERROR "Unrecognized arguments: \"${PRT_UNPARSED_ARGUMENTS}\"")
+		message(FATAL_ERROR "Unrecognized arguments: \"${PRT_UNPARSED_ARGUMENTS}\"!")
 	endif()
 	if((NOT DEFINED PRT_STRINGS)
 		AND (NOT "STRINGS" IN_LIST PRT_KEYWORDS_MISSING_VALUES))
-		message(FATAL_ERROR "STRINGS arguments is missing")
+		message(FATAL_ERROR "STRINGS arguments is missing!")
 	endif()
 	
 	set(mode "")
 	set(message "")
 	
 	# If the first of PRT_ARGV (index 0) is a mode from "options", set the
-	# mode var.
+	# mode var
 	if("${PRT_ARGV0}" IN_LIST options)
 		set(mode "${PRT_ARGV0}")
 	endif()

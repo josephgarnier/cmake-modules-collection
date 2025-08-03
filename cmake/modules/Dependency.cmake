@@ -503,7 +503,7 @@ include(Directory)
 include(StringManip)
 
 #------------------------------------------------------------------------------
-# Public function of this module.
+# Public function of this module
 function(dependency)
 	set(options SHARED STATIC BUILD_TREE INSTALL_TREE SET APPEND)
 	set(one_value_args IMPORT RELEASE_NAME DEBUG_NAME ROOT_DIR INCLUDE_DIR OUTPUT_FILE ADD_INCLUDE_DIRECTORIES SET_IMPORTED_LOCATION CONFIGURATION)
@@ -523,12 +523,12 @@ function(dependency)
 	elseif(DEFINED DEP_SET_IMPORTED_LOCATION)
 		_dependency_set_imported_location()
 	else()
-		message(FATAL_ERROR "Operation argument is missing")
+		message(FATAL_ERROR "The operation name or arguments are missing!")
 	endif()
 endfunction()
 
 #------------------------------------------------------------------------------
-# Internal usage.
+# Internal usage
 macro(_dependency_import)
 	if(NOT DEFINED DEP_IMPORT)
 		message(FATAL_ERROR "IMPORT argument is missing or need a value!")
@@ -620,7 +620,7 @@ macro(_dependency_import)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage.
+# Internal usage
 macro(_dependency_add_include_directories)
 	if(NOT DEFINED DEP_ADD_INCLUDE_DIRECTORIES)
 		message(FATAL_ERROR "ADD_INCLUDE_DIRECTORIES argument is missing or need a value!")
@@ -674,7 +674,7 @@ macro(_dependency_add_include_directories)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage.
+# Internal usage
 macro(_dependency_set_imported_location)
 	if(NOT DEFINED DEP_SET_IMPORTED_LOCATION)
 		message(FATAL_ERROR "SET_IMPORTED_LOCATION argument is missing or need a value!")
@@ -720,7 +720,7 @@ macro(_dependency_set_imported_location)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage.
+# Internal usage
 macro(_dependency_export)
 	if(NOT DEFINED DEP_EXPORT)
 		message(FATAL_ERROR "EXPORT arguments is missing or need a value!")

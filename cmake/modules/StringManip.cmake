@@ -158,7 +158,7 @@ include_guard()
 cmake_minimum_required (VERSION 3.20 FATAL_ERROR)
 
 #------------------------------------------------------------------------------
-# Public function of this module.
+# Public function of this module
 function(string_manip)
 	set(options START_CASE C_IDENTIFIER_UPPER BUILD INSTALL)
 	set(one_value_args SPLIT_TRANSFORM STRIP_INTERFACES OUTPUT_VARIABLE EXTRACT_INTERFACE)
@@ -166,9 +166,8 @@ function(string_manip)
 	cmake_parse_arguments(SM "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 	
 	if(DEFINED SM_UNPARSED_ARGUMENTS)
-		message(FATAL_ERROR "Unrecognized arguments: \"${SM_UNPARSED_ARGUMENTS}\"")
+		message(FATAL_ERROR "Unrecognized arguments: \"${SM_UNPARSED_ARGUMENTS}\"!")
 	endif()
-
 	if(DEFINED SM_SPLIT)
 		_string_manip_split()
 	elseif(DEFINED SM_SPLIT_TRANSFORM)
@@ -177,19 +176,19 @@ function(string_manip)
 		elseif(${SM_START_CASE})
 			_string_manip_split_transform_start_case()
 		else()
-			message(FATAL_ERROR "ACTION argument is missing")
+			message(FATAL_ERROR "ACTION argument is missing!")
 		endif()
 	elseif(DEFINED SM_STRIP_INTERFACES)
 		_string_manip_strip_interfaces()
 	elseif(DEFINED SM_EXTRACT_INTERFACE)
 		_string_manip_extract_interface()
 	else()
-		message(FATAL_ERROR "Operation argument is missing")
+		message(FATAL_ERROR "The operation name or arguments are missing!")
 	endif()
 endfunction()
 
 #------------------------------------------------------------------------------
-# Internal usage.
+# Internal usage
 macro(_string_manip_split)
 	list(LENGTH SM_SPLIT nb_args)
 	if(NOT ${nb_args} EQUAL 2)
@@ -204,13 +203,13 @@ macro(_string_manip_split)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage.
+# Internal usage
 macro(_string_manip_split_transform_identifier_upper)
 	if(NOT DEFINED SM_SPLIT_TRANSFORM)
 		message(FATAL_ERROR "TRANSFORM arguments is missing or need a value!")
 	endif()
 	if(NOT ${SM_C_IDENTIFIER_UPPER})
-		message(FATAL_ERROR "C_IDENTIFIER_UPPER argument is missing")
+		message(FATAL_ERROR "C_IDENTIFIER_UPPER argument is missing!")
 	endif()
 	
 	set(output_formated_word "")
@@ -241,7 +240,7 @@ macro(_string_manip_split_transform_identifier_upper)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage.
+# Internal usage
 macro(_string_manip_split_transform_start_case)
 	if(NOT DEFINED SM_SPLIT_TRANSFORM)
 		message(FATAL_ERROR "TRANSFORM arguments is missing or need a value!")
@@ -272,7 +271,7 @@ macro(_string_manip_split_transform_start_case)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage.
+# Internal usage
 macro(_string_manip_strip_interfaces)
 	if(NOT DEFINED SM_STRIP_INTERFACES)
 		message(FATAL_ERROR "STRIP_INTERFACES argument is missing or need a value!")
@@ -289,7 +288,7 @@ macro(_string_manip_strip_interfaces)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage.
+# Internal usage
 macro(_string_manip_extract_interface)
 	if(NOT DEFINED SM_EXTRACT_INTERFACE)
 		message(FATAL_ERROR "EXTRACT_INTERFACE arguments is missing or need a value!")
