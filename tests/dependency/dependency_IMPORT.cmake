@@ -91,7 +91,7 @@ function(${CMAKETEST_TEST})
 		ct_assert_equal(output_lib_property "${expected_lib_file_name}")
 		get_target_property(output_lib_property "${lib_target_name}"
 			IMPORTED_CONFIGURATIONS)
-		ct_assert_equal(output_lib_property "${CMAKE_BUILD_TYPE}")
+		ct_assert_equal(output_lib_property "${cmake_build_type_upper}")
 	endfunction()
 
 	ct_add_section(NAME "import_shared_lib")
@@ -158,7 +158,7 @@ function(${CMAKETEST_TEST})
 		ct_assert_equal(output_lib_property "${expected_lib_file_name}")
 		get_target_property(output_lib_property "${lib_target_name}"
 			IMPORTED_CONFIGURATIONS)
-		ct_assert_equal(output_lib_property "${CMAKE_BUILD_TYPE}")
+		ct_assert_equal(output_lib_property "${cmake_build_type_upper}")
 	endfunction()
 
 	ct_add_section(NAME "include_dir_does_not_exists")
@@ -225,7 +225,7 @@ function(${CMAKETEST_TEST})
 		ct_assert_equal(output_lib_property "${expected_lib_file_name}")
 		get_target_property(output_lib_property "${lib_target_name}"
 			IMPORTED_CONFIGURATIONS)
-		ct_assert_equal(output_lib_property "${CMAKE_BUILD_TYPE}")
+		ct_assert_equal(output_lib_property "${cmake_build_type_upper}")
 	endfunction()
 
 	# Errors checking
