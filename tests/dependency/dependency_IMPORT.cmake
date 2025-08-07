@@ -14,8 +14,8 @@
 #              <STATIC|SHARED>
 #              [RELEASE_NAME <raw-filename>]
 #              [DEBUG_NAME <raw-filename>]
-#              ROOT_DIR <directory-path>
-#              INCLUDE_DIR <directory-path>)
+#              ROOT_DIR <dir-path>
+#              INCLUDE_DIR <dir-path>)
 ct_add_test(NAME "test_dependency_import_operation")
 function(${CMAKETEST_TEST})
 	include(Dependency)

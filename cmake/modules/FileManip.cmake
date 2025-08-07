@@ -15,16 +15,16 @@ Synopsis
 
 .. parsed-literal::
 
-  file_manip(`RELATIVE_PATH`_ <file-list-var> BASE_DIR <directory-path> [OUTPUT_VARIABLE <output-list-var>])
-  file_manip(`ABSOLUTE_PATH`_ <file-list-var> BASE_DIR <directory-path> [OUTPUT_VARIABLE <output-list-var>])
-  file_manip(`STRIP_PATH`_ <file-list-var> BASE_DIR <directory-path> [OUTPUT_VARIABLE <output-list-var>])
+  file_manip(`RELATIVE_PATH`_ <file-list-var> BASE_DIR <dir-path> [OUTPUT_VARIABLE <output-list-var>])
+  file_manip(`ABSOLUTE_PATH`_ <file-list-var> BASE_DIR <dir-path> [OUTPUT_VARIABLE <output-list-var>])
+  file_manip(`STRIP_PATH`_ <file-list-var> BASE_DIR <dir-path> [OUTPUT_VARIABLE <output-list-var>])
   file_manip(`GET_COMPONENT`_ <file-path>... MODE <mode> OUTPUT_VARIABLE <output-list-var>)
 
 Usage
 ^^^^^
 
 .. signature::
-  file_manip(RELATIVE_PATH <file-list-var> BASE_DIR <directory-path> [OUTPUT_VARIABLE <output-list-var>])
+  file_manip(RELATIVE_PATH <file-list-var> BASE_DIR <dir-path> [OUTPUT_VARIABLE <output-list-var>])
 
   Computes the relative path from a given ``BASE_DIR`` for each file
   in the list variable named ``<file-list-var>``. The result is stored either
@@ -44,7 +44,7 @@ Usage
     #   src/main.cpp;include/lib.hpp
 
 .. signature::
-  file_manip(ABSOLUTE_PATH <file-list-var> BASE_DIR <directory-path> [OUTPUT_VARIABLE <output-list-var>])
+  file_manip(ABSOLUTE_PATH <file-list-var> BASE_DIR <dir-path> [OUTPUT_VARIABLE <output-list-var>])
 
   Computes the absolute path from a given ``BASE_DIR`` for each file
   in the list variable named ``<file-list-var>``. The result is stored either
@@ -64,7 +64,7 @@ Usage
     #   /project/src/main.cpp;/project/include/lib.h
 
 .. signature::
-  file_manip(STRIP_PATH <file-list-var> BASE_DIR <directory-path> [OUTPUT_VARIABLE <output-list-var>])
+  file_manip(STRIP_PATH <file-list-var> BASE_DIR <dir-path> [OUTPUT_VARIABLE <output-list-var>])
 
   Removes the ``BASE_DIR`` prefix from each file path in
   ``<file-list-var>``. The result is stored either in-place in
@@ -159,19 +159,19 @@ macro(_file_manip_relative_path)
 		message(FATAL_ERROR "Given path: ${FM_BASE_DIR} does not refer to an existing path or directory on disk!")
 	endif()
 
-	set(relative_path_list "")
+	set(relative_paths_list "")
 	foreach(file IN ITEMS ${${FM_RELATIVE_PATH}})
 		if(NOT EXISTS "${file}")
 			message(FATAL_ERROR "Given path: ${file} does not refer to an existing path on disk!")
 		endif()
 		file(RELATIVE_PATH relative_path "${FM_BASE_DIR}" "${file}")
-		list(APPEND relative_path_list "${relative_path}")
+		list(APPEND relative_paths_list "${relative_path}")
 	endforeach()
 	
 	if(NOT DEFINED FM_OUTPUT_VARIABLE)
-		set(${FM_RELATIVE_PATH} "${relative_path_list}" PARENT_SCOPE)
+		set(${FM_RELATIVE_PATH} "${relative_paths_list}" PARENT_SCOPE)
 	else()
-		set(${FM_OUTPUT_VARIABLE} "${relative_path_list}" PARENT_SCOPE)
+		set(${FM_OUTPUT_VARIABLE} "${relative_paths_list}" PARENT_SCOPE)
 	endif()
 endmacro()
 
@@ -188,19 +188,19 @@ macro(_file_manip_absolute_path)
 		message(FATAL_ERROR "Given path: ${FM_BASE_DIR} does not refer to an existing path or directory on disk!")
 	endif()
 
-	set(absolute_path_list "")
+	set(absolute_paths_list "")
 	foreach(file IN ITEMS ${${FM_ABSOLUTE_PATH}})
 		file(REAL_PATH "${file}" absolute_path BASE_DIRECTORY "${FM_BASE_DIR}")
 		if(NOT EXISTS "${absolute_path}")
 			message(FATAL_ERROR "Given path: ${absolute_path} does not refer to an existing path on disk!")
 		endif()
-		list(APPEND absolute_path_list ${absolute_path})
+		list(APPEND absolute_paths_list ${absolute_path})
 	endforeach()
 	
 	if(NOT DEFINED FM_OUTPUT_VARIABLE)
-		set(${FM_ABSOLUTE_PATH} "${absolute_path_list}" PARENT_SCOPE)
+		set(${FM_ABSOLUTE_PATH} "${absolute_paths_list}" PARENT_SCOPE)
 	else()
-		set(${FM_OUTPUT_VARIABLE} "${absolute_path_list}" PARENT_SCOPE)
+		set(${FM_OUTPUT_VARIABLE} "${absolute_paths_list}" PARENT_SCOPE)
 	endif()
 endmacro()
 
@@ -214,16 +214,16 @@ macro(_file_manip_strip_path)
 		message(FATAL_ERROR "BASE_DIR arguments is missing!")
 	endif()
 	
-	set(stripped_path_list "")
+	set(stripped_paths_list "")
 	foreach(file_path IN ITEMS ${${FM_STRIP_PATH}})
 		string(REPLACE "${FM_BASE_DIR}/" "" stripped_path "${file_path}")
-		list(APPEND stripped_path_list ${stripped_path})
+		list(APPEND stripped_paths_list ${stripped_path})
 	endforeach()
 	
 	if(NOT DEFINED FM_OUTPUT_VARIABLE)
-		set(${FM_STRIP_PATH} "${stripped_path_list}" PARENT_SCOPE)
+		set(${FM_STRIP_PATH} "${stripped_paths_list}" PARENT_SCOPE)
 	else()
-		set(${FM_OUTPUT_VARIABLE} "${stripped_path_list}" PARENT_SCOPE)
+		set(${FM_OUTPUT_VARIABLE} "${stripped_paths_list}" PARENT_SCOPE)
 	endif()
 endmacro()
 
@@ -241,13 +241,13 @@ macro(_file_manip_get_component_directory)
 		message(FATAL_ERROR "OUTPUT_VARIABLE arguments is missing!")
 	endif()
 
-	set(directorty_path_list "")
+	set(directorty_paths_list "")
 	foreach(file_path IN ITEMS ${FM_GET_COMPONENT})
 		cmake_path(GET file_path PARENT_PATH directory_path)
-		list(APPEND directorty_path_list "${directory_path}")
+		list(APPEND directorty_paths_list "${directory_path}")
 	endforeach()
 
-	set(${FM_OUTPUT_VARIABLE} "${directorty_path_list}" PARENT_SCOPE)
+	set(${FM_OUTPUT_VARIABLE} "${directorty_paths_list}" PARENT_SCOPE)
 endmacro()
 
 #------------------------------------------------------------------------------
@@ -264,11 +264,11 @@ macro(_file_manip_get_component_name)
 		message(FATAL_ERROR "OUTPUT_VARIABLE arguments is missing!")
 	endif()
 	
-	set(file_name_list "")
+	set(file_names_list "")
 	foreach(file_path IN ITEMS ${FM_GET_COMPONENT})
 		cmake_path(GET file_path FILENAME file_name)
-		list(APPEND file_name_list "${file_name}")
+		list(APPEND file_names_list "${file_name}")
 	endforeach()
 	
-	set(${FM_OUTPUT_VARIABLE} "${file_name_list}" PARENT_SCOPE)
+	set(${FM_OUTPUT_VARIABLE} "${file_names_list}" PARENT_SCOPE)
 endmacro()

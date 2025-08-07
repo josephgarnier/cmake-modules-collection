@@ -15,7 +15,7 @@
 #             NAME <raw-filename>
 #             <STATIC|SHARED>
 #             RELATIVE <on|off>
-#             ROOT_DIR <directory-path>)
+#             ROOT_DIR <dir-path>)
 ct_add_test(NAME "test_directory_find_lib_operation")
 function(${CMAKETEST_TEST})
 	include(Directory)

@@ -18,10 +18,10 @@ Synopsis
   `Print Formated Message`_
     print([<mode>] "message with format text" <argument>...)
 
-  `Print Path List`_
+  `Print Paths List`_
     print([<mode>] PATHS <file-path>... [INDENT])
 
-  `Print String List`_
+  `Print Strings List`_
     print([<mode>] STRINGS <string>... [INDENT])
 
 Module Variables
@@ -80,7 +80,7 @@ Usage
     # output is:
     #   -- Absolute: /full/path/to/src/main.cpp, Relative: src/main.cpp
 
-.. _`Print Path List`:
+.. _`Print Paths List`:
 
 .. signature::
   print([<mode>] PATHS <file-path>... [INDENT])
@@ -108,7 +108,7 @@ Usage
     # output is:
     #   src/main.cpp ; include/lib.hpp
 
-.. _`Print String List`:
+.. _`Print Strings List`:
 
 .. signature::
   print([<mode>] STRINGS <string>... [INDENT])
@@ -161,9 +161,9 @@ function(print)
 	endforeach()
 
 	if((DEFINED PRT_PATHS) OR ("PATHS" IN_LIST PRT_KEYWORDS_MISSING_VALUES))
-		_print_path_list()
+		_print_paths_list()
 	elseif((DEFINED PRT_STRINGS) OR ("STRINGS" IN_LIST PRT_KEYWORDS_MISSING_VALUES))
-		_print_string_list()
+		_print_strings_list()
 	else()
 		_print_formated_message()
 	endif()
@@ -182,7 +182,7 @@ macro(_print_formated_message)
 	# a new argument, as an item separator. So, it is necessary to use PRT_ARGV#, PRT_ARGC_MAX and PRT_ARGC.
 	set(mode "")
 	set(message "")
-	set(message_arg_list "")
+	set(message_args_list "")
 	set(current_argv_index 0)
 
 	# If the first of PRT_ARGV (index 0) is a mode from "options", set the
@@ -201,14 +201,14 @@ macro(_print_formated_message)
 	# Get the message arg list.
 	if(${current_argv_index} LESS ${PRT_ARGC})
 		foreach(argv_index RANGE ${current_argv_index} ${PRT_ARGC_MAX_INDEX})
-			list(APPEND message_arg_list "${PRT_ARGV${current_argv_index}}")
+			list(APPEND message_args_list "${PRT_ARGV${current_argv_index}}")
 			math(EXPR current_argv_index "${current_argv_index}+1")
 		endforeach()
 	endif()
 
 	# If arguments to the message are given, the directives are substituted
-	list(LENGTH message_arg_list message_arg_list_size)
-	if(${message_arg_list_size} GREATER 0)
+	list(LENGTH message_args_list message_args_list_size)
+	if(${message_args_list_size} GREATER 0)
 		_substitute_directives()
 	endif()
 
@@ -249,7 +249,7 @@ macro(_substitute_directives)
 
 		# Substitute the directive by its value
 		set(directive_to_substitute "@${message_cursor}@")
-		list(POP_FRONT message_arg_list message_arg)
+		list(POP_FRONT message_args_list message_arg)
 		if("${message_arg}" STREQUAL "")
 			message(FATAL_ERROR "Argument missing for directive \"${directive_to_substitute}\"!")
 		endif()
@@ -272,7 +272,7 @@ endmacro()
 
 #------------------------------------------------------------------------------
 # Internal usage
-macro(_print_path_list)
+macro(_print_paths_list)
 	if(DEFINED PRT_UNPARSED_ARGUMENTS)
 		message(FATAL_ERROR "Unrecognized arguments: \"${PRT_UNPARSED_ARGUMENTS}\"!")
 	endif()
@@ -291,12 +291,12 @@ macro(_print_path_list)
 	endif()
 
 	# Format the paths
-	set(relative_path_list "")
+	set(relative_paths_list "")
 	foreach(file IN ITEMS ${PRT_PATHS})
 		file(RELATIVE_PATH relative_path "${PRINT_BASE_DIR}" "${file}")
-		list(APPEND relative_path_list "${relative_path}")
+		list(APPEND relative_paths_list "${relative_path}")
 	endforeach()
-	list(JOIN relative_path_list " ; " formated_message)
+	list(JOIN relative_paths_list " ; " formated_message)
 	set(message "${formated_message}")
 
 	if(${PRT_INDENT})
@@ -314,7 +314,7 @@ endmacro()
 
 #------------------------------------------------------------------------------
 # Internal usage
-macro(_print_string_list)
+macro(_print_strings_list)
 	if(DEFINED PRT_UNPARSED_ARGUMENTS)
 		message(FATAL_ERROR "Unrecognized arguments: \"${PRT_UNPARSED_ARGUMENTS}\"!")
 	endif()

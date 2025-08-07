@@ -13,7 +13,7 @@
 #    directory(SCAN <output-list-var>
 #             LIST_DIRECTORIES <on|off>
 #             RELATIVE <on|off>
-#             ROOT_DIR <directory-path>
+#             ROOT_DIR <dir-path>
 #             <INCLUDE_REGEX|EXCLUDE_REGEX> <regular-expression>)
 ct_add_test(NAME "test_directory_scan_operation")
 function(${CMAKETEST_TEST})

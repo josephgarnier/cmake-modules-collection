@@ -17,8 +17,8 @@ Synopsis
 
   dependency(`IMPORT`_ <lib-target-name> [...])
   dependency(`ADD_INCLUDE_DIRECTORIES`_ <lib-target-name> <SET|APPEND> PUBLIC <gen-expr>...)
-  dependency(`SET_IMPORTED_LOCATION`_ <lib-target-name> [CONFIGURATION <config_type>] PUBLIC <gen-expr>...)
-  dependency(`EXPORT`_ <lib-target-name>... <BUILD_TREE|INSTALL_TREE> [APPEND] OUTPUT_FILE <file_name>)
+  dependency(`SET_IMPORTED_LOCATION`_ <lib-target-name> [CONFIGURATION <config-type>] PUBLIC <gen-expr>...)
+  dependency(`EXPORT`_ <lib-target-name>... <BUILD_TREE|INSTALL_TREE> [APPEND] OUTPUT_FILE <file-name>)
 
 Usage
 ^^^^^
@@ -34,8 +34,8 @@ Usage
               <STATIC|SHARED>
               [RELEASE_NAME <raw-filename>]
               [DEBUG_NAME <raw-filename>]
-              ROOT_DIR <directory-path>
-              INCLUDE_DIR <directory-path>)
+              ROOT_DIR <dir-path>
+              INCLUDE_DIR <dir-path>)
 
   Create an imported library target named ``<lib-target-name>``, which should
   represent the base name of the library (without prefix or suffix), by
@@ -292,7 +292,7 @@ Usage
     ``<CMAKE_INSTALL_PREFIX>`` is resolved when imported via :command:`dependency(EXPORT)`).
 
 .. signature::
-  dependency(SET_IMPORTED_LOCATION <lib-target-name> [CONFIGURATION <config_type>] PUBLIC <gen-expr>...)
+  dependency(SET_IMPORTED_LOCATION <lib-target-name> [CONFIGURATION <config-type>] PUBLIC <gen-expr>...)
 
   Set the :cmake:prop_tgt:`IMPORTED_LOCATION_<CONFIG> <cmake:prop_tgt:IMPORTED_LOCATION_<CONFIG>>` property of the imported
   target ``<lib-target-name>`` using generator expressions to provide the
@@ -389,9 +389,9 @@ Usage
     )
 
 .. signature::
-  dependency(EXPORT <lib-target-name>... <BUILD_TREE|INSTALL_TREE> [APPEND] OUTPUT_FILE <file_name>)
+  dependency(EXPORT <lib-target-name>... <BUILD_TREE|INSTALL_TREE> [APPEND] OUTPUT_FILE <file-name>)
 
-  Creates a file ``<file_name>`` that may be included by outside projects to
+  Creates a file ``<file-name>`` that may be included by outside projects to
   import targets in ``<lib-target-name>`` list from the current project's
   build-tree or install-tree. This command is functionally similar to using
   :cmake:command:`export(TARGETS) <cmake:command:export(targets)>` in a ``BUILD_TREE`` context and :cmake:command:`install(EXPORT) <cmake:command:install(export)>`
@@ -405,16 +405,16 @@ Usage
   context in which the file is generated:
 
   * When ``BUILD_TREE`` is used, the command generates the file in
-    ``CMAKE_CURRENT_BINARY_DIR/<file_name>``, similar to how :cmake:command:`export(TARGETS) <cmake:command:export(targets)>`
+    ``CMAKE_CURRENT_BINARY_DIR/<file-name>``, similar to how :cmake:command:`export(TARGETS) <cmake:command:export(targets)>`
     produces a file to be included by other build projects. This file enables
     other projects to import the specified targets directly from the build-tree
     . It can be included from a ``<PackageName>Config.cmake`` file to provide
     usage information for downstream projects.
 
   * When ``INSTALL_TREE`` is used, the file is generated in
-    ``CMAKE_CURRENT_BINARY_DIR/cmake/export/<file_name>`` and an install rule
+    ``CMAKE_CURRENT_BINARY_DIR/cmake/export/<file-name>`` and an install rule
     is added to copy the file to ``CMAKE_INSTALL_PREFIX/cmake/export/
-    <file_name>``. This is similar to combining :cmake:command:`install(TARGETS) <cmake:command:install(targets)>` with
+    <file-name>``. This is similar to combining :cmake:command:`install(TARGETS) <cmake:command:install(targets)>` with
     :cmake:command:`install(EXPORT) <cmake:command:install(export)>`, but applies to imported rather than built targets.
     This makes the export file available post-install and allows downstream
     projects to include the file from a package configuration file.

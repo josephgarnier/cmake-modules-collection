@@ -23,7 +23,7 @@ Synopsis
   binary_target(`CONFIGURE_SETTINGS`_ <target-name> [...])
   binary_target(`ADD_SOURCES`_ <target-name> [...])
   binary_target(`ADD_PRECOMPILED_HEADER`_ <target-name> HEADER_FILE <file-path>)
-  binary_target(`ADD_INCLUDE_DIRECTORIES`_ <target-name> INCLUDE_DIRECTORIES [<directory-path>...])
+  binary_target(`ADD_INCLUDE_DIRECTORIES`_ <target-name> INCLUDE_DIRECTORIES [<dir-path>...])
 
 Usage
 ^^^^^
@@ -175,7 +175,7 @@ Usage
     )
 
 .. signature::
-  binary_target(ADD_INCLUDE_DIRECTORIES <target-name> INCLUDE_DIRECTORIES [<directory-path>...])
+  binary_target(ADD_INCLUDE_DIRECTORIES <target-name> INCLUDE_DIRECTORIES [<dir-path>...])
 
   Add include directories to an existing binary target ``<target_name>`` with
   ``PRIVATE`` visibility. The file is added to the target with

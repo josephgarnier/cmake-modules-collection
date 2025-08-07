@@ -34,7 +34,7 @@ Usage
     directory(SCAN <output-list-var>
              LIST_DIRECTORIES <on|off>
              RELATIVE <on|off>
-             ROOT_DIR <directory-path>
+             ROOT_DIR <dir-path>
              <INCLUDE_REGEX|EXCLUDE_REGEX> <regular-expression>)
 
   Recursively scans files and directories under ``ROOT_DIR``, applies an
@@ -51,7 +51,7 @@ Usage
 
   .. code-block:: cmake
 
-    directory(SCAN result_list
+    directory(SCAN files_found
       LIST_DIRECTORIES off
       RELATIVE on
       ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}"
@@ -70,7 +70,7 @@ Usage
      directory(SCAN_DIRS <output-list-var>
               RECURSE <on|off>
               RELATIVE <on|off>
-              ROOT_DIR <directory-path>
+              ROOT_DIR <dir-path>
               <INCLUDE_REGEX|EXCLUDE_REGEX> <regular-expression>)
 
   Scan and collect all directories under ``ROOT_DIR`` that match the regular
@@ -109,7 +109,7 @@ Usage
               NAME <raw-filename>
               <STATIC|SHARED>
               RELATIVE <on|off>
-              ROOT_DIR <directory-path>)
+              ROOT_DIR <dir-path>)
 
   Search recursively in ``ROOT_DIR`` for a library and, on DLL platforms, its
   import library. The name to search for is given via ``NAME``, which should
@@ -362,22 +362,22 @@ macro(_directory_scan)
 		message(FATAL_ERROR "Given path: ${DIR_ROOT_DIR} does not refer to an existing path or directory on disk!")
 	endif()
 
-	set(file_list "")
+	set(files_list "")
 	if(${DIR_RELATIVE})
-		file(GLOB_RECURSE file_list FOLLOW_SYMLINKS LIST_DIRECTORIES ${DIR_LIST_DIRECTORIES} RELATIVE "${DIR_ROOT_DIR}" CONFIGURE_DEPENDS "${DIR_ROOT_DIR}/*")
+		file(GLOB_RECURSE files_list FOLLOW_SYMLINKS LIST_DIRECTORIES ${DIR_LIST_DIRECTORIES} RELATIVE "${DIR_ROOT_DIR}" CONFIGURE_DEPENDS "${DIR_ROOT_DIR}/*")
 	else()
-		file(GLOB_RECURSE file_list FOLLOW_SYMLINKS LIST_DIRECTORIES ${DIR_LIST_DIRECTORIES} CONFIGURE_DEPENDS "${DIR_ROOT_DIR}/*")
+		file(GLOB_RECURSE files_list FOLLOW_SYMLINKS LIST_DIRECTORIES ${DIR_LIST_DIRECTORIES} CONFIGURE_DEPENDS "${DIR_ROOT_DIR}/*")
 	endif()
 	
 	if(DEFINED DIR_INCLUDE_REGEX)
-		list(FILTER file_list INCLUDE REGEX "${DIR_INCLUDE_REGEX}")
+		list(FILTER files_list INCLUDE REGEX "${DIR_INCLUDE_REGEX}")
 	elseif(DEFINED DIR_EXCLUDE_REGEX)
-		list(FILTER file_list EXCLUDE REGEX "${DIR_EXCLUDE_REGEX}")
+		list(FILTER files_list EXCLUDE REGEX "${DIR_EXCLUDE_REGEX}")
 	else()
 		message(FATAL_ERROR "Invalid arguments: expected INCLUDE_REGEX or EXCLUDE_REGEX!")
 	endif()
 	
-	set(${DIR_SCAN} "${file_list}" PARENT_SCOPE)
+	set(${DIR_SCAN} "${files_list}" PARENT_SCOPE)
 endmacro()
 
 #------------------------------------------------------------------------------
@@ -408,33 +408,33 @@ macro(_directory_scan_dirs)
 	endif()
 	
 	# Paths should not be relative, but absolute, in order to be able to filter files and keep only folders
-	set(file_list "")
+	set(files_list "")
 	if(${DIR_RECURSE})
-		file(GLOB_RECURSE file_list FOLLOW_SYMLINKS LIST_DIRECTORIES on CONFIGURE_DEPENDS "${DIR_ROOT_DIR}/*")
+		file(GLOB_RECURSE files_list FOLLOW_SYMLINKS LIST_DIRECTORIES on CONFIGURE_DEPENDS "${DIR_ROOT_DIR}/*")
 	else()
-		file(GLOB file_list LIST_DIRECTORIES on CONFIGURE_DEPENDS "${DIR_ROOT_DIR}/*")
+		file(GLOB files_list LIST_DIRECTORIES on CONFIGURE_DEPENDS "${DIR_ROOT_DIR}/*")
 	endif()
 
 	# Keep only directories and compute relative paths if needed
-	set(directory_list "")
-	foreach(file IN ITEMS ${file_list})
+	set(directories_list "")
+	foreach(file IN ITEMS ${files_list})
 		if(IS_DIRECTORY "${file}")
 			if(${DIR_RELATIVE})
 				file(RELATIVE_PATH file "${DIR_ROOT_DIR}" "${file}")
 			endif()
-			list(APPEND directory_list "${file}")
+			list(APPEND directories_list "${file}")
 		endif()
 	endforeach()
 
 	if(DEFINED DIR_INCLUDE_REGEX)
-		list(FILTER directory_list INCLUDE REGEX "${DIR_INCLUDE_REGEX}")
+		list(FILTER directories_list INCLUDE REGEX "${DIR_INCLUDE_REGEX}")
 	elseif(DEFINED DIR_EXCLUDE_REGEX)
-		list(FILTER directory_list EXCLUDE REGEX "${DIR_EXCLUDE_REGEX}")
+		list(FILTER directories_list EXCLUDE REGEX "${DIR_EXCLUDE_REGEX}")
 	else()
 		message(FATAL_ERROR "Invalid arguments: expected INCLUDE_REGEX or EXCLUDE_REGEX!")
 	endif()
 
-	set(${DIR_SCAN_DIRS} "${directory_list}" PARENT_SCOPE)
+	set(${DIR_SCAN_DIRS} "${directories_list}" PARENT_SCOPE)
 endmacro()
 
 #------------------------------------------------------------------------------
@@ -468,44 +468,44 @@ macro(_directory_find_lib)
 		message(FATAL_ERROR "Given path: ${DIR_ROOT_DIR} does not refer to an existing path or directory on disk!")
 	endif()
 
-	set(file_list "")
+	set(files_list "")
 	if(${DIR_RELATIVE})
-		file(GLOB_RECURSE file_list FOLLOW_SYMLINKS LIST_DIRECTORIES off RELATIVE "${DIR_ROOT_DIR}" CONFIGURE_DEPENDS "${DIR_ROOT_DIR}/*")
+		file(GLOB_RECURSE files_list FOLLOW_SYMLINKS LIST_DIRECTORIES off RELATIVE "${DIR_ROOT_DIR}" CONFIGURE_DEPENDS "${DIR_ROOT_DIR}/*")
 	else()
-		file(GLOB_RECURSE file_list FOLLOW_SYMLINKS LIST_DIRECTORIES off CONFIGURE_DEPENDS "${DIR_ROOT_DIR}/*")
+		file(GLOB_RECURSE files_list FOLLOW_SYMLINKS LIST_DIRECTORIES off CONFIGURE_DEPENDS "${DIR_ROOT_DIR}/*")
 	endif()
 
 	# Select appropriate prefix/suffix sets based on the requested library type
 	if(${DIR_SHARED})
 		# Shared library (.dll, .so, .dylib): used at runtime (IMPORTED_LOCATION)
-		set(lib_prefix_list "${CMAKE_SHARED_LIBRARY_PREFIX}") # 'lib' on Linux, empty on Windows
-		set(lib_suffix_list "${CMAKE_SHARED_LIBRARY_SUFFIX}") # '.so' on Linux, '.dll' on Windows
+		set(lib_prefixes_list "${CMAKE_SHARED_LIBRARY_PREFIX}") # 'lib' on Linux, empty on Windows
+		set(lib_suffixes_list "${CMAKE_SHARED_LIBRARY_SUFFIX}") # '.so' on Linux, '.dll' on Windows
 
 		# Import library (.lib, .dll.a, .a): used at link time (IMPORTED_IMPLIB)
-		set(implib_prefix_list "${CMAKE_FIND_LIBRARY_PREFIXES}") # 'empty|lib' on Linux, 'empty|lib' on Windows
-		set(implib_suffix_list "${CMAKE_FIND_LIBRARY_SUFFIXES}") # '.dll.a|.a|.lib' on Linux, '.dll.lib|.lib|.a' on Windows
+		set(implib_prefixes_list "${CMAKE_FIND_LIBRARY_PREFIXES}") # 'empty|lib' on Linux, 'empty|lib' on Windows
+		set(implib_suffixes_list "${CMAKE_FIND_LIBRARY_SUFFIXES}") # '.dll.a|.a|.lib' on Linux, '.dll.lib|.lib|.a' on Windows
 	elseif(${DIR_STATIC})
 		# Static library (.lib, .a): used at link time (no import lib concept)
-		set(lib_prefix_list "${CMAKE_STATIC_LIBRARY_PREFIX}") # 'lib' on Linux, empty on Windows
-		set(lib_suffix_list "${CMAKE_STATIC_LIBRARY_SUFFIX}") # '.a' on Linux, '.lib' on Windows
+		set(lib_prefixes_list "${CMAKE_STATIC_LIBRARY_PREFIX}") # 'lib' on Linux, empty on Windows
+		set(lib_suffixes_list "${CMAKE_STATIC_LIBRARY_SUFFIX}") # '.a' on Linux, '.lib' on Windows
 
 		# Static libraries do not use import libraries
-		set(implib_prefix_list "")
-		set(implib_suffix_list "")
+		set(implib_prefixes_list "")
+		set(implib_suffixes_list "")
 	else()
 		message(FATAL_ERROR "Invalid build type: expected SHARED or STATIC!")
 	endif()
 
 	# Build regex to find the binary library (IMPORTED_LOCATION)
-	string(REGEX REPLACE [[\.]] [[\\.]] lib_suffix_list "${lib_suffix_list}") # escape '.' char
-	set(lib_regex "^(${lib_prefix_list})?${DIR_NAME}(${lib_suffix_list})$")
+	string(REGEX REPLACE [[\.]] [[\\.]] lib_suffixes_list "${lib_suffixes_list}") # escape '.' char
+	set(lib_regex "^(${lib_prefixes_list})?${DIR_NAME}(${lib_suffixes_list})$")
 	
 	# Build regex to find the import library (IMPORTED_IMPLIB), only if applicable
-	if(NOT "${implib_suffix_list}" STREQUAL "")
-		list(JOIN implib_prefix_list "|" implib_prefix_list)
-		list(JOIN implib_suffix_list "|" implib_suffix_list)
-		string(REGEX REPLACE [[\.]] [[\\.]] implib_suffix_list "${implib_suffix_list}") # escape '.' char
-		set(implib_regex "^(${implib_prefix_list})?${DIR_NAME}(${implib_suffix_list})$")
+	if(NOT "${implib_suffixes_list}" STREQUAL "")
+		list(JOIN implib_prefixes_list "|" implib_prefixes_list)
+		list(JOIN implib_suffixes_list "|" implib_suffixes_list)
+		string(REGEX REPLACE [[\.]] [[\\.]] implib_suffixes_list "${implib_suffixes_list}") # escape '.' char
+		set(implib_regex "^(${implib_prefixes_list})?${DIR_NAME}(${implib_suffixes_list})$")
 	else()
 		# No import library applicable for static libraries
 		set(implib_regex "")
@@ -514,7 +514,7 @@ macro(_directory_find_lib)
 	# Search lib and implib
 	set(library_found_path "${DIR_FIND_LIB}-NOTFOUND")
 	set(import_library_found_path "${DIR_FIND_IMPLIB}-NOTFOUND")
-	foreach(file IN ITEMS ${file_list})
+	foreach(file IN ITEMS ${files_list})
 		cmake_path(GET file FILENAME file_name)
 		if("${file_name}" MATCHES "${lib_regex}")
 			# Find library (lib)
@@ -524,7 +524,7 @@ macro(_directory_find_lib)
 				message(FATAL_ERROR "At least two matches with the library name \"${DIR_NAME}\"!")
 			endif()
 		endif()
-		if((NOT "${implib_suffix_list}" STREQUAL "")
+		if((NOT "${implib_suffixes_list}" STREQUAL "")
 			AND ("${file_name}" MATCHES "${implib_regex}"))
 			# Find imported library (implib)
 			if("${import_library_found_path}" STREQUAL "${DIR_FIND_IMPLIB}-NOTFOUND")
@@ -577,38 +577,38 @@ macro(_directory_collect_sources_by_location)
 	if(DEFINED DIR_SRC_DIR)
 		# Get the list of absolute paths to source files (.cpp|.cc|.cxx) stored
 		# inside `SRC_DIR` directory
-		set(src_source_file_list "")
-		directory(SCAN src_source_file_list
+		set(src_source_files_list "")
+		directory(SCAN src_source_files_list
 			LIST_DIRECTORIES off
 			RELATIVE off
 			ROOT_DIR "${DIR_SRC_DIR}"
 			INCLUDE_REGEX ".*[.]cpp$|.*[.]cc$|.*[.]cxx$"
 		)
-		set(${DIR_SRC_SOURCE_FILES} "${src_source_file_list}" PARENT_SCOPE)
+		set(${DIR_SRC_SOURCE_FILES} "${src_source_files_list}" PARENT_SCOPE)
 
 		# Get the list of absolute path to header files (.h|.hpp|.hxx|.inl|.tpp) stored
 		# inside `SRC_DIR` directory
-		set(src_header_file_list "")
-		directory(SCAN src_header_file_list
+		set(src_header_files_list "")
+		directory(SCAN src_header_files_list
 			LIST_DIRECTORIES off
 			RELATIVE off
 			ROOT_DIR "${DIR_SRC_DIR}"
 			INCLUDE_REGEX ".*[.]h$|.*[.]hpp$|.*[.]hxx$|.*[.]inl$|.*[.]tpp$"
 		)
-		set(${DIR_SRC_HEADER_FILES} "${src_header_file_list}" PARENT_SCOPE)
+		set(${DIR_SRC_HEADER_FILES} "${src_header_files_list}" PARENT_SCOPE)
 	endif()
 	
 	if(DEFINED DIR_INCLUDE_DIR)
 		# Get the list of absolute path to header files (.h|.hpp|.hxx|.inl|.tpp) stored
 		# inside `INCLUDE_DIR` directory
-		set(include_header_file_list "")
-		directory(SCAN include_header_file_list
+		set(include_header_files_list "")
+		directory(SCAN include_header_files_list
 			LIST_DIRECTORIES off
 			RELATIVE off
 			ROOT_DIR "${DIR_INCLUDE_DIR}"
 			INCLUDE_REGEX ".*[.]h$|.*[.]hpp$|.*[.]hxx$|.*[.]inl$|.*[.]tpp$"
 		)
-		set(${DIR_INCLUDE_HEADER_FILES} "${include_header_file_list}" PARENT_SCOPE)
+		set(${DIR_INCLUDE_HEADER_FILES} "${include_header_files_list}" PARENT_SCOPE)
 	endif()
 endmacro()
 
@@ -662,26 +662,26 @@ macro(_directory_collect_sources_by_policy)
 	if(${is_headers_separated})
 		directory(COLLECT_SOURCES_BY_LOCATION
 			SRC_DIR "${DIR_SRC_DIR}"
-			SRC_SOURCE_FILES src_source_file_list
-			SRC_HEADER_FILES src_header_file_list
+			SRC_SOURCE_FILES src_source_files_list
+			SRC_HEADER_FILES src_header_files_list
 			INCLUDE_DIR "${include_dir_path}"
-			INCLUDE_HEADER_FILES include_header_file_list
+			INCLUDE_HEADER_FILES include_header_files_list
 		)
-		set(${DIR_SRC_SOURCE_FILES} "${src_source_file_list}" PARENT_SCOPE)
+		set(${DIR_SRC_SOURCE_FILES} "${src_source_files_list}" PARENT_SCOPE)
 		set(${DIR_PUBLIC_HEADER_DIR} "${include_dir_path}" PARENT_SCOPE)
-		set(${DIR_PUBLIC_HEADER_FILES} "${include_header_file_list}" PARENT_SCOPE)
+		set(${DIR_PUBLIC_HEADER_FILES} "${include_header_files_list}" PARENT_SCOPE)
 		set(${DIR_PRIVATE_HEADER_DIR} "${DIR_SRC_DIR}" PARENT_SCOPE)
-		set(${DIR_PRIVATE_HEADER_FILES} "${src_header_file_list}" PARENT_SCOPE)
+		set(${DIR_PRIVATE_HEADER_FILES} "${src_header_files_list}" PARENT_SCOPE)
 		message(STATUS "Considering headers from \"include/\" as public and from \"src/\" as private")
 	else()
 		directory(COLLECT_SOURCES_BY_LOCATION
 			SRC_DIR "${DIR_SRC_DIR}"
-			SRC_SOURCE_FILES src_source_file_list
-			SRC_HEADER_FILES src_header_file_list
+			SRC_SOURCE_FILES src_source_files_list
+			SRC_HEADER_FILES src_header_files_list
 		)
-		set(${DIR_SRC_SOURCE_FILES} "${src_source_file_list}" PARENT_SCOPE)
+		set(${DIR_SRC_SOURCE_FILES} "${src_source_files_list}" PARENT_SCOPE)
 		set(${DIR_PUBLIC_HEADER_DIR} "${DIR_SRC_DIR}" PARENT_SCOPE)
-		set(${DIR_PUBLIC_HEADER_FILES} "${src_header_file_list}" PARENT_SCOPE)
+		set(${DIR_PUBLIC_HEADER_FILES} "${src_header_files_list}" PARENT_SCOPE)
 		set(${DIR_PRIVATE_HEADER_DIR} "" PARENT_SCOPE)
 		set(${DIR_PRIVATE_HEADER_FILES} "" PARENT_SCOPE)
 		message(STATUS "Considering headers from \"src/\" as public, ignoring \"include/\"")
