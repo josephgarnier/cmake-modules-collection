@@ -225,8 +225,8 @@ function(map)
 	set(multi_value_args SIZE GET KEYS VALUES FIND HAS_KEY HAS_VALUE SET ADD REMOVE)
 	cmake_parse_arguments(MAP "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 
-	set(MAP_ARGN "${ARGN}") # `cmake_parse_arguments` removing empty arguments, we will work directly with ARGN to retrieve empty values when they are allowed.
-	list(POP_FRONT MAP_ARGN) # Remove the operation name
+	set(MAP_ARGV "${ARGV}") # `cmake_parse_arguments` removing empty arguments, we will work directly with ARGN to retrieve empty values when they are allowed.
+	list(POP_FRONT MAP_ARGV) # Remove the operation name
 	if(DEFINED MAP_UNPARSED_ARGUMENTS)
 		message(FATAL_ERROR "Unrecognized arguments: \"${MAP_UNPARSED_ARGUMENTS}\"!")
 	endif()
@@ -375,14 +375,14 @@ endmacro()
 #------------------------------------------------------------------------------
 # Internal usage
 macro(_map_find)
-	list(LENGTH MAP_ARGN nb_args)
+	list(LENGTH MAP_ARGV nb_args) # MAP_FIND must not be used here, because it can't contain empty arguments due to `cmake_parse_arguments` working
 	if(NOT ${nb_args} EQUAL 3)
 		message(FATAL_ERROR "FIND requires exactly 3 arguments, got ${nb_args}!")
 	endif()
 
-	list(GET MAP_ARGN 0 map_var)
-	list(GET MAP_ARGN 1 value)
-	list(GET MAP_ARGN 2 output_var)
+	list(GET MAP_ARGV 0 map_var)
+	list(GET MAP_ARGV 1 value)
+	list(GET MAP_ARGV 2 output_var)
 	if("${map_var}" STREQUAL "")
 		message(FATAL_ERROR "Cannot find in empty map!")
 	endif()
@@ -415,14 +415,14 @@ endmacro()
 #------------------------------------------------------------------------------
 # Internal usage
 macro(_map_has_key)
-	list(LENGTH MAP_ARGN nb_args)
+	list(LENGTH MAP_ARGV nb_args) # MAP_HAS_KEY must not be used here, because it can't contain empty arguments due to `cmake_parse_arguments` working
 	if(NOT ${nb_args} EQUAL 3)
 		message(FATAL_ERROR "HAS_KEY requires exactly 3 arguments, got ${nb_args}!")
 	endif()
 
-	list(GET MAP_ARGN 0 map_var)
-	list(GET MAP_ARGN 1 key)
-	list(GET MAP_ARGN 2 output_var)
+	list(GET MAP_ARGV 0 map_var)
+	list(GET MAP_ARGV 1 key)
+	list(GET MAP_ARGV 2 output_var)
 	if("${map_var}" STREQUAL "")
 		message(FATAL_ERROR "Cannot search in empty map!")
 	endif()
@@ -451,14 +451,14 @@ endmacro()
 #------------------------------------------------------------------------------
 # Internal usage
 macro(_map_has_value)
-	list(LENGTH MAP_ARGN nb_args)
+	list(LENGTH MAP_ARGV nb_args) # MAP_HAS_VALUE must not be used here, because it can't contain empty arguments due to `cmake_parse_arguments` working
 	if(NOT ${nb_args} EQUAL 3)
 		message(FATAL_ERROR "HAS_VALUE requires exactly 3 arguments, got ${nb_args}!")
 	endif()
 
-	list(GET MAP_ARGN 0 map_var)
-	list(GET MAP_ARGN 1 value)
-	list(GET MAP_ARGN 2 output_var)
+	list(GET MAP_ARGV 0 map_var)
+	list(GET MAP_ARGV 1 value)
+	list(GET MAP_ARGV 2 output_var)
 	if("${map_var}" STREQUAL "")
 		message(FATAL_ERROR "Cannot search in empty map!")
 	endif()
@@ -490,14 +490,14 @@ endmacro()
 #------------------------------------------------------------------------------
 # Internal usage
 macro(_map_set)
-	list(LENGTH MAP_ARGN nb_args)
+	list(LENGTH MAP_ARGV nb_args) # MAP_SET must not be used here, because it can't contain empty arguments due to `cmake_parse_arguments` working
 	if(NOT ${nb_args} EQUAL 3)
 		message(FATAL_ERROR "SET requires exactly 3 arguments, got ${nb_args}!")
 	endif()
 
-	list(GET MAP_ARGN 0 map_var)
-	list(GET MAP_ARGN 1 new_key)
-	list(GET MAP_ARGN 2 new_value)
+	list(GET MAP_ARGV 0 map_var)
+	list(GET MAP_ARGV 1 new_key)
+	list(GET MAP_ARGV 2 new_value)
 	if("${map_var}" STREQUAL "")
 		message(FATAL_ERROR "Cannot set in empty map!")
 	endif()
@@ -538,14 +538,14 @@ endmacro()
 #------------------------------------------------------------------------------
 # Internal usage
 macro(_map_add)
-	list(LENGTH MAP_ARGN nb_args)
+	list(LENGTH MAP_ARGV nb_args) # MAP_ADD must not be used here, because it can't contain empty arguments due to `cmake_parse_arguments` working
 	if(NOT ${nb_args} EQUAL 3)
 		message(FATAL_ERROR "ADD requires exactly 3 arguments, got ${nb_args}!")
 	endif()
 
-	list(GET MAP_ARGN 0 map_var)
-	list(GET MAP_ARGN 1 new_key)
-	list(GET MAP_ARGN 2 new_value)
+	list(GET MAP_ARGV 0 map_var)
+	list(GET MAP_ARGV 1 new_key)
+	list(GET MAP_ARGV 2 new_value)
 	if("${map_var}" STREQUAL "")
 		message(FATAL_ERROR "Cannot add in empty map!")
 	endif()
@@ -578,15 +578,15 @@ endmacro()
 #------------------------------------------------------------------------------
 # Internal usage
 macro(_map_remove)
-	list(LENGTH MAP_ARGN nb_args)
+	list(LENGTH MAP_ARGV nb_args) # MAP_REMOVE must not be used here, because it can't contain empty arguments due to `cmake_parse_arguments` working
 	if(NOT ${nb_args} EQUAL 2)
 		message(FATAL_ERROR "REMOVE requires exactly 2 arguments, got ${nb_args}!")
 	endif()
 
-	list(GET MAP_ARGN 0 map_var)
-	list(GET MAP_ARGN 1 key_to_remove)
+	list(GET MAP_ARGV 0 map_var)
+	list(GET MAP_ARGV 1 key_to_remove)
 	if("${map_var}" STREQUAL "")
-		message(FATAL_ERROR "Cannot add in empty map!")
+		message(FATAL_ERROR "Cannot remove in empty map!")
 	endif()
 
 	set(map_content "${${map_var}}")
