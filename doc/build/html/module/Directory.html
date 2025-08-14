@@ -80,7 +80,7 @@ directory(<a class="reference internal" href="#collect-sources-by-policy">COLLEC
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">directory(</span><span class="no">SCAN</span><span class="w"> </span><span class="nv">&lt;output-list-var&gt;</span>
 <span class="w">         </span><span class="no">LIST_DIRECTORIES</span><span class="w"> </span><span class="o">&lt;</span><span class="nb">on</span><span class="p">|</span><span class="nb">off</span><span class="o">&gt;</span>
 <span class="w">         </span><span class="no">RELATIVE</span><span class="w"> </span><span class="o">&lt;</span><span class="nb">on</span><span class="p">|</span><span class="nb">off</span><span class="o">&gt;</span>
-<span class="w">         </span><span class="no">ROOT_DIR</span><span class="w"> </span><span class="nv">&lt;directory-path&gt;</span>
+<span class="w">         </span><span class="no">ROOT_DIR</span><span class="w"> </span><span class="nv">&lt;dir-path&gt;</span>
 <span class="w">         </span><span class="o">&lt;</span><span class="no">INCLUDE_REGEX</span><span class="p">|</span><span class="no">EXCLUDE_REGEX</span><span class="o">&gt;</span><span class="w"> </span><span class="nv">&lt;regular-expression&gt;</span><span class="nf">)</span>
 </pre></div>
 </div>
@@ -92,7 +92,7 @@ or as absolute paths if <code class="docutils literal notranslate"><span class="
 <p>If <code class="docutils literal notranslate"><span class="pre">LIST_DIRECTORIES</span></code> is <code class="docutils literal notranslate"><span class="pre">on</span></code>, directories are included in
 the result. If <code class="docutils literal notranslate"><span class="pre">LIST_DIRECTORIES</span></code> is <code class="docutils literal notranslate"><span class="pre">off</span></code>, only files are listed.</p>
 <p>Example usage:</p>
-<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">directory(</span><span class="no">SCAN</span><span class="w"> </span><span class="nb">result_list</span>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">directory(</span><span class="no">SCAN</span><span class="w"> </span><span class="nb">files_found</span>
 <span class="w">  </span><span class="no">LIST_DIRECTORIES</span><span class="w"> </span><span class="nb">off</span>
 <span class="w">  </span><span class="no">RELATIVE</span><span class="w"> </span><span class="nb">on</span>
 <span class="w">  </span><span class="no">ROOT_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_CURRENT_SOURCE_DIR}&quot;</span>
@@ -111,7 +111,7 @@ the result. If <code class="docutils literal notranslate"><span class="pre">LIST
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">directory(</span><span class="no">SCAN_DIRS</span><span class="w"> </span><span class="nv">&lt;output-list-var&gt;</span>
 <span class="w">         </span><span class="no">RECURSE</span><span class="w"> </span><span class="o">&lt;</span><span class="nb">on</span><span class="p">|</span><span class="nb">off</span><span class="o">&gt;</span>
 <span class="w">         </span><span class="no">RELATIVE</span><span class="w"> </span><span class="o">&lt;</span><span class="nb">on</span><span class="p">|</span><span class="nb">off</span><span class="o">&gt;</span>
-<span class="w">         </span><span class="no">ROOT_DIR</span><span class="w"> </span><span class="nv">&lt;directory-path&gt;</span>
+<span class="w">         </span><span class="no">ROOT_DIR</span><span class="w"> </span><span class="nv">&lt;dir-path&gt;</span>
 <span class="w">         </span><span class="o">&lt;</span><span class="no">INCLUDE_REGEX</span><span class="p">|</span><span class="no">EXCLUDE_REGEX</span><span class="o">&gt;</span><span class="w"> </span><span class="nv">&lt;regular-expression&gt;</span><span class="nf">)</span>
 </pre></div>
 </div>
@@ -145,7 +145,7 @@ are considered.</p>
 <span class="w">          </span><span class="no">NAME</span><span class="w"> </span><span class="nv">&lt;raw-filename&gt;</span>
 <span class="w">          </span><span class="o">&lt;</span><span class="no">STATIC</span><span class="p">|</span><span class="no">SHARED</span><span class="o">&gt;</span>
 <span class="w">          </span><span class="no">RELATIVE</span><span class="w"> </span><span class="o">&lt;</span><span class="nb">on</span><span class="p">|</span><span class="nb">off</span><span class="o">&gt;</span>
-<span class="w">          </span><span class="no">ROOT_DIR</span><span class="w"> </span><span class="nv">&lt;directory-path&gt;</span><span class="nf">)</span>
+<span class="w">          </span><span class="no">ROOT_DIR</span><span class="w"> </span><span class="nv">&lt;dir-path&gt;</span><span class="nf">)</span>
 </pre></div>
 </div>
 <p>Search recursively in <code class="docutils literal notranslate"><span class="pre">ROOT_DIR</span></code> for a library and, on DLL platforms, its

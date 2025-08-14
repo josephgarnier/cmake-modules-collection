@@ -17,7 +17,7 @@
     <link rel="icon" href="../_static/cmake-favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Print" href="Print.html" />
+    <link rel="next" title="Map" href="Map.html" />
     <link rel="prev" title="Directory" href="Directory.html" />
  
 
@@ -34,7 +34,7 @@
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="Print.html" title="Print"
+          <a href="Map.html" title="Map"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="Directory.html" title="Directory"
@@ -65,16 +65,16 @@
 <p>Operations on files. It requires CMake 3.20 or newer.</p>
 <section id="synopsis">
 <h2>Synopsis<a class="headerlink" href="#synopsis" title="Link to this heading">¶</a></h2>
-<pre class="literal-block">file_manip(<a class="reference internal" href="#relative-path">RELATIVE_PATH</a> &lt;file-list-var&gt; BASE_DIR &lt;directory-path&gt; [OUTPUT_VARIABLE &lt;output-list-var&gt;])
-file_manip(<a class="reference internal" href="#absolute-path">ABSOLUTE_PATH</a> &lt;file-list-var&gt; BASE_DIR &lt;directory-path&gt; [OUTPUT_VARIABLE &lt;output-list-var&gt;])
-file_manip(<a class="reference internal" href="#strip-path">STRIP_PATH</a> &lt;file-list-var&gt; BASE_DIR &lt;directory-path&gt; [OUTPUT_VARIABLE &lt;output-list-var&gt;])
+<pre class="literal-block">file_manip(<a class="reference internal" href="#relative-path">RELATIVE_PATH</a> &lt;file-list-var&gt; BASE_DIR &lt;dir-path&gt; [OUTPUT_VARIABLE &lt;output-list-var&gt;])
+file_manip(<a class="reference internal" href="#absolute-path">ABSOLUTE_PATH</a> &lt;file-list-var&gt; BASE_DIR &lt;dir-path&gt; [OUTPUT_VARIABLE &lt;output-list-var&gt;])
+file_manip(<a class="reference internal" href="#strip-path">STRIP_PATH</a> &lt;file-list-var&gt; BASE_DIR &lt;dir-path&gt; [OUTPUT_VARIABLE &lt;output-list-var&gt;])
 file_manip(<a class="reference internal" href="#get-component">GET_COMPONENT</a> &lt;file-path&gt;... MODE &lt;mode&gt; OUTPUT_VARIABLE &lt;output-list-var&gt;)</pre>
 </section>
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h2>
 <dl class="cmake signature">
 <dt class="sig sig-object cmake" id="relative-path">
-<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">file_manip(</span></span><span class="no"><span class="pre">RELATIVE_PATH</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;file-list-var&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">BASE_DIR</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;directory-path&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">[</span></span><span class="no"><span class="pre">OUTPUT_VARIABLE</span></span><span class="nbsp"> </span><span class="nv"><span class="pre">&lt;output-list-var&gt;</span></span><span class="p"><span class="pre">]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#relative-path" title="Link to this definition">¶</a></dt>
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">file_manip(</span></span><span class="no"><span class="pre">RELATIVE_PATH</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;file-list-var&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">BASE_DIR</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;dir-path&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">[</span></span><span class="no"><span class="pre">OUTPUT_VARIABLE</span></span><span class="nbsp"> </span><span class="nv"><span class="pre">&lt;output-list-var&gt;</span></span><span class="p"><span class="pre">]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#relative-path" title="Link to this definition">¶</a></dt>
 <dd><p>Computes the relative path from a given <code class="docutils literal notranslate"><span class="pre">BASE_DIR</span></code> for each file
 in the list variable named <code class="docutils literal notranslate"><span class="pre">&lt;file-list-var&gt;</span></code>. The result is stored either
 in-place in <code class="docutils literal notranslate"><span class="pre">&lt;file-list-var&gt;</span></code>, or in the variable specified by
@@ -93,7 +93,7 @@ in-place in <code class="docutils literal notranslate"><span class="pre">&lt;fil
 
 <dl class="cmake signature">
 <dt class="sig sig-object cmake" id="absolute-path">
-<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">file_manip(</span></span><span class="no"><span class="pre">ABSOLUTE_PATH</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;file-list-var&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">BASE_DIR</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;directory-path&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">[</span></span><span class="no"><span class="pre">OUTPUT_VARIABLE</span></span><span class="nbsp"> </span><span class="nv"><span class="pre">&lt;output-list-var&gt;</span></span><span class="p"><span class="pre">]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#absolute-path" title="Link to this definition">¶</a></dt>
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">file_manip(</span></span><span class="no"><span class="pre">ABSOLUTE_PATH</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;file-list-var&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">BASE_DIR</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;dir-path&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">[</span></span><span class="no"><span class="pre">OUTPUT_VARIABLE</span></span><span class="nbsp"> </span><span class="nv"><span class="pre">&lt;output-list-var&gt;</span></span><span class="p"><span class="pre">]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#absolute-path" title="Link to this definition">¶</a></dt>
 <dd><p>Computes the absolute path from a given <code class="docutils literal notranslate"><span class="pre">BASE_DIR</span></code> for each file
 in the list variable named <code class="docutils literal notranslate"><span class="pre">&lt;file-list-var&gt;</span></code>. The result is stored either
 in-place in <code class="docutils literal notranslate"><span class="pre">&lt;file-list-var&gt;</span></code>, or in the variable specified by
@@ -112,7 +112,7 @@ in-place in <code class="docutils literal notranslate"><span class="pre">&lt;fil
 
 <dl class="cmake signature">
 <dt class="sig sig-object cmake" id="strip-path">
-<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">file_manip(</span></span><span class="no"><span class="pre">STRIP_PATH</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;file-list-var&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">BASE_DIR</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;directory-path&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">[</span></span><span class="no"><span class="pre">OUTPUT_VARIABLE</span></span><span class="nbsp"> </span><span class="nv"><span class="pre">&lt;output-list-var&gt;</span></span><span class="p"><span class="pre">]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#strip-path" title="Link to this definition">¶</a></dt>
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">file_manip(</span></span><span class="no"><span class="pre">STRIP_PATH</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;file-list-var&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">BASE_DIR</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;dir-path&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">[</span></span><span class="no"><span class="pre">OUTPUT_VARIABLE</span></span><span class="nbsp"> </span><span class="nv"><span class="pre">&lt;output-list-var&gt;</span></span><span class="p"><span class="pre">]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#strip-path" title="Link to this definition">¶</a></dt>
 <dd><p>Removes the <code class="docutils literal notranslate"><span class="pre">BASE_DIR</span></code> prefix from each file path in
 <code class="docutils literal notranslate"><span class="pre">&lt;file-list-var&gt;</span></code>. The result is stored either in-place in
 <code class="docutils literal notranslate"><span class="pre">&lt;file-list-var&gt;</span></code>, or in the variable specified by
@@ -182,8 +182,8 @@ option.</p>
   </div>
   <div>
     <h4>Next topic</h4>
-    <p class="topless"><a href="Print.html"
-                          title="next chapter">Print</a></p>
+    <p class="topless"><a href="Map.html"
+                          title="next chapter">Map</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
@@ -213,7 +213,7 @@ option.</p>
           <a href="../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="Print.html" title="Print"
+          <a href="Map.html" title="Map"
              >next</a> |</li>
         <li class="right" >
           <a href="Directory.html" title="Directory"

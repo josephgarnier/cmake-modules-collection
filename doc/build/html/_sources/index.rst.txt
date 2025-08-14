@@ -19,6 +19,7 @@ is exposed per module.
    :maxdepth: 1
 
    /module/BinaryTarget
+   /module/CMakeTargetsFile
    /module/Debug
    /module/Dependency
    /module/Directory

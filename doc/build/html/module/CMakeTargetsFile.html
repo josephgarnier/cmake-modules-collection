@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>CMakeTargetsFile &mdash; CMake Modules Collection</title>
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a3862c66" />
+    <link rel="stylesheet" type="text/css" href="../_static/cmake.css?v=4d06bd55" />
+    
+    <script src="../_static/documentation_options.js?v=977c7dfd"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../_static/cmake-favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Debug" href="Debug.html" />
+    <link rel="prev" title="BinaryTarget" href="BinaryTarget.html" />
+ 
+
+  </head><body>
+    <input id="sidebar-check" type="checkbox" />
+    <label id="sidebar-overlay" for="sidebar-check"></label>
+
+
+
+    <div class="related relbar1" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="Debug.html" title="Debug"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="BinaryTarget.html" title="BinaryTarget"
+             accesskey="P">previous</a> |</li>
+  <li>
+    <label class="sidebar-toggle" for="sidebar-check"></label>
+  </li>
+  <li class="rootlink">
+    <img src="../_static/cmake-logo-16.png" width="16" height="16" alt=""/>
+    <a href="https://cmake.org/">CMake 4.0.1</a>
+    <span class="reldelim1"> &#187;</span>
+  </li>
+  <li>
+    <a href="../index.html">Documentation</a> &#187;
+  </li>
+
+        <li class="nav-item nav-item-this"><a href="">CMakeTargetsFile</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="cmaketargetsfile">
+<span id="module:CMakeTargetsFile"></span><h1>CMakeTargetsFile<a class="headerlink" href="#cmaketargetsfile" title="Link to this heading">¶</a></h1>
+<p>Provide operations to configure binary targets using a JSON configuration file.
+It requires CMake 3.20 or newer.</p>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">¶</a></h2>
+<p>In a CMake build project, there is no native and straightforward way to
+separate the declaration of a binary target from its definition. Both are
+typically performed together when writing commands in a <code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code>
+file. However, in many use cases, the sequence of commands used to define
+targets is identical across projects, with only the data changing. The
+definition logic for the binary target remains the same, while only its
+declarations (i.e., its configuration) change.</p>
+<p>The purpose of this module is to simplify the automated creation of binary
+targets by allowing their settings to be declared in a standardized JSON
+configuration file. The structure of this file is defined using a
+<a class="reference external" href="https://json-schema.org/">JSON schema</a>. Various commands are provided to
+read and interpret this configuration file.</p>
+<p>The configuration file must be named <code class="docutils literal notranslate"><span class="pre">CMakeTargets.json</span></code> and must reside
+in the project's root directory.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>CMake is currently developing the
+<a class="reference external" href="https://cps-org.github.io/cps/index.html">Common Package Specification</a>
+to standardize the way packages are declared and to improve their
+integration via the
+<a class="reference external" href="https://cmake.org/cmake/help/git-master/manual/cmake-packages.7.html#system-package-registry">System Package Registry</a>.
+It is therefore possible that this module may become obsolete in the
+future. In the meantime, it will continue to evolve to reflect updates
+introduced in upcoming versions.</p>
+</div>
+</section>
+<section id="format">
+<h2>Format<a class="headerlink" href="#format" title="Link to this heading">¶</a></h2>
+<p>The CMake targets declaration file is a JSON document with an object as the
+root (<a class="reference download internal" download="" href="../_downloads/e250bbcf63da3e350f7e545787b7598e/CMakeTargets.json"><code class="xref download docutils literal notranslate"><span class="pre">click</span> <span class="pre">to</span> <span class="pre">download</span></code></a>):</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;$schema&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;schema.json&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;$id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;schema.json&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;targets&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;src&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;fruit-salad&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;executable&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;build&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;compileFeatures&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;cxx_std_20&quot;</span><span class="p">],</span>
+<span class="w">        </span><span class="nt">&quot;compileDefinitions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;MY_DEFINE=42&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;MY_OTHER_DEFINE&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;MY_OTHER_DEFINE=42&quot;</span><span class="p">],</span>
+<span class="w">        </span><span class="nt">&quot;compileOptions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">        </span><span class="nt">&quot;linkOptions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;mainFile&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;src/main.cpp&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;pchFile&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;include/fruit_salad_pch.h&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;headerPolicy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;mode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;split&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;includeDir&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;include&quot;</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;dependencies&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;AppleLib&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;rulesFile&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;FindAppleLib.cmake&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;minVersion&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;autodownload&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;optional&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">&quot;BananaLib&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;rulesFile&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;FindBananaLib.cmake&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;minVersion&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;autodownload&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;optional&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;src/apple&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;apple&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;staticLib&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;build&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;compileFeatures&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">        </span><span class="nt">&quot;compileDefinitions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">        </span><span class="nt">&quot;compileOptions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">        </span><span class="nt">&quot;linkOptions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;mainFile&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;src/apple/main.cpp&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;pchFile&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;src/apple/apple_pch.h&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;headerPolicy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;mode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;merged&quot;</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;dependencies&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;src/banana&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;banana&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;staticLib&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;build&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;compileFeatures&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">        </span><span class="nt">&quot;compileDefinitions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">        </span><span class="nt">&quot;compileOptions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">        </span><span class="nt">&quot;linkOptions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;mainFile&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;src/banana/main.cpp&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;pchFile&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;src/banana/banana_pch.h&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;headerPolicy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;mode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;merged&quot;</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;dependencies&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The JSON document must be conformed to the <a class="reference download internal" download="" href="../_downloads/5b942f77e2979479a8ab4c64608b796a/schema.json"><code class="xref download docutils literal notranslate"><span class="pre">CMakeTargets.json</span> <span class="pre">schema</span></code></a> described below.</p>
+<p>The root object recognizes the following fields:</p>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">$schema</span></code></dt><dd><p>An optional string that provides a URI to the <a class="reference external" href="https://json-schema.org/">JSON schema</a>
+that describes the structure of this JSON document. This field is used for
+validation and autocompletion in editors that support JSON schema. It doesn't
+affect the behavior of the document itself. If this field is not specified,
+the JSON document will still be valid, but tools that use JSON schema for
+validation and autocompletion may not function correctly. The module does
+not perform schema validation automatically. Use <code class="docutils literal notranslate"><span class="pre">$schema</span></code> to document the
+schema version or to enable external validation and tooling workflows.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">$id</span></code></dt><dd><p>An optional string that provides a unique identifier for the JSON document or
+the schema resource. The value must be a valid URI or a relative URI
+reference. When present, <code class="docutils literal notranslate"><span class="pre">$id</span></code> can be used by external tooling to
+disambiguate or resolve the schema/resource and to avoid collisions between
+different schema documents. The module stores this property but does not
+interpret or enforce any semantics associated with <code class="docutils literal notranslate"><span class="pre">$id</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">targets</span></code></dt><dd><p>The required root property containing the set of targets defined in the
+file. Its value is an object whose keys are unique directory paths that
+identify the parent folder containing the source files for each target.
+For example: <code class="docutils literal notranslate"><span class="pre">src</span></code>, <code class="docutils literal notranslate"><span class="pre">src/apple</span></code>.</p>
+<p>Each path must be relative to the project root and must not include a
+trailing slash. The directory path serves as the unique identifier for
+the target within the file because it is assumed that there can be no
+more than one target defined per folder.</p>
+<p>The value for each key is a target definition object as described in the
+following subsections. The key name (directory path) can be used internally
+to organize and retrieve target configurations during the CMake building
+process.</p>
+<p>Each entry of a <code class="docutils literal notranslate"><span class="pre">targets</span></code> is a JSON object that may contain the following
+properties:</p>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">name</span></code></dt><dd><p>A required string specifying the human-meaningful name of the target.
+This name must be unique across all targets listed in the same
+<code class="docutils literal notranslate"><span class="pre">targets</span></code> object. Two targets within the same file must not share
+the same name, even if their directory paths differ. The name is used to
+create a CMake target.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">type</span></code></dt><dd><p>A required string specifying the kind of binary to generate for this
+target. Valid values are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">staticLib</span></code> - a static library.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sharedLib</span></code> - a shared (dynamic) library.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">interfaceLib</span></code> - a header-only library.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">executable</span></code> - an executable program.</p></li>
+</ul>
+</div></blockquote>
+<p>The type influences how the target is built and linked by the consuming
+CMake logic.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">build</span></code></dt><dd><p>A required object describing build settings. It contains the
+following array properties:</p>
+<blockquote>
+<div><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">compileFeatures</span></code></dt><dd><p>A list of optional compile features to pass to the target. It is
+used as a parameter for the
+<span class="target" id="index-0-command:cmake:command:target_compile_features"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/target_compile_features.html#command:target_compile_features" title="(in CMake v4.1.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_compile_features()</span></code></a>
+command. The property is required, but the array can be empty.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">compileDefinitions</span></code></dt><dd><p>A list of optional preprocessor definitions applied when compiling this
+target. It is used as a parameter for the
+<span class="target" id="index-0-command:cmake:command:target_compile_definitions"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/target_compile_definitions.html#command:target_compile_definitions" title="(in CMake v4.1.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_compile_definitions()</span></code></a>
+command. The property is required, but the array can be empty.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">compileOptions</span></code></dt><dd><p>A list of compiler options to pass when building this
+target. It is used as a parameter for the
+<span class="target" id="index-0-command:cmake:command:target_compile_options"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/target_compile_options.html#command:target_compile_options" title="(in CMake v4.1.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_compile_options()</span></code></a>
+command. The property is required, but the array can be empty.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">linkOptions</span></code></dt><dd><p>A list of linker options to pass when building this target. It is used
+as a parameter for the
+<span class="target" id="index-0-command:cmake:command:target_link_options"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/target_link_options.html#command:target_link_options" title="(in CMake v4.1.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_link_options()</span></code></a>
+command. The property is required, but the array can be empty.</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>All four properties must be present. Lists may be empty to indicate no
+entries.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">mainFile</span></code></dt><dd><p>A required string specifying the path to the main source file for this
+target. The path must be relative to the project root. The file must exist
+and have a <code class="docutils literal notranslate"><span class="pre">.cpp</span></code>, <code class="docutils literal notranslate"><span class="pre">.cc</span></code>, or <code class="docutils literal notranslate"><span class="pre">.cxx</span></code> extension.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">pchFile</span></code></dt><dd><p>An optional string specifying the path to the precompiled header file
+(PCH) for this target. The path must be relative to the project root. If
+present, it must have one of the following extensions: <code class="docutils literal notranslate"><span class="pre">.h</span></code>, <code class="docutils literal notranslate"><span class="pre">.hpp</span></code>,
+<code class="docutils literal notranslate"><span class="pre">.hxx</span></code>, <code class="docutils literal notranslate"><span class="pre">.inl</span></code>, <code class="docutils literal notranslate"><span class="pre">.tpp</span></code>. If not specified, the target is considered to
+have no PCH.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">headerPolicy</span></code></dt><dd><p>A required object describing how header files are organized within the
+project. It has the following properties:</p>
+<blockquote>
+<div><dl>
+<dt><code class="docutils literal notranslate"><span class="pre">mode</span></code></dt><dd><p>A required string specifying whether all header files are grouped in a
+a single common folder or whether public headers are separated from
+private headers. Valid values are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">split</span></code> - public headers are stored in a different folder
+(e.g., <code class="docutils literal notranslate"><span class="pre">include/</span></code>) than private headers (e.g., <code class="docutils literal notranslate"><span class="pre">src/</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">merged</span></code> - public and private headers are in the same folder
+(e.g., <code class="docutils literal notranslate"><span class="pre">src/</span></code>).</p></li>
+</ul>
+</div></blockquote>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">includeDir</span></code></dt><dd><p>Required only if <code class="docutils literal notranslate"><span class="pre">mode</span></code> is <code class="docutils literal notranslate"><span class="pre">split</span></code>. A path relative to the project
+root specifying the folder in <code class="docutils literal notranslate"><span class="pre">include/</span></code> where the public
+headers are located. The path must start with <code class="docutils literal notranslate"><span class="pre">include</span></code> (e.g.,
+<code class="docutils literal notranslate"><span class="pre">include</span></code>, <code class="docutils literal notranslate"><span class="pre">include/mylib</span></code>) and must not include a trailing slash.</p>
+</dd>
+</dl>
+</div></blockquote>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">dependencies</span></code></dt><dd><p>The required object property specifying the set of dependencies needed by
+the target. Its value is an object whose keys are the names of the
+dependencies. Each name must be unique within the <code class="docutils literal notranslate"><span class="pre">dependencies</span></code> object.</p>
+<p>Each entry of a <code class="docutils literal notranslate"><span class="pre">dependencies</span></code> object is a JSON object that may contain
+the following properties:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">rulesFile</span></code></dt><dd><p>A required path to a CMake file ending in <code class="docutils literal notranslate"><span class="pre">.cmake</span></code> that defines how to
+integrate the dependency into the build system.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">minVersion</span></code></dt><dd><p>A required integer specifying the minimum acceptable version of the
+dependency. This value is used as the <code class="docutils literal notranslate"><span class="pre">VERSION</span></code> argument to
+<span class="target" id="index-0-command:cmake:command:find_package"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/find_package.html#command:find_package" title="(in CMake v4.1.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">find_package()</span></code></a> calls for
+that dependency.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">autodownload</span></code></dt><dd><p>A required boolean indicating whether the dependency may be
+automatically downloaded if not found locally.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">optional</span></code></dt><dd><p>A required boolean indicating whether the dependency is optional.
+If <code class="docutils literal notranslate"><span class="pre">true</span></code> and the dependency cannot be found, it is ignored and
+not linked. If <code class="docutils literal notranslate"><span class="pre">false</span></code> and the dependency is missing, the build
+will fail.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+<section id="schema">
+<h2>Schema<a class="headerlink" href="#schema" title="Link to this heading">¶</a></h2>
+<p><a class="reference download internal" download="" href="../_downloads/5b942f77e2979479a8ab4c64608b796a/schema.json"><code class="xref download docutils literal notranslate"><span class="pre">This</span> <span class="pre">file</span></code></a> provides a machine-
+readable JSON schema for the <code class="docutils literal notranslate"><span class="pre">CMakeTargets.json</span></code> format.</p>
+</section>
+<section id="synopsis">
+<h2>Synopsis<a class="headerlink" href="#synopsis" title="Link to this heading">¶</a></h2>
+<pre class="literal-block">cmake_targets_file(<a class="reference internal" href="#load">LOAD</a> &lt;json-file-path&gt;)
+cmake_targets_file(<a class="reference internal" href="#is-loaded">IS_LOADED</a> &lt;output-var&gt;)
+cmake_targets_file(<a class="reference internal" href="#get-loaded-file">GET_LOADED_FILE</a> &lt;output-var&gt;)
+cmake_targets_file(<a class="reference internal" href="#get-settings">GET_SETTINGS</a> &lt;output-var&gt; TARGET &lt;target-dir-path&gt;)
+cmake_targets_file(<a class="reference internal" href="#get-settings-keys">GET_SETTINGS_KEYS</a> &lt;output-var&gt; TARGET &lt;target-dir-path&gt;)
+cmake_targets_file(<a class="reference internal" href="#get-setting-value">GET_SETTING_VALUE</a> &lt;output-var&gt; TARGET &lt;target-dir-path&gt; KEY &lt;setting-name&gt;)
+cmake_targets_file(<a class="reference internal" href="#print-configs">PRINT_CONFIGS</a> [])
+cmake_targets_file(<a class="reference internal" href="#print-target-config">PRINT_TARGET_CONFIG</a> &lt;target-dir-path&gt;)</pre>
+</section>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h2>
+<dl class="cmake signature">
+<dt class="sig sig-object cmake" id="load">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">cmake_targets_file(</span></span><span class="no"><span class="pre">LOAD</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;json-file-path&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#load" title="Link to this definition">¶</a></dt>
+<dd><p>Load and parses a targets configuration file in <a class="reference external" href="https://json-schema.org/">JSON format</a>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">&lt;json-file-path&gt;</span></code> specifies the location of the configuration file to
+load. It must refer to an existing file on disk and must have a <code class="docutils literal notranslate"><span class="pre">.json</span></code>
+extension. The file must conform to the <a class="reference download internal" download="" href="../_downloads/5b942f77e2979479a8ab4c64608b796a/schema.json"><code class="xref download docutils literal notranslate"><span class="pre">CMakeTargets.json</span> <span class="pre">schema</span></code></a>.</p>
+<p>When this command is invoked, the JSON content is read into memory and stored
+in global properties for later retrieval. Each target entry described in the
+JSON file is parsed into an independent configuration <span class="target" id="index-0-module:Map"></span><a class="reference internal" href="Map.html#module:Map" title="Map"><code class="xref cmake cmake-module docutils literal notranslate"><span class="pre">Map</span></code></a>, keyed by its
+directory path. Both the original raw JSON and the list of target directory
+paths are preserved.</p>
+<p>The following global properties are initialized:</p>
+<blockquote>
+<div><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_&lt;target-dir-path&gt;</span></code></dt><dd><p>For each target directory path in the configuration file, stores the
+serialized key-value <span class="target" id="index-1-module:Map"></span><a class="reference internal" href="Map.html#module:Map" title="Map"><code class="xref cmake cmake-module docutils literal notranslate"><span class="pre">Map</span></code></a> of its parsed properties.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_RAW_JSON</span></code></dt><dd><p>Contains the loaded JSON file as text.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_LIST</span></code></dt><dd><p>Holds the list of all target directory paths defined in the file. They
+serve as value to get the target configurations stored in
+<code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_&lt;target-dir-path&gt;</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_LOADED</span></code></dt><dd><p>Set to <code class="docutils literal notranslate"><span class="pre">on</span></code> once the configuration is successfully loaded, otherwise
+to <code class="docutils literal notranslate"><span class="pre">off</span></code>.</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>This command must be called exactly once before using any other
+module operation. If the configuration is already loaded, calling <span class="target" id="index-0-command:cmake_targets_file"></span><a class="reference internal" href="#load" title="cmake_targets_file(load)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(LOAD)</span></code></a>
+again will replace the current configuration in memory.</p>
+<p>Each target's configuration is stored separately in a global property
+named <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_&lt;target-dir-path&gt;</span></code>. These properties are of type
+<span class="target" id="index-2-module:Map"></span><a class="reference internal" href="Map.html#module:Map" title="Map"><code class="xref cmake cmake-module docutils literal notranslate"><span class="pre">Map</span></code></a>, where each JSON block is represented as a <em>flat tree</em> list.</p>
+<p>Keys in the map are derived from the JSON property names. Nested properties
+are flattened by concatenating their successive parent keys, separated by a
+dot (<code class="docutils literal notranslate"><span class="pre">.</span></code>). For example, the JSON key <code class="docutils literal notranslate"><span class="pre">rulesFile</span></code> from the above example
+is stored in the map as <code class="docutils literal notranslate"><span class="pre">dependencies.AppleLib.rulesFile</span></code>. The list of all
+keys for a target's map can be retrieved using the <span class="target" id="index-1-command:cmake_targets_file"></span><a class="reference internal" href="#get-settings-keys" title="cmake_targets_file(get_settings_keys)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(GET_SETTINGS_KEYS)</span></code></a> command.</p>
+<p>Since CMake does not support two-dimensional arrays, and because a Map is
+itself a particular type of list, JSON arrays are serialized before being
+stored. Elements in a serialized array are separated by the <code class="docutils literal notranslate"><span class="pre">|</span></code> character.
+For example, the JSON array <code class="docutils literal notranslate"><span class="pre">[&quot;MY_DEFINE=42&quot;,</span> <span class="pre">&quot;MY_OTHER_DEFINE&quot;,</span>
+<span class="pre">&quot;MY_OTHER_DEFINE=42&quot;]</span></code> is serialized and stored as:
+<code class="docutils literal notranslate"><span class="pre">MY_DEFINE=42|MY_OTHER_DEFINE|MY_OTHER_DEFINE=42</span></code>.</p>
+<p>Example usage:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">cmake_targets_file(</span><span class="no">LOAD</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/CMakeTargets.json&quot;</span><span class="nf">)</span>
+<span class="nf">get_property(</span><span class="nb">raw_json</span><span class="w"> </span><span class="no">GLOBAL</span><span class="w"> </span><span class="no">PROPERTY</span><span class="w"> </span><span class="s">&quot;TARGETS_CONFIG_RAW_JSON&quot;</span><span class="nf">)</span>
+<span class="nf">get_property(</span><span class="nb">is_loaded</span><span class="w"> </span><span class="no">GLOBAL</span><span class="w"> </span><span class="no">PROPERTY</span><span class="w"> </span><span class="s">&quot;TARGETS_CONFIG_LOADED&quot;</span><span class="nf">)</span>
+<span class="nf">get_property(</span><span class="nb">paths_list</span><span class="w"> </span><span class="no">GLOBAL</span><span class="w"> </span><span class="no">PROPERTY</span><span class="w"> </span><span class="s">&quot;TARGETS_CONFIG_LIST&quot;</span><span class="nf">)</span>
+<span class="nf">get_property(</span><span class="nb">apple_config</span><span class="w"> </span><span class="no">GLOBAL</span><span class="w"> </span><span class="no">PROPERTY</span><span class="w"> </span><span class="s">&quot;TARGETS_CONFIG_src/apple&quot;</span><span class="nf">)</span>
+<span class="nf">get_property(</span><span class="nb">banana_config</span><span class="w"> </span><span class="no">GLOBAL</span><span class="w"> </span><span class="no">PROPERTY</span><span class="w"> </span><span class="s">&quot;TARGETS_CONFIG_src/banana&quot;</span><span class="nf">)</span>
+<span class="nf">get_property(</span><span class="nb">src_config</span><span class="w"> </span><span class="no">GLOBAL</span><span class="w"> </span><span class="no">PROPERTY</span><span class="w"> </span><span class="s">&quot;TARGETS_CONFIG_src&quot;</span><span class="nf">)</span>
+<span class="nf">message(</span><span class="s">&quot;&#39;src&#39; array is: ${src_config}&quot;</span><span class="nf">)</span>
+<span class="c"># output is:</span>
+<span class="c">#   &#39;src&#39; array is: name:fruit-salad;type:executable;mainFile:src/main.cpp;</span>
+<span class="c">#   pchFile:include/fruit_salad_pch.h;build.compileFeatures:cxx_std_20;</span>
+<span class="c">#   build.compileDefinitions:MY_DEFINE=42|MY_OTHER_DEFINE|</span>
+<span class="c">#   MY_OTHER_DEFINE=42;build.compileOptions:;build.linkOptions:;</span>
+<span class="c">#   headerPolicy.mode:split;headerPolicy.includeDir:include;dependencies:</span>
+<span class="c">#   AppleLib|BananaLib;dependencies.AppleLib.rulesFile:FindAppleLib.cmake;</span>
+<span class="c">#   dependencies.AppleLib.minVersion:2;dependencies.AppleLib.autodownload:</span>
+<span class="c">#   ON;dependencies.AppleLib.optional:OFF;dependencies.BananaLib.rulesFile</span>
+<span class="c">#   :FindBananaLib.cmake;dependencies.BananaLib.minVersion:4;dependencies.</span>
+<span class="c">#   BananaLib.autodownload:OFF;dependencies.BananaLib.optional:ON</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="cmake signature">
+<dt class="sig sig-object cmake" id="is-loaded">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">cmake_targets_file(</span></span><span class="no"><span class="pre">IS_LOADED</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;output-var&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#is-loaded" title="Link to this definition">¶</a></dt>
+<dd><p>Set <code class="docutils literal notranslate"><span class="pre">&lt;output-var&gt;</span></code> to <code class="docutils literal notranslate"><span class="pre">on</span></code> if a targets configuration file has been
+loaded with success, or <code class="docutils literal notranslate"><span class="pre">off</span></code> otherwise. This checks the global property
+<code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_LOADED</span></code> set by a successful invocation of the
+<span class="target" id="index-2-command:cmake_targets_file"></span><a class="reference internal" href="#load" title="cmake_targets_file(load)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(LOAD)</span></code></a> command.</p>
+<p>Example usage:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">cmake_targets_file(</span><span class="no">LOAD</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/CMakeTargets.json&quot;</span><span class="nf">)</span>
+<span class="nf">cmake_targets_file(</span><span class="no">IS_LOADED</span><span class="w"> </span><span class="nb">is_file_loaded</span><span class="nf">)</span>
+<span class="nf">message(</span><span class="s">&quot;file_loaded: ${is_file_loaded}&quot;</span><span class="nf">)</span>
+<span class="c"># output is:</span>
+<span class="c">#   file_loaded: on</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="cmake signature">
+<dt class="sig sig-object cmake" id="get-loaded-file">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">cmake_targets_file(</span></span><span class="no"><span class="pre">GET_LOADED_FILE</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;output-var&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#get-loaded-file" title="Link to this definition">¶</a></dt>
+<dd><p>Set <code class="docutils literal notranslate"><span class="pre">&lt;output-var&gt;</span></code> to the full JSON content of the currently loaded
+targets configuration file. The content is retrieved from the global property
+<code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_RAW_JSON</span></code>, which is set by a successful invocation of the
+<span class="target" id="index-3-command:cmake_targets_file"></span><a class="reference internal" href="#load" title="cmake_targets_file(load)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(LOAD)</span></code></a> command.</p>
+<p>An error is raised if no configuration file is loaded.</p>
+<p>Example usage:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">cmake_targets_file(</span><span class="no">GET_LOADED_FILE</span><span class="w"> </span><span class="nb">json_file_content</span><span class="nf">)</span>
+<span class="nf">message(</span><span class="s">&quot;json_file_content: ${json_file_content}&quot;</span><span class="nf">)</span>
+<span class="c"># output is:</span>
+<span class="c">#   json_file_content: {</span>
+<span class="c">#     &quot;$schema&quot;: &quot;schema.json&quot;,</span>
+<span class="c">#     &quot;$id&quot;: &quot;schema.json&quot;,</span>
+<span class="c">#     &quot;targets&quot;: {</span>
+<span class="c">#       ...</span>
+<span class="c">#     }</span>
+<span class="c">#   }</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="cmake signature">
+<dt class="sig sig-object cmake" id="get-settings">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">cmake_targets_file(</span></span><span class="no"><span class="pre">GET_SETTINGS</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;output-var&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">TARGET</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;target-dir-path&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#get-settings" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves the list of all settings defined for a given target configuration
+in the global property <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_&lt;target-dir-path&gt;</span></code>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">&lt;target-dir-path&gt;</span></code> specifies the directory path of the target whose
+configuration settings should be retrieved. This must correspond to a path
+listed in the global property <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_LIST</span></code>, and must match one
+of the keys in the <code class="docutils literal notranslate"><span class="pre">targets</span></code> JSON object of the loaded configuration file.</p>
+<p>The result is stored in <code class="docutils literal notranslate"><span class="pre">&lt;output-var&gt;</span></code> as a <span class="target" id="index-3-module:Map"></span><a class="reference internal" href="Map.html#module:Map" title="Map"><code class="xref cmake cmake-module docutils literal notranslate"><span class="pre">Map</span></code></a>.</p>
+<p>An error is raised if no configuration file has been previously loaded with
+the <span class="target" id="index-4-command:cmake_targets_file"></span><a class="reference internal" href="#load" title="cmake_targets_file(load)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(LOAD)</span></code></a> command or if the <code class="docutils literal notranslate"><span class="pre">TARGET</span></code> does not
+exist in the loaded configuration file.</p>
+<p>Example usage:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">cmake_targets_file(</span><span class="no">GET_SETTINGS</span><span class="w"> </span><span class="nb">target_config_map</span><span class="w"> </span><span class="no">TARGET</span><span class="w"> </span><span class="s">&quot;src&quot;</span><span class="nf">)</span>
+<span class="nf">message(</span><span class="s">&quot;target_config (src): ${target_config_map}&quot;</span><span class="nf">)</span>
+<span class="c"># output is:</span>
+<span class="c">#   target_config (src): name:fruit-salad;type:executable;mainFile:</span>
+<span class="c">#   src/main.cpp;pchFile:include/fruit_salad_pch.h;...</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="cmake signature">
+<dt class="sig sig-object cmake" id="get-settings-keys">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">cmake_targets_file(</span></span><span class="no"><span class="pre">GET_SETTINGS_KEYS</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;output-var&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">TARGET</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;target-dir-path&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#get-settings-keys" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves the list of all setting keys defined for a given target
+configuration in the global property <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_&lt;target-dir-path&gt;</span></code>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">&lt;target-dir-path&gt;</span></code> specifies the directory path of the target whose
+configuration settings should be retrieved. This must correspond to a path
+listed in the global property <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_LIST</span></code>, and must match one
+of the keys in the <code class="docutils literal notranslate"><span class="pre">targets</span></code> JSON object of the loaded configuration file.</p>
+<p>The result is stored in <code class="docutils literal notranslate"><span class="pre">&lt;output-var&gt;</span></code> as a semicolon-separated list.</p>
+<p>An error is raised if no configuration file has been previously loaded with
+the <span class="target" id="index-5-command:cmake_targets_file"></span><a class="reference internal" href="#load" title="cmake_targets_file(load)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(LOAD)</span></code></a> command or if the <code class="docutils literal notranslate"><span class="pre">TARGET</span></code> does not
+exist in the loaded configuration file.</p>
+<p>Example usage:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">cmake_targets_file(</span><span class="no">GET_SETTINGS_KEYS</span><span class="w"> </span><span class="nb">setting_keys</span><span class="w"> </span><span class="no">TARGET</span><span class="w"> </span><span class="s">&quot;src&quot;</span><span class="nf">)</span>
+<span class="nf">message(</span><span class="s">&quot;setting_keys: ${setting_keys}&quot;</span><span class="nf">)</span>
+<span class="c"># output is:</span>
+<span class="c">#   setting_keys: name;type;mainFile;pchFile;build.compileFeatures;</span>
+<span class="c">#   build.compileDefinitions;...</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="cmake signature">
+<dt class="sig sig-object cmake" id="get-setting-value">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">cmake_targets_file(</span></span><span class="no"><span class="pre">GET_SETTING_VALUE</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;output-var&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">TARGET</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;target-dir-path&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">KEY</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;setting-name&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#get-setting-value" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves the value of a specific configuration defined for a given target
+configuration in the global property <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_&lt;target-dir-path&gt;</span></code>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">&lt;target-dir-path&gt;</span></code> specifies the directory path of the target whose
+configuration setting should be retrieved. This must correspond to a path
+listed in the global property <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_LIST</span></code>, and must match one
+of the keys in the <code class="docutils literal notranslate"><span class="pre">targets</span></code> JSON object of the loaded configuration file.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">&lt;setting-name&gt;</span></code> specifies the flattened key name as stored in the
+<span class="target" id="index-4-module:Map"></span><a class="reference internal" href="Map.html#module:Map" title="Map"><code class="xref cmake cmake-module docutils literal notranslate"><span class="pre">Map</span></code></a> <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_&lt;target-dir-path&gt;</span></code>. Nested JSON properties
+are concatenated using a dot (<code class="docutils literal notranslate"><span class="pre">.</span></code>) separator (e.g.,
+<code class="docutils literal notranslate"><span class="pre">build.compileDefinitions</span></code>).</p>
+<p>The result is stored in <code class="docutils literal notranslate"><span class="pre">&lt;output-var&gt;</span></code> as a value or a deserialized list.</p>
+<p>An error is raised if no configuration file has been previously loaded with
+the <span class="target" id="index-6-command:cmake_targets_file"></span><a class="reference internal" href="#load" title="cmake_targets_file(load)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(LOAD)</span></code></a> command or if the <code class="docutils literal notranslate"><span class="pre">TARGET</span></code> does not
+exist in the loaded configuration file.</p>
+<p>Example usage:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">cmake_targets_file(</span><span class="no">GET_SETTING_VALUE</span><span class="w"> </span><span class="nb">setting_value</span><span class="w"> </span><span class="no">TARGET</span><span class="w"> </span><span class="s">&quot;src&quot;</span><span class="w"> </span><span class="no">KEY</span><span class="w"> </span><span class="s">&quot;type&quot;</span><span class="nf">)</span>
+<span class="nf">message(</span><span class="s">&quot;setting_value (type): ${setting_value}&quot;</span><span class="nf">)</span>
+<span class="c"># output is:</span>
+<span class="c">#   setting_value (type): executable</span>
+<span class="nf">cmake_targets_file(</span><span class="no">GET_SETTING_VALUE</span><span class="w"> </span><span class="nb">setting_value</span><span class="w"> </span><span class="no">TARGET</span><span class="w"> </span><span class="s">&quot;src&quot;</span><span class="w"> </span><span class="no">KEY</span><span class="w"> </span><span class="s">&quot;build.compileDefinitions&quot;</span><span class="nf">)</span>
+<span class="nf">message(</span><span class="s">&quot;setting_value (build.compileDefinitions): ${setting_value}&quot;</span><span class="nf">)</span>
+<span class="c"># output is:</span>
+<span class="c">#   setting_value (build.compileDefinitions): MY_DEFINE=42;MY_OTHER_DEFINE;</span>
+<span class="c">#   MY_OTHER_DEFINE=42</span>
+<span class="nf">cmake_targets_file(</span><span class="no">GET_SETTING_VALUE</span><span class="w"> </span><span class="nb">setting_value</span><span class="w"> </span><span class="no">TARGET</span><span class="w"> </span><span class="s">&quot;src&quot;</span><span class="w"> </span><span class="no">KEY</span><span class="w"> </span><span class="s">&quot;dependencies&quot;</span><span class="nf">)</span>
+<span class="nf">message(</span><span class="s">&quot;setting_value (dependencies): ${setting_value}&quot;</span><span class="nf">)</span>
+<span class="c"># output is:</span>
+<span class="c">#   setting_value (dependencies): AppleLib;BananaLib</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="cmake signature">
+<dt class="sig sig-object cmake" id="print-configs">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">cmake_targets_file(</span></span><span class="no"><span class="pre">PRINT_CONFIGS</span></span><span class="w"> </span><span class="p"><span class="pre">[]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#print-configs" title="Link to this definition">¶</a></dt>
+<dd><p>Prints the configuration of all targets defined in the currently loaded
+configuration file. It is primarily intended for debugging or inspecting the
+parsed target settings after loading a configuration file.</p>
+<p>An error is raised if no configuration file has been previously loaded with
+the <span class="target" id="index-7-command:cmake_targets_file"></span><a class="reference internal" href="#load" title="cmake_targets_file(load)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(LOAD)</span></code></a> command</p>
+<p>Example usage:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">cmake_targets_file(</span><span class="no">PRINT_CONFIGS</span><span class="nf">)</span>
+<span class="c"># output is:</span>
+<span class="c">#   -- Target: fruit-salad</span>
+<span class="c">#   --   type: executable</span>
+<span class="c">#   --   mainFile: src/main.cpp</span>
+<span class="c">#   --   pchFile: include/fruit_salad_pch.h</span>
+<span class="c">#   --   build.compileFeatures: cxx_std_20</span>
+<span class="c">#   ...</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="cmake signature">
+<dt class="sig sig-object cmake" id="print-target-config">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">cmake_targets_file(</span></span><span class="no"><span class="pre">PRINT_TARGET_CONFIG</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;target-dir-path&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#print-target-config" title="Link to this definition">¶</a></dt>
+<dd><p>Prints the configuration of a given target configuration in the global
+property <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_&lt;target-dir-path&gt;</span></code>. It is primarily intended for
+debugging or inspecting a parsed target settings after loading a
+configuration file.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">&lt;target-dir-path&gt;</span></code> specifies the directory path of the target whose
+configuration setting should be retrieved. This must correspond to a path
+listed in the global property <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_LIST</span></code>, and must match one
+of the keys in the <code class="docutils literal notranslate"><span class="pre">targets</span></code> JSON object of the loaded configuration file.</p>
+<p>An error is raised if no configuration file has been previously loaded with
+the <span class="target" id="index-8-command:cmake_targets_file"></span><a class="reference internal" href="#load" title="cmake_targets_file(load)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(LOAD)</span></code></a> command.</p>
+<p>Example usage:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">cmake_targets_file(</span><span class="no">PRINT_TARGET_CONFIG</span><span class="w"> </span><span class="s">&quot;src&quot;</span><span class="nf">)</span>
+<span class="c"># output is:</span>
+<span class="c">#   -- Target: fruit-salad</span>
+<span class="c">#   --   type: executable</span>
+<span class="c">#   --   mainFile: src/main.cpp</span>
+<span class="c">#   --   pchFile: include/fruit_salad_pch.h</span>
+<span class="c">#   --   build.compileFeatures: cxx_std_20</span>
+<span class="c">#   ...</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3>Table of Contents</h3>
+    <ul>
+<li><a class="reference internal" href="#">CMakeTargetsFile</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#format">Format</a></li>
+<li><a class="reference internal" href="#schema">Schema</a></li>
+<li><a class="reference internal" href="#synopsis">Synopsis</a></li>
+<li><a class="reference internal" href="#usage">Usage</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="BinaryTarget.html"
+                          title="previous chapter">BinaryTarget</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="Debug.html"
+                          title="next chapter">Debug</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/module/CMakeTargetsFile.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="Debug.html" title="Debug"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="BinaryTarget.html" title="BinaryTarget"
+             >previous</a> |</li>
+  <li>
+    <label class="sidebar-toggle" for="sidebar-check"></label>
+  </li>
+  <li class="rootlink">
+    <img src="../_static/cmake-logo-16.png" width="16" height="16" alt=""/>
+    <a href="https://cmake.org/">CMake 4.0.1</a>
+    <span class="reldelim1"> &#187;</span>
+  </li>
+  <li>
+    <a href="../index.html">Documentation</a> &#187;
+  </li>
+
+        <li class="nav-item nav-item-this"><a href="">CMakeTargetsFile</a></li> 
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025, Joseph Garnier.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+<script type="text/javascript">
+(function() {
+  "use strict";
+  const hide = () => document.getElementById("sidebar-check").checked = false;
+  addEventListener("keydown", e => (e.key === "Escape") && hide());
+  addEventListener("click", e => (e.target.tagName === "A") && hide());
+  addEventListener("hashchange", hide)
+})();
+</script>
+  </body>
+</html>
