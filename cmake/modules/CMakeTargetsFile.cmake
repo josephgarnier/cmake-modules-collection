@@ -274,10 +274,11 @@ Usage
 
   Since CMake does not support two-dimensional arrays, and because a Map is
   itself a particular type of list, JSON arrays are serialized before being
-  stored. Elements in a serialized array are separated by the ``|`` character.
-  For example, the JSON array ``["MY_DEFINE=42", "MY_OTHER_DEFINE",
-  "MY_OTHER_DEFINE=42"]`` is serialized and stored as:
-  ``MY_DEFINE=42|MY_OTHER_DEFINE|MY_OTHER_DEFINE=42``.
+  stored. Elements in a serialized array are separated by a pipe (``|``)
+  character. For example, the JSON array ``["MY_DEFINE=42", "MY_OTHER_DEFINE",
+  "MY_OTHER_DEFINE=42"]`` become
+  ``MY_DEFINE=42|MY_OTHER_DEFINE|MY_OTHER_DEFINE=42``. And to avoid conflicts,
+  pipe characters (``|``) are first escaped with a slash (``\|``).
 
   Example usage:
 
@@ -601,7 +602,7 @@ endmacro()
 #------------------------------------------------------------------------------
 # Internal usage
 function(_get_json_array output_list_var json_block json_path)
-	list(APPEND json_path ${ARGN}) # No quotes should be used because we don't want to keep empty elements
+	list(APPEND json_path ${ARGN}) # No quotes must be used because we don't want to keep empty elements
 	if("${output_list_var}" STREQUAL "")
 		message(FATAL_ERROR "output_list_var argument is missing!")
 	endif()
@@ -660,7 +661,7 @@ endfunction()
 #------------------------------------------------------------------------------
 # Internal usage
 function(_get_json_object output_map_var json_block json_path)
-	list(APPEND json_path ${ARGN}) # No quotes should be used because we don't want to keep empty elements
+	list(APPEND json_path ${ARGN}) # No quotes must be used because we don't want to keep empty elements
 	if("${output_map_var}" STREQUAL "")
 		message(FATAL_ERROR "output_map_var argument is missing!")
 	endif()
