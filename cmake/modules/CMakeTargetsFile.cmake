@@ -632,9 +632,6 @@ endfunction()
 #------------------------------------------------------------------------------
 # Internal usage
 function(_json_array_to_list output_list_var json_array)
-	if(NOT ${ARGC} EQUAL 2)
-		message(FATAL_ERROR "_json_array_to_list requires exactly 2 arguments, got ${ARGC}!")
-	endif()
 	if("${output_list_var}" STREQUAL "")
 		message(FATAL_ERROR "output_list_var argument is missing!")
 	endif()
@@ -692,9 +689,6 @@ endfunction()
 #------------------------------------------------------------------------------
 # Internal usage
 function(_json_object_to_map output_map_var json_object)
-	if(NOT ${ARGC} EQUAL 2)
-		message(FATAL_ERROR "_json_object_to_map requires exactly 2 arguments, got ${ARGC}!")
-	endif()
 	if("${output_map_var}" STREQUAL "")
 		message(FATAL_ERROR "output_map_var argument is missing!")
 	endif()
@@ -721,32 +715,26 @@ endfunction()
 
 #------------------------------------------------------------------------------
 # Internal usage
-function(_serialize_list output_var intput_list)
-	if(NOT ${ARGC} EQUAL 2)
-		message(FATAL_ERROR "_serialize_list requires exactly 2 arguments, got ${ARGC}!")
-	endif()
+function(_serialize_list output_var input_list)
 	if("${output_var}" STREQUAL "")
 		message(FATAL_ERROR "output_var argument is missing!")
 	endif()
 
-	list(JOIN intput_list "|" joined)
+	list(TRANSFORM input_list REPLACE "\\|" "\\\\|")
+	list(JOIN input_list "|" joined)
 	set(${output_var} "${joined}" PARENT_SCOPE)
 endfunction()
 
 #------------------------------------------------------------------------------
 # Internal usage
 function(_deserialize_list output_list_var encoded_string)
-	if(NOT ${ARGC} EQUAL 2)
-		message(FATAL_ERROR "_deserialize_list requires exactly 2 arguments, got ${ARGC}!")
-	endif()
 	if("${output_list_var}" STREQUAL "")
 		message(FATAL_ERROR "output_list_var argument is missing!")
 	endif()
-	if("${encoded_string}" STREQUAL "")
-		message(FATAL_ERROR "encoded_string argument is missing or empty!")
-	endif()
 
-	string(REPLACE "|" ";" result "${encoded_string}")
+	string(REPLACE "\\|" "<PIPE_ESC>" result "${encoded_string}")
+	string(REPLACE "|" ";" result "${result}")
+	string(REPLACE "<PIPE_ESC>" "|" result "${result}")
 	set(${output_list_var} "${result}" PARENT_SCOPE)
 endfunction()
 
@@ -916,9 +904,6 @@ endfunction()
 #------------------------------------------------------------------------------
 # Internal usage
 function(_assert_target_config_exists target_dir_path)
-	if(NOT ${ARGC} EQUAL 1)
-		message(FATAL_ERROR "_assert_target_config_exists requires exactly 1 argument, got ${ARGC}!")
-	endif()
 	if("${target_dir_path}" STREQUAL "")
 		message(FATAL_ERROR "target_dir_path argument is missing!")
 	endif()
