@@ -29,7 +29,7 @@ function(${CMAKETEST_TEST})
 		file_manip(RELATIVE_PATH input BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
 		ct_assert_string(input)
 		ct_assert_equal(input "../data/src/main.cpp")
-		
+
 		set(input
 			"${TESTS_DATA_DIR}/src/main.cpp"
 			"${TESTS_DATA_DIR}/src/source_1.cpp"

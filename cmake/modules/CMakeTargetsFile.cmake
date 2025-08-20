@@ -593,7 +593,8 @@ macro(_cmake_targets_file_load)
 		set_property(GLOBAL PROPERTY "TARGETS_CONFIG_${target_path}" "${target_config_map}")
 	endforeach()
 
-	# Mark the configuration as loaded and store the raw JSON content and the list of targets
+	# Mark the configuration as loaded and store the raw JSON content and the
+	# list of targets
 	set_property(GLOBAL PROPERTY TARGETS_CONFIG_RAW_JSON "${json_file_content}")
 	set_property(GLOBAL PROPERTY TARGETS_CONFIG_LIST "${target_paths}")
 	set_property(GLOBAL PROPERTY TARGETS_CONFIG_LOADED on)
