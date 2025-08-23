@@ -77,22 +77,41 @@ Usage
   ``DEBUG``) are set, including paths to the binary and import libraries (if
   applicable), as well as the soname.
 
+  The ``INCLUDE_DIR`` keyword defines a public include directory required by
+  the imported target. This directory populates the target's
+  :cmake:prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES <cmake:prop_tgt:INTERFACE_INCLUDE_DIRECTORIES>`
+  property, which specifies the list of directories published as usage
+  requirements to consumers, and which are added to the compiler's header
+  search path when another target links against it. In practice, this ensures
+  that any consumer of the imported library automatically receives the correct
+  include paths needed to compile against its headers.
+
   The following target properties are configured:
 
     ``INTERFACE_INCLUDE_DIRECTORIES``
-      Set to the directory given by ``INCLUDE_DIR``. This path is propagated
-      to consumers of the imported target during build and link phases. See
-      the `CMake doc <https://cmake.org/cmake/help/latest/prop_tgt/INTERFACE_INCLUDE_DIRECTORIES.html>`__ for full details.
+      Set to the directory given by ``INCLUDE_DIR``. This property defines
+      the include directories as a usage requirement to consumers of the
+      imported target, so that it is automatically added to their header
+      search paths when they link against it.
+
+      In this context, the value is intended for source-tree usage, meaning
+      that the directory path refers to headers available directly in the
+      project source (rather than in an installed or exported package). See the
+      `CMake doc <https://cmake.org/cmake/help/latest/prop_tgt/INTERFACE_INCLUDE_DIRECTORIES.html>`__
+      for full details. The value of this property can be overridden using
+      :command:`dependency(ADD_INCLUDE_DIRECTORIES)`.
 
     ``INTERFACE_INCLUDE_DIRECTORIES_BUILD``
       Set to an empty value. This is a *custom property*, not used by CMake
       natively, intended to track include directories for usage from the
-      build-tree context.
+      build-tree context. Use :command:`dependency(ADD_INCLUDE_DIRECTORIES)` to
+      populate this property.
 
     ``INTERFACE_INCLUDE_DIRECTORIES_INSTALL``
       Set to an empty value. This is a *custom property* intended for tracking
       include paths during installation or packaging, for usage from the
-      install-tree context.
+      install-tree context. Use :command:`dependency(ADD_INCLUDE_DIRECTORIES)` to
+      populate this property.
 
     ``IMPORTED_LOCATION_<CONFIG>``
       The full path to the actual library file (e.g. ``.so``, ``.dll``, ``.a``, ``.lib``),
@@ -190,17 +209,24 @@ Usage
 .. signature::
   dependency(ADD_INCLUDE_DIRECTORIES <lib-target-name> <SET|APPEND> PUBLIC <gen-expr>...)
 
-  Set or append public include directories via :cmake:prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES <cmake:prop_tgt:INTERFACE_INCLUDE_DIRECTORIES>`
-  property to the imported target ``<lib-target-name>``. The name should
-  represent the base name of the library (without prefix or suffix). This
-  command works similarly to :cmake:command:`target_include_directories() <cmake:command:target_include_directories>` in CMake,
-  but introduces a separation between build-time and install-time contexts for
-  imported dependencies.
+  Set or append public include directories required by the imported target
+  ``<lib-target-name>`` to expose its headers to consumers. It populates its
+  :cmake:prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES <cmake:prop_tgt:INTERFACE_INCLUDE_DIRECTORIES>`
+  property and its derivatives to allow the target to be imported from the
+  three contexts source-tree, build-tree, and install-tree.
+
+  The name should represent the base name of the library (without prefix or
+  suffix). This command copies the behavior of
+  :cmake:command:`target_include_directories() <cmake:command:target_include_directories>`
+  in CMake, but introduces a separation between build-time and install-time
+  contexts for imported dependencies.
 
   This command is intended for targets that have been previously declared
   using :command:`dependency(IMPORT)`, and is typically used in conjunction
   with :command:`dependency(EXPORT)` to complete the definition of
-  an imported target for external reuse.
+  an imported target for external reuse. It fills in target properties that
+  are used when generating the export script. Therefore, there is no benefit
+  in calling it if the target is not intended to be exported.
 
   The behavior differs from standard CMake in that it stores build and install
   include paths separately using generator expressions (see 
@@ -220,20 +246,35 @@ Usage
   This command internally sets or appends the following CMake properties on the target:
 
     ``INTERFACE_INCLUDE_DIRECTORIES``
-      This standard property determines the public include directories seen
-      by consumers of the library. This will be populated using only the
-      build-specific include paths (i.e., extracted from
-      ``$<BUILD_INTERFACE:...>``). See the `CMake doc <https://cmake.org/cmake/help/latest/prop_tgt/INTERFACE_INCLUDE_DIRECTORIES.html>`__ for full details.
+      This standard CMake target property specifies the public include
+      directories for the imported target. These directories define the usage
+      requirements of the target and are automatically propagated to any
+      consuming target that links against it.
+
+      This property is populated from the ``$<BUILD_INTERFACE:...>``
+      portion of the arguments, corresponding to the directories available
+      in the source-tree context. This ensures that when a target consumes the
+      imported library during a build, it automatically receives the correct
+      include paths for compilation.
+
+      For more details, see the official `CMake documentation
+      <https://cmake.org/cmake/help/latest/prop_tgt/INTERFACE_INCLUDE_DIRECTORIES.html>`__.
 
     ``INTERFACE_INCLUDE_DIRECTORIES_BUILD``
-      A *custom property* used internally to distinguish the build-time
-      include paths. It stores the expanded list of directories extracted
-      from the ``$<BUILD_INTERFACE:...>`` portion of the arguments.
+      A *custom property* defined by this module to track the include
+      directories used in the build-tree context. It contains the fully
+      expanded list of directories extracted from the ``$<BUILD_INTERFACE:...>``
+      generator expressions. This ensures that when a target consumes the
+      imported library during the build, it correctly receives all necessary
+      include paths even before installation.
 
     ``INTERFACE_INCLUDE_DIRECTORIES_INSTALL``
-      A *custom property* used to store include directories intended to
-      be used after installation. It is extracted from the
-      ``$<INSTALL_INTERFACE:...>`` expressions.
+      A *custom property* defined by this module to track the include
+      directories intended for use in the install-tree context. It contains
+      the fully expanded list of directories extracted from the
+      ``$<INSTALL_INTERFACE:...>`` generator expressions. This ensures that
+      after installation, any consumer of the imported library will have the
+      correct include paths set for compilation against the installed headers.
 
   These custom properties (`_BUILD` and `_INSTALL`) are not directly used by
   CMake itself but are later re-injected into export files generated by
@@ -300,11 +341,13 @@ Usage
   the library (without prefix or suffix).
 
   This command is intended for targets that have been previously declared
-  using :command:`dependency(IMPORT)`. It allows specifying a different
+  using :command:`dependency(IMPORT)`, and is typically used in conjunction
+  with :command:`dependency(EXPORT)` to complete the definition of
+  an imported target for external reuse. It allows specifying a different
   location for each build configuration type, or for all configurations
-  if no configuration is specified. Also, this command is typically used in
-  conjunction with :command:`dependency(EXPORT)` to complete the definition of
-  an imported target for external reuse.
+  if no configuration is specified. It fills in target properties that
+  are used when generating the export script. Therefore, there is no benefit
+  in calling it if the target is not intended to be exported.
 
   If ``CONFIGURATION`` is given, the property is only set for that
   configuration. Otherwise, the property is set for all configurations

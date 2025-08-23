@@ -119,31 +119,48 @@ kind of library <code class="docutils literal notranslate"><span class="pre">STA
 appropriate properties for each available configuration (<code class="docutils literal notranslate"><span class="pre">RELEASE</span></code> and/or
 <code class="docutils literal notranslate"><span class="pre">DEBUG</span></code>) are set, including paths to the binary and import libraries (if
 applicable), as well as the soname.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">INCLUDE_DIR</span></code> keyword defines a public include directory required by
+the imported target. This directory populates the target's
+<span class="target" id="index-0-prop_tgt:cmake:prop_tgt:INTERFACE_INCLUDE_DIRECTORIES"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/prop_tgt/INTERFACE_INCLUDE_DIRECTORIES.html#prop_tgt:INTERFACE_INCLUDE_DIRECTORIES" title="(in CMake v4.1.0)"><code class="xref cmake cmake-prop_tgt docutils literal notranslate"><span class="pre">INTERFACE_INCLUDE_DIRECTORIES</span></code></a>
+property, which specifies the list of directories published as usage
+requirements to consumers, and which are added to the compiler's header
+search path when another target links against it. In practice, this ensures
+that any consumer of the imported library automatically receives the correct
+include paths needed to compile against its headers.</p>
 <p>The following target properties are configured:</p>
 <blockquote>
-<div><dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">INTERFACE_INCLUDE_DIRECTORIES</span></code></dt><dd><p>Set to the directory given by <code class="docutils literal notranslate"><span class="pre">INCLUDE_DIR</span></code>. This path is propagated
-to consumers of the imported target during build and link phases. See
-the <a class="reference external" href="https://cmake.org/cmake/help/latest/prop_tgt/INTERFACE_INCLUDE_DIRECTORIES.html">CMake doc</a> for full details.</p>
+<div><dl>
+<dt><code class="docutils literal notranslate"><span class="pre">INTERFACE_INCLUDE_DIRECTORIES</span></code></dt><dd><p>Set to the directory given by <code class="docutils literal notranslate"><span class="pre">INCLUDE_DIR</span></code>. This property defines
+the include directories as a usage requirement to consumers of the
+imported target, so that it is automatically added to their header
+search paths when they link against it.</p>
+<p>In this context, the value is intended for source-tree usage, meaning
+that the directory path refers to headers available directly in the
+project source (rather than in an installed or exported package). See the
+<a class="reference external" href="https://cmake.org/cmake/help/latest/prop_tgt/INTERFACE_INCLUDE_DIRECTORIES.html">CMake doc</a>
+for full details. The value of this property can be overridden using
+<span class="target" id="index-0-command:dependency"></span><a class="reference internal" href="#add-include-directories" title="dependency(add_include_directories)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">dependency(ADD_INCLUDE_DIRECTORIES)</span></code></a>.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">INTERFACE_INCLUDE_DIRECTORIES_BUILD</span></code></dt><dd><p>Set to an empty value. This is a <em>custom property</em>, not used by CMake
 natively, intended to track include directories for usage from the
-build-tree context.</p>
+build-tree context. Use <span class="target" id="index-1-command:dependency"></span><a class="reference internal" href="#add-include-directories" title="dependency(add_include_directories)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">dependency(ADD_INCLUDE_DIRECTORIES)</span></code></a> to
+populate this property.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">INTERFACE_INCLUDE_DIRECTORIES_INSTALL</span></code></dt><dd><p>Set to an empty value. This is a <em>custom property</em> intended for tracking
 include paths during installation or packaging, for usage from the
-install-tree context.</p>
+install-tree context. Use <span class="target" id="index-2-command:dependency"></span><a class="reference internal" href="#add-include-directories" title="dependency(add_include_directories)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">dependency(ADD_INCLUDE_DIRECTORIES)</span></code></a> to
+populate this property.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">IMPORTED_LOCATION_&lt;CONFIG&gt;</span></code></dt><dd><p>The full path to the actual library file (e.g. <code class="docutils literal notranslate"><span class="pre">.so</span></code>, <code class="docutils literal notranslate"><span class="pre">.dll</span></code>, <code class="docutils literal notranslate"><span class="pre">.a</span></code>, <code class="docutils literal notranslate"><span class="pre">.lib</span></code>),
 set separately for each configuration (<code class="docutils literal notranslate"><span class="pre">RELEASE</span></code> and/or <code class="docutils literal notranslate"><span class="pre">DEBUG</span></code>). See the <a class="reference external" href="https://cmake.org/cmake/help/latest/prop_tgt/IMPORTED_LOCATION_CONFIG.html">CMake doc</a> for full details.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">IMPORTED_LOCATION_BUILD_&lt;CONFIG&gt;</span></code></dt><dd><p><em>Custom property</em> set to an empty value. Intended for build-tree specific
 overrides of the library path, for usage from the build-tree context.
-Use <span class="target" id="index-0-command:dependency"></span><a class="reference internal" href="#set-imported-location" title="dependency(set_imported_location)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">dependency(SET_IMPORTED_LOCATION)</span></code></a> to initialize this property.</p>
+Use <span class="target" id="index-3-command:dependency"></span><a class="reference internal" href="#set-imported-location" title="dependency(set_imported_location)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">dependency(SET_IMPORTED_LOCATION)</span></code></a> to initialize this property.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">IMPORTED_LOCATION_INSTALL_&lt;CONFIG&gt;</span></code></dt><dd><p><em>Custom property</em> set to an empty value. Intended for install-time
 overrides of the library path, for usage from the install-tree context.
-Use <span class="target" id="index-1-command:dependency"></span><a class="reference internal" href="#set-imported-location" title="dependency(set_imported_location)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">dependency(SET_IMPORTED_LOCATION)</span></code></a> to initialize this property.</p>
+Use <span class="target" id="index-4-command:dependency"></span><a class="reference internal" href="#set-imported-location" title="dependency(set_imported_location)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">dependency(SET_IMPORTED_LOCATION)</span></code></a> to initialize this property.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">IMPORTED_IMPLIB_&lt;CONFIG&gt;</span></code></dt><dd><p>On DLL-based platforms (e.g. Windows), set to the full path of the
 import library file (e.g. <code class="docutils literal notranslate"><span class="pre">.dll.a</span></code>, <code class="docutils literal notranslate"><span class="pre">.a</span></code>, <code class="docutils literal notranslate"><span class="pre">.lib</span></code>) for the corresponding
@@ -226,16 +243,22 @@ details.</p>
 <dl class="cmake signature">
 <dt class="sig sig-object cmake" id="add-include-directories">
 <span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">dependency(</span></span><span class="no"><span class="pre">ADD_INCLUDE_DIRECTORIES</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;lib-target-name&gt;</span></span><span class="w"> </span><span class="o"><span class="pre">&lt;</span></span><span class="no"><span class="pre">SET</span></span><span class="p"><span class="pre">|</span></span><span class="no"><span class="pre">APPEND</span></span><span class="o"><span class="pre">&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">PUBLIC</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;gen-expr&gt;...</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#add-include-directories" title="Link to this definition">¶</a></dt>
-<dd><p>Set or append public include directories via <span class="target" id="index-0-prop_tgt:cmake:prop_tgt:INTERFACE_INCLUDE_DIRECTORIES"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/prop_tgt/INTERFACE_INCLUDE_DIRECTORIES.html#prop_tgt:INTERFACE_INCLUDE_DIRECTORIES" title="(in CMake v4.1.0)"><code class="xref cmake cmake-prop_tgt docutils literal notranslate"><span class="pre">INTERFACE_INCLUDE_DIRECTORIES</span></code></a>
-property to the imported target <code class="docutils literal notranslate"><span class="pre">&lt;lib-target-name&gt;</span></code>. The name should
-represent the base name of the library (without prefix or suffix). This
-command works similarly to <span class="target" id="index-0-command:cmake:command:target_include_directories"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/target_include_directories.html#command:target_include_directories" title="(in CMake v4.1.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_include_directories()</span></code></a> in CMake,
-but introduces a separation between build-time and install-time contexts for
-imported dependencies.</p>
+<dd><p>Set or append public include directories required by the imported target
+<code class="docutils literal notranslate"><span class="pre">&lt;lib-target-name&gt;</span></code> to expose its headers to consumers. It populates its
+<span class="target" id="index-1-prop_tgt:cmake:prop_tgt:INTERFACE_INCLUDE_DIRECTORIES"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/prop_tgt/INTERFACE_INCLUDE_DIRECTORIES.html#prop_tgt:INTERFACE_INCLUDE_DIRECTORIES" title="(in CMake v4.1.0)"><code class="xref cmake cmake-prop_tgt docutils literal notranslate"><span class="pre">INTERFACE_INCLUDE_DIRECTORIES</span></code></a>
+property and its derivatives to allow the target to be imported from the
+three contexts source-tree, build-tree, and install-tree.</p>
+<p>The name should represent the base name of the library (without prefix or
+suffix). This command copies the behavior of
+<span class="target" id="index-0-command:cmake:command:target_include_directories"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/target_include_directories.html#command:target_include_directories" title="(in CMake v4.1.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_include_directories()</span></code></a>
+in CMake, but introduces a separation between build-time and install-time
+contexts for imported dependencies.</p>
 <p>This command is intended for targets that have been previously declared
-using <span class="target" id="index-2-command:dependency"></span><a class="reference internal" href="#import" title="dependency(import)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">dependency(IMPORT)</span></code></a>, and is typically used in conjunction
-with <span class="target" id="index-3-command:dependency"></span><a class="reference internal" href="#export" title="dependency(export)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">dependency(EXPORT)</span></code></a> to complete the definition of
-an imported target for external reuse.</p>
+using <span class="target" id="index-5-command:dependency"></span><a class="reference internal" href="#import" title="dependency(import)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">dependency(IMPORT)</span></code></a>, and is typically used in conjunction
+with <span class="target" id="index-6-command:dependency"></span><a class="reference internal" href="#export" title="dependency(export)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">dependency(EXPORT)</span></code></a> to complete the definition of
+an imported target for external reuse. It fills in target properties that
+are used when generating the export script. Therefore, there is no benefit
+in calling it if the target is not intended to be exported.</p>
 <p>The behavior differs from standard CMake in that it stores build and install
 include paths separately using generator expressions (see 
 <a class="reference external" href="https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html#include-directories-and-usage-requirements">how write build specification with generator expressions</a>).</p>
@@ -251,25 +274,37 @@ between build and install phases.</p>
 </ul>
 <p>This command internally sets or appends the following CMake properties on the target:</p>
 <blockquote>
-<div><dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">INTERFACE_INCLUDE_DIRECTORIES</span></code></dt><dd><p>This standard property determines the public include directories seen
-by consumers of the library. This will be populated using only the
-build-specific include paths (i.e., extracted from
-<code class="docutils literal notranslate"><span class="pre">$&lt;BUILD_INTERFACE:...&gt;</span></code>). See the <a class="reference external" href="https://cmake.org/cmake/help/latest/prop_tgt/INTERFACE_INCLUDE_DIRECTORIES.html">CMake doc</a> for full details.</p>
+<div><dl>
+<dt><code class="docutils literal notranslate"><span class="pre">INTERFACE_INCLUDE_DIRECTORIES</span></code></dt><dd><p>This standard CMake target property specifies the public include
+directories for the imported target. These directories define the usage
+requirements of the target and are automatically propagated to any
+consuming target that links against it.</p>
+<p>This property is populated from the <code class="docutils literal notranslate"><span class="pre">$&lt;BUILD_INTERFACE:...&gt;</span></code>
+portion of the arguments, corresponding to the directories available
+in the source-tree context. This ensures that when a target consumes the
+imported library during a build, it automatically receives the correct
+include paths for compilation.</p>
+<p>For more details, see the official <a class="reference external" href="https://cmake.org/cmake/help/latest/prop_tgt/INTERFACE_INCLUDE_DIRECTORIES.html">CMake documentation</a>.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">INTERFACE_INCLUDE_DIRECTORIES_BUILD</span></code></dt><dd><p>A <em>custom property</em> used internally to distinguish the build-time
-include paths. It stores the expanded list of directories extracted
-from the <code class="docutils literal notranslate"><span class="pre">$&lt;BUILD_INTERFACE:...&gt;</span></code> portion of the arguments.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">INTERFACE_INCLUDE_DIRECTORIES_BUILD</span></code></dt><dd><p>A <em>custom property</em> defined by this module to track the include
+directories used in the build-tree context. It contains the fully
+expanded list of directories extracted from the <code class="docutils literal notranslate"><span class="pre">$&lt;BUILD_INTERFACE:...&gt;</span></code>
+generator expressions. This ensures that when a target consumes the
+imported library during the build, it correctly receives all necessary
+include paths even before installation.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">INTERFACE_INCLUDE_DIRECTORIES_INSTALL</span></code></dt><dd><p>A <em>custom property</em> used to store include directories intended to
-be used after installation. It is extracted from the
-<code class="docutils literal notranslate"><span class="pre">$&lt;INSTALL_INTERFACE:...&gt;</span></code> expressions.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">INTERFACE_INCLUDE_DIRECTORIES_INSTALL</span></code></dt><dd><p>A <em>custom property</em> defined by this module to track the include
+directories intended for use in the install-tree context. It contains
+the fully expanded list of directories extracted from the
+<code class="docutils literal notranslate"><span class="pre">$&lt;INSTALL_INTERFACE:...&gt;</span></code> generator expressions. This ensures that
+after installation, any consumer of the imported library will have the
+correct include paths set for compilation against the installed headers.</p>
 </dd>
 </dl>
 </div></blockquote>
 <p>These custom properties (<cite>_BUILD</cite> and <cite>_INSTALL</cite>) are not directly used by
 CMake itself but are later re-injected into export files generated by
-<span class="target" id="index-4-command:dependency"></span><a class="reference internal" href="#export" title="dependency(export)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">dependency(EXPORT)</span></code></a>.</p>
+<span class="target" id="index-7-command:dependency"></span><a class="reference internal" href="#export" title="dependency(export)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">dependency(EXPORT)</span></code></a>.</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="c"># Import libs</span>
 <span class="nf">dependency(</span><span class="no">IMPORT</span><span class="w"> </span><span class="s">&quot;my_shared_lib&quot;</span>
@@ -318,7 +353,7 @@ CMake itself but are later re-injected into export files generated by
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">${CMAKE_SOURCE_DIR}/include/mylib</span></code> during the build.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&lt;CMAKE_INSTALL_PREFIX&gt;/include/mylib</span></code> after installation (where
-<code class="docutils literal notranslate"><span class="pre">&lt;CMAKE_INSTALL_PREFIX&gt;</span></code> is resolved when imported via <span class="target" id="index-5-command:dependency"></span><a class="reference internal" href="#export" title="dependency(export)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">dependency(EXPORT)</span></code></a>).</p></li>
+<code class="docutils literal notranslate"><span class="pre">&lt;CMAKE_INSTALL_PREFIX&gt;</span></code> is resolved when imported via <span class="target" id="index-8-command:dependency"></span><a class="reference internal" href="#export" title="dependency(export)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">dependency(EXPORT)</span></code></a>).</p></li>
 </ul>
 </dd></dl>
 
@@ -330,11 +365,13 @@ target <code class="docutils literal notranslate"><span class="pre">&lt;lib-targ
 full path to the library file. The name should represent the base name of
 the library (without prefix or suffix).</p>
 <p>This command is intended for targets that have been previously declared
-using <span class="target" id="index-6-command:dependency"></span><a class="reference internal" href="#import" title="dependency(import)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">dependency(IMPORT)</span></code></a>. It allows specifying a different
+using <span class="target" id="index-9-command:dependency"></span><a class="reference internal" href="#import" title="dependency(import)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">dependency(IMPORT)</span></code></a>, and is typically used in conjunction
+with <span class="target" id="index-10-command:dependency"></span><a class="reference internal" href="#export" title="dependency(export)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">dependency(EXPORT)</span></code></a> to complete the definition of
+an imported target for external reuse. It allows specifying a different
 location for each build configuration type, or for all configurations
-if no configuration is specified. Also, this command is typically used in
-conjunction with <span class="target" id="index-7-command:dependency"></span><a class="reference internal" href="#export" title="dependency(export)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">dependency(EXPORT)</span></code></a> to complete the definition of
-an imported target for external reuse.</p>
+if no configuration is specified. It fills in target properties that
+are used when generating the export script. Therefore, there is no benefit
+in calling it if the target is not intended to be exported.</p>
 <p>If <code class="docutils literal notranslate"><span class="pre">CONFIGURATION</span></code> is given, the property is only set for that
 configuration. Otherwise, the property is set for all configurations
 supported by the target. Configuration types must match one of the
@@ -356,13 +393,13 @@ See the <a class="reference external" href="https://cmake.org/cmake/help/latest/
 <dt><code class="docutils literal notranslate"><span class="pre">IMPORTED_LOCATION_BUILD_&lt;CONFIG&gt;</span></code></dt><dd><p><em>Custom property</em> set to the full path to the actual library file,
 set separately for each configuration (<code class="docutils literal notranslate"><span class="pre">RELEASE</span></code> and/or <code class="docutils literal notranslate"><span class="pre">DEBUG</span></code>),
 and for usage from the build-tree context. This property is used by
-<span class="target" id="index-8-command:dependency"></span><a class="reference internal" href="#export" title="dependency(export)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">dependency(EXPORT)</span></code></a> to complete the definition of an imported
+<span class="target" id="index-11-command:dependency"></span><a class="reference internal" href="#export" title="dependency(export)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">dependency(EXPORT)</span></code></a> to complete the definition of an imported
 target for external reuse.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">IMPORTED_LOCATION_INSTALL_&lt;CONFIG&gt;</span></code></dt><dd><p><em>Custom property</em> set to the full path to the actual library file,
 set separately for each configuration (<code class="docutils literal notranslate"><span class="pre">RELEASE</span></code> and/or <code class="docutils literal notranslate"><span class="pre">DEBUG</span></code>),
 and for usage from the install-tree context.  This property is used by
-<span class="target" id="index-9-command:dependency"></span><a class="reference internal" href="#export" title="dependency(export)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">dependency(EXPORT)</span></code></a> to complete the definition of an imported
+<span class="target" id="index-12-command:dependency"></span><a class="reference internal" href="#export" title="dependency(export)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">dependency(EXPORT)</span></code></a> to complete the definition of an imported
 target for external reuse.</p>
 </dd>
 </dl>
@@ -423,7 +460,7 @@ import targets in <code class="docutils literal notranslate"><span class="pre">&
 build-tree or install-tree. This command is functionally similar to using
 <span class="target" id="index-0-command:cmake:command:export"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/export.html#targets" title="(in CMake v4.1.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">export(TARGETS)</span></code></a> in a <code class="docutils literal notranslate"><span class="pre">BUILD_TREE</span></code> context and <span class="target" id="index-0-command:cmake:command:install"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/install.html#export" title="(in CMake v4.1.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">install(EXPORT)</span></code></a>
 in an <code class="docutils literal notranslate"><span class="pre">INSTALL_TREE</span></code> context, but is designed specifically to export
-imported targets with <span class="target" id="index-10-command:dependency"></span><a class="reference internal" href="#import" title="dependency(import)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">dependency(IMPORT)</span></code></a> instead of build targets.</p>
+imported targets with <span class="target" id="index-13-command:dependency"></span><a class="reference internal" href="#import" title="dependency(import)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">dependency(IMPORT)</span></code></a> instead of build targets.</p>
 <p>The targets in <code class="docutils literal notranslate"><span class="pre">&lt;lib-target-name&gt;</span></code> list  must be previously created imported
 targets. The names should match exactly the target names used during import.</p>
 <p>One of <code class="docutils literal notranslate"><span class="pre">BUILD_TREE</span></code> or <code class="docutils literal notranslate"><span class="pre">INSTALL_TREE</span></code> must be specified to indicate the
@@ -450,7 +487,7 @@ existing file instead of overwriting it. This is useful for exporting
 multiple targets incrementally to a single file.</p>
 <p>The generated file defines all necessary target properties so that the
 imported targets can be used as if they were defined locally. The properties
-are identical to those set by the <span class="target" id="index-11-command:dependency"></span><a class="reference internal" href="#import" title="dependency(import)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">dependency(IMPORT)</span></code></a> command; see
+are identical to those set by the <span class="target" id="index-14-command:dependency"></span><a class="reference internal" href="#import" title="dependency(import)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">dependency(IMPORT)</span></code></a> command; see
 its documentation for additional details.</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="c"># Import libs before exporting</span>

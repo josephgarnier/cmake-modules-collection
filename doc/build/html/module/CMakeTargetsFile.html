@@ -78,8 +78,8 @@ targets by allowing their settings to be declared in a standardized JSON
 configuration file. The structure of this file is defined using a
 <a class="reference external" href="https://json-schema.org/">JSON schema</a>. Various commands are provided to
 read and interpret this configuration file.</p>
-<p>The configuration file must be named <code class="docutils literal notranslate"><span class="pre">CMakeTargets.json</span></code> and must reside
-in the project's root directory.</p>
+<p>The configuration file must be named <code class="docutils literal notranslate"><span class="pre">CMakeTargets.json</span></code> and can reside
+anywhere in the project's directory.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>CMake is currently developing the
@@ -370,10 +370,11 @@ is stored in the map as <code class="docutils literal notranslate"><span class="
 keys for a target's map can be retrieved using the <span class="target" id="index-1-command:cmake_targets_file"></span><a class="reference internal" href="#get-settings-keys" title="cmake_targets_file(get_settings_keys)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(GET_SETTINGS_KEYS)</span></code></a> command.</p>
 <p>Since CMake does not support two-dimensional arrays, and because a Map is
 itself a particular type of list, JSON arrays are serialized before being
-stored. Elements in a serialized array are separated by the <code class="docutils literal notranslate"><span class="pre">|</span></code> character.
-For example, the JSON array <code class="docutils literal notranslate"><span class="pre">[&quot;MY_DEFINE=42&quot;,</span> <span class="pre">&quot;MY_OTHER_DEFINE&quot;,</span>
-<span class="pre">&quot;MY_OTHER_DEFINE=42&quot;]</span></code> is serialized and stored as:
-<code class="docutils literal notranslate"><span class="pre">MY_DEFINE=42|MY_OTHER_DEFINE|MY_OTHER_DEFINE=42</span></code>.</p>
+stored. Elements in a serialized array are separated by a pipe (<code class="docutils literal notranslate"><span class="pre">|</span></code>)
+character. For example, the JSON array <code class="docutils literal notranslate"><span class="pre">[&quot;MY_DEFINE=42&quot;,</span> <span class="pre">&quot;MY_OTHER_DEFINE&quot;,</span>
+<span class="pre">&quot;MY_OTHER_DEFINE=42&quot;]</span></code> become
+<code class="docutils literal notranslate"><span class="pre">MY_DEFINE=42|MY_OTHER_DEFINE|MY_OTHER_DEFINE=42</span></code>. And to avoid conflicts,
+pipe characters (<code class="docutils literal notranslate"><span class="pre">|</span></code>) are first escaped with a slash (<code class="docutils literal notranslate"><span class="pre">\|</span></code>).</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">cmake_targets_file(</span><span class="no">LOAD</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/CMakeTargets.json&quot;</span><span class="nf">)</span>
 <span class="nf">get_property(</span><span class="nb">raw_json</span><span class="w"> </span><span class="no">GLOBAL</span><span class="w"> </span><span class="no">PROPERTY</span><span class="w"> </span><span class="s">&quot;TARGETS_CONFIG_RAW_JSON&quot;</span><span class="nf">)</span>
