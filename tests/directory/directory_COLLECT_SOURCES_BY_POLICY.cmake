@@ -190,7 +190,7 @@ function(${CMAKETEST_TEST})
 		)
 	endfunction()
 
-	ct_add_section(NAME "throws_if_arg_public_headers_separated_dir_does_not_exists" EXPECTFAIL)
+	ct_add_section(NAME "throws_if_arg_public_headers_separated_dir_does_not_exist" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		directory(COLLECT_SOURCES_BY_POLICY
 			PUBLIC_HEADERS_SEPARATED on "fake/directory"
@@ -241,7 +241,7 @@ function(${CMAKETEST_TEST})
 		)
 	endfunction()
 
-	ct_add_section(NAME "throws_if_arg_src_dir_does_not_exists" EXPECTFAIL)
+	ct_add_section(NAME "throws_if_arg_src_dir_does_not_exist" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		directory(COLLECT_SOURCES_BY_POLICY
 			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"

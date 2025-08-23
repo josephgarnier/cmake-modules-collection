@@ -448,7 +448,7 @@ function(${CMAKETEST_TEST})
 		)
 	endfunction()
 
-	ct_add_section(NAME "throws_if_arg_target_does_not_exists" EXPECTFAIL)
+	ct_add_section(NAME "throws_if_arg_target_does_not_exist" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		dependency(EXPORT "imp_static_mock_lib" "unknown_lib"
 			BUILD_TREE

@@ -487,7 +487,7 @@ function(${CMAKETEST_TEST})
 		)
 	endfunction()
 
-	ct_add_section(NAME "throws_if_arg_relative_var_is_not_boolean" EXPECTFAIL)
+	ct_add_section(NAME "throws_if_arg_relative_var_is_not_bool" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		set(lib_name "shared_mock_lib")
 		directory(FIND_LIB output_lib
@@ -534,7 +534,7 @@ function(${CMAKETEST_TEST})
 		)
 	endfunction()
 
-	ct_add_section(NAME "throws_if_arg_root_dir_does_not_exists" EXPECTFAIL)
+	ct_add_section(NAME "throws_if_arg_root_dir_does_not_exist" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		set(lib_name "shared_mock_lib")
 		directory(FIND_LIB output_lib

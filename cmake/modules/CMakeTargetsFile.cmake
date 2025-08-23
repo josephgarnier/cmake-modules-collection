@@ -28,8 +28,8 @@ configuration file. The structure of this file is defined using a
 `JSON schema <https://json-schema.org/>`_. Various commands are provided to
 read and interpret this configuration file.
 
-The configuration file must be named ``CMakeTargets.json`` and must reside
-in the project's root directory.
+The configuration file must be named ``CMakeTargets.json`` and can reside
+anywhere in the project's directory.
 
 .. note::
 
@@ -815,7 +815,6 @@ macro(_cmake_targets_file_get_settings_keys)
 
 	get_property(target_config_map GLOBAL PROPERTY "TARGETS_CONFIG_${CTF_TARGET}")
 	map(KEYS target_config_map setting_keys)
-
 	set(${CTF_GET_SETTINGS_KEYS} "${setting_keys}" PARENT_SCOPE)
 endmacro()
 

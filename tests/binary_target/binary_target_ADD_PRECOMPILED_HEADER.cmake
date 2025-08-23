@@ -92,7 +92,7 @@ function(${CMAKETEST_TEST})
 		binary_target(ADD_PRECOMPILED_HEADER "new_static_mock_lib" HEADER_FILE "")
 	endfunction()
 
-	ct_add_section(NAME "throws_if_arg_header_file_does_not_exists" EXPECTFAIL)
+	ct_add_section(NAME "throws_if_arg_header_file_does_not_exist" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		binary_target(ADD_PRECOMPILED_HEADER "new_static_mock_lib" HEADER_FILE "data/src/not-exists.h")
 	endfunction()

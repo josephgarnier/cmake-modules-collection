@@ -143,7 +143,7 @@ function(${CMAKETEST_TEST})
 		)
 	endfunction()
 
-	ct_add_section(NAME "throws_if_arg_src_dir_does_not_exists" EXPECTFAIL)
+	ct_add_section(NAME "throws_if_arg_src_dir_does_not_exist" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		directory(COLLECT_SOURCES_BY_LOCATION
 			SRC_DIR "fake/directory"
@@ -272,7 +272,7 @@ function(${CMAKETEST_TEST})
 		)
 	endfunction()
 
-	ct_add_section(NAME "throws_if_arg_include_dir_does_not_exists" EXPECTFAIL)
+	ct_add_section(NAME "throws_if_arg_include_dir_does_not_exist" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		directory(COLLECT_SOURCES_BY_LOCATION
 			SRC_DIR "${TESTS_DATA_DIR}/src"

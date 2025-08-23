@@ -56,7 +56,7 @@ function(${CMAKETEST_TEST})
 		ct_assert_false(value) # equals to "value-NOTFOUND"
 	endfunction()
 
-	ct_add_section(NAME "get_from_invalide_key")
+	ct_add_section(NAME "get_from_invalid_key")
 	function(${CMAKETEST_SECTION})
 		map(GET input_map "invalid" value)
 		ct_assert_string(value)

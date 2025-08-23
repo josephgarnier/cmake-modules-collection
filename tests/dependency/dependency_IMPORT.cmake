@@ -161,7 +161,7 @@ function(${CMAKETEST_TEST})
 		ct_assert_equal(output_lib_property "${cmake_build_type_upper}")
 	endfunction()
 
-	ct_add_section(NAME "include_dir_does_not_exists")
+	ct_add_section(NAME "include_dir_does_not_exist")
 	function(${CMAKETEST_SECTION})
 		set(lib_base_filename "")
 		set(build_type_arg "")
@@ -329,7 +329,7 @@ function(${CMAKETEST_TEST})
 		)
 	endfunction()
 
-	ct_add_section(NAME "throws_if_arg_lib_base_filename_does_not_exists" EXPECTFAIL)
+	ct_add_section(NAME "throws_if_arg_lib_base_filename_does_not_exist" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		set(lib_base_filename "fake_lib")
 		set(build_type_arg "")
@@ -375,7 +375,7 @@ function(${CMAKETEST_TEST})
 		)
 	endfunction()
 
-	ct_add_section(NAME "throws_if_arg_root_dir_does_not_exists" EXPECTFAIL)
+	ct_add_section(NAME "throws_if_arg_root_dir_does_not_exist" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		dependency(IMPORT "${lib_target_name}"
 			SHARED
