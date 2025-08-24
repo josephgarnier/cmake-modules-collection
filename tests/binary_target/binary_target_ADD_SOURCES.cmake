@@ -18,7 +18,7 @@ ct_add_test(NAME "test_binary_target_add_sources_operation")
 function(${CMAKETEST_TEST})
 	include(BinaryTarget)
 
-	# Create a mock bin static target for tests
+	# Create mock binary targets for tests
 	macro(_create_mock_bins)
 		add_library("new_static_mock_lib" STATIC)
 		add_library("new_shared_mock_lib" SHARED)

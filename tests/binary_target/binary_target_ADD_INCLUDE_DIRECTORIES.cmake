@@ -15,7 +15,7 @@ ct_add_test(NAME "test_binary_target_add_include_directories_operation")
 function(${CMAKETEST_TEST})
 	include(BinaryTarget)
 
-	# Create a mock bin static target for tests
+	# Create mock binary targets for tests
 	macro(_create_mock_bins)
 		add_library("new_static_mock_lib" STATIC)
 		target_sources("new_static_mock_lib" PRIVATE "${TESTS_DATA_DIR}/src/main.cpp") # A target needs at least one source to avoid an error
