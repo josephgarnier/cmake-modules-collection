@@ -86,8 +86,8 @@ Usage
 
   .. code-block:: cmake
 
-    binary_target(CREATE "my_static_lib" STATIC)
-    binary_target(CONFIGURE_SETTINGS "my_static_lib"
+    binary_target(CREATE "my_shared_lib" SHARED)
+    binary_target(CONFIGURE_SETTINGS "my_shared_lib"
       COMPILE_FEATURES "cxx_std_20"
       COMPILE_DEFINITIONS "MY_DEFINE"
       COMPILE_OPTIONS "-Wall" "-Wextra"
@@ -102,9 +102,9 @@ Usage
   .. code-block:: cmake
 
     binary_target(ADD_SOURCES <target-name>
-                    SOURCE_FILES [<file-path>...]
-                    PRIVATE_HEADER_FILES [<file-path>...]
-                    PUBLIC_HEADER_FILES [<file-path>...])
+                 SOURCE_FILES [<file-path>...]
+                 PRIVATE_HEADER_FILES [<file-path>...]
+                 PUBLIC_HEADER_FILES [<file-path>...])
 
   Assigns implementation and header files to the given binary target
   ``<target-name>`` with ``PRIVATE`` visibility:
@@ -233,8 +233,8 @@ binary.
 
 .. code-block:: cmake
 
-  binary_target(CREATE "my_static_lib" STATIC)
-  binary_target(CONFIGURE_SETTINGS "my_static_lib"
+  binary_target(CREATE "my_shared_lib" SHARED)
+  binary_target(CONFIGURE_SETTINGS "my_shared_lib"
     COMPILE_FEATURES "cxx_std_20"
     COMPILE_DEFINITIONS "MY_DEFINE"
     COMPILE_OPTIONS "-Wall" "-Wextra"
@@ -249,15 +249,15 @@ binary.
     PRIVATE_HEADER_DIR private_headers_dir
     PRIVATE_HEADER_FILES private_headers
   )
-  binary_target(ADD_SOURCES "my_static_lib"
+  binary_target(ADD_SOURCES "my_shared_lib"
     SOURCE_FILES "${sources}"
     PRIVATE_HEADER_FILES "${private_headers}"
     PUBLIC_HEADER_FILES "${public_headers}"
   )
-  binary_target(ADD_PRECOMPILED_HEADER "my_static_lib"
+  binary_target(ADD_PRECOMPILED_HEADER "my_shared_lib"
     HEADER_FILE "src/header_pch.h"
   )
-  binary_target(ADD_INCLUDE_DIRECTORIES "my_static_lib"
+  binary_target(ADD_INCLUDE_DIRECTORIES "my_shared_lib"
     INCLUDE_DIRECTORIES "$<$<BOOL:${private_headers_dir}>:${private_headers_dir}>" "${public_headers_dir}"
   )
 #]=======================================================================]
@@ -315,7 +315,7 @@ macro(_binary_target_create)
 
 	if(${BBT_STATIC})
 		add_library("${BBT_CREATE}" STATIC)
-		message(STATUS "Static library target added to project")
+		message(STATUS "Static library target \"${BBT_CREATE}\" added to project")
 	elseif(${BBT_SHARED})
 		# All libraries will be built shared unless the library was explicitly
 		# added as a static library
@@ -325,13 +325,13 @@ macro(_binary_target_create)
 		set(CMAKE_CXX_VISIBILITY_PRESET                 "hidden")
 		set(CMAKE_VISIBILITY_INLINES_HIDDEN             on)
 		add_library("${BBT_CREATE}" SHARED)
-		message(STATUS "Shared library target added to project")
+		message(STATUS "Shared library target \"${BBT_CREATE}\" added to project")
 	elseif(${BBT_HEADER})
 		add_library("${BBT_CREATE}" INTERFACE)
-		message(STATUS "Header-only library target added to project")
+		message(STATUS "Header-only library target \"${BBT_CREATE}\" added to project")
 	elseif(${BBT_EXEC})
 		add_executable("${BBT_CREATE}")
-		message(STATUS "Executable target added to project")
+		message(STATUS "Executable target \"${BBT_CREATE}\" added to project")
 	else()
 		message(FATAL_ERROR "Invalid binary type: expected STATIC, SHARED, HEADER or EXEC!")
 	endif()

@@ -11,9 +11,9 @@
 #-------------------------------------------------------------------------------
 # Test of [BinaryTarget module::ADD_SOURCES operation]:
 #    binary_target(ADD_SOURCES <target-name>
-#                    SOURCE_FILES [<file-path>...]
-#                    PRIVATE_HEADER_FILES [<file-path>...]
-#                    PUBLIC_HEADER_FILES [<file-path>...])
+#                 SOURCE_FILES [<file-path>...]
+#                 PRIVATE_HEADER_FILES [<file-path>...]
+#                 PUBLIC_HEADER_FILES [<file-path>...])
 ct_add_test(NAME "test_binary_target_add_sources_operation")
 function(${CMAKETEST_TEST})
 	include(BinaryTarget)
