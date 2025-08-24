@@ -1,0 +1,180 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/cmake-targets.json",
+  "description": "The CMake targets file specifies build targets, their configuration, and dependencies used by the project",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "description": "The schema against which to verify this document",
+      "type": "string",
+      "format": "uri-reference"
+    },
+    "$id": {
+      "description": "A unique identifier for the schema resource",
+      "type": "string",
+      "format": "uri-reference"
+    },
+    "targets": {
+      "description": "The list of build targets defined in the project",
+      "type": "object",
+      "patternProperties": {
+        "^\\w+(/.+)?$": {
+          "description": "The path to the directory where the target is defined. It must be unique and there cannot be more than one target per directory",
+          "type": "object",
+          "properties": {
+            "name": {
+              "description": "A unique name for the target",
+              "type": "string",
+              "minLength": 1
+            },
+            "type": {
+              "description": "The type of binary to generate for this target: static library, shared library, header-only, or executable",
+              "type": "string",
+              "enum": [
+                "staticLib",
+                "sharedLib",
+                "interfaceLib",
+                "executable"
+              ]
+            },
+            "build": {
+              "description": "Settings used to configure compilation and linking",
+              "type": "object",
+              "properties": {
+                "compileFeatures": {
+                  "description": "List of optional CMake compile features required by the target",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "compileDefinitions": {
+                  "description": "List of optional preprocessor definitions applied when compiling this target",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "compileOptions": {
+                  "description": "List of optional compiler options passed to this target",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "linkOptions": {
+                  "description": "List of optional linker options passed to this target",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "compileFeatures",
+                "compileDefinitions",
+                "compileOptions",
+                "linkOptions"
+              ]
+            },
+            "mainFile": {
+              "description": "The main source file (.cpp) that serves as the entry point or primary compilation unit for this target. Must be a path to a file ending with .cpp, .cc, or .cxx",
+              "type": "string",
+              "pattern": "(.+/)?[^/]+\\.(cpp|cc|cxx)$"
+            },
+            "pchFile": {
+              "description": "The header file used as precompiled header (PCH) for this target. Must be a path to a file ending with .h, .hpp, .hxx, .inl or .tpp",
+              "type": "string",
+              "pattern": "(.+/)?[^/]+\\.(h|hpp|hxx|inl|tpp)$"
+            },
+            "headerPolicy": {
+              "description": "Defines the policy applied to the header files",
+              "type": "object",
+              "properties": {
+                "mode": {
+                  "description": "Defines whether public headers are split ('split') or merged ('merged') with private headers",
+                  "type": "string",
+                  "enum": [
+                    "split",
+                    "merged"
+                  ]
+                },
+                "includeDir": {
+                  "description": "The path to the directory in '/include' from which public headers are collected (only required if mode is 'split')",
+                  "type": "string",
+                  "pattern": "^include(/.+)?$"
+                }
+              },
+              "required": [
+                "mode"
+              ],
+              "if": {
+                "properties": {
+                  "mode": {
+                    "const": "split"
+                  }
+                }
+              },
+              "then": {
+                "dependentRequired": {
+                  "mode": [
+                    "includeDir"
+                  ]
+                }
+              }
+            },
+            "dependencies": {
+              "description": "The external packages or modules this target depends on",
+              "type": "object",
+              "patternProperties": {
+                "^.+$": {
+                  "description": "A unique string identifier to describe the dependency",
+                  "type": "object",
+                  "properties": {
+                    "rulesFile": {
+                      "description": "The CMake file that defines how to integrate the dependency into the build system. Must be a path to a file ending with .cmake",
+                      "type": "string",
+                      "pattern": "(.+/)?[^/]+\\.cmake$"
+                    },
+                    "minVersion": {
+                      "description": "The minimum acceptable version number of the dependency",
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "autodownload": {
+                      "description": "Whether the dependency can be automatically downloaded if not found locally",
+                      "type": "boolean"
+                    },
+                    "optional": {
+                      "description": "Indicates whether the dependency is optional (true) or required (false)",
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "rulesFile",
+                    "minVersion",
+                    "autodownload",
+                    "optional"
+                  ]
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "name",
+          "type",
+          "build",
+          "mainFile",
+          "headerPolicy",
+          "dependencies"
+        ]
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "targets"
+  ]
+}
