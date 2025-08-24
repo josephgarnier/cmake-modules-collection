@@ -25,6 +25,7 @@ Synopsis
   binary_target(`ADD_PRECOMPILED_HEADER`_ <target-name> HEADER_FILE <file-path>)
   binary_target(`ADD_INCLUDE_DIRECTORIES`_ <target-name> INCLUDE_DIRECTORIES [<dir-path>...])
   binary_target(`ADD_DEPENDENCIES`_ <target-name> DEPENDENCIES [<target-name>...|<gen-expr>...])
+  binary_target(`CREATE_FULLY`_ <target-name> [...])
 
 Usage
 ^^^^^
@@ -225,6 +226,68 @@ Usage
         "$<INSTALL_INTERFACE:dep_1;dep_2>"
     )
 
+.. signature::
+  binary_target(CREATE_FULLY <target-name> [...])
+
+  Create a fully configured binary target.
+
+  .. code-block:: cmake
+
+    binary_target(CREATE_FULLY <target-name>
+                  <STATIC|SHARED|HEADER|EXEC>
+                  [COMPILE_FEATURES <feature>...]
+                  [COMPILE_DEFINITIONS <definition>...]
+                  [COMPILE_OPTIONS <option>...]
+                  [LINK_OPTIONS <option>...]
+                  SOURCE_FILES [<file-path>...]
+                  PRIVATE_HEADER_FILES [<file-path>...]
+                  PUBLIC_HEADER_FILES [<file-path>...]
+                  [PRECOMPILED_HEADER_FILE <file-path>]
+                  INCLUDE_DIRECTORIES [<dir-path>...]
+                  [DEPENDENCIES [<target-name>...] ])
+
+  Create a fully configured binary target named ``<target-name>`` and add it
+  to the current project. This command acts as a high-level wrapper that
+  combines the behavior of other module sub-commands, including
+  :command:`binary_target(CREATE)`, :command:`binary_target(CONFIGURE_SETTINGS)`,
+  :command:`binary_target(ADD_SOURCES)`, :command:`binary_target(ADD_PRECOMPILED_HEADER)`,
+  :command:`binary_target(ADD_INCLUDE_DIRECTORIES)`, and :command:`binary_target(ADD_DEPENDENCIES)`.
+
+  The second argument must specify the type of target to create: ``STATIC``,
+  ``SHARED``, ``HEADER``, or ``EXEC``. Only one type may be given.
+
+  Additional parameters can be provided to configure compile options,
+  precompiled headers, include directories, and target dependencies. Each of
+  these keywords delegates internally to the corresponding
+  :module:`BinaryTarget` command. See their documentation for details.
+  Example usage:
+
+  .. code-block:: cmake
+
+    directory(COLLECT_SOURCES_BY_POLICY
+      PUBLIC_HEADERS_SEPARATED on "${CMAKE_SOURCE_DIR}/include/mylib"
+      SRC_DIR "${CMAKE_SOURCE_DIR}/src"
+      SRC_SOURCE_FILES sources
+      PUBLIC_HEADER_DIR public_headers_dir
+      PUBLIC_HEADER_FILES public_headers
+      PRIVATE_HEADER_DIR private_headers_dir
+      PRIVATE_HEADER_FILES private_headers
+    )
+    binary_target(
+      CREATE_FULLY "my_shared_lib"
+      SHARED
+      COMPILE_FEATURES "cxx_std_20"
+      COMPILE_DEFINITIONS "MY_DEFINE"
+      COMPILE_OPTIONS "-Wall" "-Wextra"
+      LINK_OPTIONS "-s"
+      SOURCE_FILES "${sources}"
+      PRIVATE_HEADER_FILES "${private_headers}"
+      PUBLIC_HEADER_FILES "${public_headers}"
+      PRECOMPILED_HEADER_FILE "src/header_pch.h"
+      INCLUDE_DIRECTORIES "$<$<BOOL:${private_headers_dir}>:${private_headers_dir}>" "${public_headers_dir}"
+      DEPENDENCIES "dep_1" "dep_2"
+    )
+
 Full example
 ^^^^^^^^^^^^
 
@@ -270,7 +333,7 @@ cmake_minimum_required (VERSION 3.20 FATAL_ERROR)
 # Public function of this module
 function(binary_target)
 	set(options STATIC SHARED HEADER EXEC)
-	set(one_value_args CREATE CONFIGURE_SETTINGS ADD_SOURCES ADD_PRECOMPILED_HEADER HEADER_FILE ADD_INCLUDE_DIRECTORIES ADD_DEPENDENCIES)
+	set(one_value_args CREATE CONFIGURE_SETTINGS ADD_SOURCES ADD_PRECOMPILED_HEADER HEADER_FILE ADD_INCLUDE_DIRECTORIES ADD_DEPENDENCIES CREATE_FULLY PRECOMPILED_HEADER_FILE)
 	set(multi_value_args COMPILE_FEATURES COMPILE_DEFINITIONS COMPILE_OPTIONS LINK_OPTIONS SOURCE_FILES PRIVATE_HEADER_FILES PUBLIC_HEADER_FILES INCLUDE_DIRECTORIES DEPENDENCIES)
 	cmake_parse_arguments(BBT "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 	
@@ -279,6 +342,8 @@ function(binary_target)
 	endif()
 	if(DEFINED BBT_CREATE)
 		_binary_target_create()
+	elseif(DEFINED BBT_CREATE_FULLY)
+		_binary_target_create_fully()
 	elseif(DEFINED BBT_CONFIGURE_SETTINGS)
 		_binary_target_config_settings()
 	elseif(DEFINED BBT_ADD_SOURCES)
@@ -538,5 +603,95 @@ macro(_binary_target_add_dependencies)
 			PUBLIC
 				"${BBT_DEPENDENCIES}"
 		)
+	endif()
+endmacro()
+
+#------------------------------------------------------------------------------
+# Internal usage
+macro(_binary_target_create_fully)
+	if(NOT DEFINED BBT_CREATE_FULLY)
+		message(FATAL_ERROR "CREATE_FULLY argument is missing or need a value!")
+	endif()
+	if(TARGET "${BBT_CREATE_FULLY}")
+		message(FATAL_ERROR "The target \"${BBT_CREATE_FULLY}\" already exists!")
+	endif()
+	if((NOT ${BBT_STATIC})
+		AND (NOT ${BBT_SHARED})
+		AND (NOT ${BBT_HEADER})
+		AND (NOT ${BBT_EXEC}))
+		message(FATAL_ERROR "STATIC|SHARED|HEADER|EXEC arguments is missing!")
+	endif()
+	if(${BBT_STATIC} AND ${BBT_SHARED} AND ${BBT_HEADER} AND ${BBT_EXEC})
+		message(FATAL_ERROR "STATIC|SHARED|HEADER|EXEC cannot be used together!")
+	endif()
+	if("COMPILE_FEATURES" IN_LIST BBT_KEYWORDS_MISSING_VALUES)
+		message(FATAL_ERROR "COMPILE_FEATURES argument is missing or need a value!")
+	endif()
+	if("COMPILE_DEFINITIONS" IN_LIST BBT_KEYWORDS_MISSING_VALUES)
+		message(FATAL_ERROR "COMPILE_DEFINITIONS argument is missing or need a value!")
+	endif()
+	if("COMPILE_OPTIONS" IN_LIST BBT_KEYWORDS_MISSING_VALUES)
+		message(FATAL_ERROR "COMPILE_OPTIONS argument is missing or need a value!")
+	endif()
+	if("LINK_OPTIONS" IN_LIST BBT_KEYWORDS_MISSING_VALUES)
+		message(FATAL_ERROR "LINK_OPTIONS argument is missing or need a value!")
+	endif()
+	if(NOT DEFINED CMAKE_CXX_STANDARD)
+		message(FATAL_ERROR "CMAKE_CXX_STANDARD is not set!")
+	endif()
+	if((NOT DEFINED BBT_SOURCE_FILES)
+		AND (NOT "SOURCE_FILES" IN_LIST BBT_KEYWORDS_MISSING_VALUES))
+		message(FATAL_ERROR "SOURCE_FILES argument is missing or need a value!")
+	endif()
+	if((NOT DEFINED BBT_PRIVATE_HEADER_FILES)
+		AND (NOT "PRIVATE_HEADER_FILES" IN_LIST BBT_KEYWORDS_MISSING_VALUES))
+		message(FATAL_ERROR "PRIVATE_HEADER_FILES argument is missing or need a value!")
+	endif()
+	if((NOT DEFINED BBT_PUBLIC_HEADER_FILES)
+		AND (NOT "PUBLIC_HEADER_FILES" IN_LIST BBT_KEYWORDS_MISSING_VALUES))
+		message(FATAL_ERROR "PUBLIC_HEADER_FILES argument is missing or need a value!")
+	endif()
+	if("PRECOMPILED_HEADER_FILE" IN_LIST BBT_KEYWORDS_MISSING_VALUES)
+		message(FATAL_ERROR "PRECOMPILED_HEADER_FILE argument is missing or need a value!")
+	endif()
+	if((DEFINED BBT_PRECOMPILED_HEADER_FILE)
+		AND (NOT EXISTS "${BBT_PRECOMPILED_HEADER_FILE}"))
+		message(FATAL_ERROR "Given path: ${BBT_PRECOMPILED_HEADER_FILE} does not refer to an existing path or directory on disk!")
+	endif()
+	if((NOT DEFINED BBT_INCLUDE_DIRECTORIES)
+		AND (NOT "INCLUDE_DIRECTORIES" IN_LIST BBT_KEYWORDS_MISSING_VALUES))
+		message(FATAL_ERROR "INCLUDE_DIRECTORIES argument is missing or need a value!")
+	endif()
+	if("DEPENDENCIES" IN_LIST BBT_KEYWORDS_MISSING_VALUES)
+		message(FATAL_ERROR "DEPENDENCIES argument is missing or need a value!")
+	endif()
+	
+	# Call binary_target(CREATE)
+	set(BBT_CREATE "${BBT_CREATE_FULLY}")
+	_binary_target_create()
+	
+	# Call binary_target(CONFIGURE_SETTINGS)
+	set(BBT_CONFIGURE_SETTINGS "${BBT_CREATE_FULLY}")
+	_binary_target_config_settings()
+
+	# Call binary_target(ADD_SOURCES)
+	set(BBT_ADD_SOURCES "${BBT_CREATE_FULLY}")
+	_binary_target_add_sources()
+
+	# Call binary_target(ADD_PRECOMPILED_HEADER)
+	if(DEFINED BBT_PRECOMPILED_HEADER_FILE)
+		set(BBT_ADD_PRECOMPILED_HEADER "${BBT_CREATE_FULLY}")
+		set(BBT_HEADER_FILE "${BBT_PRECOMPILED_HEADER_FILE}")
+		_binary_target_add_pre_header()
+	endif()
+
+	# Call binary_target(ADD_INCLUDE_DIRECTORIES)
+	set(BBT_ADD_INCLUDE_DIRECTORIES "${BBT_CREATE_FULLY}")
+	_binary_target_add_include_dirs()
+
+	# Call binary_target(ADD_DEPENDENCIES)
+	if(DEFINED BBT_DEPENDENCIES)
+		set(BBT_ADD_DEPENDENCIES "${BBT_CREATE_FULLY}")
+		_binary_target_add_dependencies()
 	endif()
 endmacro()

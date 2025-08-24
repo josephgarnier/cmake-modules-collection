@@ -74,7 +74,8 @@ binary_target(<a class="reference internal" href="#configure-settings">CONFIGURE
 binary_target(<a class="reference internal" href="#add-sources">ADD_SOURCES</a> &lt;target-name&gt; [...])
 binary_target(<a class="reference internal" href="#add-precompiled-header">ADD_PRECOMPILED_HEADER</a> &lt;target-name&gt; HEADER_FILE &lt;file-path&gt;)
 binary_target(<a class="reference internal" href="#add-include-directories">ADD_INCLUDE_DIRECTORIES</a> &lt;target-name&gt; INCLUDE_DIRECTORIES [&lt;dir-path&gt;...])
-binary_target(<a class="reference internal" href="#add-dependencies">ADD_DEPENDENCIES</a> &lt;target-name&gt; DEPENDENCIES &lt;target-name&gt;...|&lt;gen-expr&gt;...)</pre>
+binary_target(<a class="reference internal" href="#add-dependencies">ADD_DEPENDENCIES</a> &lt;target-name&gt; DEPENDENCIES [&lt;target-name&gt;...|&lt;gen-expr&gt;...])
+binary_target(<a class="reference internal" href="#create-fully">CREATE_FULLY</a> &lt;target-name&gt; [...])</pre>
 </section>
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h2>
@@ -127,8 +128,8 @@ section is missing, it is simply ignored without warning.</p>
 <p>This command is intended for targets that have been previously created
 using <span class="target" id="index-0-command:binary_target"></span><a class="reference internal" href="#create" title="binary_target(create)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">binary_target(CREATE)</span></code></a>.</p>
 <p>Example usage:</p>
-<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">binary_target(</span><span class="no">CREATE</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span><span class="w"> </span><span class="no">STATIC</span><span class="nf">)</span>
-<span class="nf">binary_target(</span><span class="no">CONFIGURE_SETTINGS</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">binary_target(</span><span class="no">CREATE</span><span class="w"> </span><span class="s">&quot;my_shared_lib&quot;</span><span class="w"> </span><span class="no">SHARED</span><span class="nf">)</span>
+<span class="nf">binary_target(</span><span class="no">CONFIGURE_SETTINGS</span><span class="w"> </span><span class="s">&quot;my_shared_lib&quot;</span>
 <span class="w">  </span><span class="no">COMPILE_FEATURES</span><span class="w"> </span><span class="s">&quot;cxx_std_20&quot;</span>
 <span class="w">  </span><span class="no">COMPILE_DEFINITIONS</span><span class="w"> </span><span class="s">&quot;MY_DEFINE&quot;</span>
 <span class="w">  </span><span class="no">COMPILE_OPTIONS</span><span class="w"> </span><span class="s">&quot;-Wall&quot;</span><span class="w"> </span><span class="s">&quot;-Wextra&quot;</span>
@@ -143,9 +144,9 @@ using <span class="target" id="index-0-command:binary_target"></span><a class="r
 <span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">binary_target(</span></span><span class="no"><span class="pre">ADD_SOURCES</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;target-name&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">[...]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#add-sources" title="Link to this definition">¶</a></dt>
 <dd><p>Add source and header files to an existing binary target:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">binary_target(</span><span class="no">ADD_SOURCES</span><span class="w"> </span><span class="nv">&lt;target-name&gt;</span>
-<span class="w">                </span><span class="no">SOURCE_FILES</span><span class="w"> </span><span class="p">[</span><span class="nv">&lt;file-path&gt;...</span><span class="p">]</span>
-<span class="w">                </span><span class="no">PRIVATE_HEADER_FILES</span><span class="w"> </span><span class="p">[</span><span class="nv">&lt;file-path&gt;...</span><span class="p">]</span>
-<span class="w">                </span><span class="no">PUBLIC_HEADER_FILES</span><span class="w"> </span><span class="p">[</span><span class="nv">&lt;file-path&gt;...</span><span class="p">]</span><span class="nf">)</span>
+<span class="w">             </span><span class="no">SOURCE_FILES</span><span class="w"> </span><span class="p">[</span><span class="nv">&lt;file-path&gt;...</span><span class="p">]</span>
+<span class="w">             </span><span class="no">PRIVATE_HEADER_FILES</span><span class="w"> </span><span class="p">[</span><span class="nv">&lt;file-path&gt;...</span><span class="p">]</span>
+<span class="w">             </span><span class="no">PUBLIC_HEADER_FILES</span><span class="w"> </span><span class="p">[</span><span class="nv">&lt;file-path&gt;...</span><span class="p">]</span><span class="nf">)</span>
 </pre></div>
 </div>
 <p>Assigns implementation and header files to the given binary target
@@ -235,7 +236,7 @@ files.</p>
 
 <dl class="cmake signature">
 <dt class="sig sig-object cmake" id="add-dependencies">
-<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">binary_target(</span></span><span class="no"><span class="pre">ADD_DEPENDENCIES</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;target-name&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">DEPENDENCIES</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;target-name&gt;...</span></span><span class="p"><span class="pre">|</span></span><span class="nv"><span class="pre">&lt;gen-expr&gt;...</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#add-dependencies" title="Link to this definition">¶</a></dt>
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">binary_target(</span></span><span class="no"><span class="pre">ADD_DEPENDENCIES</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;target-name&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">DEPENDENCIES</span></span><span class="w"> </span><span class="p"><span class="pre">[</span></span><span class="nv"><span class="pre">&lt;target-name&gt;...</span></span><span class="p"><span class="pre">|</span></span><span class="nv"><span class="pre">&lt;gen-expr&gt;...</span></span><span class="p"><span class="pre">]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#add-dependencies" title="Link to this definition">¶</a></dt>
 <dd><p>Add dependencies to use when linking a given target <code class="docutils literal notranslate"><span class="pre">&lt;target-name&gt;</span></code>.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">DEPENDENCIES</span></code> keyword lists the names of other targets or generator
 expressions to linke to <code class="docutils literal notranslate"><span class="pre">&lt;target-name&gt;</span></code>.</p>
@@ -258,13 +259,71 @@ expressions to linke to <code class="docutils literal notranslate"><span class="
 </div>
 </dd></dl>
 
+<dl class="cmake signature">
+<dt class="sig sig-object cmake" id="create-fully">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">binary_target(</span></span><span class="no"><span class="pre">CREATE_FULLY</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;target-name&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">[...]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#create-fully" title="Link to this definition">¶</a></dt>
+<dd><p>Create a fully configured binary target.</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">binary_target(</span><span class="no">CREATE_FULLY</span><span class="w"> </span><span class="nv">&lt;target-name&gt;</span>
+<span class="w">              </span><span class="o">&lt;</span><span class="no">STATIC</span><span class="p">|</span><span class="no">SHARED</span><span class="p">|</span><span class="no">HEADER</span><span class="p">|</span><span class="no">EXEC</span><span class="o">&gt;</span>
+<span class="w">              </span><span class="p">[</span><span class="no">COMPILE_FEATURES</span><span class="w"> </span><span class="nv">&lt;feature&gt;...</span><span class="p">]</span>
+<span class="w">              </span><span class="p">[</span><span class="no">COMPILE_DEFINITIONS</span><span class="w"> </span><span class="nv">&lt;definition&gt;...</span><span class="p">]</span>
+<span class="w">              </span><span class="p">[</span><span class="no">COMPILE_OPTIONS</span><span class="w"> </span><span class="nv">&lt;option&gt;...</span><span class="p">]</span>
+<span class="w">              </span><span class="p">[</span><span class="no">LINK_OPTIONS</span><span class="w"> </span><span class="nv">&lt;option&gt;...</span><span class="p">]</span>
+<span class="w">              </span><span class="no">SOURCE_FILES</span><span class="w"> </span><span class="p">[</span><span class="nv">&lt;file-path&gt;...</span><span class="p">]</span>
+<span class="w">              </span><span class="no">PRIVATE_HEADER_FILES</span><span class="w"> </span><span class="p">[</span><span class="nv">&lt;file-path&gt;...</span><span class="p">]</span>
+<span class="w">              </span><span class="no">PUBLIC_HEADER_FILES</span><span class="w"> </span><span class="p">[</span><span class="nv">&lt;file-path&gt;...</span><span class="p">]</span>
+<span class="w">              </span><span class="p">[</span><span class="no">PRECOMPILED_HEADER_FILE</span><span class="w"> </span><span class="nv">&lt;file-path&gt;</span><span class="p">]</span>
+<span class="w">              </span><span class="no">INCLUDE_DIRECTORIES</span><span class="w"> </span><span class="p">[</span><span class="nv">&lt;dir-path&gt;...</span><span class="p">]</span>
+<span class="w">              </span><span class="p">[</span><span class="no">DEPENDENCIES</span><span class="w"> </span><span class="p">[</span><span class="nv">&lt;target-name&gt;...</span><span class="p">]</span><span class="w"> </span><span class="p">]</span><span class="nf">)</span>
+</pre></div>
+</div>
+<p>Create a fully configured binary target named <code class="docutils literal notranslate"><span class="pre">&lt;target-name&gt;</span></code> and add it
+to the current project. This command acts as a high-level wrapper that
+combines the behavior of other module sub-commands, including
+<span class="target" id="index-4-command:binary_target"></span><a class="reference internal" href="#create" title="binary_target(create)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">binary_target(CREATE)</span></code></a>, <span class="target" id="index-5-command:binary_target"></span><a class="reference internal" href="#configure-settings" title="binary_target(configure_settings)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">binary_target(CONFIGURE_SETTINGS)</span></code></a>,
+<span class="target" id="index-6-command:binary_target"></span><a class="reference internal" href="#add-sources" title="binary_target(add_sources)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">binary_target(ADD_SOURCES)</span></code></a>, <span class="target" id="index-7-command:binary_target"></span><a class="reference internal" href="#add-precompiled-header" title="binary_target(add_precompiled_header)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">binary_target(ADD_PRECOMPILED_HEADER)</span></code></a>,
+<span class="target" id="index-8-command:binary_target"></span><a class="reference internal" href="#add-include-directories" title="binary_target(add_include_directories)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">binary_target(ADD_INCLUDE_DIRECTORIES)</span></code></a>, and <span class="target" id="index-9-command:binary_target"></span><a class="reference internal" href="#add-dependencies" title="binary_target(add_dependencies)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">binary_target(ADD_DEPENDENCIES)</span></code></a>.</p>
+<p>The second argument must specify the type of target to create: <code class="docutils literal notranslate"><span class="pre">STATIC</span></code>,
+<code class="docutils literal notranslate"><span class="pre">SHARED</span></code>, <code class="docutils literal notranslate"><span class="pre">HEADER</span></code>, or <code class="docutils literal notranslate"><span class="pre">EXEC</span></code>. Only one type may be given.</p>
+<p>Additional parameters can be provided to configure compile options,
+precompiled headers, include directories, and target dependencies. Each of
+these keywords delegates internally to the corresponding
+<span class="target" id="index-0-module:BinaryTarget"></span><a class="reference internal" href="#module:BinaryTarget" title="BinaryTarget"><code class="xref cmake cmake-module docutils literal notranslate"><span class="pre">BinaryTarget</span></code></a> command. See their documentation for details.
+Example usage:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">directory(</span><span class="no">COLLECT_SOURCES_BY_POLICY</span>
+<span class="w">  </span><span class="no">PUBLIC_HEADERS_SEPARATED</span><span class="w"> </span><span class="nb">on</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/include/mylib&quot;</span>
+<span class="w">  </span><span class="no">SRC_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src&quot;</span>
+<span class="w">  </span><span class="no">SRC_SOURCE_FILES</span><span class="w"> </span><span class="nb">sources</span>
+<span class="w">  </span><span class="no">PUBLIC_HEADER_DIR</span><span class="w"> </span><span class="nb">public_headers_dir</span>
+<span class="w">  </span><span class="no">PUBLIC_HEADER_FILES</span><span class="w"> </span><span class="nb">public_headers</span>
+<span class="w">  </span><span class="no">PRIVATE_HEADER_DIR</span><span class="w"> </span><span class="nb">private_headers_dir</span>
+<span class="w">  </span><span class="no">PRIVATE_HEADER_FILES</span><span class="w"> </span><span class="nb">private_headers</span>
+<span class="nf">)</span>
+<span class="nf">binary_target(</span>
+<span class="w">  </span><span class="no">CREATE_FULLY</span><span class="w"> </span><span class="s">&quot;my_shared_lib&quot;</span>
+<span class="w">  </span><span class="no">SHARED</span>
+<span class="w">  </span><span class="no">COMPILE_FEATURES</span><span class="w"> </span><span class="s">&quot;cxx_std_20&quot;</span>
+<span class="w">  </span><span class="no">COMPILE_DEFINITIONS</span><span class="w"> </span><span class="s">&quot;MY_DEFINE&quot;</span>
+<span class="w">  </span><span class="no">COMPILE_OPTIONS</span><span class="w"> </span><span class="s">&quot;-Wall&quot;</span><span class="w"> </span><span class="s">&quot;-Wextra&quot;</span>
+<span class="w">  </span><span class="no">LINK_OPTIONS</span><span class="w"> </span><span class="s">&quot;-s&quot;</span>
+<span class="w">  </span><span class="no">SOURCE_FILES</span><span class="w"> </span><span class="s">&quot;${sources}&quot;</span>
+<span class="w">  </span><span class="no">PRIVATE_HEADER_FILES</span><span class="w"> </span><span class="s">&quot;${private_headers}&quot;</span>
+<span class="w">  </span><span class="no">PUBLIC_HEADER_FILES</span><span class="w"> </span><span class="s">&quot;${public_headers}&quot;</span>
+<span class="w">  </span><span class="no">PRECOMPILED_HEADER_FILE</span><span class="w"> </span><span class="s">&quot;src/header_pch.h&quot;</span>
+<span class="w">  </span><span class="no">INCLUDE_DIRECTORIES</span><span class="w"> </span><span class="s">&quot;$&lt;$&lt;BOOL:${private_headers_dir}&gt;:${private_headers_dir}&gt;&quot;</span><span class="w"> </span><span class="s">&quot;${public_headers_dir}&quot;</span>
+<span class="w">  </span><span class="no">DEPENDENCIES</span><span class="w"> </span><span class="s">&quot;dep_1&quot;</span><span class="w"> </span><span class="s">&quot;dep_2&quot;</span>
+<span class="nf">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 <section id="full-example">
 <h2>Full example<a class="headerlink" href="#full-example" title="Link to this heading">¶</a></h2>
 <p>This example shows how to call the module functions to create a complete
 binary.</p>
-<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">binary_target(</span><span class="no">CREATE</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span><span class="w"> </span><span class="no">STATIC</span><span class="nf">)</span>
-<span class="nf">binary_target(</span><span class="no">CONFIGURE_SETTINGS</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">binary_target(</span><span class="no">CREATE</span><span class="w"> </span><span class="s">&quot;my_shared_lib&quot;</span><span class="w"> </span><span class="no">SHARED</span><span class="nf">)</span>
+<span class="nf">binary_target(</span><span class="no">CONFIGURE_SETTINGS</span><span class="w"> </span><span class="s">&quot;my_shared_lib&quot;</span>
 <span class="w">  </span><span class="no">COMPILE_FEATURES</span><span class="w"> </span><span class="s">&quot;cxx_std_20&quot;</span>
 <span class="w">  </span><span class="no">COMPILE_DEFINITIONS</span><span class="w"> </span><span class="s">&quot;MY_DEFINE&quot;</span>
 <span class="w">  </span><span class="no">COMPILE_OPTIONS</span><span class="w"> </span><span class="s">&quot;-Wall&quot;</span><span class="w"> </span><span class="s">&quot;-Wextra&quot;</span>
@@ -279,15 +338,15 @@ binary.</p>
 <span class="w">  </span><span class="no">PRIVATE_HEADER_DIR</span><span class="w"> </span><span class="nb">private_headers_dir</span>
 <span class="w">  </span><span class="no">PRIVATE_HEADER_FILES</span><span class="w"> </span><span class="nb">private_headers</span>
 <span class="nf">)</span>
-<span class="nf">binary_target(</span><span class="no">ADD_SOURCES</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span>
+<span class="nf">binary_target(</span><span class="no">ADD_SOURCES</span><span class="w"> </span><span class="s">&quot;my_shared_lib&quot;</span>
 <span class="w">  </span><span class="no">SOURCE_FILES</span><span class="w"> </span><span class="s">&quot;${sources}&quot;</span>
 <span class="w">  </span><span class="no">PRIVATE_HEADER_FILES</span><span class="w"> </span><span class="s">&quot;${private_headers}&quot;</span>
 <span class="w">  </span><span class="no">PUBLIC_HEADER_FILES</span><span class="w"> </span><span class="s">&quot;${public_headers}&quot;</span>
 <span class="nf">)</span>
-<span class="nf">binary_target(</span><span class="no">ADD_PRECOMPILED_HEADER</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span>
+<span class="nf">binary_target(</span><span class="no">ADD_PRECOMPILED_HEADER</span><span class="w"> </span><span class="s">&quot;my_shared_lib&quot;</span>
 <span class="w">  </span><span class="no">HEADER_FILE</span><span class="w"> </span><span class="s">&quot;src/header_pch.h&quot;</span>
 <span class="nf">)</span>
-<span class="nf">binary_target(</span><span class="no">ADD_INCLUDE_DIRECTORIES</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span>
+<span class="nf">binary_target(</span><span class="no">ADD_INCLUDE_DIRECTORIES</span><span class="w"> </span><span class="s">&quot;my_shared_lib&quot;</span>
 <span class="w">  </span><span class="no">INCLUDE_DIRECTORIES</span><span class="w"> </span><span class="s">&quot;$&lt;$&lt;BOOL:${private_headers_dir}&gt;:${private_headers_dir}&gt;&quot;</span><span class="w"> </span><span class="s">&quot;${public_headers_dir}&quot;</span>
 <span class="nf">)</span>
 </pre></div>
