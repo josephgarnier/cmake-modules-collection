@@ -24,7 +24,7 @@ Synopsis
   binary_target(`ADD_SOURCES`_ <target-name> [...])
   binary_target(`ADD_PRECOMPILED_HEADER`_ <target-name> HEADER_FILE <file-path>)
   binary_target(`ADD_INCLUDE_DIRECTORIES`_ <target-name> INCLUDE_DIRECTORIES [<dir-path>...])
-  binary_target(`ADD_DEPENDENCIES`_ <target-name> DEPENDENCIES <target-name>...|<gen-expr>...)
+  binary_target(`ADD_DEPENDENCIES`_ <target-name> DEPENDENCIES [<target-name>...|<gen-expr>...])
 
 Usage
 ^^^^^
@@ -198,7 +198,7 @@ Usage
     )
 
 .. signature::
-  binary_target(ADD_DEPENDENCIES <target-name> DEPENDENCIES <target-name>...|<gen-expr>...)
+  binary_target(ADD_DEPENDENCIES <target-name> DEPENDENCIES [<target-name>...|<gen-expr>...])
 
   Add dependencies to use when linking a given target ``<target-name>``.
 
@@ -528,12 +528,15 @@ macro(_binary_target_add_dependencies)
 	if(NOT TARGET "${BBT_ADD_DEPENDENCIES}")
 		message(FATAL_ERROR "The target \"${BBT_ADD_DEPENDENCIES}\" does not exists!")
 	endif()
-	if(NOT DEFINED BBT_DEPENDENCIES)
+	if((NOT DEFINED BBT_DEPENDENCIES)
+		AND (NOT "DEPENDENCIES" IN_LIST BBT_KEYWORDS_MISSING_VALUES))
 		message(FATAL_ERROR "DEPENDENCIES argument is missing or need a value!")
 	endif()
 
-	target_link_libraries("${BBT_ADD_DEPENDENCIES}"
-		PUBLIC
-			"${BBT_DEPENDENCIES}"
-	)
+	if(DEFINED BBT_DEPENDENCIES)
+		target_link_libraries("${BBT_ADD_DEPENDENCIES}"
+			PUBLIC
+				"${BBT_DEPENDENCIES}"
+		)
+	endif()
 endmacro()

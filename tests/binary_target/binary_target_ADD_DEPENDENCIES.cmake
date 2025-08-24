@@ -10,7 +10,7 @@
 
 #-------------------------------------------------------------------------------
 # Test of [BinaryTarget module::ADD_DEPENDENCIES operation]:
-#    binary_target(ADD_DEPENDENCIES <target-name> DEPENDENCIES <target-name>...|<gen-expr>...)
+#    binary_target(ADD_DEPENDENCIES <target-name> DEPENDENCIES [<target-name>...|<gen-expr>...])
 ct_add_test(NAME "test_binary_target_add_dependencies_operation")
 function(${CMAKETEST_TEST})
 	include(BinaryTarget)
@@ -47,26 +47,42 @@ function(${CMAKETEST_TEST})
 	endmacro()
 
 	# Functionalities checking
+	ct_add_section(NAME "add_no_deps")
+	function(${CMAKETEST_SECTION})
+		_set_up_test()
+		binary_target(ADD_DEPENDENCIES "new_static_mock_lib" DEPENDENCIES "")
+		ct_assert_target_does_not_have_property("new_static_mock_lib"
+			INTERFACE_LINK_LIBRARIES)
+		ct_assert_target_does_not_have_property("new_static_mock_lib"
+			LINK_LIBRARIES)
+
+		binary_target(ADD_DEPENDENCIES "new_shared_mock_lib" DEPENDENCIES "")
+		ct_assert_target_does_not_have_property("new_shared_mock_lib"
+			INTERFACE_LINK_LIBRARIES)
+		ct_assert_target_does_not_have_property("new_shared_mock_lib"
+			LINK_LIBRARIES)
+	endfunction()
+
 	ct_add_section(NAME "add_with_target_name")
 	function(${CMAKETEST_SECTION})
 		_set_up_test()
 		binary_target(ADD_DEPENDENCIES "new_static_mock_lib"
-			DEPENDENCIES "dep_static_mock_lib_1")
+			DEPENDENCIES "dep_static_mock_lib_1" "dep_static_mock_lib_2")
 		get_target_property(output_bin_property "new_static_mock_lib"
 			INTERFACE_LINK_LIBRARIES)
-		ct_assert_equal(output_bin_property "dep_static_mock_lib_1")
+		ct_assert_equal(output_bin_property "dep_static_mock_lib_1;dep_static_mock_lib_2")
 		get_target_property(output_bin_property "new_static_mock_lib"
 			LINK_LIBRARIES)
-		ct_assert_equal(output_bin_property "dep_static_mock_lib_1")
+		ct_assert_equal(output_bin_property "dep_static_mock_lib_1;dep_static_mock_lib_2")
 
 		binary_target(ADD_DEPENDENCIES "new_shared_mock_lib"
-			DEPENDENCIES "dep_shared_mock_lib_1")
+			DEPENDENCIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2")
 		get_target_property(output_bin_property "new_shared_mock_lib"
 			INTERFACE_LINK_LIBRARIES)
-		ct_assert_equal(output_bin_property "dep_shared_mock_lib_1")
+		ct_assert_equal(output_bin_property "dep_shared_mock_lib_1;dep_shared_mock_lib_2")
 		get_target_property(output_bin_property "new_shared_mock_lib"
 			LINK_LIBRARIES)
-		ct_assert_equal(output_bin_property "dep_shared_mock_lib_1")
+		ct_assert_equal(output_bin_property "dep_shared_mock_lib_1;dep_shared_mock_lib_2")
 	endfunction()
 
 	ct_add_section(NAME "add_with_gen_expr")
@@ -77,34 +93,34 @@ function(${CMAKETEST_TEST})
 			_set_up_test()
 			binary_target(ADD_DEPENDENCIES "new_static_mock_lib"
 				DEPENDENCIES
-					"$<BUILD_INTERFACE:dep_static_mock_lib_1>"
-					"$<INSTALL_INTERFACE:dep_static_mock_lib_1>"
+					"$<BUILD_INTERFACE:dep_static_mock_lib_1;dep_static_mock_lib_2>"
+					"$<INSTALL_INTERFACE:dep_static_mock_lib_1;dep_static_mock_lib_2>"
 			)
 			get_target_property(output_bin_property "new_static_mock_lib"
 				INTERFACE_LINK_LIBRARIES)
 			ct_assert_equal(output_bin_property
-				"$<BUILD_INTERFACE:dep_static_mock_lib_1>;$<INSTALL_INTERFACE:dep_static_mock_lib_1>"
+				"$<BUILD_INTERFACE:dep_static_mock_lib_1;dep_static_mock_lib_2>;$<INSTALL_INTERFACE:dep_static_mock_lib_1;dep_static_mock_lib_2>"
 			)
 			get_target_property(output_bin_property "new_static_mock_lib"
 				LINK_LIBRARIES)
 			ct_assert_equal(output_bin_property
-				"$<BUILD_INTERFACE:dep_static_mock_lib_1>;$<INSTALL_INTERFACE:dep_static_mock_lib_1>"
+				"$<BUILD_INTERFACE:dep_static_mock_lib_1;dep_static_mock_lib_2>;$<INSTALL_INTERFACE:dep_static_mock_lib_1;dep_static_mock_lib_2>"
 			)
 
 			binary_target(ADD_DEPENDENCIES "new_shared_mock_lib"
 				DEPENDENCIES
-					"$<BUILD_INTERFACE:dep_shared_mock_lib_1>"
-					"$<INSTALL_INTERFACE:dep_shared_mock_lib_1>"
+					"$<BUILD_INTERFACE:dep_shared_mock_lib_1;dep_shared_mock_lib_2>"
+					"$<INSTALL_INTERFACE:dep_shared_mock_lib_1;dep_shared_mock_lib_2>"
 			)
 			get_target_property(output_bin_property "new_shared_mock_lib"
 				INTERFACE_LINK_LIBRARIES)
 			ct_assert_equal(output_bin_property
-				"$<BUILD_INTERFACE:dep_shared_mock_lib_1>;$<INSTALL_INTERFACE:dep_shared_mock_lib_1>"
+				"$<BUILD_INTERFACE:dep_shared_mock_lib_1;dep_shared_mock_lib_2>;$<INSTALL_INTERFACE:dep_shared_mock_lib_1;dep_shared_mock_lib_2>"
 			)
 			get_target_property(output_bin_property "new_shared_mock_lib"
 				LINK_LIBRARIES)
 			ct_assert_equal(output_bin_property
-				"$<BUILD_INTERFACE:dep_shared_mock_lib_1>;$<INSTALL_INTERFACE:dep_shared_mock_lib_1>"
+				"$<BUILD_INTERFACE:dep_shared_mock_lib_1;dep_shared_mock_lib_2>;$<INSTALL_INTERFACE:dep_shared_mock_lib_1;dep_shared_mock_lib_2>"
 			)
 		endfunction()
 
@@ -113,32 +129,32 @@ function(${CMAKETEST_TEST})
 			_set_up_test()
 			binary_target(ADD_DEPENDENCIES "new_static_mock_lib"
 				DEPENDENCIES
-					"$<BUILD_INTERFACE:dep_static_mock_lib_1>"
+					"$<BUILD_INTERFACE:dep_static_mock_lib_1;dep_static_mock_lib_2>"
 			)
 			get_target_property(output_bin_property "new_static_mock_lib"
 				INTERFACE_LINK_LIBRARIES)
 			ct_assert_equal(output_bin_property
-				"$<BUILD_INTERFACE:dep_static_mock_lib_1>"
+				"$<BUILD_INTERFACE:dep_static_mock_lib_1;dep_static_mock_lib_2>"
 			)
 			get_target_property(output_bin_property "new_static_mock_lib"
 				LINK_LIBRARIES)
 			ct_assert_equal(output_bin_property
-				"$<BUILD_INTERFACE:dep_static_mock_lib_1>"
+				"$<BUILD_INTERFACE:dep_static_mock_lib_1;dep_static_mock_lib_2>"
 			)
 
 			binary_target(ADD_DEPENDENCIES "new_shared_mock_lib"
 				DEPENDENCIES
-					"$<BUILD_INTERFACE:dep_shared_mock_lib_1>"
+					"$<BUILD_INTERFACE:dep_shared_mock_lib_1;dep_shared_mock_lib_2>"
 			)
 			get_target_property(output_bin_property "new_shared_mock_lib"
 				INTERFACE_LINK_LIBRARIES)
 			ct_assert_equal(output_bin_property
-				"$<BUILD_INTERFACE:dep_shared_mock_lib_1>"
+				"$<BUILD_INTERFACE:dep_shared_mock_lib_1;dep_shared_mock_lib_2>"
 			)
 			get_target_property(output_bin_property "new_shared_mock_lib"
 				LINK_LIBRARIES)
 			ct_assert_equal(output_bin_property
-				"$<BUILD_INTERFACE:dep_shared_mock_lib_1>"
+				"$<BUILD_INTERFACE:dep_shared_mock_lib_1;dep_shared_mock_lib_2>"
 			)
 		endfunction()
 
@@ -147,32 +163,32 @@ function(${CMAKETEST_TEST})
 			_set_up_test()
 			binary_target(ADD_DEPENDENCIES "new_static_mock_lib"
 				DEPENDENCIES
-					"$<INSTALL_INTERFACE:dep_static_mock_lib_1>"
+					"$<INSTALL_INTERFACE:dep_static_mock_lib_1;dep_static_mock_lib_2>"
 			)
 			get_target_property(output_bin_property "new_static_mock_lib"
 				INTERFACE_LINK_LIBRARIES)
 			ct_assert_equal(output_bin_property
-				"$<INSTALL_INTERFACE:dep_static_mock_lib_1>"
+				"$<INSTALL_INTERFACE:dep_static_mock_lib_1;dep_static_mock_lib_2>"
 			)
 			get_target_property(output_bin_property "new_static_mock_lib"
 				LINK_LIBRARIES)
 			ct_assert_equal(output_bin_property
-				"$<INSTALL_INTERFACE:dep_static_mock_lib_1>"
+				"$<INSTALL_INTERFACE:dep_static_mock_lib_1;dep_static_mock_lib_2>"
 			)
 
 			binary_target(ADD_DEPENDENCIES "new_shared_mock_lib"
 				DEPENDENCIES
-					"$<INSTALL_INTERFACE:dep_shared_mock_lib_1>"
+					"$<INSTALL_INTERFACE:dep_shared_mock_lib_1;dep_shared_mock_lib_2>"
 			)
 			get_target_property(output_bin_property "new_shared_mock_lib"
 				INTERFACE_LINK_LIBRARIES)
 			ct_assert_equal(output_bin_property
-				"$<INSTALL_INTERFACE:dep_shared_mock_lib_1>"
+				"$<INSTALL_INTERFACE:dep_shared_mock_lib_1;dep_shared_mock_lib_2>"
 			)
 			get_target_property(output_bin_property "new_shared_mock_lib"
 				LINK_LIBRARIES)
 			ct_assert_equal(output_bin_property
-				"$<INSTALL_INTERFACE:dep_shared_mock_lib_1>"
+				"$<INSTALL_INTERFACE:dep_shared_mock_lib_1;dep_shared_mock_lib_2>"
 			)
 		endfunction()
 	endfunction()
@@ -205,11 +221,5 @@ function(${CMAKETEST_TEST})
 	function(${CMAKETEST_SECTION})
 		binary_target(ADD_DEPENDENCIES "new_shared_mock_lib"
 			DEPENDENCIES)
-	endfunction()
-
-	ct_add_section(NAME "throws_if_arg_dependencies_is_missing_3" EXPECTFAIL)
-	function(${CMAKETEST_SECTION})
-		binary_target(ADD_DEPENDENCIES "new_shared_mock_lib"
-			DEPENDENCIES "")
 	endfunction()
 endfunction()
