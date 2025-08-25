@@ -31,7 +31,6 @@ function(${CMAKETEST_TEST})
 		add_library("dep_shared_mock_lib_2" SHARED)
 		target_sources("dep_shared_mock_lib_2" PRIVATE "${TESTS_DATA_DIR}/src/main.cpp")
 	endmacro()
-
 	if(NOT TARGET "new_static_mock_lib" OR NOT TARGET "new_shared_mock_lib")
 		_create_mock_bins()
 	endif()
