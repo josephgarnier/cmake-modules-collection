@@ -253,8 +253,8 @@ Usage
   :command:`binary_target(ADD_SOURCES)`, :command:`binary_target(ADD_PRECOMPILED_HEADER)`,
   :command:`binary_target(ADD_INCLUDE_DIRECTORIES)`, and :command:`binary_target(ADD_DEPENDENCIES)`.
 
-  The second argument must specify the type of target to create: ``STATIC``,
-  ``SHARED``, ``HEADER``, or ``EXEC``. Only one type may be given.
+  The second argument must specify the type of binary target to create:
+  ``STATIC``, ``SHARED``, ``HEADER``, or ``EXEC``. Only one type may be given.
 
   Additional parameters can be provided to configure compile options,
   precompiled headers, include directories, and target dependencies. Each of

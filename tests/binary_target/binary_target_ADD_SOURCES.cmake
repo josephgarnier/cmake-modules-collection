@@ -116,7 +116,7 @@ function(${CMAKETEST_TEST})
 			INTERFACE_SOURCES)
 	endfunction()
 
-	# # Errors checking
+	# Errors checking
 	ct_add_section(NAME "throws_if_arg_target_is_missing_1" EXPECTFAIL)
 	function(${CMAKETEST_SECTION})
 		binary_target(ADD_SOURCES
