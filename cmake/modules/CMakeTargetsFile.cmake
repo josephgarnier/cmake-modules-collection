@@ -216,9 +216,9 @@ Synopsis
   cmake_targets_file(`LOAD`_ <json-file-path>)
   cmake_targets_file(`IS_LOADED`_ <output-var>)
   cmake_targets_file(`GET_LOADED_FILE`_ <output-var>)
-  cmake_targets_file(`GET_SETTINGS`_ <output-var> TARGET <target-dir-path>)
-  cmake_targets_file(`GET_SETTINGS_KEYS`_ <output-var> TARGET <target-dir-path>)
-  cmake_targets_file(`GET_SETTING_VALUE`_ <output-var> TARGET <target-dir-path> KEY <setting-name>)
+  cmake_targets_file(`GET_SETTINGS`_ <output-map-var> TARGET <target-dir-path>)
+  cmake_targets_file(`GET_SETTINGS_KEYS`_ <output-list-var> TARGET <target-dir-path>)
+  cmake_targets_file(`GET_VALUE`_ <output-var> TARGET <target-dir-path> KEY <setting-name>)
   cmake_targets_file(`PRINT_CONFIGS`_ [])
   cmake_targets_file(`PRINT_TARGET_CONFIG`_ <target-dir-path>)
 
@@ -348,7 +348,7 @@ Usage
     #   }
 
 .. signature::
-  cmake_targets_file(GET_SETTINGS <output-var> TARGET <target-dir-path>)
+  cmake_targets_file(GET_SETTINGS <output-map-var> TARGET <target-dir-path>)
 
   Retrieves the list of all settings defined for a given target configuration
   in the global property ``TARGETS_CONFIG_<target-dir-path>``.
@@ -375,7 +375,7 @@ Usage
     #   src/main.cpp;pchFile:include/fruit_salad_pch.h;...
 
 .. signature::
-  cmake_targets_file(GET_SETTINGS_KEYS <output-var> TARGET <target-dir-path>)
+  cmake_targets_file(GET_SETTINGS_KEYS <output-list-var> TARGET <target-dir-path>)
 
   Retrieves the list of all setting keys defined for a given target
   configuration in the global property ``TARGETS_CONFIG_<target-dir-path>``.
@@ -402,7 +402,7 @@ Usage
     #   build.compileDefinitions;...
 
 .. signature::
-  cmake_targets_file(GET_SETTING_VALUE <output-var> TARGET <target-dir-path> KEY <setting-name>)
+  cmake_targets_file(GET_VALUE <output-var> TARGET <target-dir-path> KEY <setting-name>)
 
   Retrieves the value of a specific configuration defined for a given target
   configuration in the global property ``TARGETS_CONFIG_<target-dir-path>``.
@@ -427,16 +427,16 @@ Usage
 
   .. code-block:: cmake
 
-    cmake_targets_file(GET_SETTING_VALUE setting_value TARGET "src" KEY "type")
+    cmake_targets_file(GET_VALUE setting_value TARGET "src" KEY "type")
     message("setting_value (type): ${setting_value}")
     # output is:
     #   setting_value (type): executable
-    cmake_targets_file(GET_SETTING_VALUE setting_value TARGET "src" KEY "build.compileDefinitions")
+    cmake_targets_file(GET_VALUE setting_value TARGET "src" KEY "build.compileDefinitions")
     message("setting_value (build.compileDefinitions): ${setting_value}")
     # output is:
     #   setting_value (build.compileDefinitions): MY_DEFINE=42;MY_OTHER_DEFINE;
     #   MY_OTHER_DEFINE=42
-    cmake_targets_file(GET_SETTING_VALUE setting_value TARGET "src" KEY "dependencies")
+    cmake_targets_file(GET_VALUE setting_value TARGET "src" KEY "dependencies")
     message("setting_value (dependencies): ${setting_value}")
     # output is:
     #   setting_value (dependencies): AppleLib;BananaLib
@@ -503,7 +503,7 @@ include(Map)
 # Public function of this module
 function(cmake_targets_file)
 	set(options PRINT_CONFIGS)
-	set(one_value_args LOAD IS_LOADED GET_LOADED_FILE GET_SETTING_VALUE TARGET KEY GET_SETTINGS GET_SETTINGS_KEYS PRINT_TARGET_CONFIG)
+	set(one_value_args LOAD IS_LOADED GET_LOADED_FILE GET_VALUE TARGET KEY GET_SETTINGS GET_SETTINGS_KEYS PRINT_TARGET_CONFIG)
 	set(multi_value_args "")
 	cmake_parse_arguments(CTF "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 
@@ -516,8 +516,8 @@ function(cmake_targets_file)
 		_cmake_targets_file_is_loaded()
 	elseif(DEFINED CTF_GET_LOADED_FILE)
 		_cmake_targets_file_get_loaded_file()
-	elseif(DEFINED CTF_GET_SETTING_VALUE)
-		_cmake_targets_file_get_setting_value()
+	elseif(DEFINED CTF_GET_VALUE)
+		_cmake_targets_file_get_value()
 	elseif(DEFINED CTF_GET_SETTINGS)
 		_cmake_targets_file_get_settings()
 	elseif(DEFINED CTF_GET_SETTINGS_KEYS)
@@ -754,9 +754,9 @@ endmacro()
 
 #------------------------------------------------------------------------------
 # Internal usage
-macro(_cmake_targets_file_get_setting_value)
-	if(NOT DEFINED CTF_GET_SETTING_VALUE)
-		message(FATAL_ERROR "GET_SETTING_VALUE argument is missing or need a value!")
+macro(_cmake_targets_file_get_value)
+	if(NOT DEFINED CTF_GET_VALUE)
+		message(FATAL_ERROR "GET_VALUE argument is missing or need a value!")
 	endif()
 	if(NOT DEFINED CTF_TARGET)
 		message(FATAL_ERROR "TARGET argument is missing or need a value!")
@@ -782,7 +782,7 @@ macro(_cmake_targets_file_get_setting_value)
 		MATCHES "(dependencies|compileFeatures|compileDefinitions|compileOptions|linkOptions)$")
 		_deserialize_list(setting_value "${setting_value}")
 	endif()
-	set(${CTF_GET_SETTING_VALUE} "${setting_value}" PARENT_SCOPE)
+	set(${CTF_GET_VALUE} "${setting_value}" PARENT_SCOPE)
 endmacro()
 
 #------------------------------------------------------------------------------

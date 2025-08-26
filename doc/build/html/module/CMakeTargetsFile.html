@@ -320,9 +320,9 @@ readable JSON schema for the <code class="docutils literal notranslate"><span cl
 <pre class="literal-block">cmake_targets_file(<a class="reference internal" href="#load">LOAD</a> &lt;json-file-path&gt;)
 cmake_targets_file(<a class="reference internal" href="#is-loaded">IS_LOADED</a> &lt;output-var&gt;)
 cmake_targets_file(<a class="reference internal" href="#get-loaded-file">GET_LOADED_FILE</a> &lt;output-var&gt;)
-cmake_targets_file(<a class="reference internal" href="#get-settings">GET_SETTINGS</a> &lt;output-var&gt; TARGET &lt;target-dir-path&gt;)
-cmake_targets_file(<a class="reference internal" href="#get-settings-keys">GET_SETTINGS_KEYS</a> &lt;output-var&gt; TARGET &lt;target-dir-path&gt;)
-cmake_targets_file(<a class="reference internal" href="#get-setting-value">GET_SETTING_VALUE</a> &lt;output-var&gt; TARGET &lt;target-dir-path&gt; KEY &lt;setting-name&gt;)
+cmake_targets_file(<a class="reference internal" href="#get-settings">GET_SETTINGS</a> &lt;output-map-var&gt; TARGET &lt;target-dir-path&gt;)
+cmake_targets_file(<a class="reference internal" href="#get-settings-keys">GET_SETTINGS_KEYS</a> &lt;output-list-var&gt; TARGET &lt;target-dir-path&gt;)
+cmake_targets_file(<a class="reference internal" href="#get-value">GET_VALUE</a> &lt;output-var&gt; TARGET &lt;target-dir-path&gt; KEY &lt;setting-name&gt;)
 cmake_targets_file(<a class="reference internal" href="#print-configs">PRINT_CONFIGS</a> [])
 cmake_targets_file(<a class="reference internal" href="#print-target-config">PRINT_TARGET_CONFIG</a> &lt;target-dir-path&gt;)</pre>
 </section>
@@ -441,7 +441,7 @@ targets configuration file. The content is retrieved from the global property
 
 <dl class="cmake signature">
 <dt class="sig sig-object cmake" id="get-settings">
-<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">cmake_targets_file(</span></span><span class="no"><span class="pre">GET_SETTINGS</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;output-var&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">TARGET</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;target-dir-path&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#get-settings" title="Link to this definition">¶</a></dt>
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">cmake_targets_file(</span></span><span class="no"><span class="pre">GET_SETTINGS</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;output-map-var&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">TARGET</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;target-dir-path&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#get-settings" title="Link to this definition">¶</a></dt>
 <dd><p>Retrieves the list of all settings defined for a given target configuration
 in the global property <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_&lt;target-dir-path&gt;</span></code>.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">&lt;target-dir-path&gt;</span></code> specifies the directory path of the target whose
@@ -464,7 +464,7 @@ exist in the loaded configuration file.</p>
 
 <dl class="cmake signature">
 <dt class="sig sig-object cmake" id="get-settings-keys">
-<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">cmake_targets_file(</span></span><span class="no"><span class="pre">GET_SETTINGS_KEYS</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;output-var&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">TARGET</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;target-dir-path&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#get-settings-keys" title="Link to this definition">¶</a></dt>
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">cmake_targets_file(</span></span><span class="no"><span class="pre">GET_SETTINGS_KEYS</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;output-list-var&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">TARGET</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;target-dir-path&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#get-settings-keys" title="Link to this definition">¶</a></dt>
 <dd><p>Retrieves the list of all setting keys defined for a given target
 configuration in the global property <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_&lt;target-dir-path&gt;</span></code>.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">&lt;target-dir-path&gt;</span></code> specifies the directory path of the target whose
@@ -486,8 +486,8 @@ exist in the loaded configuration file.</p>
 </dd></dl>
 
 <dl class="cmake signature">
-<dt class="sig sig-object cmake" id="get-setting-value">
-<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">cmake_targets_file(</span></span><span class="no"><span class="pre">GET_SETTING_VALUE</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;output-var&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">TARGET</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;target-dir-path&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">KEY</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;setting-name&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#get-setting-value" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object cmake" id="get-value">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">cmake_targets_file(</span></span><span class="no"><span class="pre">GET_VALUE</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;output-var&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">TARGET</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;target-dir-path&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">KEY</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;setting-name&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#get-value" title="Link to this definition">¶</a></dt>
 <dd><p>Retrieves the value of a specific configuration defined for a given target
 configuration in the global property <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_&lt;target-dir-path&gt;</span></code>.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">&lt;target-dir-path&gt;</span></code> specifies the directory path of the target whose
@@ -503,16 +503,16 @@ are concatenated using a dot (<code class="docutils literal notranslate"><span c
 the <span class="target" id="index-6-command:cmake_targets_file"></span><a class="reference internal" href="#load" title="cmake_targets_file(load)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(LOAD)</span></code></a> command or if the <code class="docutils literal notranslate"><span class="pre">TARGET</span></code> does not
 exist in the loaded configuration file.</p>
 <p>Example usage:</p>
-<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">cmake_targets_file(</span><span class="no">GET_SETTING_VALUE</span><span class="w"> </span><span class="nb">setting_value</span><span class="w"> </span><span class="no">TARGET</span><span class="w"> </span><span class="s">&quot;src&quot;</span><span class="w"> </span><span class="no">KEY</span><span class="w"> </span><span class="s">&quot;type&quot;</span><span class="nf">)</span>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">cmake_targets_file(</span><span class="no">GET_VALUE</span><span class="w"> </span><span class="nb">setting_value</span><span class="w"> </span><span class="no">TARGET</span><span class="w"> </span><span class="s">&quot;src&quot;</span><span class="w"> </span><span class="no">KEY</span><span class="w"> </span><span class="s">&quot;type&quot;</span><span class="nf">)</span>
 <span class="nf">message(</span><span class="s">&quot;setting_value (type): ${setting_value}&quot;</span><span class="nf">)</span>
 <span class="c"># output is:</span>
 <span class="c">#   setting_value (type): executable</span>
-<span class="nf">cmake_targets_file(</span><span class="no">GET_SETTING_VALUE</span><span class="w"> </span><span class="nb">setting_value</span><span class="w"> </span><span class="no">TARGET</span><span class="w"> </span><span class="s">&quot;src&quot;</span><span class="w"> </span><span class="no">KEY</span><span class="w"> </span><span class="s">&quot;build.compileDefinitions&quot;</span><span class="nf">)</span>
+<span class="nf">cmake_targets_file(</span><span class="no">GET_VALUE</span><span class="w"> </span><span class="nb">setting_value</span><span class="w"> </span><span class="no">TARGET</span><span class="w"> </span><span class="s">&quot;src&quot;</span><span class="w"> </span><span class="no">KEY</span><span class="w"> </span><span class="s">&quot;build.compileDefinitions&quot;</span><span class="nf">)</span>
 <span class="nf">message(</span><span class="s">&quot;setting_value (build.compileDefinitions): ${setting_value}&quot;</span><span class="nf">)</span>
 <span class="c"># output is:</span>
 <span class="c">#   setting_value (build.compileDefinitions): MY_DEFINE=42;MY_OTHER_DEFINE;</span>
 <span class="c">#   MY_OTHER_DEFINE=42</span>
-<span class="nf">cmake_targets_file(</span><span class="no">GET_SETTING_VALUE</span><span class="w"> </span><span class="nb">setting_value</span><span class="w"> </span><span class="no">TARGET</span><span class="w"> </span><span class="s">&quot;src&quot;</span><span class="w"> </span><span class="no">KEY</span><span class="w"> </span><span class="s">&quot;dependencies&quot;</span><span class="nf">)</span>
+<span class="nf">cmake_targets_file(</span><span class="no">GET_VALUE</span><span class="w"> </span><span class="nb">setting_value</span><span class="w"> </span><span class="no">TARGET</span><span class="w"> </span><span class="s">&quot;src&quot;</span><span class="w"> </span><span class="no">KEY</span><span class="w"> </span><span class="s">&quot;dependencies&quot;</span><span class="nf">)</span>
 <span class="nf">message(</span><span class="s">&quot;setting_value (dependencies): ${setting_value}&quot;</span><span class="nf">)</span>
 <span class="c"># output is:</span>
 <span class="c">#   setting_value (dependencies): AppleLib;BananaLib</span>
