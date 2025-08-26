@@ -216,6 +216,7 @@ Synopsis
   cmake_targets_file(`LOAD`_ <json-file-path>)
   cmake_targets_file(`IS_LOADED`_ <output-var>)
   cmake_targets_file(`GET_LOADED_FILE`_ <output-var>)
+  cmake_targets_file(`HAS_CONFIG`_ <output-var> TARGET <target-dir-path>)
   cmake_targets_file(`GET_SETTINGS`_ <output-map-var> TARGET <target-dir-path>)
   cmake_targets_file(`GET_KEYS`_ <output-list-var> TARGET <target-dir-path>)
   cmake_targets_file(`GET_VALUE`_ <output-var> TARGET <target-dir-path> KEY <setting-name>)
@@ -346,6 +347,21 @@ Usage
     #       ...
     #     }
     #   }
+
+.. signature::
+  cmake_targets_file(HAS_CONFIG <output-var> TARGET <target-dir-path>)
+
+  Set ``<output-var>`` to ``on`` if a configuration exists for the given
+  target directory path ``<target-dir-path>``, or ``off`` otherwise.
+
+  Example usage :
+
+  .. code-block:: cmake
+
+    cmake_targets_file(HAS_CONFIG is_target_configured TARGET "src")
+    message("is_target_configured (src): ${is_target_configured}")
+    # output is:
+    #   is_target_configured (src): on
 
 .. signature::
   cmake_targets_file(GET_SETTINGS <output-map-var> TARGET <target-dir-path>)
@@ -503,7 +519,7 @@ include(Map)
 # Public function of this module
 function(cmake_targets_file)
 	set(options PRINT_CONFIGS)
-	set(one_value_args LOAD IS_LOADED GET_LOADED_FILE GET_VALUE TARGET KEY GET_SETTINGS GET_KEYS PRINT_TARGET_CONFIG)
+	set(one_value_args LOAD IS_LOADED GET_LOADED_FILE GET_VALUE TARGET KEY GET_SETTINGS GET_KEYS PRINT_TARGET_CONFIG HAS_CONFIG)
 	set(multi_value_args "")
 	cmake_parse_arguments(CTF "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 
@@ -516,6 +532,8 @@ function(cmake_targets_file)
 		_cmake_targets_file_is_loaded()
 	elseif(DEFINED CTF_GET_LOADED_FILE)
 		_cmake_targets_file_get_loaded_file()
+	elseif(DEFINED CTF_HAS_CONFIG)
+		_cmake_targets_file_has_config()
 	elseif(DEFINED CTF_GET_VALUE)
 		_cmake_targets_file_get_value()
 	elseif(DEFINED CTF_GET_SETTINGS)
@@ -750,6 +768,25 @@ macro(_cmake_targets_file_get_loaded_file)
 
 	get_property(loaded_file_content GLOBAL PROPERTY "TARGETS_CONFIG_RAW_JSON")
 	set(${CTF_GET_LOADED_FILE} "${loaded_file_content}" PARENT_SCOPE)
+endmacro()
+
+#------------------------------------------------------------------------------
+# Internal usage
+macro(_cmake_targets_file_has_config)
+	if(NOT DEFINED CTF_HAS_CONFIG)
+		message(FATAL_ERROR "HAS_CONFIG argument is missing or need a value!")
+	endif()
+	if(NOT DEFINED CTF_TARGET)
+		message(FATAL_ERROR "TARGET argument is missing or need a value!")
+	endif()
+	_assert_config_file_loaded()
+
+	get_property(does_config_exist GLOBAL PROPERTY "TARGETS_CONFIG_${CTF_TARGET}" SET)
+	if(${does_config_exist})
+		set(${CTF_HAS_CONFIG} on PARENT_SCOPE)
+	else()
+		set(${CTF_HAS_CONFIG} off PARENT_SCOPE)
+	endif()
 endmacro()
 
 #------------------------------------------------------------------------------

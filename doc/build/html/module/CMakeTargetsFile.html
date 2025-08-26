@@ -320,6 +320,7 @@ readable JSON schema for the <code class="docutils literal notranslate"><span cl
 <pre class="literal-block">cmake_targets_file(<a class="reference internal" href="#load">LOAD</a> &lt;json-file-path&gt;)
 cmake_targets_file(<a class="reference internal" href="#is-loaded">IS_LOADED</a> &lt;output-var&gt;)
 cmake_targets_file(<a class="reference internal" href="#get-loaded-file">GET_LOADED_FILE</a> &lt;output-var&gt;)
+cmake_targets_file(<a class="reference internal" href="#has-config">HAS_CONFIG</a> &lt;output-var&gt; TARGET &lt;target-dir-path&gt;)
 cmake_targets_file(<a class="reference internal" href="#get-settings">GET_SETTINGS</a> &lt;output-map-var&gt; TARGET &lt;target-dir-path&gt;)
 cmake_targets_file(<a class="reference internal" href="#get-keys">GET_KEYS</a> &lt;output-list-var&gt; TARGET &lt;target-dir-path&gt;)
 cmake_targets_file(<a class="reference internal" href="#get-value">GET_VALUE</a> &lt;output-var&gt; TARGET &lt;target-dir-path&gt; KEY &lt;setting-name&gt;)
@@ -440,6 +441,20 @@ targets configuration file. The content is retrieved from the global property
 </dd></dl>
 
 <dl class="cmake signature">
+<dt class="sig sig-object cmake" id="has-config">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">cmake_targets_file(</span></span><span class="no"><span class="pre">HAS_CONFIG</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;output-var&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">TARGET</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;target-dir-path&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#has-config" title="Link to this definition">¶</a></dt>
+<dd><p>Set <code class="docutils literal notranslate"><span class="pre">&lt;output-var&gt;</span></code> to <code class="docutils literal notranslate"><span class="pre">on</span></code> if a configuration exists for the given
+target directory path <code class="docutils literal notranslate"><span class="pre">&lt;target-dir-path&gt;</span></code>, or <code class="docutils literal notranslate"><span class="pre">off</span></code> otherwise.</p>
+<p>Example usage :</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">cmake_targets_file(</span><span class="no">HAS_CONFIG</span><span class="w"> </span><span class="nb">is_target_configured</span><span class="w"> </span><span class="no">TARGET</span><span class="w"> </span><span class="s">&quot;src&quot;</span><span class="nf">)</span>
+<span class="nf">message(</span><span class="s">&quot;is_target_configured (src): ${is_target_configured}&quot;</span><span class="nf">)</span>
+<span class="c"># output is:</span>
+<span class="c">#   is_target_configured (src): on</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="cmake signature">
 <dt class="sig sig-object cmake" id="get-settings">
 <span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">cmake_targets_file(</span></span><span class="no"><span class="pre">GET_SETTINGS</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;output-map-var&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">TARGET</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;target-dir-path&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#get-settings" title="Link to this definition">¶</a></dt>
 <dd><p>Retrieves the list of all settings defined for a given target configuration
@@ -478,9 +493,14 @@ exist in the loaded configuration file.</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">cmake_targets_file(</span><span class="no">GET_KEYS</span><span class="w"> </span><span class="nb">setting_keys</span><span class="w"> </span><span class="no">TARGET</span><span class="w"> </span><span class="s">&quot;src&quot;</span><span class="nf">)</span>
 <span class="nf">message(</span><span class="s">&quot;setting_keys: ${setting_keys}&quot;</span><span class="nf">)</span>
-<span class="c"># output is:</span>
-<span class="c">#   setting_keys: name;type;mainFile;pchFile;build.compileFeatures;</span>
-<span class="c">#   build.compileDefinitions;...</span>
+<span class="c"># With the JSON example above, output is:</span>
+<span class="c">#   setting_keys: name;type;mainFile;pchFile;build.compileFeatures;build.</span>
+<span class="c">#   compileDefinitions;build.compileOptions;build.linkOptions;headerPolicy.</span>
+<span class="c">#   mode;headerPolicy.includeDir;dependencies;dependencies.AppleLib.</span>
+<span class="c">#   rulesFile;dependencies.AppleLib.minVersion;dependencies.AppleLib.</span>
+<span class="c">#   autodownload;dependencies.AppleLib.optional;dependencies.BananaLib.</span>
+<span class="c">#   rulesFile;dependencies.BananaLib.minVersion;dependencies.BananaLib.</span>
+<span class="c">#   autodownload;dependencies.BananaLib.optional</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -488,8 +508,9 @@ exist in the loaded configuration file.</p>
 <dl class="cmake signature">
 <dt class="sig sig-object cmake" id="get-value">
 <span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">cmake_targets_file(</span></span><span class="no"><span class="pre">GET_VALUE</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;output-var&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">TARGET</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;target-dir-path&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">KEY</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;setting-name&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#get-value" title="Link to this definition">¶</a></dt>
-<dd><p>Retrieves the value of a specific configuration defined for a given target
-configuration in the global property <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_&lt;target-dir-path&gt;</span></code>.</p>
+<dd><p>Retrieves the value associated to a specific setting key <code class="docutils literal notranslate"><span class="pre">&lt;setting-name&gt;</span></code>
+defined for a given target configuration in the global property
+<code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_&lt;target-dir-path&gt;</span></code>.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">&lt;target-dir-path&gt;</span></code> specifies the directory path of the target whose
 configuration setting should be retrieved. This must correspond to a path
 listed in the global property <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_LIST</span></code>, and must match one

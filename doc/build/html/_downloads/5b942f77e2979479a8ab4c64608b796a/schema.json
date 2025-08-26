@@ -28,7 +28,7 @@
               "minLength": 1
             },
             "type": {
-              "description": "The type of binary to generate for this target: static library, shared library, header-only, or executable",
+              "description": "The type of binary to generate for this target: static library ('staticLib'), shared library ('sharedLib'), header-only ('interfaceLib'), or executable ('executable')",
               "type": "string",
               "enum": [
                 "staticLib",
