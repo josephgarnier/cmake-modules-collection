@@ -413,15 +413,21 @@ Usage
 
     cmake_targets_file(GET_KEYS setting_keys TARGET "src")
     message("setting_keys: ${setting_keys}")
-    # output is:
-    #   setting_keys: name;type;mainFile;pchFile;build.compileFeatures;
-    #   build.compileDefinitions;...
+    # With the JSON example above, output is:
+    #   setting_keys: name;type;mainFile;pchFile;build.compileFeatures;build.
+    #   compileDefinitions;build.compileOptions;build.linkOptions;headerPolicy.
+    #   mode;headerPolicy.includeDir;dependencies;dependencies.AppleLib.
+    #   rulesFile;dependencies.AppleLib.minVersion;dependencies.AppleLib.
+    #   autodownload;dependencies.AppleLib.optional;dependencies.BananaLib.
+    #   rulesFile;dependencies.BananaLib.minVersion;dependencies.BananaLib.
+    #   autodownload;dependencies.BananaLib.optional
 
 .. signature::
   cmake_targets_file(GET_VALUE <output-var> TARGET <target-dir-path> KEY <setting-name>)
 
-  Retrieves the value of a specific configuration defined for a given target
-  configuration in the global property ``TARGETS_CONFIG_<target-dir-path>``.
+  Retrieves the value associated to a specific setting key ``<setting-name>``
+  defined for a given target configuration in the global property
+  ``TARGETS_CONFIG_<target-dir-path>``.
 
   The ``<target-dir-path>`` specifies the directory path of the target whose
   configuration setting should be retrieved. This must correspond to a path

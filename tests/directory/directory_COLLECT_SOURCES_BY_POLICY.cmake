@@ -51,14 +51,14 @@ function(${CMAKETEST_TEST})
 		directory(COLLECT_SOURCES_BY_POLICY
 			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR "${TESTS_DATA_DIR}/src"
-			SRC_SOURCE_FILES src_sources_files
+			SRC_SOURCE_FILES src_source_files
 			PUBLIC_HEADER_DIR public_header_dir
 			PUBLIC_HEADER_FILES public_header_files
 			PRIVATE_HEADER_DIR private_header_dir
 			PRIVATE_HEADER_FILES private_header_files
 		)
-		ct_assert_list(src_sources_files)
-		ct_assert_equal(src_sources_files "${expected_src_sources_output}")
+		ct_assert_list(src_source_files)
+		ct_assert_equal(src_source_files "${expected_src_sources_output}")
 		ct_assert_string(public_header_dir)
 		ct_assert_equal(public_header_dir "${TESTS_DATA_DIR}/include")
 		ct_assert_list(public_header_files)
@@ -74,14 +74,14 @@ function(${CMAKETEST_TEST})
 		directory(COLLECT_SOURCES_BY_POLICY
 			PUBLIC_HEADERS_SEPARATED off
 			SRC_DIR "${TESTS_DATA_DIR}/src"
-			SRC_SOURCE_FILES src_sources_files
+			SRC_SOURCE_FILES src_source_files
 			PUBLIC_HEADER_DIR public_header_dir
 			PUBLIC_HEADER_FILES public_header_files
 			PRIVATE_HEADER_DIR private_header_dir
 			PRIVATE_HEADER_FILES private_header_files
 		)
-		ct_assert_list(src_sources_files)
-		ct_assert_equal(src_sources_files "${expected_src_sources_output}")
+		ct_assert_list(src_source_files)
+		ct_assert_equal(src_source_files "${expected_src_sources_output}")
 		ct_assert_string(public_header_dir)
 		ct_assert_equal(public_header_dir "${TESTS_DATA_DIR}/src")
 		ct_assert_list(public_header_files)
@@ -94,14 +94,14 @@ function(${CMAKETEST_TEST})
 		directory(COLLECT_SOURCES_BY_POLICY
 			PUBLIC_HEADERS_SEPARATED off "${TESTS_DATA_DIR}/include"
 			SRC_DIR "${TESTS_DATA_DIR}/src"
-			SRC_SOURCE_FILES src_sources_files
+			SRC_SOURCE_FILES src_source_files
 			PUBLIC_HEADER_DIR public_header_dir
 			PUBLIC_HEADER_FILES public_header_files
 			PRIVATE_HEADER_DIR private_header_dir
 			PRIVATE_HEADER_FILES private_header_files
 		)
-		ct_assert_list(src_sources_files)
-		ct_assert_equal(src_sources_files "${expected_src_sources_output}")
+		ct_assert_list(src_source_files)
+		ct_assert_equal(src_source_files "${expected_src_sources_output}")
 		ct_assert_string(public_header_dir)
 		ct_assert_equal(public_header_dir "${TESTS_DATA_DIR}/src")
 		ct_assert_list(public_header_files)
@@ -117,7 +117,7 @@ function(${CMAKETEST_TEST})
 	function(${CMAKETEST_SECTION})
 		directory(COLLECT_SOURCES_BY_POLICY
 			SRC_DIR "${TESTS_DATA_DIR}/src"
-			SRC_SOURCE_FILES src_sources_files
+			SRC_SOURCE_FILES src_source_files
 			PUBLIC_HEADER_DIR public_header_dir
 			PUBLIC_HEADER_FILES public_header_files
 			PRIVATE_HEADER_DIR private_header_dir
@@ -130,7 +130,7 @@ function(${CMAKETEST_TEST})
 		directory(COLLECT_SOURCES_BY_POLICY
 			PUBLIC_HEADERS_SEPARATED
 			SRC_DIR "${TESTS_DATA_DIR}/src"
-			SRC_SOURCE_FILES src_sources_files
+			SRC_SOURCE_FILES src_source_files
 			PUBLIC_HEADER_DIR public_header_dir
 			PUBLIC_HEADER_FILES public_header_files
 			PRIVATE_HEADER_DIR private_header_dir
@@ -143,7 +143,7 @@ function(${CMAKETEST_TEST})
 		directory(COLLECT_SOURCES_BY_POLICY
 			PUBLIC_HEADERS_SEPARATED ""
 			SRC_DIR "${TESTS_DATA_DIR}/src"
-			SRC_SOURCE_FILES src_sources_files
+			SRC_SOURCE_FILES src_source_files
 			PUBLIC_HEADER_DIR public_header_dir
 			PUBLIC_HEADER_FILES public_header_files
 			PRIVATE_HEADER_DIR private_header_dir
@@ -156,7 +156,7 @@ function(${CMAKETEST_TEST})
 		directory(COLLECT_SOURCES_BY_POLICY
 			PUBLIC_HEADERS_SEPARATED "not-bool" "${TESTS_DATA_DIR}/include"
 			SRC_DIR "${TESTS_DATA_DIR}/src"
-			SRC_SOURCE_FILES src_sources_files
+			SRC_SOURCE_FILES src_source_files
 			PUBLIC_HEADER_DIR public_header_dir
 			PUBLIC_HEADER_FILES public_header_files
 			PRIVATE_HEADER_DIR private_header_dir
@@ -169,7 +169,7 @@ function(${CMAKETEST_TEST})
 		directory(COLLECT_SOURCES_BY_POLICY
 			PUBLIC_HEADERS_SEPARATED on
 			SRC_DIR "${TESTS_DATA_DIR}/src"
-			SRC_SOURCE_FILES src_sources_files
+			SRC_SOURCE_FILES src_source_files
 			PUBLIC_HEADER_DIR public_header_dir
 			PUBLIC_HEADER_FILES public_header_files
 			PRIVATE_HEADER_DIR private_header_dir
@@ -182,7 +182,7 @@ function(${CMAKETEST_TEST})
 		directory(COLLECT_SOURCES_BY_POLICY
 			PUBLIC_HEADERS_SEPARATED on ""
 			SRC_DIR "${TESTS_DATA_DIR}/src"
-			SRC_SOURCE_FILES src_sources_files
+			SRC_SOURCE_FILES src_source_files
 			PUBLIC_HEADER_DIR public_header_dir
 			PUBLIC_HEADER_FILES public_header_files
 			PRIVATE_HEADER_DIR private_header_dir
@@ -195,7 +195,7 @@ function(${CMAKETEST_TEST})
 		directory(COLLECT_SOURCES_BY_POLICY
 			PUBLIC_HEADERS_SEPARATED on "fake/directory"
 			SRC_DIR "${TESTS_DATA_DIR}/src"
-			SRC_SOURCE_FILES src_sources_files
+			SRC_SOURCE_FILES src_source_files
 			PUBLIC_HEADER_DIR public_header_dir
 			PUBLIC_HEADER_FILES public_header_files
 			PRIVATE_HEADER_DIR private_header_dir
@@ -207,7 +207,7 @@ function(${CMAKETEST_TEST})
 	function(${CMAKETEST_SECTION})
 		directory(COLLECT_SOURCES_BY_POLICY
 			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
-			SRC_SOURCE_FILES src_sources_files
+			SRC_SOURCE_FILES src_source_files
 			PUBLIC_HEADER_DIR public_header_dir
 			PUBLIC_HEADER_FILES public_header_files
 			PRIVATE_HEADER_DIR private_header_dir
@@ -220,7 +220,7 @@ function(${CMAKETEST_TEST})
 		directory(COLLECT_SOURCES_BY_POLICY
 			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR
-			SRC_SOURCE_FILES src_sources_files
+			SRC_SOURCE_FILES src_source_files
 			PUBLIC_HEADER_DIR public_header_dir
 			PUBLIC_HEADER_FILES public_header_files
 			PRIVATE_HEADER_DIR private_header_dir
@@ -233,7 +233,7 @@ function(${CMAKETEST_TEST})
 		directory(COLLECT_SOURCES_BY_POLICY
 			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR ""
-			SRC_SOURCE_FILES src_sources_files
+			SRC_SOURCE_FILES src_source_files
 			PUBLIC_HEADER_DIR public_header_dir
 			PUBLIC_HEADER_FILES public_header_files
 			PRIVATE_HEADER_DIR private_header_dir
@@ -246,7 +246,7 @@ function(${CMAKETEST_TEST})
 		directory(COLLECT_SOURCES_BY_POLICY
 			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR "fake/directory"
-			SRC_SOURCE_FILES src_sources_files
+			SRC_SOURCE_FILES src_source_files
 			PUBLIC_HEADER_DIR public_header_dir
 			PUBLIC_HEADER_FILES public_header_files
 			PRIVATE_HEADER_DIR private_header_dir
@@ -297,7 +297,7 @@ function(${CMAKETEST_TEST})
 		directory(COLLECT_SOURCES_BY_POLICY
 			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR "${TESTS_DATA_DIR}/src"
-			SRC_SOURCE_FILES "src_sources_files"
+			SRC_SOURCE_FILES "src_source_files"
 			PUBLIC_HEADER_DIR public_header_dir
 			PUBLIC_HEADER_FILES public_header_files
 			PRIVATE_HEADER_DIR private_header_dir
@@ -310,7 +310,7 @@ function(${CMAKETEST_TEST})
 		directory(COLLECT_SOURCES_BY_POLICY
 			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR "${TESTS_DATA_DIR}/src"
-			SRC_SOURCE_FILES src_sources_files
+			SRC_SOURCE_FILES src_source_files
 			PUBLIC_HEADER_FILES public_header_files
 			PRIVATE_HEADER_DIR private_header_dir
 			PRIVATE_HEADER_FILES private_header_files
@@ -322,7 +322,7 @@ function(${CMAKETEST_TEST})
 		directory(COLLECT_SOURCES_BY_POLICY
 			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR "${TESTS_DATA_DIR}/src"
-			SRC_SOURCE_FILES src_sources_files
+			SRC_SOURCE_FILES src_source_files
 			PUBLIC_HEADER_DIR
 			PUBLIC_HEADER_FILES public_header_files
 			PRIVATE_HEADER_DIR private_header_dir
@@ -335,7 +335,7 @@ function(${CMAKETEST_TEST})
 		directory(COLLECT_SOURCES_BY_POLICY
 			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR "${TESTS_DATA_DIR}/src"
-			SRC_SOURCE_FILES src_sources_files
+			SRC_SOURCE_FILES src_source_files
 			PUBLIC_HEADER_DIR ""
 			PUBLIC_HEADER_FILES public_header_files
 			PRIVATE_HEADER_DIR private_header_dir
@@ -348,7 +348,7 @@ function(${CMAKETEST_TEST})
 		directory(COLLECT_SOURCES_BY_POLICY
 			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR "${TESTS_DATA_DIR}/src"
-			SRC_SOURCE_FILES src_sources_files
+			SRC_SOURCE_FILES src_source_files
 			PUBLIC_HEADER_DIR "public_header_dir"
 			PUBLIC_HEADER_FILES public_header_files
 			PRIVATE_HEADER_DIR private_header_dir
@@ -361,7 +361,7 @@ function(${CMAKETEST_TEST})
 		directory(COLLECT_SOURCES_BY_POLICY
 			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR "${TESTS_DATA_DIR}/src"
-			SRC_SOURCE_FILES src_sources_files
+			SRC_SOURCE_FILES src_source_files
 			PUBLIC_HEADER_DIR public_header_dir
 			PRIVATE_HEADER_DIR private_header_dir
 			PRIVATE_HEADER_FILES private_header_files
@@ -373,7 +373,7 @@ function(${CMAKETEST_TEST})
 		directory(COLLECT_SOURCES_BY_POLICY
 			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR "${TESTS_DATA_DIR}/src"
-			SRC_SOURCE_FILES src_sources_files
+			SRC_SOURCE_FILES src_source_files
 			PUBLIC_HEADER_DIR public_header_dir
 			PUBLIC_HEADER_FILES
 			PRIVATE_HEADER_DIR private_header_dir
@@ -386,7 +386,7 @@ function(${CMAKETEST_TEST})
 		directory(COLLECT_SOURCES_BY_POLICY
 			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR "${TESTS_DATA_DIR}/src"
-			SRC_SOURCE_FILES src_sources_files
+			SRC_SOURCE_FILES src_source_files
 			PUBLIC_HEADER_DIR public_header_dir
 			PUBLIC_HEADER_FILES ""
 			PRIVATE_HEADER_DIR private_header_dir
@@ -399,7 +399,7 @@ function(${CMAKETEST_TEST})
 		directory(COLLECT_SOURCES_BY_POLICY
 			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR "${TESTS_DATA_DIR}/src"
-			SRC_SOURCE_FILES src_sources_files
+			SRC_SOURCE_FILES src_source_files
 			PUBLIC_HEADER_DIR public_header_dir
 			PUBLIC_HEADER_FILES "public_header_files"
 			PRIVATE_HEADER_DIR private_header_dir
@@ -412,7 +412,7 @@ function(${CMAKETEST_TEST})
 		directory(COLLECT_SOURCES_BY_POLICY
 			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR "${TESTS_DATA_DIR}/src"
-			SRC_SOURCE_FILES src_sources_files
+			SRC_SOURCE_FILES src_source_files
 			PUBLIC_HEADER_DIR public_header_dir
 			PUBLIC_HEADER_FILES public_header_files
 			PRIVATE_HEADER_FILES private_header_files
@@ -424,7 +424,7 @@ function(${CMAKETEST_TEST})
 		directory(COLLECT_SOURCES_BY_POLICY
 			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR "${TESTS_DATA_DIR}/src"
-			SRC_SOURCE_FILES src_sources_files
+			SRC_SOURCE_FILES src_source_files
 			PUBLIC_HEADER_DIR public_header_dir
 			PUBLIC_HEADER_FILES public_header_files
 			PRIVATE_HEADER_DIR
@@ -437,7 +437,7 @@ function(${CMAKETEST_TEST})
 		directory(COLLECT_SOURCES_BY_POLICY
 			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR "${TESTS_DATA_DIR}/src"
-			SRC_SOURCE_FILES src_sources_files
+			SRC_SOURCE_FILES src_source_files
 			PUBLIC_HEADER_DIR public_header_dir
 			PUBLIC_HEADER_FILES public_header_files
 			PRIVATE_HEADER_DIR ""
@@ -450,7 +450,7 @@ function(${CMAKETEST_TEST})
 		directory(COLLECT_SOURCES_BY_POLICY
 			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR "${TESTS_DATA_DIR}/src"
-			SRC_SOURCE_FILES src_sources_files
+			SRC_SOURCE_FILES src_source_files
 			PUBLIC_HEADER_DIR public_header_dir
 			PUBLIC_HEADER_FILES public_header_files
 			PRIVATE_HEADER_DIR "private_header_dir"
@@ -463,7 +463,7 @@ function(${CMAKETEST_TEST})
 		directory(COLLECT_SOURCES_BY_POLICY
 			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR "${TESTS_DATA_DIR}/src"
-			SRC_SOURCE_FILES src_sources_files
+			SRC_SOURCE_FILES src_source_files
 			PUBLIC_HEADER_DIR public_header_dir
 			PUBLIC_HEADER_FILES public_header_files
 			PRIVATE_HEADER_DIR private_header_dir
@@ -475,7 +475,7 @@ function(${CMAKETEST_TEST})
 		directory(COLLECT_SOURCES_BY_POLICY
 			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR "${TESTS_DATA_DIR}/src"
-			SRC_SOURCE_FILES src_sources_files
+			SRC_SOURCE_FILES src_source_files
 			PUBLIC_HEADER_DIR public_header_dir
 			PUBLIC_HEADER_FILES public_header_files
 			PRIVATE_HEADER_DIR private_header_dir
@@ -488,7 +488,7 @@ function(${CMAKETEST_TEST})
 		directory(COLLECT_SOURCES_BY_POLICY
 			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR "${TESTS_DATA_DIR}/src"
-			SRC_SOURCE_FILES src_sources_files
+			SRC_SOURCE_FILES src_source_files
 			PUBLIC_HEADER_DIR public_header_dir
 			PUBLIC_HEADER_FILES public_header_files
 			PRIVATE_HEADER_DIR private_header_dir
@@ -501,7 +501,7 @@ function(${CMAKETEST_TEST})
 		directory(COLLECT_SOURCES_BY_POLICY
 			PUBLIC_HEADERS_SEPARATED on "${TESTS_DATA_DIR}/include"
 			SRC_DIR "${TESTS_DATA_DIR}/src"
-			SRC_SOURCE_FILES src_sources_files
+			SRC_SOURCE_FILES src_source_files
 			PUBLIC_HEADER_DIR public_header_dir
 			PUBLIC_HEADER_FILES public_header_files
 			PRIVATE_HEADER_DIR private_header_dir
