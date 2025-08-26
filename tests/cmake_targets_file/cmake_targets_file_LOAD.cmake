@@ -11,7 +11,7 @@
 #-------------------------------------------------------------------------------
 # Test of [CMakeTargetsFile module::LOAD operation]:
 #    cmake_targets_file(LOAD <json-file-path>)
-ct_add_test(NAME "test_cmake_targets_file_op_load")
+ct_add_test(NAME "test_cmake_targets_file_load_operation")
 function(${CMAKETEST_TEST})
 	include(CMakeTargetsFile)
 

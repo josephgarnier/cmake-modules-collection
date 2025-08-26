@@ -11,7 +11,7 @@
 #-------------------------------------------------------------------------------
 # Test of [CMakeTargetsFile module::GET_VALUE operation]:
 #    cmake_targets_file(GET_VALUE <output-var> TARGET <target-dir-path> KEY <setting-name>)
-ct_add_test(NAME "test_cmake_targets_file_op_get_value")
+ct_add_test(NAME "test_cmake_targets_file_get_value_operation")
 function(${CMAKETEST_TEST})
 	include(CMakeTargetsFile)
 

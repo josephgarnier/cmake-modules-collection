@@ -11,7 +11,7 @@
 #-------------------------------------------------------------------------------
 # Test of [CMakeTargetsFile module::GET_SETTINGS_KEYS operation]:
 #    cmake_targets_file(GET_SETTINGS_KEYS <output-list-var> TARGET <target-dir-path>)
-ct_add_test(NAME "test_cmake_targets_file_op_get_settings_keys")
+ct_add_test(NAME "test_cmake_targets_file_get_settings_keys_operation")
 function(${CMAKETEST_TEST})
 	include(CMakeTargetsFile)
 

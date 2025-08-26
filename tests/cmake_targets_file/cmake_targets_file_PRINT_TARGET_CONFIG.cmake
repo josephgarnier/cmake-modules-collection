@@ -11,7 +11,7 @@
 #-------------------------------------------------------------------------------
 # Test of [CMakeTargetsFile module::PRINT_TARGET_CONFIG operation]:
 #    cmake_targets_file(PRINT_TARGET_CONFIG <target-dir-path>)
-ct_add_test(NAME "test_cmake_targets_file_op_print_target_config")
+ct_add_test(NAME "test_cmake_targets_file_print_target_config_operation")
 function(${CMAKETEST_TEST})
 	include(CMakeTargetsFile)
 
