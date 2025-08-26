@@ -217,7 +217,7 @@ Synopsis
   cmake_targets_file(`IS_LOADED`_ <output-var>)
   cmake_targets_file(`GET_LOADED_FILE`_ <output-var>)
   cmake_targets_file(`GET_SETTINGS`_ <output-map-var> TARGET <target-dir-path>)
-  cmake_targets_file(`GET_SETTINGS_KEYS`_ <output-list-var> TARGET <target-dir-path>)
+  cmake_targets_file(`GET_KEYS`_ <output-list-var> TARGET <target-dir-path>)
   cmake_targets_file(`GET_VALUE`_ <output-var> TARGET <target-dir-path> KEY <setting-name>)
   cmake_targets_file(`PRINT_CONFIGS`_ [])
   cmake_targets_file(`PRINT_TARGET_CONFIG`_ <target-dir-path>)
@@ -270,7 +270,7 @@ Usage
   are flattened by concatenating their successive parent keys, separated by a
   dot (``.``). For example, the JSON key ``rulesFile`` from the above example
   is stored in the map as ``dependencies.AppleLib.rulesFile``. The list of all
-  keys for a target's map can be retrieved using the :command:`cmake_targets_file(GET_SETTINGS_KEYS)` command.
+  keys for a target's map can be retrieved using the :command:`cmake_targets_file(GET_KEYS)` command.
 
   Since CMake does not support two-dimensional arrays, and because a Map is
   itself a particular type of list, JSON arrays are serialized before being
@@ -375,7 +375,7 @@ Usage
     #   src/main.cpp;pchFile:include/fruit_salad_pch.h;...
 
 .. signature::
-  cmake_targets_file(GET_SETTINGS_KEYS <output-list-var> TARGET <target-dir-path>)
+  cmake_targets_file(GET_KEYS <output-list-var> TARGET <target-dir-path>)
 
   Retrieves the list of all setting keys defined for a given target
   configuration in the global property ``TARGETS_CONFIG_<target-dir-path>``.
@@ -395,7 +395,7 @@ Usage
 
   .. code-block:: cmake
 
-    cmake_targets_file(GET_SETTINGS_KEYS setting_keys TARGET "src")
+    cmake_targets_file(GET_KEYS setting_keys TARGET "src")
     message("setting_keys: ${setting_keys}")
     # output is:
     #   setting_keys: name;type;mainFile;pchFile;build.compileFeatures;
@@ -503,7 +503,7 @@ include(Map)
 # Public function of this module
 function(cmake_targets_file)
 	set(options PRINT_CONFIGS)
-	set(one_value_args LOAD IS_LOADED GET_LOADED_FILE GET_VALUE TARGET KEY GET_SETTINGS GET_SETTINGS_KEYS PRINT_TARGET_CONFIG)
+	set(one_value_args LOAD IS_LOADED GET_LOADED_FILE GET_VALUE TARGET KEY GET_SETTINGS GET_KEYS PRINT_TARGET_CONFIG)
 	set(multi_value_args "")
 	cmake_parse_arguments(CTF "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 
@@ -520,8 +520,8 @@ function(cmake_targets_file)
 		_cmake_targets_file_get_value()
 	elseif(DEFINED CTF_GET_SETTINGS)
 		_cmake_targets_file_get_settings()
-	elseif(DEFINED CTF_GET_SETTINGS_KEYS)
-		_cmake_targets_file_get_settings_keys()
+	elseif(DEFINED CTF_GET_KEYS)
+		_cmake_targets_file_get_keys()
 	elseif(${CTF_PRINT_CONFIGS})
 		_cmake_targets_file_print_configs()
 	elseif(DEFINED CTF_PRINT_TARGET_CONFIG)
@@ -803,9 +803,9 @@ endmacro()
 
 #------------------------------------------------------------------------------
 # Internal usage
-macro(_cmake_targets_file_get_settings_keys)
-	if(NOT DEFINED CTF_GET_SETTINGS_KEYS)
-		message(FATAL_ERROR "GET_SETTINGS_KEYS argument is missing or need a value!")
+macro(_cmake_targets_file_get_keys)
+	if(NOT DEFINED CTF_GET_KEYS)
+		message(FATAL_ERROR "GET_KEYS argument is missing or need a value!")
 	endif()
 	if(NOT DEFINED CTF_TARGET)
 		message(FATAL_ERROR "TARGET argument is missing or need a value!")
@@ -815,7 +815,7 @@ macro(_cmake_targets_file_get_settings_keys)
 
 	get_property(target_config_map GLOBAL PROPERTY "TARGETS_CONFIG_${CTF_TARGET}")
 	map(KEYS target_config_map setting_keys)
-	set(${CTF_GET_SETTINGS_KEYS} "${setting_keys}" PARENT_SCOPE)
+	set(${CTF_GET_KEYS} "${setting_keys}" PARENT_SCOPE)
 endmacro()
 
 #------------------------------------------------------------------------------

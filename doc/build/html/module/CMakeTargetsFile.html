@@ -321,7 +321,7 @@ readable JSON schema for the <code class="docutils literal notranslate"><span cl
 cmake_targets_file(<a class="reference internal" href="#is-loaded">IS_LOADED</a> &lt;output-var&gt;)
 cmake_targets_file(<a class="reference internal" href="#get-loaded-file">GET_LOADED_FILE</a> &lt;output-var&gt;)
 cmake_targets_file(<a class="reference internal" href="#get-settings">GET_SETTINGS</a> &lt;output-map-var&gt; TARGET &lt;target-dir-path&gt;)
-cmake_targets_file(<a class="reference internal" href="#get-settings-keys">GET_SETTINGS_KEYS</a> &lt;output-list-var&gt; TARGET &lt;target-dir-path&gt;)
+cmake_targets_file(<a class="reference internal" href="#get-keys">GET_KEYS</a> &lt;output-list-var&gt; TARGET &lt;target-dir-path&gt;)
 cmake_targets_file(<a class="reference internal" href="#get-value">GET_VALUE</a> &lt;output-var&gt; TARGET &lt;target-dir-path&gt; KEY &lt;setting-name&gt;)
 cmake_targets_file(<a class="reference internal" href="#print-configs">PRINT_CONFIGS</a> [])
 cmake_targets_file(<a class="reference internal" href="#print-target-config">PRINT_TARGET_CONFIG</a> &lt;target-dir-path&gt;)</pre>
@@ -367,7 +367,7 @@ named <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFI
 are flattened by concatenating their successive parent keys, separated by a
 dot (<code class="docutils literal notranslate"><span class="pre">.</span></code>). For example, the JSON key <code class="docutils literal notranslate"><span class="pre">rulesFile</span></code> from the above example
 is stored in the map as <code class="docutils literal notranslate"><span class="pre">dependencies.AppleLib.rulesFile</span></code>. The list of all
-keys for a target's map can be retrieved using the <span class="target" id="index-1-command:cmake_targets_file"></span><a class="reference internal" href="#get-settings-keys" title="cmake_targets_file(get_settings_keys)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(GET_SETTINGS_KEYS)</span></code></a> command.</p>
+keys for a target's map can be retrieved using the <span class="target" id="index-1-command:cmake_targets_file"></span><a class="reference internal" href="#get-keys" title="cmake_targets_file(get_keys)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(GET_KEYS)</span></code></a> command.</p>
 <p>Since CMake does not support two-dimensional arrays, and because a Map is
 itself a particular type of list, JSON arrays are serialized before being
 stored. Elements in a serialized array are separated by a pipe (<code class="docutils literal notranslate"><span class="pre">|</span></code>)
@@ -463,8 +463,8 @@ exist in the loaded configuration file.</p>
 </dd></dl>
 
 <dl class="cmake signature">
-<dt class="sig sig-object cmake" id="get-settings-keys">
-<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">cmake_targets_file(</span></span><span class="no"><span class="pre">GET_SETTINGS_KEYS</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;output-list-var&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">TARGET</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;target-dir-path&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#get-settings-keys" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object cmake" id="get-keys">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">cmake_targets_file(</span></span><span class="no"><span class="pre">GET_KEYS</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;output-list-var&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">TARGET</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;target-dir-path&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#get-keys" title="Link to this definition">¶</a></dt>
 <dd><p>Retrieves the list of all setting keys defined for a given target
 configuration in the global property <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_&lt;target-dir-path&gt;</span></code>.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">&lt;target-dir-path&gt;</span></code> specifies the directory path of the target whose
@@ -476,7 +476,7 @@ of the keys in the <code class="docutils literal notranslate"><span class="pre">
 the <span class="target" id="index-5-command:cmake_targets_file"></span><a class="reference internal" href="#load" title="cmake_targets_file(load)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(LOAD)</span></code></a> command or if the <code class="docutils literal notranslate"><span class="pre">TARGET</span></code> does not
 exist in the loaded configuration file.</p>
 <p>Example usage:</p>
-<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">cmake_targets_file(</span><span class="no">GET_SETTINGS_KEYS</span><span class="w"> </span><span class="nb">setting_keys</span><span class="w"> </span><span class="no">TARGET</span><span class="w"> </span><span class="s">&quot;src&quot;</span><span class="nf">)</span>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">cmake_targets_file(</span><span class="no">GET_KEYS</span><span class="w"> </span><span class="nb">setting_keys</span><span class="w"> </span><span class="no">TARGET</span><span class="w"> </span><span class="s">&quot;src&quot;</span><span class="nf">)</span>
 <span class="nf">message(</span><span class="s">&quot;setting_keys: ${setting_keys}&quot;</span><span class="nf">)</span>
 <span class="c"># output is:</span>
 <span class="c">#   setting_keys: name;type;mainFile;pchFile;build.compileFeatures;</span>
