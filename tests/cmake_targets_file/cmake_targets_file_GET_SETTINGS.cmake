@@ -10,7 +10,7 @@
 
 #-------------------------------------------------------------------------------
 # Test of [CMakeTargetsFile module::GET_SETTINGS operation]:
-#    cmake_targets_file(GET_SETTINGS <output-var> TARGET <target-dir-path>)
+#    cmake_targets_file(GET_SETTINGS <output-map-var> TARGET <target-dir-path>)
 ct_add_test(NAME "test_cmake_targets_file_op_get_settings")
 function(${CMAKETEST_TEST})
 	include(CMakeTargetsFile)
