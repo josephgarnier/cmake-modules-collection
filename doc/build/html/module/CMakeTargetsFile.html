@@ -333,6 +333,17 @@ cmake_targets_file(<a class="reference internal" href="#print-target-config">PRI
 <dt class="sig sig-object cmake" id="load">
 <span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">cmake_targets_file(</span></span><span class="no"><span class="pre">LOAD</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;json-file-path&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#load" title="Link to this definition">¶</a></dt>
 <dd><p>Load and parses a targets configuration file in <a class="reference external" href="https://json-schema.org/">JSON format</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>During loading, no checks are performed on property values to ensure that
+they comply with the
+<a class="reference download internal" download="" href="../_downloads/5b942f77e2979479a8ab4c64608b796a/schema.json"><code class="xref download docutils literal notranslate"><span class="pre">CMakeTargets.json</span> <span class="pre">schema</span></code></a>.
+The command only verifies that the expected JSON structure is present and
+that the properties are defined.</p>
+<p>This behavior is intended to give users more flexibility and to avoid code
+duplication in cases where both syntactic and semantic validation may be
+required.</p>
+</div>
 <p>The <code class="docutils literal notranslate"><span class="pre">&lt;json-file-path&gt;</span></code> specifies the location of the configuration file to
 load. It must refer to an existing file on disk and must have a <code class="docutils literal notranslate"><span class="pre">.json</span></code>
 extension. The file must conform to the <a class="reference download internal" download="" href="../_downloads/5b942f77e2979479a8ab4c64608b796a/schema.json"><code class="xref download docutils literal notranslate"><span class="pre">CMakeTargets.json</span> <span class="pre">schema</span></code></a>.</p>
@@ -369,8 +380,8 @@ are flattened by concatenating their successive parent keys, separated by a
 dot (<code class="docutils literal notranslate"><span class="pre">.</span></code>). For example, the JSON key <code class="docutils literal notranslate"><span class="pre">rulesFile</span></code> from the above example
 is stored in the map as <code class="docutils literal notranslate"><span class="pre">dependencies.AppleLib.rulesFile</span></code>. The list of all
 keys for a target's map can be retrieved using the <span class="target" id="index-1-command:cmake_targets_file"></span><a class="reference internal" href="#get-keys" title="cmake_targets_file(get_keys)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(GET_KEYS)</span></code></a> command.</p>
-<p>Since CMake does not support two-dimensional arrays, and because a Map is
-itself a particular type of list, JSON arrays are serialized before being
+<p>Since CMake does not support two-dimensional arrays, and because a <span class="target" id="index-3-module:Map"></span><a class="reference internal" href="Map.html#module:Map" title="Map"><code class="xref cmake cmake-module docutils literal notranslate"><span class="pre">Map</span></code></a>
+is itself a particular type of list, JSON arrays are serialized before being
 stored. Elements in a serialized array are separated by a pipe (<code class="docutils literal notranslate"><span class="pre">|</span></code>)
 character. For example, the JSON array <code class="docutils literal notranslate"><span class="pre">[&quot;MY_DEFINE=42&quot;,</span> <span class="pre">&quot;MY_OTHER_DEFINE&quot;,</span>
 <span class="pre">&quot;MY_OTHER_DEFINE=42&quot;]</span></code> become
@@ -463,7 +474,7 @@ in the global property <code class="docutils literal notranslate"><span class="p
 configuration settings should be retrieved. This must correspond to a path
 listed in the global property <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_LIST</span></code>, and must match one
 of the keys in the <code class="docutils literal notranslate"><span class="pre">targets</span></code> JSON object of the loaded configuration file.</p>
-<p>The result is stored in <code class="docutils literal notranslate"><span class="pre">&lt;output-var&gt;</span></code> as a <span class="target" id="index-3-module:Map"></span><a class="reference internal" href="Map.html#module:Map" title="Map"><code class="xref cmake cmake-module docutils literal notranslate"><span class="pre">Map</span></code></a>.</p>
+<p>The result is stored in <code class="docutils literal notranslate"><span class="pre">&lt;output-var&gt;</span></code> as a <span class="target" id="index-4-module:Map"></span><a class="reference internal" href="Map.html#module:Map" title="Map"><code class="xref cmake cmake-module docutils literal notranslate"><span class="pre">Map</span></code></a>.</p>
 <p>An error is raised if no configuration file has been previously loaded with
 the <span class="target" id="index-4-command:cmake_targets_file"></span><a class="reference internal" href="#load" title="cmake_targets_file(load)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(LOAD)</span></code></a> command or if the <code class="docutils literal notranslate"><span class="pre">TARGET</span></code> does not
 exist in the loaded configuration file.</p>
@@ -516,13 +527,14 @@ configuration setting should be retrieved. This must correspond to a path
 listed in the global property <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_LIST</span></code>, and must match one
 of the keys in the <code class="docutils literal notranslate"><span class="pre">targets</span></code> JSON object of the loaded configuration file.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">&lt;setting-name&gt;</span></code> specifies the flattened key name as stored in the
-<span class="target" id="index-4-module:Map"></span><a class="reference internal" href="Map.html#module:Map" title="Map"><code class="xref cmake cmake-module docutils literal notranslate"><span class="pre">Map</span></code></a> <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_&lt;target-dir-path&gt;</span></code>. Nested JSON properties
+<span class="target" id="index-5-module:Map"></span><a class="reference internal" href="Map.html#module:Map" title="Map"><code class="xref cmake cmake-module docutils literal notranslate"><span class="pre">Map</span></code></a> <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_&lt;target-dir-path&gt;</span></code>. Nested JSON properties
 are concatenated using a dot (<code class="docutils literal notranslate"><span class="pre">.</span></code>) separator (e.g.,
 <code class="docutils literal notranslate"><span class="pre">build.compileDefinitions</span></code>).</p>
 <p>The result is stored in <code class="docutils literal notranslate"><span class="pre">&lt;output-var&gt;</span></code> as a value or a deserialized list.</p>
 <p>An error is raised if no configuration file has been previously loaded with
 the <span class="target" id="index-6-command:cmake_targets_file"></span><a class="reference internal" href="#load" title="cmake_targets_file(load)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(LOAD)</span></code></a> command or if the <code class="docutils literal notranslate"><span class="pre">TARGET</span></code> does not
-exist in the loaded configuration file.</p>
+exist in the loaded configuration file or if the <code class="docutils literal notranslate"><span class="pre">KEY</span></code> does not exist in
+the target configuration.</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">cmake_targets_file(</span><span class="no">GET_VALUE</span><span class="w"> </span><span class="nb">setting_value</span><span class="w"> </span><span class="no">TARGET</span><span class="w"> </span><span class="s">&quot;src&quot;</span><span class="w"> </span><span class="no">KEY</span><span class="w"> </span><span class="s">&quot;type&quot;</span><span class="nf">)</span>
 <span class="nf">message(</span><span class="s">&quot;setting_value (type): ${setting_value}&quot;</span><span class="nf">)</span>

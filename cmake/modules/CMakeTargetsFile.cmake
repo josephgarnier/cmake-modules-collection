@@ -231,6 +231,18 @@ Usage
 
   Load and parses a targets configuration file in `JSON format <https://json-schema.org/>`_.
 
+  .. note::
+
+    During loading, no checks are performed on property values to ensure that
+    they comply with the
+    :download:`CMakeTargets.json schema <../../../cmake/modules/schema.json>`.
+    The command only verifies that the expected JSON structure is present and
+    that the properties are defined.
+
+    This behavior is intended to give users more flexibility and to avoid code
+    duplication in cases where both syntactic and semantic validation may be
+    required.
+
   The ``<json-file-path>`` specifies the location of the configuration file to
   load. It must refer to an existing file on disk and must have a ``.json``
   extension. The file must conform to the :download:`CMakeTargets.json schema <../../../cmake/modules/schema.json>`.
@@ -273,8 +285,8 @@ Usage
   is stored in the map as ``dependencies.AppleLib.rulesFile``. The list of all
   keys for a target's map can be retrieved using the :command:`cmake_targets_file(GET_KEYS)` command.
 
-  Since CMake does not support two-dimensional arrays, and because a Map is
-  itself a particular type of list, JSON arrays are serialized before being
+  Since CMake does not support two-dimensional arrays, and because a :module:`Map`
+  is itself a particular type of list, JSON arrays are serialized before being
   stored. Elements in a serialized array are separated by a pipe (``|``)
   character. For example, the JSON array ``["MY_DEFINE=42", "MY_OTHER_DEFINE",
   "MY_OTHER_DEFINE=42"]`` become
@@ -443,7 +455,8 @@ Usage
 
   An error is raised if no configuration file has been previously loaded with
   the :command:`cmake_targets_file(LOAD)` command or if the ``TARGET`` does not
-  exist in the loaded configuration file.
+  exist in the loaded configuration file or if the ``KEY`` does not exist in
+  the target configuration.
 
   Example usage:
 
