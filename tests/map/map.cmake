@@ -12,19 +12,19 @@
 # Test of [Map module::Public command]
 ct_add_test(NAME "test_Map")
 function(${CMAKETEST_TEST})
-	include(Map)
+  include(Map)
 
-	ct_add_section(NAME "public_command")
-	function(${CMAKETEST_SECTION})
-	
-		ct_add_section(NAME "throws_if_unknown_argument" EXPECTFAIL)
-		function(${CMAKETEST_SECTION})
-			map(FOO)
-		endfunction()
-		
-		ct_add_section(NAME "throws_if_arg_op_is_missing" EXPECTFAIL)
-		function(${CMAKETEST_SECTION})
-			map()
-		endfunction()
-	endfunction()
+  ct_add_section(NAME "public_command")
+  function(${CMAKETEST_SECTION})
+  
+    ct_add_section(NAME "throws_if_unknown_argument" EXPECTFAIL)
+    function(${CMAKETEST_SECTION})
+      map(FOO)
+    endfunction()
+    
+    ct_add_section(NAME "throws_if_arg_op_is_missing" EXPECTFAIL)
+    function(${CMAKETEST_SECTION})
+      map()
+    endfunction()
+  endfunction()
 endfunction()

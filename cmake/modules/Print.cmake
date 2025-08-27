@@ -144,211 +144,211 @@ set(PRINT_BASE_DIR "${CMAKE_SOURCE_DIR}")
 #------------------------------------------------------------------------------
 # Public function of this module
 function(print)
-	set(options FATAL_ERROR SEND_ERROR WARNING AUTHOR_WARNING DEPRECATION NOTICE STATUS VERBOSE DEBUG TRACE INDENT)
-	set(one_value_args "")
-	set(multi_value_args PATHS STRINGS)
-	cmake_parse_arguments(PRT "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
-	
-	# Parse arguments. The macro `_print_formated_message()` can't use the result of
-	# cmake_parse_arguments() because it has to parse each argument.
-	set(PRT_ARGV "")
-	set(PRT_ARGC ${ARGC})
-	set(PRT_ARGC_MAX_INDEX "")
-	math(EXPR PRT_ARGC_MAX_INDEX "${ARGC}-1") # Need this variable because the max index is included in range of foreach.
-	foreach(arg_index RANGE ${PRT_ARGC_MAX_INDEX})
-		set(PRT_ARGV${arg_index} "${ARGV${arg_index}}")
-		list(APPEND PRT_ARGV "${ARGV${arg_index}}")
-	endforeach()
+  set(options FATAL_ERROR SEND_ERROR WARNING AUTHOR_WARNING DEPRECATION NOTICE STATUS VERBOSE DEBUG TRACE INDENT)
+  set(one_value_args "")
+  set(multi_value_args PATHS STRINGS)
+  cmake_parse_arguments(PRT "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
+  
+  # Parse arguments. The macro `_print_formated_message()` can't use the result of
+  # cmake_parse_arguments() because it has to parse each argument.
+  set(PRT_ARGV "")
+  set(PRT_ARGC ${ARGC})
+  set(PRT_ARGC_MAX_INDEX "")
+  math(EXPR PRT_ARGC_MAX_INDEX "${ARGC}-1") # Need this variable because the max index is included in range of foreach.
+  foreach(arg_index RANGE ${PRT_ARGC_MAX_INDEX})
+    set(PRT_ARGV${arg_index} "${ARGV${arg_index}}")
+    list(APPEND PRT_ARGV "${ARGV${arg_index}}")
+  endforeach()
 
-	if((DEFINED PRT_PATHS) OR ("PATHS" IN_LIST PRT_KEYWORDS_MISSING_VALUES))
-		_print_paths_list()
-	elseif((DEFINED PRT_STRINGS) OR ("STRINGS" IN_LIST PRT_KEYWORDS_MISSING_VALUES))
-		_print_strings_list()
-	else()
-		_print_formated_message()
-	endif()
+  if((DEFINED PRT_PATHS) OR ("PATHS" IN_LIST PRT_KEYWORDS_MISSING_VALUES))
+    _print_paths_list()
+  elseif((DEFINED PRT_STRINGS) OR ("STRINGS" IN_LIST PRT_KEYWORDS_MISSING_VALUES))
+    _print_strings_list()
+  else()
+    _print_formated_message()
+  endif()
 endfunction()
 
 #------------------------------------------------------------------------------
 # Internal usage
 macro(_print_formated_message)
-	# Error when no arguments are given.
-	if(${PRT_ARGC} EQUAL 0)
-		message(FATAL_ERROR "Incorrect number of arguments!")
-	endif()
-	
-	# Warning: this macro doesn't have to loop on ARGV or ARGN because the message
-	# to print can contain a semi column character ";", which will be interpreted as
-	# a new argument, as an item separator. So, it is necessary to use PRT_ARGV#, PRT_ARGC_MAX and PRT_ARGC.
-	set(mode "")
-	set(message "")
-	set(message_args_list "")
-	set(current_argv_index 0)
+  # Error when no arguments are given.
+  if(${PRT_ARGC} EQUAL 0)
+    message(FATAL_ERROR "Incorrect number of arguments!")
+  endif()
+  
+  # Warning: this macro doesn't have to loop on ARGV or ARGN because the message
+  # to print can contain a semi column character ";", which will be interpreted as
+  # a new argument, as an item separator. So, it is necessary to use PRT_ARGV#, PRT_ARGC_MAX and PRT_ARGC.
+  set(mode "")
+  set(message "")
+  set(message_args_list "")
+  set(current_argv_index 0)
 
-	# If the first of PRT_ARGV (index 0) is a mode from "options", set the
-	# mode var and increment the current index of PRT_ARGV.
-	if("${PRT_ARGV${current_argv_index}}" IN_LIST options)
-		set(mode "${PRT_ARGV${current_argv_index}}")
-		math(EXPR current_argv_index "${current_argv_index}+1")
-	endif()
+  # If the first of PRT_ARGV (index 0) is a mode from "options", set the
+  # mode var and increment the current index of PRT_ARGV.
+  if("${PRT_ARGV${current_argv_index}}" IN_LIST options)
+    set(mode "${PRT_ARGV${current_argv_index}}")
+    math(EXPR current_argv_index "${current_argv_index}+1")
+  endif()
 
-	# Get the message.
-	if(${current_argv_index} LESS ${PRT_ARGC})
-		set(message "${PRT_ARGV${current_argv_index}}")
-		math(EXPR current_argv_index "${current_argv_index}+1")
-	endif()
+  # Get the message.
+  if(${current_argv_index} LESS ${PRT_ARGC})
+    set(message "${PRT_ARGV${current_argv_index}}")
+    math(EXPR current_argv_index "${current_argv_index}+1")
+  endif()
 
-	# Get the message arg list.
-	if(${current_argv_index} LESS ${PRT_ARGC})
-		foreach(argv_index RANGE ${current_argv_index} ${PRT_ARGC_MAX_INDEX})
-			list(APPEND message_args_list "${PRT_ARGV${current_argv_index}}")
-			math(EXPR current_argv_index "${current_argv_index}+1")
-		endforeach()
-	endif()
+  # Get the message arg list.
+  if(${current_argv_index} LESS ${PRT_ARGC})
+    foreach(argv_index RANGE ${current_argv_index} ${PRT_ARGC_MAX_INDEX})
+      list(APPEND message_args_list "${PRT_ARGV${current_argv_index}}")
+      math(EXPR current_argv_index "${current_argv_index}+1")
+    endforeach()
+  endif()
 
-	# If arguments to the message are given, the directives are substituted
-	list(LENGTH message_args_list message_args_list_size)
-	if(${message_args_list_size} GREATER 0)
-		_substitute_directives()
-	endif()
+  # If arguments to the message are given, the directives are substituted
+  list(LENGTH message_args_list message_args_list_size)
+  if(${message_args_list_size} GREATER 0)
+    _substitute_directives()
+  endif()
 
-	if(NOT mode STREQUAL "")
-		message(${mode} "${message}")
-	else()
-		message("${message}")
-	endif()
+  if(NOT mode STREQUAL "")
+    message(${mode} "${message}")
+  else()
+    message("${message}")
+  endif()
 endmacro()
 
 #------------------------------------------------------------------------------
 # Internal usage
 macro(_substitute_directives)
-	set(message_head "")
-	set(message_tail "${message}")
-	set(message_cursor "")
-	while(on)
-		# Extract the directive "@...@ "in traveling through the message parsed like
-		# a cursor moving on a ribbon (like on a Turing machine).
-		# `message_head` is what has already been parsed, `message_cursor` is what is
-		# currently parsed () and `message_tail` is what will be parsed.
-		string(FIND "${message_tail}" "@" pos_first)
-		if(${pos_first} EQUAL -1)
-			break()
-		endif()
-		string(SUBSTRING "${message_tail}" 0 ${pos_first} message_cursor)
-		math(EXPR pos_first "${pos_first}+1") # Skip the first @ char
-		string(SUBSTRING "${message_tail}" ${pos_first}+1 -1 message_tail)
-		string(APPEND message_head "${message_cursor}")
+  set(message_head "")
+  set(message_tail "${message}")
+  set(message_cursor "")
+  while(on)
+    # Extract the directive "@...@ "in traveling through the message parsed like
+    # a cursor moving on a ribbon (like on a Turing machine).
+    # `message_head` is what has already been parsed, `message_cursor` is what is
+    # currently parsed () and `message_tail` is what will be parsed.
+    string(FIND "${message_tail}" "@" pos_first)
+    if(${pos_first} EQUAL -1)
+      break()
+    endif()
+    string(SUBSTRING "${message_tail}" 0 ${pos_first} message_cursor)
+    math(EXPR pos_first "${pos_first}+1") # Skip the first @ char
+    string(SUBSTRING "${message_tail}" ${pos_first}+1 -1 message_tail)
+    string(APPEND message_head "${message_cursor}")
 
-		string(FIND "${message_tail}" "@" pos_second)
-		if(${pos_second} EQUAL -1)
-			break()
-		endif()
-		string(SUBSTRING "${message_tail}" 0 ${pos_second} message_cursor)
-		math(EXPR pos_second "${pos_second}+1") # Skip the second @ char
-		string(SUBSTRING "${message_tail}" ${pos_second} -1 message_tail)
+    string(FIND "${message_tail}" "@" pos_second)
+    if(${pos_second} EQUAL -1)
+      break()
+    endif()
+    string(SUBSTRING "${message_tail}" 0 ${pos_second} message_cursor)
+    math(EXPR pos_second "${pos_second}+1") # Skip the second @ char
+    string(SUBSTRING "${message_tail}" ${pos_second} -1 message_tail)
 
-		# Substitute the directive by its value
-		set(directive_to_substitute "@${message_cursor}@")
-		list(POP_FRONT message_args_list message_arg)
-		if("${message_arg}" STREQUAL "")
-			message(FATAL_ERROR "Argument missing for directive \"${directive_to_substitute}\"!")
-		endif()
+    # Substitute the directive by its value
+    set(directive_to_substitute "@${message_cursor}@")
+    list(POP_FRONT message_args_list message_arg)
+    if("${message_arg}" STREQUAL "")
+      message(FATAL_ERROR "Argument missing for directive \"${directive_to_substitute}\"!")
+    endif()
 
-		if("${directive_to_substitute}" STREQUAL "@ap@")
-			file(REAL_PATH "${message_arg}" message_arg BASE_DIRECTORY "${PRINT_BASE_DIR}")
-			set(directive_to_substitute "${message_arg}")
-		elseif("${directive_to_substitute}" STREQUAL "@rp@")
-			file(RELATIVE_PATH message_arg "${PRINT_BASE_DIR}" "${message_arg}")
-			set(directive_to_substitute "${message_arg}")
-		else()
-			message(FATAL_ERROR "Directive \"${directive_to_substitute}\" is unsupported!")
-		endif()
-		set(message_cursor "${directive_to_substitute}")
-		
-		string(APPEND message_head "${message_cursor}")
-		set(message "${message_head}${message_tail}")
-	endwhile()
+    if("${directive_to_substitute}" STREQUAL "@ap@")
+      file(REAL_PATH "${message_arg}" message_arg BASE_DIRECTORY "${PRINT_BASE_DIR}")
+      set(directive_to_substitute "${message_arg}")
+    elseif("${directive_to_substitute}" STREQUAL "@rp@")
+      file(RELATIVE_PATH message_arg "${PRINT_BASE_DIR}" "${message_arg}")
+      set(directive_to_substitute "${message_arg}")
+    else()
+      message(FATAL_ERROR "Directive \"${directive_to_substitute}\" is unsupported!")
+    endif()
+    set(message_cursor "${directive_to_substitute}")
+    
+    string(APPEND message_head "${message_cursor}")
+    set(message "${message_head}${message_tail}")
+  endwhile()
 endmacro()
 
 #------------------------------------------------------------------------------
 # Internal usage
 macro(_print_paths_list)
-	if(DEFINED PRT_UNPARSED_ARGUMENTS)
-		message(FATAL_ERROR "Unrecognized arguments: \"${PRT_UNPARSED_ARGUMENTS}\"!")
-	endif()
-	if((NOT DEFINED PRT_PATHS)
-		AND (NOT "PATHS" IN_LIST PRT_KEYWORDS_MISSING_VALUES))
-		message(FATAL_ERROR "PATHS arguments is missing!")
-	endif()
-	
-	set(mode "")
-	set(message "")
-	
-	# If the first of PRT_ARGV (index 0) is a mode from "options", set the
-	# mode var
-	if("${PRT_ARGV0}" IN_LIST options)
-		set(mode "${PRT_ARGV0}")
-	endif()
+  if(DEFINED PRT_UNPARSED_ARGUMENTS)
+    message(FATAL_ERROR "Unrecognized arguments: \"${PRT_UNPARSED_ARGUMENTS}\"!")
+  endif()
+  if((NOT DEFINED PRT_PATHS)
+    AND (NOT "PATHS" IN_LIST PRT_KEYWORDS_MISSING_VALUES))
+    message(FATAL_ERROR "PATHS arguments is missing!")
+  endif()
+  
+  set(mode "")
+  set(message "")
+  
+  # If the first of PRT_ARGV (index 0) is a mode from "options", set the
+  # mode var
+  if("${PRT_ARGV0}" IN_LIST options)
+    set(mode "${PRT_ARGV0}")
+  endif()
 
-	# Format the paths
-	set(relative_paths_list "")
-	foreach(file IN ITEMS ${PRT_PATHS})
-		file(RELATIVE_PATH relative_path "${PRINT_BASE_DIR}" "${file}")
-		list(APPEND relative_paths_list "${relative_path}")
-	endforeach()
-	list(JOIN relative_paths_list " ; " formated_message)
-	set(message "${formated_message}")
+  # Format the paths
+  set(relative_paths_list "")
+  foreach(file IN ITEMS ${PRT_PATHS})
+    file(RELATIVE_PATH relative_path "${PRINT_BASE_DIR}" "${file}")
+    list(APPEND relative_paths_list "${relative_path}")
+  endforeach()
+  list(JOIN relative_paths_list " ; " formated_message)
+  set(message "${formated_message}")
 
-	if(${PRT_INDENT})
-		list(APPEND CMAKE_MESSAGE_INDENT "  ")
-	endif()
-	if(NOT mode STREQUAL "")
-		message(${mode} "${message}")
-	else()
-		message("${message}")
-	endif()
-	if(${PRT_INDENT})
-		list(POP_BACK CMAKE_MESSAGE_INDENT)
-	endif()
+  if(${PRT_INDENT})
+    list(APPEND CMAKE_MESSAGE_INDENT "  ")
+  endif()
+  if(NOT mode STREQUAL "")
+    message(${mode} "${message}")
+  else()
+    message("${message}")
+  endif()
+  if(${PRT_INDENT})
+    list(POP_BACK CMAKE_MESSAGE_INDENT)
+  endif()
 endmacro()
 
 #------------------------------------------------------------------------------
 # Internal usage
 macro(_print_strings_list)
-	if(DEFINED PRT_UNPARSED_ARGUMENTS)
-		message(FATAL_ERROR "Unrecognized arguments: \"${PRT_UNPARSED_ARGUMENTS}\"!")
-	endif()
-	if((NOT DEFINED PRT_STRINGS)
-		AND (NOT "STRINGS" IN_LIST PRT_KEYWORDS_MISSING_VALUES))
-		message(FATAL_ERROR "STRINGS arguments is missing!")
-	endif()
-	
-	set(mode "")
-	set(message "")
-	
-	# If the first of PRT_ARGV (index 0) is a mode from "options", set the
-	# mode var
-	if("${PRT_ARGV0}" IN_LIST options)
-		set(mode "${PRT_ARGV0}")
-	endif()
-	
-	# Format the strings
-	set(formated_message "")
-	foreach(string IN ITEMS ${PRT_STRINGS})
-		list(APPEND formated_message "${string}")
-	endforeach()
-	list(JOIN formated_message " ; " formated_message)
-	set(message "${formated_message}")
+  if(DEFINED PRT_UNPARSED_ARGUMENTS)
+    message(FATAL_ERROR "Unrecognized arguments: \"${PRT_UNPARSED_ARGUMENTS}\"!")
+  endif()
+  if((NOT DEFINED PRT_STRINGS)
+    AND (NOT "STRINGS" IN_LIST PRT_KEYWORDS_MISSING_VALUES))
+    message(FATAL_ERROR "STRINGS arguments is missing!")
+  endif()
+  
+  set(mode "")
+  set(message "")
+  
+  # If the first of PRT_ARGV (index 0) is a mode from "options", set the
+  # mode var
+  if("${PRT_ARGV0}" IN_LIST options)
+    set(mode "${PRT_ARGV0}")
+  endif()
+  
+  # Format the strings
+  set(formated_message "")
+  foreach(string IN ITEMS ${PRT_STRINGS})
+    list(APPEND formated_message "${string}")
+  endforeach()
+  list(JOIN formated_message " ; " formated_message)
+  set(message "${formated_message}")
 
-	if(${PRT_INDENT})
-		list(APPEND CMAKE_MESSAGE_INDENT "  ")
-	endif()
-	if(NOT mode STREQUAL "")
-		message(${mode} "${message}")
-	else()
-		message("${message}")
-	endif()
-	if(${PRT_INDENT})
-		list(POP_BACK CMAKE_MESSAGE_INDENT)
-	endif()
+  if(${PRT_INDENT})
+    list(APPEND CMAKE_MESSAGE_INDENT "  ")
+  endif()
+  if(NOT mode STREQUAL "")
+    message(${mode} "${message}")
+  else()
+    message("${message}")
+  endif()
+  if(${PRT_INDENT})
+    list(POP_BACK CMAKE_MESSAGE_INDENT)
+  endif()
 endmacro()

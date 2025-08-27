@@ -17,15 +17,15 @@ list(APPEND CMAKE_MESSAGE_INDENT "  ")
 find_package(Sphinx)
 
 if(Sphinx_FOUND)
-	message(STATUS "Sphinx found....... YES")
-	list(POP_BACK CMAKE_MESSAGE_INDENT)
-	message(CHECK_PASS "done")
+  message(STATUS "Sphinx found....... YES")
+  list(POP_BACK CMAKE_MESSAGE_INDENT)
+  message(CHECK_PASS "done")
 else()
-	message(STATUS "Sphinx found....... NO")
-	message(STATUS "Sphinx not found. Doc target not available.")
-	list(POP_BACK CMAKE_MESSAGE_INDENT)
-	message(CHECK_FAIL "failed")
-	return()
+  message(STATUS "Sphinx found....... NO")
+  message(STATUS "Sphinx not found. Doc target not available.")
+  list(POP_BACK CMAKE_MESSAGE_INDENT)
+  message(CHECK_FAIL "failed")
+  return()
 endif()
 
 ####################### Create doc target #####################################
@@ -38,21 +38,21 @@ set(DOC_INPUT_DIR      "${TARGET_DIR}/source")
 set(DOC_OUTPUT_DIR     "${TARGET_DIR}/build")
 
 if(NOT TARGET "doc")
-	add_custom_target("doc" # remettre ALL après
-		COMMAND ${SPHINX_EXECUTABLE} -M html "${DOC_INPUT_DIR}" "${DOC_OUTPUT_DIR}"
-		WORKING_DIRECTORY "${TARGET_BUILD_DIR}"
-		COMMENT "Generating the doc with Sphinx..."
-		VERBATIM
-	)
-	message(STATUS "Doc target added to buildsystem and all target")
+  add_custom_target("doc"
+    COMMAND ${SPHINX_EXECUTABLE} -M html "${DOC_INPUT_DIR}" "${DOC_OUTPUT_DIR}"
+    WORKING_DIRECTORY "${TARGET_BUILD_DIR}"
+    COMMENT "Generating the doc with Sphinx..."
+    VERBATIM
+  )
+  message(STATUS "Doc target added to buildsystem and all target")
 endif()
 
 # Add generated doc files to the `clean` target
 set_property(DIRECTORY "${${PROJECT_NAME}_PROJECT_DIR}"
-	APPEND
-	PROPERTY ADDITIONAL_CLEAN_FILES
-	"${DOC_OUTPUT_DIR}/doctrees"
-	"${DOC_OUTPUT_DIR}/html"
+  APPEND
+  PROPERTY ADDITIONAL_CLEAN_FILES
+  "${DOC_OUTPUT_DIR}/doctrees"
+  "${DOC_OUTPUT_DIR}/html"
 )
 message(STATUS "Doc files added to clean target")
 

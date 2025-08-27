@@ -12,19 +12,19 @@
 # Test of [BinaryTarget module::Public command]:
 ct_add_test(NAME "test_binary_target")
 function(${CMAKETEST_TEST})
-	include(BinaryTarget)
+  include(BinaryTarget)
 
-	ct_add_section(NAME "public_command")
-	function(${CMAKETEST_SECTION})
-	
-		ct_add_section(NAME "throws_if_unknown_argument" EXPECTFAIL)
-		function(${CMAKETEST_SECTION})
-			binary_target(FOO)
-		endfunction()
-		
-		ct_add_section(NAME "throws_if_arg_op_is_missing" EXPECTFAIL)
-		function(${CMAKETEST_SECTION})
-			binary_target()
-		endfunction()
-	endfunction()
+  ct_add_section(NAME "public_command")
+  function(${CMAKETEST_SECTION})
+  
+    ct_add_section(NAME "throws_if_unknown_argument" EXPECTFAIL)
+    function(${CMAKETEST_SECTION})
+      binary_target(FOO)
+    endfunction()
+    
+    ct_add_section(NAME "throws_if_arg_op_is_missing" EXPECTFAIL)
+    function(${CMAKETEST_SECTION})
+      binary_target()
+    endfunction()
+  endfunction()
 endfunction()

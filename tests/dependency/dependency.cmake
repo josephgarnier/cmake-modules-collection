@@ -12,19 +12,19 @@
 # Test of [Dependency module::Public command]:
 ct_add_test(NAME "test_dependency")
 function(${CMAKETEST_TEST})
-	include(Dependency)
+  include(Dependency)
 
-	ct_add_section(NAME "public_command")
-	function(${CMAKETEST_SECTION})
-	
-		ct_add_section(NAME "throws_if_unknown_argument" EXPECTFAIL)
-		function(${CMAKETEST_SECTION})
-			dependency(FOO)
-		endfunction()
-		
-		ct_add_section(NAME "throws_if_arg_op_is_missing" EXPECTFAIL)
-		function(${CMAKETEST_SECTION})
-			dependency()
-		endfunction()
-	endfunction()
+  ct_add_section(NAME "public_command")
+  function(${CMAKETEST_SECTION})
+  
+    ct_add_section(NAME "throws_if_unknown_argument" EXPECTFAIL)
+    function(${CMAKETEST_SECTION})
+      dependency(FOO)
+    endfunction()
+    
+    ct_add_section(NAME "throws_if_arg_op_is_missing" EXPECTFAIL)
+    function(${CMAKETEST_SECTION})
+      dependency()
+    endfunction()
+  endfunction()
 endfunction()

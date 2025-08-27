@@ -40,15 +40,15 @@ include(FindPackageHandleStandardArgs)
 
 find_package (Python COMPONENTS Interpreter)
 if(Python_Interpreter_FOUND)
-	get_filename_component(PYTHON_ROOT_DIR "${PYTHON_EXECUTABLE}" DIRECTORY)
-	set(PYTHON_ROOT_DIR
-		"${PYTHON_ROOT_DIR}"
-		"${PYTHON_ROOT_DIR}/bin"
-		"${PYTHON_ROOT_DIR}/Scripts")
-	find_program(
-		SPHINX_EXECUTABLE
-		NAMES "sphinx-build" "sphinx-build.exe"
-		HINTS "${PYTHON_ROOT_DIR}"
-	)
-	find_package_handle_standard_args(Sphinx DEFAULT_MSG SPHINX_EXECUTABLE)
+  get_filename_component(PYTHON_ROOT_DIR "${PYTHON_EXECUTABLE}" DIRECTORY)
+  set(PYTHON_ROOT_DIR
+    "${PYTHON_ROOT_DIR}"
+    "${PYTHON_ROOT_DIR}/bin"
+    "${PYTHON_ROOT_DIR}/Scripts")
+  find_program(
+    SPHINX_EXECUTABLE
+    NAMES "sphinx-build" "sphinx-build.exe"
+    HINTS "${PYTHON_ROOT_DIR}"
+  )
+  find_package_handle_standard_args(Sphinx DEFAULT_MSG SPHINX_EXECUTABLE)
 endif()
