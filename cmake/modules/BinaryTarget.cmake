@@ -52,10 +52,10 @@ Usage
   .. code-block:: cmake
 
     binary_target(CONFIGURE_SETTINGS <target-name>
-                    [COMPILE_FEATURES <feature>...]
-                    [COMPILE_DEFINITIONS <definition>...]
-                    [COMPILE_OPTIONS <option>...]
-                    [LINK_OPTIONS <option>...])
+                 COMPILE_FEATURES [<feature>...]
+                 COMPILE_DEFINITIONS [<definition>...]
+                 COMPILE_OPTIONS [<option>...]
+                 LINK_OPTIONS [<option>...])
 
   This command updates compile and link settings of a previously created
   target ``<target-name>`` with ``PRIVATE`` visibility. The following
@@ -411,16 +411,20 @@ macro(_binary_target_config_settings)
 	if(NOT TARGET "${BBT_CONFIGURE_SETTINGS}")
 		message(FATAL_ERROR "The target \"${BBT_CONFIGURE_SETTINGS}\" does not exists!")
 	endif()
-	if("COMPILE_FEATURES" IN_LIST BBT_KEYWORDS_MISSING_VALUES)
+	if((NOT DEFINED BBT_COMPILE_FEATURES)
+		AND (NOT "COMPILE_FEATURES" IN_LIST BBT_KEYWORDS_MISSING_VALUES))
 		message(FATAL_ERROR "COMPILE_FEATURES argument is missing or need a value!")
 	endif()
-	if("COMPILE_DEFINITIONS" IN_LIST BBT_KEYWORDS_MISSING_VALUES)
+	if((NOT DEFINED BBT_COMPILE_DEFINITIONS)
+		AND (NOT "COMPILE_DEFINITIONS" IN_LIST BBT_KEYWORDS_MISSING_VALUES))
 		message(FATAL_ERROR "COMPILE_DEFINITIONS argument is missing or need a value!")
 	endif()
-	if("COMPILE_OPTIONS" IN_LIST BBT_KEYWORDS_MISSING_VALUES)
+	if((NOT DEFINED BBT_COMPILE_OPTIONS)
+		AND (NOT "COMPILE_OPTIONS" IN_LIST BBT_KEYWORDS_MISSING_VALUES))
 		message(FATAL_ERROR "COMPILE_OPTIONS argument is missing or need a value!")
 	endif()
-	if("LINK_OPTIONS" IN_LIST BBT_KEYWORDS_MISSING_VALUES)
+	if((NOT DEFINED BBT_LINK_OPTIONS)
+		AND (NOT "LINK_OPTIONS" IN_LIST BBT_KEYWORDS_MISSING_VALUES))
 		message(FATAL_ERROR "LINK_OPTIONS argument is missing or need a value!")
 	endif()
 	if(NOT DEFINED CMAKE_CXX_STANDARD)
