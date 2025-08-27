@@ -71,7 +71,7 @@ function(${CMAKETEST_TEST})
 	# Functionalities checking
 	ct_add_section(NAME "create_bin_target_with_all_args")
 	function(${CMAKETEST_SECTION})
-		# LINK_OPTIONS is not set, because link options cannot be add to a static library
+		# LINK_OPTIONS is not set, because link options cannot be added to a static library
 		binary_target(CREATE_FULLY "new_static_mock_lib" STATIC
 			COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
 			COMPILE_DEFINITIONS "DEFINE_ONE" "DEFINE_TWO"

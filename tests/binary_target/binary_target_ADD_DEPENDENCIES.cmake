@@ -37,7 +37,7 @@ function(${CMAKETEST_TEST})
 
 	# To call before each test
 	macro(_set_up_test)
-		# Reset properties set by `binary_target(ADD_DEPENDENCIES)`
+		# Reset properties used by `binary_target(ADD_DEPENDENCIES)`
 		set_property(TARGET "new_static_mock_lib" PROPERTY INTERFACE_LINK_LIBRARIES)
 		set_property(TARGET "new_static_mock_lib" PROPERTY LINK_LIBRARIES)
 

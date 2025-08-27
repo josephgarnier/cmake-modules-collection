@@ -29,7 +29,7 @@ function(${CMAKETEST_TEST})
 
 	# To call before each test
 	macro(_set_up_test)
-		# Reset properties set by `binary_target(ADD_SOURCES)`
+		# Reset properties used by `binary_target(ADD_SOURCES)`
 		set_property(TARGET "new_static_mock_lib" PROPERTY SOURCES)
 		set_property(TARGET "new_static_mock_lib" PROPERTY INTERFACE_SOURCES)
 
