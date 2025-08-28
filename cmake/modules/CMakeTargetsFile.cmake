@@ -276,14 +276,14 @@ Usage
   again will replace the current configuration in memory.
 
   Each target's configuration is stored separately in a global property
-  named ``TARGETS_CONFIG_<target-dir-path>``. These properties are of type
-  :module:`Map`, where each JSON block is represented as a *flat tree* list.
-
-  Keys in the map are derived from the JSON property names. Nested properties
-  are flattened by concatenating their successive parent keys, separated by a
-  dot (``.``). For example, the JSON key ``rulesFile`` from the above example
-  is stored in the map as ``dependencies.AppleLib.rulesFile``. The list of all
-  keys for a target's map can be retrieved using the :command:`cmake_targets_file(GET_KEYS)` command.
+  named ``TARGETS_CONFIG_<target-dir-path>`` as a :module:`Map`, where each
+  target JSON block is represented as a *flat tree* list. Keys in the map are
+  derived from the JSON property names. Nested properties are flattened by
+  concatenating their successive parent keys, separated by a dot (``.``). For
+  example, the JSON key ``rulesFile`` from the above example is stored in the
+  map as ``dependencies.AppleLib.rulesFile``. The list of all keys for a target
+  's map can be retrieved using the :command:`cmake_targets_file(GET_KEYS)`
+  command.
 
   Since CMake does not support two-dimensional arrays, and because a :module:`Map`
   is itself a particular type of list, JSON arrays are serialized before being
