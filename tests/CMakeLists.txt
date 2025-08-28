@@ -91,6 +91,8 @@ add_subdirectory(data)
 message(CHECK_START "Building tests")
 list(APPEND CMAKE_MESSAGE_INDENT "  ")
 
+ct_set_print_length("${CT_DEFAULT_PRINT_LENGTH}")
+cpp_set_global("CT_DEBUG_MODE" "FALSE")
 ct_add_dir("./binary_target" USE_REL_PATH_NAMES LANGUAGES FORWARD_LANGUAGES CMAKE_OPTIONS
   "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}"
   "-DCMAKE_GENERATOR=${CMAKE_GENERATOR}"
