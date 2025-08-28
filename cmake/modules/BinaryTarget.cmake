@@ -666,13 +666,25 @@ macro(_binary_target_create_fully)
     AND (NOT "INCLUDE_DIRECTORIES" IN_LIST BBT_KEYWORDS_MISSING_VALUES))
     message(FATAL_ERROR "INCLUDE_DIRECTORIES argument is missing or need a value!")
   endif()
-  
+
   # Call binary_target(CREATE)
   set(BBT_CREATE "${BBT_CREATE_FULLY}")
   _binary_target_create()
-  
+
   # Call binary_target(CONFIGURE_SETTINGS)
   set(BBT_CONFIGURE_SETTINGS "${BBT_CREATE_FULLY}")
+  if(NOT DEFINED BBT_COMPILE_FEATURES)
+    list(APPEND BBT_KEYWORDS_MISSING_VALUES "COMPILE_FEATURES")
+  endif()
+  if(NOT DEFINED BBT_COMPILE_DEFINITIONS)
+    list(APPEND BBT_KEYWORDS_MISSING_VALUES "COMPILE_DEFINITIONS")
+  endif()
+  if(NOT DEFINED BBT_COMPILE_OPTIONS)
+    list(APPEND BBT_KEYWORDS_MISSING_VALUES "COMPILE_OPTIONS")
+  endif()
+  if(NOT DEFINED BBT_LINK_OPTIONS)
+    list(APPEND BBT_KEYWORDS_MISSING_VALUES "LINK_OPTIONS")
+  endif()
   _binary_target_config_settings()
 
   # Call binary_target(ADD_SOURCES)
