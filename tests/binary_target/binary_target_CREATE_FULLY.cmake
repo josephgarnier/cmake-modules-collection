@@ -96,7 +96,6 @@ function(${CMAKETEST_TEST})
       INCLUDE_DIRECTORIES "${input_public_header_dir}"
       DEPENDENCIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
-
   endfunction()
 
   ct_add_section(NAME "create_bin_target_with_empty_args")

@@ -27,6 +27,7 @@ function(${CMAKETEST_TEST})
     function(${CMAKETEST_SECTION})
       set(expected_output
         "${TESTS_DATA_DIR}/bin"
+        "${TESTS_DATA_DIR}/config"
         "${TESTS_DATA_DIR}/include"
         "${TESTS_DATA_DIR}/src"
         "${TESTS_DATA_DIR}/src/sub_1"
@@ -45,6 +46,7 @@ function(${CMAKETEST_TEST})
     function(${CMAKETEST_SECTION})
       set(expected_output
         "bin"
+        "config"
         "include"
         "src"
         "src/sub_1"
@@ -67,6 +69,7 @@ function(${CMAKETEST_TEST})
     function(${CMAKETEST_SECTION})
       set(expected_output
         "${TESTS_DATA_DIR}/bin"
+        "${TESTS_DATA_DIR}/config"
         "${TESTS_DATA_DIR}/include"
         "${TESTS_DATA_DIR}/src")
       directory(SCAN_DIRS output
@@ -83,6 +86,7 @@ function(${CMAKETEST_TEST})
     function(${CMAKETEST_SECTION})
       set(expected_output
         "bin"
+        "config"
         "include"
         "src")
       directory(SCAN_DIRS output
@@ -145,7 +149,7 @@ function(${CMAKETEST_TEST})
         RECURSE on
         RELATIVE off
         ROOT_DIR "${TESTS_DATA_DIR}"
-        EXCLUDE_REGEX "bin|include"
+        EXCLUDE_REGEX "bin|config|include"
       )
       ct_assert_list(output)
       ct_assert_equal(output "${expected_output}")
@@ -161,7 +165,7 @@ function(${CMAKETEST_TEST})
         RECURSE on
         RELATIVE on
         ROOT_DIR "${TESTS_DATA_DIR}"
-        EXCLUDE_REGEX "bin|include"
+        EXCLUDE_REGEX "bin|config|include"
       )
       ct_assert_list(output)
       ct_assert_equal(output "${expected_output}")
