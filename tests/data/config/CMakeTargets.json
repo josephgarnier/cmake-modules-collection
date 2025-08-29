@@ -42,7 +42,6 @@
         "linkOptions": []
       },
       "mainFile": "src/apple/main.cpp",
-      "pchFile": "src/apple/apple_pch.h",
       "headerPolicy": {
         "mode": "merged"
       },
@@ -58,7 +57,6 @@
         "linkOptions": []
       },
       "mainFile": "src/banana/main.cpp",
-      "pchFile": "src/banana/banana_pch.h",
       "headerPolicy": {
         "mode": "merged"
       },

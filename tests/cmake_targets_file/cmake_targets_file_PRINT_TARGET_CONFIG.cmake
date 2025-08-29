@@ -16,7 +16,7 @@ function(${CMAKETEST_TEST})
   include(CMakeTargetsFile)
 
   # Set global test variables
-  set(input_config_map
+  set(input_src_config
     "name:fruit-salad"
     "type:executable"
     "mainFile:src/main.cpp"
@@ -39,12 +39,40 @@ function(${CMAKETEST_TEST})
     "invalid"
     ":invalid"
   )
+  set(input_src_apple_config
+    "name:apple"
+    "type:staticLib"
+    "mainFile:src/apple/main.cpp"
+    "build.compileFeatures:"
+    "build.compileDefinitions:"
+    "build.compileOptions:"
+    "build.linkOptions:"
+    "headerPolicy.mode:merged"
+    "dependencies:"
+    "invalid"
+    ":invalid"
+  )
+  set(input_src_banana_config
+    "name:banana"
+    "type:staticLib"
+    "mainFile:src/banana/main.cpp"
+    "build.compileFeatures:"
+    "build.compileDefinitions:"
+    "build.compileOptions:"
+    "build.linkOptions:"
+    "headerPolicy.mode:merged"
+    "dependencies:"
+    "invalid"
+    ":invalid"
+  )
 
   # To call before each test
   macro(_set_up_test)
     # Reset properties used by `cmake_targets_file(PRINT_TARGET_CONFIG)`
     set_property(GLOBAL PROPERTY TARGETS_CONFIG_LOADED)
     set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src")
+    set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/apple")
+    set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/banana")
   endmacro()
   
   # Functionalities checking
@@ -52,8 +80,14 @@ function(${CMAKETEST_TEST})
   function(${CMAKETEST_SECTION})
     _set_up_test()
     set_property(GLOBAL PROPERTY TARGETS_CONFIG_LOADED "on")
-    set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src" "${input_config_map}")
+    set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src" "${input_src_config}")
     cmake_targets_file(PRINT_TARGET_CONFIG "src")
+
+    set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/apple" "${input_src_apple_config}")
+    cmake_targets_file(PRINT_TARGET_CONFIG "src/apple")
+
+    set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/banana" "${input_src_banana_config}")
+    cmake_targets_file(PRINT_TARGET_CONFIG "src/banana")
   endfunction()
 
   # Errors checking
@@ -61,7 +95,7 @@ function(${CMAKETEST_TEST})
   function(${CMAKETEST_SECTION})
     _set_up_test()
     set_property(GLOBAL PROPERTY TARGETS_CONFIG_LOADED "on")
-    set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src" "${input_config_map}")
+    set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src" "${input_src_config}")
     cmake_targets_file(PRINT_TARGET_CONFIG)
   endfunction()
 
@@ -69,7 +103,7 @@ function(${CMAKETEST_TEST})
   function(${CMAKETEST_SECTION})
     _set_up_test()
     set_property(GLOBAL PROPERTY TARGETS_CONFIG_LOADED "on")
-    set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src" "${input_config_map}")
+    set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src" "${input_src_config}")
     cmake_targets_file(PRINT_TARGET_CONFIG "")
   endfunction()
 
@@ -98,7 +132,7 @@ function(${CMAKETEST_TEST})
     function(${CMAKETEST_SECTION})
       _set_up_test()
       set_property(GLOBAL PROPERTY TARGETS_CONFIG_LOADED "on")
-      set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src" "${input_config_map}")
+      set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src" "${input_src_config}")
 
       ct_add_section(NAME "throws_if_global_property_is_different_target_inner" EXPECTFAIL)
       function(${CMAKETEST_SECTION})
@@ -119,7 +153,7 @@ function(${CMAKETEST_TEST})
       get_property(output_property GLOBAL PROPERTY "TARGETS_CONFIG_LOADED")
       ct_assert_equal(output_property "")
       ct_assert_not_defined(output_property)
-      set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src" "${input_config_map}")
+      set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src" "${input_src_config}")
 
       ct_add_section(NAME "throws_if_global_property_not_set_inner" EXPECTFAIL)
       function(${CMAKETEST_SECTION})
@@ -131,7 +165,7 @@ function(${CMAKETEST_TEST})
     function(${CMAKETEST_SECTION})
       _set_up_test()
       set_property(GLOBAL PROPERTY TARGETS_CONFIG_LOADED "")
-      set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src" "${input_config_map}")
+      set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src" "${input_src_config}")
 
       ct_add_section(NAME "throws_if_global_property_is_empty_inner" EXPECTFAIL)
       function(${CMAKETEST_SECTION})
@@ -143,7 +177,7 @@ function(${CMAKETEST_TEST})
     function(${CMAKETEST_SECTION})
       _set_up_test()
       set_property(GLOBAL PROPERTY TARGETS_CONFIG_LOADED "not-bool")
-      set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src" "${input_config_map}")
+      set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src" "${input_src_config}")
 
       ct_add_section(NAME "throws_if_global_property_is_not_bool_inner" EXPECTFAIL)
       function(${CMAKETEST_SECTION})
@@ -155,7 +189,7 @@ function(${CMAKETEST_TEST})
     function(${CMAKETEST_SECTION})
       _set_up_test()
       set_property(GLOBAL PROPERTY TARGETS_CONFIG_LOADED "off")
-      set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src" "${input_config_map}")
+      set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src" "${input_src_config}")
 
       ct_add_section(NAME "throws_if_global_property_is_off_inner" EXPECTFAIL)
       function(${CMAKETEST_SECTION})

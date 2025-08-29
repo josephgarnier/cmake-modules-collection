@@ -218,6 +218,7 @@ Synopsis
   cmake_targets_file(`GET_LOADED_FILE`_ <output-var>)
   cmake_targets_file(`HAS_CONFIG`_ <output-var> TARGET <target-dir-path>)
   cmake_targets_file(`GET_SETTINGS`_ <output-map-var> TARGET <target-dir-path>)
+  cmake_targets_file(`HAS_SETTING`_ <output-var> TARGET <target-dir-path> KEY <setting-name>)
   cmake_targets_file(`GET_KEYS`_ <output-list-var> TARGET <target-dir-path>)
   cmake_targets_file(`GET_VALUE`_ <output-var> TARGET <target-dir-path> KEY <setting-name>)
   cmake_targets_file(`PRINT_CONFIGS`_ [])
@@ -581,7 +582,7 @@ macro(_cmake_targets_file_load)
     message(FATAL_ERROR "Given path: ${CTF_LOAD} is not a json file!")
   endif()
 
-  # Read the JSON file into a variable
+  # Read the JSON file
   file(READ "${CTF_LOAD}" json_file_content)
 
   # Extract and parse the list of target paths (keys of the "targets" object)
@@ -591,10 +592,18 @@ macro(_cmake_targets_file_load)
     set(target_config_map "")
     map(GET targets_map "${target_path}" target_json_block)
 
-    # Extract all simple top-level properties
-    foreach(prop_key "name" "type" "mainFile" "pchFile")
+    # Extract all simple and required top-level properties
+    foreach(prop_key "name" "type" "mainFile")
       string(JSON prop_value GET "${target_json_block}" "${prop_key}")
       map(ADD target_config_map "${prop_key}" "${prop_value}")
+    endforeach()
+
+    # Extract all simple and optional top-level properties
+    foreach(prop_key "pchFile")
+      string(JSON prop_value ERROR_VARIABLE err GET "${target_json_block}" "${prop_key}")
+      if(NOT err)
+        map(ADD target_config_map "${prop_key}" "${prop_value}")
+      endif()
     endforeach()
 
     # Extract nested 'build' configuration properties
@@ -899,10 +908,19 @@ macro(_cmake_targets_file_print_target_config)
   map(GET target_config_map "name" target_name)
   message(STATUS "Target: ${target_name}")
 
-  # Print all simple top-level settings
-  foreach(setting_key "type" "mainFile" "pchFile")
+  # Print all simple and required top-level properties
+  foreach(setting_key "type" "mainFile")
     map(GET target_config_map "${setting_key}" setting_value)
     message(STATUS "  ${setting_key}: ${setting_value}")
+  endforeach()
+
+  # Print all simple and optional top-level properties
+  foreach(setting_key "pchFile")
+    map(HAS_KEY target_config_map "${setting_key}" has_setting_key)
+    if(${has_setting_key})
+      map(GET target_config_map "${setting_key}" setting_value)
+      message(STATUS "  ${setting_key}: ${setting_value}")
+    endif()
   endforeach()
 
   # Print nested 'build' configuration settings

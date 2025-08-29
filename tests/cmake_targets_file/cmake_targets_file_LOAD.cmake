@@ -76,7 +76,6 @@ function(${CMAKETEST_TEST})
         "linkOptions": []
       },
       "mainFile": "src/apple/main.cpp",
-      "pchFile": "src/apple/apple_pch.h",
       "headerPolicy": {
         "mode": "merged"
       },
@@ -92,7 +91,6 @@ function(${CMAKETEST_TEST})
         "linkOptions": []
       },
       "mainFile": "src/banana/main.cpp",
-      "pchFile": "src/banana/banana_pch.h",
       "headerPolicy": {
         "mode": "merged"
       },
@@ -126,7 +124,6 @@ function(${CMAKETEST_TEST})
       "name:apple"
       "type:staticLib"
       "mainFile:src/apple/main.cpp"
-      "pchFile:src/apple/apple_pch.h"
       "build.compileFeatures:"
       "build.compileDefinitions:"
       "build.compileOptions:"
@@ -138,7 +135,6 @@ function(${CMAKETEST_TEST})
       "name:banana"
       "type:staticLib"
       "mainFile:src/banana/main.cpp"
-      "pchFile:src/banana/banana_pch.h"
       "build.compileFeatures:"
       "build.compileDefinitions:"
       "build.compileOptions:"
