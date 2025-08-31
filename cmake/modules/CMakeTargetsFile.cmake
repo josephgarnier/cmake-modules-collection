@@ -404,6 +404,21 @@ Usage
     #   src/main.cpp;pchFile:include/fruit_salad_pch.h;...
 
 .. signature::
+  cmake_targets_file(HAS_SETTING <output-var> TARGET <target-dir-path> KEY <setting-name>)
+
+  Set ``<output-var>`` to ``on`` if the configuration of the given target
+  contains the specified setting key ``<setting-name>``, or ``off`` otherwise.
+
+  Example usage:
+
+  .. code-block:: cmake
+
+    cmake_targets_file(HAS_SETTING has_setting_key TARGET "src" KEY "type")
+    message("has_setting_key (type): ${has_setting_key}")
+    # output is:
+    #   has_setting_key (type): on
+
+.. signature::
   cmake_targets_file(GET_KEYS <output-list-var> TARGET <target-dir-path>)
 
   Retrieves the list of all setting keys defined for a given target
@@ -539,7 +554,7 @@ include(Map)
 # Public function of this module
 function(cmake_targets_file)
   set(options PRINT_CONFIGS)
-  set(one_value_args LOAD IS_LOADED GET_LOADED_FILE GET_VALUE TARGET KEY GET_SETTINGS GET_KEYS PRINT_TARGET_CONFIG HAS_CONFIG)
+  set(one_value_args LOAD IS_LOADED GET_LOADED_FILE GET_VALUE TARGET KEY GET_SETTINGS GET_KEYS PRINT_TARGET_CONFIG HAS_CONFIG HAS_SETTING)
   set(multi_value_args "")
   cmake_parse_arguments(CTF "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 
@@ -558,6 +573,8 @@ function(cmake_targets_file)
     _cmake_targets_file_get_value()
   elseif(DEFINED CTF_GET_SETTINGS)
     _cmake_targets_file_get_settings()
+  elseif(DEFINED CTF_HAS_SETTING)
+    _cmake_targets_file_has_setting()
   elseif(DEFINED CTF_GET_KEYS)
     _cmake_targets_file_get_keys()
   elseif(${CTF_PRINT_CONFIGS})
@@ -864,6 +881,30 @@ macro(_cmake_targets_file_get_settings)
 
   get_property(target_config_map GLOBAL PROPERTY "TARGETS_CONFIG_${CTF_TARGET}")
   set(${CTF_GET_SETTINGS} "${target_config_map}" PARENT_SCOPE)
+endmacro()
+
+#------------------------------------------------------------------------------
+# Internal usage
+macro(_cmake_targets_file_has_setting)
+  if(NOT DEFINED CTF_HAS_SETTING)
+    message(FATAL_ERROR "HAS_SETTING argument is missing or need a value!")
+  endif()
+  if(NOT DEFINED CTF_TARGET)
+    message(FATAL_ERROR "TARGET argument is missing or need a value!")
+  endif()
+  if(NOT DEFINED CTF_KEY)
+    message(FATAL_ERROR "KEY argument is missing or need a value!")
+  endif()
+  _assert_config_file_loaded()
+  _assert_target_config_exists("${CTF_TARGET}")
+  
+  get_property(target_config_map GLOBAL PROPERTY "TARGETS_CONFIG_${CTF_TARGET}")
+  map(HAS_KEY target_config_map "${CTF_KEY}" has_setting_key)
+  if(${has_setting_key})
+    set(${CTF_HAS_SETTING} on PARENT_SCOPE)
+  else()
+    set(${CTF_HAS_SETTING} off PARENT_SCOPE)
+  endif()
 endmacro()
 
 #------------------------------------------------------------------------------

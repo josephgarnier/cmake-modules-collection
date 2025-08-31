@@ -83,7 +83,7 @@
               "pattern": "(.+/)?[^/]+\\.(cpp|cc|cxx)$"
             },
             "pchFile": {
-              "description": "The header file used as precompiled header (PCH) for this target. Must be a path to a file ending with .h, .hpp, .hxx, .inl or .tpp",
+              "description": "The header file used as precompiled header (PCH) for this target (optional). Must be a path to a file ending with .h, .hpp, .hxx, .inl or .tpp",
               "type": "string",
               "pattern": "(.+/)?[^/]+\\.(h|hpp|hxx|inl|tpp)$"
             },

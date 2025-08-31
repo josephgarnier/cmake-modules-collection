@@ -9,9 +9,9 @@
 # See README file in the root directory of this source tree.
 
 #-------------------------------------------------------------------------------
-# Test of [CMakeTargetsFile module::GET_VALUE operation]:
-#    cmake_targets_file(GET_VALUE <output-var> TARGET <target-dir-path> KEY <setting-name>)
-ct_add_test(NAME "test_cmake_targets_file_get_value_operation")
+# Test of [CMakeTargetsFile module::HAS_SETTING operation]:
+#    cmake_targets_file(HAS_SETTING <output-var> TARGET <target-dir-path> KEY <setting-name>)
+ct_add_test(NAME "test_cmake_targets_file_has_setting_operation")
 function(${CMAKETEST_TEST})
   include(CMakeTargetsFile)
 
@@ -42,56 +42,55 @@ function(${CMAKETEST_TEST})
 
   # To call before each test
   macro(_set_up_test)
-    # Reset properties used by `cmake_targets_file(GET_VALUE)`
+    # Reset properties used by `cmake_targets_file(HAS_SETTING)`
     set_property(GLOBAL PROPERTY TARGETS_CONFIG_LOADED)
     set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src")
   endmacro()
 
   # Functionalities checking
-  ct_add_section(NAME "get_from_existing_key")
+  ct_add_section(NAME "has_key_in_config_with_various_keys")
   function(${CMAKETEST_SECTION})
     _set_up_test()
     set_property(GLOBAL PROPERTY TARGETS_CONFIG_LOADED "on")
     set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src" "${input_config_map}")
 
-    # Get a simple value
-    cmake_targets_file(GET_VALUE output TARGET "src" KEY "name")
-    ct_assert_equal(output "fruit-salad")
-    
-    # Get an array
-    set(expected_output
-      "MY_DEFINE=42"
-      "MY_OTHER_DEFINE"
-      "MY_OTHER_DEFINE=42"
-    )
-    cmake_targets_file(GET_VALUE output TARGET "src" KEY "build.compileDefinitions")
-    ct_assert_list(output)
-    ct_assert_equal(output "${expected_output}")
+    # Key exists
+    cmake_targets_file(HAS_SETTING output TARGET "src" KEY "name")
+    ct_assert_true(output)
+    ct_assert_equal(output "on")
+
+    # Key does not exist
+    cmake_targets_file(HAS_SETTING output TARGET "src" KEY "unknown")
+    ct_assert_false(output)
+    ct_assert_equal(output "off")
+  endfunction()
+
+  ct_add_section(NAME "has_keys_in_empty_config")
+  function(${CMAKETEST_SECTION})
+    _set_up_test()
+    set_property(GLOBAL PROPERTY TARGETS_CONFIG_LOADED "on")
+    set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src" "")
+    cmake_targets_file(HAS_SETTING output TARGET "src" KEY "name")
+    ct_assert_false(output)
+    ct_assert_equal(output "off")
   endfunction()
 
   # Errors checking
   ct_add_section(NAME "throws_if_arg_output_var_is_missing_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    _set_up_test()
-    set_property(GLOBAL PROPERTY TARGETS_CONFIG_LOADED "on")
-    set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src" "${input_config_map}")
-    cmake_targets_file(GET_VALUE TARGET "src" KEY "name")
+    cmake_targets_file(HAS_SETTING TARGET "src" KEY "name")
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_output_var_is_missing_2" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    _set_up_test()
-    set_property(GLOBAL PROPERTY TARGETS_CONFIG_LOADED "on")
-    set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src" "${input_config_map}")
-    cmake_targets_file(GET_VALUE "" TARGET "src" KEY "name")
+    func(OP)
+    cmake_targets_file(HAS_SETTING "" TARGET "src" KEY "name")
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_output_var_is_missing_3" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    _set_up_test()
-    set_property(GLOBAL PROPERTY TARGETS_CONFIG_LOADED "on")
-    set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src" "${input_config_map}")
-    cmake_targets_file(GET_VALUE "output" TARGET "src" KEY "name")
+    func(OP)
+    cmake_targets_file(HAS_SETTING "output" TARGET "src" KEY "name")
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_target_dir_path_is_missing_1" EXPECTFAIL)
@@ -99,7 +98,7 @@ function(${CMAKETEST_TEST})
     _set_up_test()
     set_property(GLOBAL PROPERTY TARGETS_CONFIG_LOADED "on")
     set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src" "${input_config_map}")
-    cmake_targets_file(GET_VALUE output KEY "name")
+    cmake_targets_file(HAS_SETTING output KEY "name")
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_target_dir_path_is_missing_2" EXPECTFAIL)
@@ -107,7 +106,7 @@ function(${CMAKETEST_TEST})
     _set_up_test()
     set_property(GLOBAL PROPERTY TARGETS_CONFIG_LOADED "on")
     set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src" "${input_config_map}")
-    cmake_targets_file(GET_VALUE output TARGET KEY "name")
+    cmake_targets_file(HAS_SETTING output TARGET KEY "name")
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_target_dir_path_is_missing_3" EXPECTFAIL)
@@ -115,7 +114,7 @@ function(${CMAKETEST_TEST})
     _set_up_test()
     set_property(GLOBAL PROPERTY TARGETS_CONFIG_LOADED "on")
     set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src" "${input_config_map}")
-    cmake_targets_file(GET_VALUE output TARGET "" KEY "name")
+    cmake_targets_file(HAS_SETTING output TARGET "" KEY "name")
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_target_dir_path_does_not_exist")
@@ -135,7 +134,7 @@ function(${CMAKETEST_TEST})
 
       ct_add_section(NAME "throws_if_global_property_is_not_set_inner" EXPECTFAIL)
       function(${CMAKETEST_SECTION})
-        cmake_targets_file(GET_VALUE output TARGET "src" KEY "name")
+        cmake_targets_file(HAS_SETTING output TARGET "src" KEY "name")
       endfunction()
     endfunction()
 
@@ -147,7 +146,7 @@ function(${CMAKETEST_TEST})
 
       ct_add_section(NAME "throws_if_global_property_is_empty_inner" EXPECTFAIL)
       function(${CMAKETEST_SECTION})
-        cmake_targets_file(GET_VALUE output TARGET "src" KEY "name")
+        cmake_targets_file(HAS_SETTING output TARGET "src" KEY "name")
       endfunction()
     endfunction()
 
@@ -159,7 +158,7 @@ function(${CMAKETEST_TEST})
 
       ct_add_section(NAME "throws_if_global_property_is_different_target_inner" EXPECTFAIL)
       function(${CMAKETEST_SECTION})
-        cmake_targets_file(GET_VALUE output TARGET "src/apple" KEY "name")
+        cmake_targets_file(HAS_SETTING output TARGET "src/apple" KEY "name")
       endfunction()
     endfunction()
   endfunction()
@@ -169,7 +168,7 @@ function(${CMAKETEST_TEST})
     _set_up_test()
     set_property(GLOBAL PROPERTY TARGETS_CONFIG_LOADED "on")
     set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src" "${input_config_map}")
-    cmake_targets_file(GET_VALUE output TARGET "src")
+    cmake_targets_file(HAS_SETTING output TARGET "src")
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_key_is_missing_2" EXPECTFAIL)
@@ -177,7 +176,7 @@ function(${CMAKETEST_TEST})
     _set_up_test()
     set_property(GLOBAL PROPERTY TARGETS_CONFIG_LOADED "on")
     set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src" "${input_config_map}")
-    cmake_targets_file(GET_VALUE output TARGET "src" KEY)
+    cmake_targets_file(HAS_SETTING output TARGET "src" KEY)
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_key_is_missing_3" EXPECTFAIL)
@@ -185,7 +184,7 @@ function(${CMAKETEST_TEST})
     _set_up_test()
     set_property(GLOBAL PROPERTY TARGETS_CONFIG_LOADED "on")
     set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src" "${input_config_map}")
-    cmake_targets_file(GET_VALUE output TARGET "src" KEY "")
+    cmake_targets_file(HAS_SETTING output TARGET "src" KEY "")
   endfunction()
 
   ct_add_section(NAME "throws_if_key_does_not_exist" EXPECTFAIL)
@@ -193,7 +192,7 @@ function(${CMAKETEST_TEST})
     _set_up_test()
     set_property(GLOBAL PROPERTY TARGETS_CONFIG_LOADED "on")
     set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src" "${input_config_map}")
-    cmake_targets_file(GET_VALUE output TARGET "src" KEY "fake.key")
+    cmake_targets_file(HAS_SETTING output TARGET "src" KEY "fake.key")
   endfunction()
 
   ct_add_section(NAME "throws_if_key_is_invalid" EXPECTFAIL)
@@ -210,7 +209,6 @@ function(${CMAKETEST_TEST})
     ct_add_section(NAME "throws_if_global_property_is_not_set")
     function(${CMAKETEST_SECTION})
       _set_up_test()
-
       get_property(output_property GLOBAL PROPERTY "TARGETS_CONFIG_LOADED" SET)
       ct_assert_false(output_property)
       get_property(output_property GLOBAL PROPERTY "TARGETS_CONFIG_LOADED")
@@ -220,7 +218,7 @@ function(${CMAKETEST_TEST})
 
       ct_add_section(NAME "throws_if_global_property_is_not_set_inner" EXPECTFAIL)
       function(${CMAKETEST_SECTION})
-        cmake_targets_file(GET_VALUE output TARGET "src" KEY "name")
+        cmake_targets_file(HAS_SETTING output TARGET "src" KEY "name")
       endfunction()
     endfunction()
 
@@ -232,7 +230,7 @@ function(${CMAKETEST_TEST})
 
       ct_add_section(NAME "throws_if_global_property_is_empty_inner" EXPECTFAIL)
       function(${CMAKETEST_SECTION})
-        cmake_targets_file(GET_VALUE output TARGET "src" KEY "name")
+        cmake_targets_file(HAS_SETTING output TARGET "src" KEY "name")
       endfunction()
     endfunction()
 
@@ -244,7 +242,7 @@ function(${CMAKETEST_TEST})
 
       ct_add_section(NAME "throws_if_global_property_is_not_bool_inner" EXPECTFAIL)
       function(${CMAKETEST_SECTION})
-        cmake_targets_file(GET_VALUE output TARGET "src" KEY "name")
+        cmake_targets_file(HAS_SETTING output TARGET "src" KEY "name")
       endfunction()
     endfunction()
 
@@ -256,7 +254,7 @@ function(${CMAKETEST_TEST})
 
       ct_add_section(NAME "throws_if_global_property_is_off_inner" EXPECTFAIL)
       function(${CMAKETEST_SECTION})
-        cmake_targets_file(GET_VALUE output TARGET "src" KEY "name")
+        cmake_targets_file(HAS_SETTING output TARGET "src" KEY "name")
       endfunction()
     endfunction()
   endfunction()
