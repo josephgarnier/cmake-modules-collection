@@ -522,17 +522,17 @@ macro(_binary_target_add_sources)
   message(STATUS "Organizing files according to the project tree")
   if(DEFINED BBT_SOURCE_FILES)
     target_sources("${BBT_ADD_SOURCES}" PRIVATE "${BBT_SOURCE_FILES}")
-    source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}"
+    source_group(TREE "${CMAKE_SOURCE_DIR}"
       FILES "${BBT_SOURCE_FILES}")
   endif()
   if(DEFINED BBT_PRIVATE_HEADER_FILES)
     target_sources("${BBT_ADD_SOURCES}" PRIVATE "${BBT_PRIVATE_HEADER_FILES}")
-    source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}"
+    source_group(TREE "${CMAKE_SOURCE_DIR}"
       FILES "${BBT_PRIVATE_HEADER_FILES}")
   endif()
   if(DEFINED BBT_PUBLIC_HEADER_FILES)
     target_sources("${BBT_ADD_SOURCES}" PRIVATE "${BBT_PUBLIC_HEADER_FILES}")
-    source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}"
+    source_group(TREE "${CMAKE_SOURCE_DIR}"
       FILES "${BBT_PUBLIC_HEADER_FILES}")
   endif()
 endmacro()
