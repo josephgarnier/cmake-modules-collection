@@ -182,9 +182,9 @@ files.</p>
 <span class="w">  </span><span class="no">PUBLIC_HEADERS_SEPARATED</span><span class="w"> </span><span class="nb">on</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/include/mylib&quot;</span>
 <span class="w">  </span><span class="no">PRIVATE_SOURCE_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src&quot;</span>
 <span class="w">  </span><span class="no">PRIVATE_SOURCE_FILES</span><span class="w"> </span><span class="nb">private_sources</span>
-<span class="w">  </span><span class="no">PUBLIC_HEADER_DIR</span><span class="w"> </span><span class="nb">public_headers_dir</span>
+<span class="w">  </span><span class="no">PUBLIC_HEADER_DIR</span><span class="w"> </span><span class="nb">public_header_dir</span>
 <span class="w">  </span><span class="no">PUBLIC_HEADER_FILES</span><span class="w"> </span><span class="nb">public_headers</span>
-<span class="w">  </span><span class="no">PRIVATE_HEADER_DIR</span><span class="w"> </span><span class="nb">private_headers_dir</span>
+<span class="w">  </span><span class="no">PRIVATE_HEADER_DIR</span><span class="w"> </span><span class="nb">private_header_dir</span>
 <span class="w">  </span><span class="no">PRIVATE_HEADER_FILES</span><span class="w"> </span><span class="nb">private_headers</span>
 <span class="nf">)</span>
 <span class="nf">binary_target(</span><span class="no">ADD_SOURCES</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span>
@@ -294,9 +294,9 @@ Example usage:</p>
 <span class="w">  </span><span class="no">PUBLIC_HEADERS_SEPARATED</span><span class="w"> </span><span class="nb">on</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/include/mylib&quot;</span>
 <span class="w">  </span><span class="no">PRIVATE_SOURCE_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src&quot;</span>
 <span class="w">  </span><span class="no">PRIVATE_SOURCE_FILES</span><span class="w"> </span><span class="nb">private_sources</span>
-<span class="w">  </span><span class="no">PUBLIC_HEADER_DIR</span><span class="w"> </span><span class="nb">public_headers_dir</span>
+<span class="w">  </span><span class="no">PUBLIC_HEADER_DIR</span><span class="w"> </span><span class="nb">public_header_dir</span>
 <span class="w">  </span><span class="no">PUBLIC_HEADER_FILES</span><span class="w"> </span><span class="nb">public_headers</span>
-<span class="w">  </span><span class="no">PRIVATE_HEADER_DIR</span><span class="w"> </span><span class="nb">private_headers_dir</span>
+<span class="w">  </span><span class="no">PRIVATE_HEADER_DIR</span><span class="w"> </span><span class="nb">private_header_dir</span>
 <span class="w">  </span><span class="no">PRIVATE_HEADER_FILES</span><span class="w"> </span><span class="nb">private_headers</span>
 <span class="nf">)</span>
 <span class="nf">binary_target(</span>
@@ -310,7 +310,7 @@ Example usage:</p>
 <span class="w">  </span><span class="no">PRIVATE_HEADER_FILES</span><span class="w"> </span><span class="s">&quot;${private_headers}&quot;</span>
 <span class="w">  </span><span class="no">PUBLIC_HEADER_FILES</span><span class="w"> </span><span class="s">&quot;${public_headers}&quot;</span>
 <span class="w">  </span><span class="no">PRECOMPILED_HEADER_FILE</span><span class="w"> </span><span class="s">&quot;src/header_pch.h&quot;</span>
-<span class="w">  </span><span class="no">INCLUDE_DIRECTORIES</span><span class="w"> </span><span class="s">&quot;$&lt;$&lt;BOOL:${private_headers_dir}&gt;:${private_headers_dir}&gt;&quot;</span><span class="w"> </span><span class="s">&quot;${public_headers_dir}&quot;</span>
+<span class="w">  </span><span class="no">INCLUDE_DIRECTORIES</span><span class="w"> </span><span class="s">&quot;$&lt;$&lt;BOOL:${private_header_dir}&gt;:${private_header_dir}&gt;&quot;</span><span class="w"> </span><span class="s">&quot;${public_header_dir}&quot;</span>
 <span class="w">  </span><span class="no">DEPENDENCIES</span><span class="w"> </span><span class="s">&quot;dep_1&quot;</span><span class="w"> </span><span class="s">&quot;dep_2&quot;</span>
 <span class="nf">)</span>
 </pre></div>
@@ -333,9 +333,9 @@ binary.</p>
 <span class="w">  </span><span class="no">PUBLIC_HEADERS_SEPARATED</span><span class="w"> </span><span class="nb">on</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/include/mylib&quot;</span>
 <span class="w">  </span><span class="no">PRIVATE_SOURCE_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src&quot;</span>
 <span class="w">  </span><span class="no">PRIVATE_SOURCE_FILES</span><span class="w"> </span><span class="nb">private_sources</span>
-<span class="w">  </span><span class="no">PUBLIC_HEADER_DIR</span><span class="w"> </span><span class="nb">public_headers_dir</span>
+<span class="w">  </span><span class="no">PUBLIC_HEADER_DIR</span><span class="w"> </span><span class="nb">public_header_dir</span>
 <span class="w">  </span><span class="no">PUBLIC_HEADER_FILES</span><span class="w"> </span><span class="nb">public_headers</span>
-<span class="w">  </span><span class="no">PRIVATE_HEADER_DIR</span><span class="w"> </span><span class="nb">private_headers_dir</span>
+<span class="w">  </span><span class="no">PRIVATE_HEADER_DIR</span><span class="w"> </span><span class="nb">private_header_dir</span>
 <span class="w">  </span><span class="no">PRIVATE_HEADER_FILES</span><span class="w"> </span><span class="nb">private_headers</span>
 <span class="nf">)</span>
 <span class="nf">binary_target(</span><span class="no">ADD_SOURCES</span><span class="w"> </span><span class="s">&quot;my_shared_lib&quot;</span>
@@ -347,7 +347,7 @@ binary.</p>
 <span class="w">  </span><span class="no">HEADER_FILE</span><span class="w"> </span><span class="s">&quot;src/header_pch.h&quot;</span>
 <span class="nf">)</span>
 <span class="nf">binary_target(</span><span class="no">ADD_INCLUDE_DIRECTORIES</span><span class="w"> </span><span class="s">&quot;my_shared_lib&quot;</span>
-<span class="w">  </span><span class="no">INCLUDE_DIRECTORIES</span><span class="w"> </span><span class="s">&quot;$&lt;$&lt;BOOL:${private_headers_dir}&gt;:${private_headers_dir}&gt;&quot;</span><span class="w"> </span><span class="s">&quot;${public_headers_dir}&quot;</span>
+<span class="w">  </span><span class="no">INCLUDE_DIRECTORIES</span><span class="w"> </span><span class="s">&quot;$&lt;$&lt;BOOL:${private_header_dir}&gt;:${private_header_dir}&gt;&quot;</span><span class="w"> </span><span class="s">&quot;${public_header_dir}&quot;</span>
 <span class="nf">)</span>
 </pre></div>
 </div>

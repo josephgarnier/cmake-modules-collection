@@ -387,7 +387,10 @@ Usage
   listed in the global property ``TARGETS_CONFIG_LIST``, and must match one
   of the keys in the ``targets`` JSON object of the loaded configuration file.
 
-  The result is stored in ``<output-var>`` as a :module:`Map`.
+  The result is stored in ``<output-var>`` as a :module:`Map`. The **values
+  are serialized**, so to access a specific value, it is recommended to use
+  the :command:`cmake_targets_file(GET_VALUE)` command, which deserializes
+  the values.
 
   An error is raised if no configuration file has been previously loaded with
   the :command:`cmake_targets_file(LOAD)` command or if the ``TARGET`` does not

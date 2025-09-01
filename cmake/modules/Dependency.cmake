@@ -8,7 +8,9 @@
 Dependency
 ----------
 
-Operations to manipule dependencies. They mainly encapsulate the numerous function calls required to `import and export dependencies <https://cmake.org/cmake/help/latest/guide/importing-exporting/index.html>`__. It requires CMake 3.20 or newer.
+Operations to manipule dependencies. They mainly encapsulate the numerous
+function calls required to `import and export dependencies <https://cmake.org/cmake/help/latest/guide/importing-exporting/index.html>`__.
+It requires CMake 3.20 or newer.
 
 Synopsis
 ^^^^^^^^
