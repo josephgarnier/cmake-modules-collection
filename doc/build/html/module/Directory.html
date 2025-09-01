@@ -270,8 +270,8 @@ arguments are missing, the command raises a fatal error.</p>
 <dd><p>Recursively get source and header file according to a policy:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">directory(</span><span class="no">COLLECT_SOURCES_BY_POLICY</span>
 <span class="w">          </span><span class="no">PUBLIC_HEADERS_SEPARATED</span><span class="w"> </span><span class="o">&lt;</span><span class="nb">on</span><span class="p">|</span><span class="nb">off</span><span class="o">&gt;</span><span class="w"> </span><span class="p">[</span><span class="nv">&lt;include-dir-path&gt;</span><span class="p">]</span>
-<span class="w">          </span><span class="no">SRC_DIR</span><span class="w"> </span><span class="nv">&lt;dir-path&gt;</span>
-<span class="w">          </span><span class="no">SRC_SOURCE_FILES</span><span class="w"> </span><span class="nv">&lt;output-list-var&gt;</span>
+<span class="w">          </span><span class="no">PRIVATE_SOURCE_DIR</span><span class="w"> </span><span class="nv">&lt;dir-path&gt;</span>
+<span class="w">          </span><span class="no">PRIVATE_SOURCE_FILES</span><span class="w"> </span><span class="nv">&lt;output-list-var&gt;</span>
 <span class="w">          </span><span class="no">PUBLIC_HEADER_DIR</span><span class="w"> </span><span class="nv">&lt;output-var&gt;</span>
 <span class="w">          </span><span class="no">PUBLIC_HEADER_FILES</span><span class="w"> </span><span class="nv">&lt;output-list-var&gt;</span>
 <span class="w">          </span><span class="no">PRIVATE_HEADER_DIR</span><span class="w"> </span><span class="nv">&lt;output-var&gt;</span>
@@ -281,8 +281,8 @@ arguments are missing, the command raises a fatal error.</p>
 <p>Recursively collect source and header files from specified directories
 according to a header separation policy.</p>
 <p>This command collects source files with extensions <code class="docutils literal notranslate"><span class="pre">.cpp</span></code>, <code class="docutils literal notranslate"><span class="pre">.cc</span></code>,
-or <code class="docutils literal notranslate"><span class="pre">.cxx</span></code> from the directory specified by <code class="docutils literal notranslate"><span class="pre">SRC_DIR</span></code> and stores them
-in the variable referenced by <code class="docutils literal notranslate"><span class="pre">SRC_SOURCE_FILES</span></code>.</p>
+or <code class="docutils literal notranslate"><span class="pre">.cxx</span></code> from the directory specified by <code class="docutils literal notranslate"><span class="pre">PRIVATE_SOURCE_DIR</span></code> and stores them
+in the variable referenced by <code class="docutils literal notranslate"><span class="pre">PRIVATE_SOURCE_FILES</span></code>.</p>
 <p>The behavior for header files depends on the policy value given to
 <code class="docutils literal notranslate"><span class="pre">PUBLIC_HEADERS_SEPARATED</span></code>:</p>
 <ul class="simple">
@@ -292,18 +292,18 @@ in the variable referenced by <code class="docutils literal notranslate"><span c
 in the variable referenced by <code class="docutils literal notranslate"><span class="pre">PUBLIC_HEADER_FILES</span></code>.</p></li>
 <li><p>The variable referenced by <code class="docutils literal notranslate"><span class="pre">PUBLIC_HEADER_DIR</span></code> is set to
 <code class="docutils literal notranslate"><span class="pre">&lt;include-dir-path&gt;</span></code>.</p></li>
-<li><p>Private headers are collected from <code class="docutils literal notranslate"><span class="pre">SRC_DIR</span></code> and stored in the
+<li><p>Private headers are collected from <code class="docutils literal notranslate"><span class="pre">PRIVATE_SOURCE_DIR</span></code> and stored in the
 variable referenced by <code class="docutils literal notranslate"><span class="pre">PRIVATE_HEADER_FILES</span></code>.</p></li>
 <li><p>The variable referenced by <code class="docutils literal notranslate"><span class="pre">PRIVATE_HEADER_DIR</span></code> is set to
-<code class="docutils literal notranslate"><span class="pre">SRC_DIR</span></code>.</p></li>
+<code class="docutils literal notranslate"><span class="pre">PRIVATE_SOURCE_DIR</span></code>.</p></li>
 </ul>
 </li>
 <li><p>If <code class="docutils literal notranslate"><span class="pre">PUBLIC_HEADERS_SEPARATED</span> <span class="pre">off</span></code> is specified:</p>
 <ul>
-<li><p>All headers are treated as public and collected from <code class="docutils literal notranslate"><span class="pre">SRC_DIR</span></code>.</p></li>
+<li><p>All headers are treated as public and collected from <code class="docutils literal notranslate"><span class="pre">PRIVATE_SOURCE_DIR</span></code>.</p></li>
 <li><p>The variable referenced by <code class="docutils literal notranslate"><span class="pre">PUBLIC_HEADER_FILES</span></code> contains the
 header file list.</p></li>
-<li><p>The variable referenced by <code class="docutils literal notranslate"><span class="pre">PUBLIC_HEADER_DIR</span></code> is set to <code class="docutils literal notranslate"><span class="pre">SRC_DIR</span></code>.</p></li>
+<li><p>The variable referenced by <code class="docutils literal notranslate"><span class="pre">PUBLIC_HEADER_DIR</span></code> is set to <code class="docutils literal notranslate"><span class="pre">PRIVATE_SOURCE_DIR</span></code>.</p></li>
 <li><p>The variables referenced by <code class="docutils literal notranslate"><span class="pre">PRIVATE_HEADER_DIR</span></code> and
 <code class="docutils literal notranslate"><span class="pre">PRIVATE_HEADER_FILES</span></code> are set to empty.</p></li>
 </ul>
@@ -314,8 +314,8 @@ does not refer to an existing directory, a fatal error is raised.</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">directory(</span><span class="no">COLLECT_SOURCES_BY_POLICY</span>
 <span class="w">  </span><span class="no">PUBLIC_HEADERS_SEPARATED</span><span class="w"> </span><span class="nb">on</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/include/mylib&quot;</span>
-<span class="w">  </span><span class="no">SRC_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src&quot;</span>
-<span class="w">  </span><span class="no">SRC_SOURCE_FILES</span><span class="w"> </span><span class="nb">sources</span>
+<span class="w">  </span><span class="no">PRIVATE_SOURCE_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src&quot;</span>
+<span class="w">  </span><span class="no">PRIVATE_SOURCE_FILES</span><span class="w"> </span><span class="nb">private_sources</span>
 <span class="w">  </span><span class="no">PUBLIC_HEADER_DIR</span><span class="w"> </span><span class="nb">public_headers_dir</span>
 <span class="w">  </span><span class="no">PUBLIC_HEADER_FILES</span><span class="w"> </span><span class="nb">public_headers</span>
 <span class="w">  </span><span class="no">PRIVATE_HEADER_DIR</span><span class="w"> </span><span class="nb">private_headers_dir</span>

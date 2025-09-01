@@ -250,8 +250,8 @@ Usage
 
     directory(COLLECT_SOURCES_BY_POLICY
               PUBLIC_HEADERS_SEPARATED <on|off> [<include-dir-path>]
-              SRC_DIR <dir-path>
-              SRC_SOURCE_FILES <output-list-var>
+              PRIVATE_SOURCE_DIR <dir-path>
+              PRIVATE_SOURCE_FILES <output-list-var>
               PUBLIC_HEADER_DIR <output-var>
               PUBLIC_HEADER_FILES <output-list-var>
               PRIVATE_HEADER_DIR <output-var>
@@ -261,8 +261,8 @@ Usage
   according to a header separation policy.
 
   This command collects source files with extensions ``.cpp``, ``.cc``,
-  or ``.cxx`` from the directory specified by ``SRC_DIR`` and stores them
-  in the variable referenced by ``SRC_SOURCE_FILES``.
+  or ``.cxx`` from the directory specified by ``PRIVATE_SOURCE_DIR`` and stores them
+  in the variable referenced by ``PRIVATE_SOURCE_FILES``.
 
   The behavior for header files depends on the policy value given to
   ``PUBLIC_HEADERS_SEPARATED``:
@@ -273,17 +273,17 @@ Usage
       in the variable referenced by ``PUBLIC_HEADER_FILES``.
     * The variable referenced by ``PUBLIC_HEADER_DIR`` is set to
       ``<include-dir-path>``.
-    * Private headers are collected from ``SRC_DIR`` and stored in the
+    * Private headers are collected from ``PRIVATE_SOURCE_DIR`` and stored in the
       variable referenced by ``PRIVATE_HEADER_FILES``.
     * The variable referenced by ``PRIVATE_HEADER_DIR`` is set to
-      ``SRC_DIR``.
+      ``PRIVATE_SOURCE_DIR``.
 
   * If ``PUBLIC_HEADERS_SEPARATED off`` is specified:
 
-    * All headers are treated as public and collected from ``SRC_DIR``.
+    * All headers are treated as public and collected from ``PRIVATE_SOURCE_DIR``.
     * The variable referenced by ``PUBLIC_HEADER_FILES`` contains the
       header file list.
-    * The variable referenced by ``PUBLIC_HEADER_DIR`` is set to ``SRC_DIR``.
+    * The variable referenced by ``PUBLIC_HEADER_DIR`` is set to ``PRIVATE_SOURCE_DIR``.
     * The variables referenced by ``PRIVATE_HEADER_DIR`` and
       ``PRIVATE_HEADER_FILES`` are set to empty.
 
@@ -296,8 +296,8 @@ Usage
 
     directory(COLLECT_SOURCES_BY_POLICY
       PUBLIC_HEADERS_SEPARATED on "${CMAKE_SOURCE_DIR}/include/mylib"
-      SRC_DIR "${CMAKE_SOURCE_DIR}/src"
-      SRC_SOURCE_FILES sources
+      PRIVATE_SOURCE_DIR "${CMAKE_SOURCE_DIR}/src"
+      PRIVATE_SOURCE_FILES private_sources
       PUBLIC_HEADER_DIR public_headers_dir
       PUBLIC_HEADER_FILES public_headers
       PRIVATE_HEADER_DIR private_headers_dir
@@ -313,7 +313,7 @@ cmake_minimum_required (VERSION 3.20 FATAL_ERROR)
 # Public function of this module
 function(directory)
   set(options SHARED STATIC COLLECT_SOURCES_BY_LOCATION COLLECT_SOURCES_BY_POLICY)
-  set(one_value_args SCAN SCAN_DIRS LIST_DIRECTORIES RELATIVE ROOT_DIR INCLUDE_REGEX EXCLUDE_REGEX RECURSE FIND_LIB FIND_IMPLIB NAME SRC_DIR INCLUDE_DIR SRC_SOURCE_FILES SRC_HEADER_FILES INCLUDE_HEADER_FILES PUBLIC_HEADER_DIR PUBLIC_HEADER_FILES PRIVATE_HEADER_DIR PRIVATE_HEADER_FILES)
+  set(one_value_args SCAN SCAN_DIRS LIST_DIRECTORIES RELATIVE ROOT_DIR INCLUDE_REGEX EXCLUDE_REGEX RECURSE FIND_LIB FIND_IMPLIB NAME SRC_DIR SRC_SOURCE_FILES SRC_HEADER_FILES INCLUDE_DIR INCLUDE_HEADER_FILES PRIVATE_SOURCE_DIR PRIVATE_SOURCE_FILES PUBLIC_HEADER_DIR PUBLIC_HEADER_FILES PRIVATE_HEADER_DIR PRIVATE_HEADER_FILES)
   set(multi_value_args PUBLIC_HEADERS_SEPARATED)
   cmake_parse_arguments(DIR "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
   
@@ -610,11 +610,11 @@ endmacro()
 #------------------------------------------------------------------------------
 # Internal usage
 macro(_directory_collect_sources_by_policy)
-  if(NOT DEFINED DIR_SRC_DIR)
-    message(FATAL_ERROR "SRC_DIR arguments is missing or need a value!")
+  if(NOT DEFINED DIR_PRIVATE_SOURCE_DIR)
+    message(FATAL_ERROR "PRIVATE_SOURCE_DIR arguments is missing or need a value!")
   endif()
-  if(NOT DEFINED DIR_SRC_SOURCE_FILES)
-    message(FATAL_ERROR "SRC_SOURCE_FILES arguments is missing!")
+  if(NOT DEFINED DIR_PRIVATE_SOURCE_FILES)
+    message(FATAL_ERROR "PRIVATE_SOURCE_FILES arguments is missing!")
   endif()
   if(NOT DEFINED DIR_PUBLIC_HEADER_DIR)
     message(FATAL_ERROR "PUBLIC_HEADER_DIR arguments is missing!")
@@ -655,26 +655,26 @@ macro(_directory_collect_sources_by_policy)
   # Collect files
   if(${is_headers_separated})
     directory(COLLECT_SOURCES_BY_LOCATION
-      SRC_DIR "${DIR_SRC_DIR}"
+      SRC_DIR "${DIR_PRIVATE_SOURCE_DIR}"
       SRC_SOURCE_FILES src_source_files_list
       SRC_HEADER_FILES src_header_files_list
       INCLUDE_DIR "${include_dir_path}"
       INCLUDE_HEADER_FILES include_header_files_list
     )
-    set(${DIR_SRC_SOURCE_FILES} "${src_source_files_list}" PARENT_SCOPE)
+    set(${DIR_PRIVATE_SOURCE_FILES} "${src_source_files_list}" PARENT_SCOPE)
     set(${DIR_PUBLIC_HEADER_DIR} "${include_dir_path}" PARENT_SCOPE)
     set(${DIR_PUBLIC_HEADER_FILES} "${include_header_files_list}" PARENT_SCOPE)
-    set(${DIR_PRIVATE_HEADER_DIR} "${DIR_SRC_DIR}" PARENT_SCOPE)
+    set(${DIR_PRIVATE_HEADER_DIR} "${DIR_PRIVATE_SOURCE_DIR}" PARENT_SCOPE)
     set(${DIR_PRIVATE_HEADER_FILES} "${src_header_files_list}" PARENT_SCOPE)
     message(STATUS "Considering headers from \"include/\" as public and from \"src/\" as private")
   else()
     directory(COLLECT_SOURCES_BY_LOCATION
-      SRC_DIR "${DIR_SRC_DIR}"
+      SRC_DIR "${DIR_PRIVATE_SOURCE_DIR}"
       SRC_SOURCE_FILES src_source_files_list
       SRC_HEADER_FILES src_header_files_list
     )
-    set(${DIR_SRC_SOURCE_FILES} "${src_source_files_list}" PARENT_SCOPE)
-    set(${DIR_PUBLIC_HEADER_DIR} "${DIR_SRC_DIR}" PARENT_SCOPE)
+    set(${DIR_PRIVATE_SOURCE_FILES} "${src_source_files_list}" PARENT_SCOPE)
+    set(${DIR_PUBLIC_HEADER_DIR} "${DIR_PRIVATE_SOURCE_DIR}" PARENT_SCOPE)
     set(${DIR_PUBLIC_HEADER_FILES} "${src_header_files_list}" PARENT_SCOPE)
     set(${DIR_PRIVATE_HEADER_DIR} "" PARENT_SCOPE)
     set(${DIR_PRIVATE_HEADER_FILES} "" PARENT_SCOPE)

@@ -180,15 +180,15 @@ files.</p>
 <span class="nf">binary_target(</span><span class="no">CREATE</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span><span class="w"> </span><span class="no">STATIC</span><span class="nf">)</span>
 <span class="nf">directory(</span><span class="no">COLLECT_SOURCES_BY_POLICY</span>
 <span class="w">  </span><span class="no">PUBLIC_HEADERS_SEPARATED</span><span class="w"> </span><span class="nb">on</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/include/mylib&quot;</span>
-<span class="w">  </span><span class="no">SRC_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src&quot;</span>
-<span class="w">  </span><span class="no">SRC_SOURCE_FILES</span><span class="w"> </span><span class="nb">sources</span>
+<span class="w">  </span><span class="no">PRIVATE_SOURCE_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src&quot;</span>
+<span class="w">  </span><span class="no">PRIVATE_SOURCE_FILES</span><span class="w"> </span><span class="nb">private_sources</span>
 <span class="w">  </span><span class="no">PUBLIC_HEADER_DIR</span><span class="w"> </span><span class="nb">public_headers_dir</span>
 <span class="w">  </span><span class="no">PUBLIC_HEADER_FILES</span><span class="w"> </span><span class="nb">public_headers</span>
 <span class="w">  </span><span class="no">PRIVATE_HEADER_DIR</span><span class="w"> </span><span class="nb">private_headers_dir</span>
 <span class="w">  </span><span class="no">PRIVATE_HEADER_FILES</span><span class="w"> </span><span class="nb">private_headers</span>
 <span class="nf">)</span>
 <span class="nf">binary_target(</span><span class="no">ADD_SOURCES</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span>
-<span class="w">  </span><span class="no">SOURCE_FILES</span><span class="w"> </span><span class="s">&quot;${sources}&quot;</span>
+<span class="w">  </span><span class="no">SOURCE_FILES</span><span class="w"> </span><span class="s">&quot;${private_sources}&quot;</span>
 <span class="w">  </span><span class="no">PRIVATE_HEADER_FILES</span><span class="w"> </span><span class="s">&quot;${private_headers}&quot;</span>
 <span class="w">  </span><span class="no">PUBLIC_HEADER_FILES</span><span class="w"> </span><span class="s">&quot;${public_headers}&quot;</span>
 <span class="nf">)</span>
@@ -292,8 +292,8 @@ these keywords delegates internally to the corresponding
 Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">directory(</span><span class="no">COLLECT_SOURCES_BY_POLICY</span>
 <span class="w">  </span><span class="no">PUBLIC_HEADERS_SEPARATED</span><span class="w"> </span><span class="nb">on</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/include/mylib&quot;</span>
-<span class="w">  </span><span class="no">SRC_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src&quot;</span>
-<span class="w">  </span><span class="no">SRC_SOURCE_FILES</span><span class="w"> </span><span class="nb">sources</span>
+<span class="w">  </span><span class="no">PRIVATE_SOURCE_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src&quot;</span>
+<span class="w">  </span><span class="no">PRIVATE_SOURCE_FILES</span><span class="w"> </span><span class="nb">private_sources</span>
 <span class="w">  </span><span class="no">PUBLIC_HEADER_DIR</span><span class="w"> </span><span class="nb">public_headers_dir</span>
 <span class="w">  </span><span class="no">PUBLIC_HEADER_FILES</span><span class="w"> </span><span class="nb">public_headers</span>
 <span class="w">  </span><span class="no">PRIVATE_HEADER_DIR</span><span class="w"> </span><span class="nb">private_headers_dir</span>
@@ -306,7 +306,7 @@ Example usage:</p>
 <span class="w">  </span><span class="no">COMPILE_DEFINITIONS</span><span class="w"> </span><span class="s">&quot;MY_DEFINE&quot;</span>
 <span class="w">  </span><span class="no">COMPILE_OPTIONS</span><span class="w"> </span><span class="s">&quot;-Wall&quot;</span><span class="w"> </span><span class="s">&quot;-Wextra&quot;</span>
 <span class="w">  </span><span class="no">LINK_OPTIONS</span><span class="w"> </span><span class="s">&quot;-s&quot;</span>
-<span class="w">  </span><span class="no">SOURCE_FILES</span><span class="w"> </span><span class="s">&quot;${sources}&quot;</span>
+<span class="w">  </span><span class="no">SOURCE_FILES</span><span class="w"> </span><span class="s">&quot;${private_sources}&quot;</span>
 <span class="w">  </span><span class="no">PRIVATE_HEADER_FILES</span><span class="w"> </span><span class="s">&quot;${private_headers}&quot;</span>
 <span class="w">  </span><span class="no">PUBLIC_HEADER_FILES</span><span class="w"> </span><span class="s">&quot;${public_headers}&quot;</span>
 <span class="w">  </span><span class="no">PRECOMPILED_HEADER_FILE</span><span class="w"> </span><span class="s">&quot;src/header_pch.h&quot;</span>
@@ -331,15 +331,15 @@ binary.</p>
 <span class="nf">)</span>
 <span class="nf">directory(</span><span class="no">COLLECT_SOURCES_BY_POLICY</span>
 <span class="w">  </span><span class="no">PUBLIC_HEADERS_SEPARATED</span><span class="w"> </span><span class="nb">on</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/include/mylib&quot;</span>
-<span class="w">  </span><span class="no">SRC_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src&quot;</span>
-<span class="w">  </span><span class="no">SRC_SOURCE_FILES</span><span class="w"> </span><span class="nb">sources</span>
+<span class="w">  </span><span class="no">PRIVATE_SOURCE_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src&quot;</span>
+<span class="w">  </span><span class="no">PRIVATE_SOURCE_FILES</span><span class="w"> </span><span class="nb">private_sources</span>
 <span class="w">  </span><span class="no">PUBLIC_HEADER_DIR</span><span class="w"> </span><span class="nb">public_headers_dir</span>
 <span class="w">  </span><span class="no">PUBLIC_HEADER_FILES</span><span class="w"> </span><span class="nb">public_headers</span>
 <span class="w">  </span><span class="no">PRIVATE_HEADER_DIR</span><span class="w"> </span><span class="nb">private_headers_dir</span>
 <span class="w">  </span><span class="no">PRIVATE_HEADER_FILES</span><span class="w"> </span><span class="nb">private_headers</span>
 <span class="nf">)</span>
 <span class="nf">binary_target(</span><span class="no">ADD_SOURCES</span><span class="w"> </span><span class="s">&quot;my_shared_lib&quot;</span>
-<span class="w">  </span><span class="no">SOURCE_FILES</span><span class="w"> </span><span class="s">&quot;${sources}&quot;</span>
+<span class="w">  </span><span class="no">SOURCE_FILES</span><span class="w"> </span><span class="s">&quot;${private_sources}&quot;</span>
 <span class="w">  </span><span class="no">PRIVATE_HEADER_FILES</span><span class="w"> </span><span class="s">&quot;${private_headers}&quot;</span>
 <span class="w">  </span><span class="no">PUBLIC_HEADER_FILES</span><span class="w"> </span><span class="s">&quot;${public_headers}&quot;</span>
 <span class="nf">)</span>

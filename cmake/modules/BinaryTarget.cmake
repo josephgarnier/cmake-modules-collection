@@ -143,15 +143,15 @@ Usage
     binary_target(CREATE "my_static_lib" STATIC)
     directory(COLLECT_SOURCES_BY_POLICY
       PUBLIC_HEADERS_SEPARATED on "${CMAKE_SOURCE_DIR}/include/mylib"
-      SRC_DIR "${CMAKE_SOURCE_DIR}/src"
-      SRC_SOURCE_FILES sources
+      PRIVATE_SOURCE_DIR "${CMAKE_SOURCE_DIR}/src"
+      PRIVATE_SOURCE_FILES private_sources
       PUBLIC_HEADER_DIR public_headers_dir
       PUBLIC_HEADER_FILES public_headers
       PRIVATE_HEADER_DIR private_headers_dir
       PRIVATE_HEADER_FILES private_headers
     )
     binary_target(ADD_SOURCES "my_static_lib"
-      SOURCE_FILES "${sources}"
+      SOURCE_FILES "${private_sources}"
       PRIVATE_HEADER_FILES "${private_headers}"
       PUBLIC_HEADER_FILES "${public_headers}"
     )
@@ -266,8 +266,8 @@ Usage
 
     directory(COLLECT_SOURCES_BY_POLICY
       PUBLIC_HEADERS_SEPARATED on "${CMAKE_SOURCE_DIR}/include/mylib"
-      SRC_DIR "${CMAKE_SOURCE_DIR}/src"
-      SRC_SOURCE_FILES sources
+      PRIVATE_SOURCE_DIR "${CMAKE_SOURCE_DIR}/src"
+      PRIVATE_SOURCE_FILES private_sources
       PUBLIC_HEADER_DIR public_headers_dir
       PUBLIC_HEADER_FILES public_headers
       PRIVATE_HEADER_DIR private_headers_dir
@@ -280,7 +280,7 @@ Usage
       COMPILE_DEFINITIONS "MY_DEFINE"
       COMPILE_OPTIONS "-Wall" "-Wextra"
       LINK_OPTIONS "-s"
-      SOURCE_FILES "${sources}"
+      SOURCE_FILES "${private_sources}"
       PRIVATE_HEADER_FILES "${private_headers}"
       PUBLIC_HEADER_FILES "${public_headers}"
       PRECOMPILED_HEADER_FILE "src/header_pch.h"
@@ -305,15 +305,15 @@ binary.
   )
   directory(COLLECT_SOURCES_BY_POLICY
     PUBLIC_HEADERS_SEPARATED on "${CMAKE_SOURCE_DIR}/include/mylib"
-    SRC_DIR "${CMAKE_SOURCE_DIR}/src"
-    SRC_SOURCE_FILES sources
+    PRIVATE_SOURCE_DIR "${CMAKE_SOURCE_DIR}/src"
+    PRIVATE_SOURCE_FILES private_sources
     PUBLIC_HEADER_DIR public_headers_dir
     PUBLIC_HEADER_FILES public_headers
     PRIVATE_HEADER_DIR private_headers_dir
     PRIVATE_HEADER_FILES private_headers
   )
   binary_target(ADD_SOURCES "my_shared_lib"
-    SOURCE_FILES "${sources}"
+    SOURCE_FILES "${private_sources}"
     PRIVATE_HEADER_FILES "${private_headers}"
     PUBLIC_HEADER_FILES "${public_headers}"
   )
