@@ -298,9 +298,9 @@ Usage
       PUBLIC_HEADERS_SEPARATED on "${CMAKE_SOURCE_DIR}/include/mylib"
       PRIVATE_SOURCE_DIR "${CMAKE_SOURCE_DIR}/src"
       PRIVATE_SOURCE_FILES private_sources
-      PUBLIC_HEADER_DIR public_headers_dir
+      PUBLIC_HEADER_DIR public_header_dir
       PUBLIC_HEADER_FILES public_headers
-      PRIVATE_HEADER_DIR private_headers_dir
+      PRIVATE_HEADER_DIR private_header_dir
       PRIVATE_HEADER_FILES private_headers
     )
 #]=======================================================================]

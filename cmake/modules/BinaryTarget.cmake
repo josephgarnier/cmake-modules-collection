@@ -145,9 +145,9 @@ Usage
       PUBLIC_HEADERS_SEPARATED on "${CMAKE_SOURCE_DIR}/include/mylib"
       PRIVATE_SOURCE_DIR "${CMAKE_SOURCE_DIR}/src"
       PRIVATE_SOURCE_FILES private_sources
-      PUBLIC_HEADER_DIR public_headers_dir
+      PUBLIC_HEADER_DIR public_header_dir
       PUBLIC_HEADER_FILES public_headers
-      PRIVATE_HEADER_DIR private_headers_dir
+      PRIVATE_HEADER_DIR private_header_dir
       PRIVATE_HEADER_FILES private_headers
     )
     binary_target(ADD_SOURCES "my_static_lib"
@@ -268,9 +268,9 @@ Usage
       PUBLIC_HEADERS_SEPARATED on "${CMAKE_SOURCE_DIR}/include/mylib"
       PRIVATE_SOURCE_DIR "${CMAKE_SOURCE_DIR}/src"
       PRIVATE_SOURCE_FILES private_sources
-      PUBLIC_HEADER_DIR public_headers_dir
+      PUBLIC_HEADER_DIR public_header_dir
       PUBLIC_HEADER_FILES public_headers
-      PRIVATE_HEADER_DIR private_headers_dir
+      PRIVATE_HEADER_DIR private_header_dir
       PRIVATE_HEADER_FILES private_headers
     )
     binary_target(
@@ -284,7 +284,7 @@ Usage
       PRIVATE_HEADER_FILES "${private_headers}"
       PUBLIC_HEADER_FILES "${public_headers}"
       PRECOMPILED_HEADER_FILE "src/header_pch.h"
-      INCLUDE_DIRECTORIES "$<$<BOOL:${private_headers_dir}>:${private_headers_dir}>" "${public_headers_dir}"
+      INCLUDE_DIRECTORIES "$<$<BOOL:${private_header_dir}>:${private_header_dir}>" "${public_header_dir}"
       DEPENDENCIES "dep_1" "dep_2"
     )
 
@@ -307,9 +307,9 @@ binary.
     PUBLIC_HEADERS_SEPARATED on "${CMAKE_SOURCE_DIR}/include/mylib"
     PRIVATE_SOURCE_DIR "${CMAKE_SOURCE_DIR}/src"
     PRIVATE_SOURCE_FILES private_sources
-    PUBLIC_HEADER_DIR public_headers_dir
+    PUBLIC_HEADER_DIR public_header_dir
     PUBLIC_HEADER_FILES public_headers
-    PRIVATE_HEADER_DIR private_headers_dir
+    PRIVATE_HEADER_DIR private_header_dir
     PRIVATE_HEADER_FILES private_headers
   )
   binary_target(ADD_SOURCES "my_shared_lib"
@@ -321,7 +321,7 @@ binary.
     HEADER_FILE "src/header_pch.h"
   )
   binary_target(ADD_INCLUDE_DIRECTORIES "my_shared_lib"
-    INCLUDE_DIRECTORIES "$<$<BOOL:${private_headers_dir}>:${private_headers_dir}>" "${public_headers_dir}"
+    INCLUDE_DIRECTORIES "$<$<BOOL:${private_header_dir}>:${private_header_dir}>" "${public_header_dir}"
   )
 #]=======================================================================]
 
