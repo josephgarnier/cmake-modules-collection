@@ -46,9 +46,9 @@ Format
 ^^^^^^
 
 The CMake targets declaration file is a JSON document with an object as the
-root (:download:`click to download <../../../cmake/modules/CMakeTargets.json>`):
+root (:download:`click to download <../../../cmake/modules/CMakeTargets_Sample.json>`):
 
-.. literalinclude:: ../../../cmake/modules/CMakeTargets.json
+.. literalinclude:: ../../../cmake/modules/CMakeTargets_Sample.json
   :language: json
 
 The JSON document must be conformed to the :download:`CMakeTargets.json schema <../../../cmake/modules/schema.json>` described below.
@@ -187,10 +187,10 @@ The root object recognizes the following fields:
       integrate the dependency into the build system.
 
     ``minVersion``
-      A required integer specifying the minimum acceptable version of the
-      dependency. This value is used as the ``VERSION`` argument to
-      :cmake:command:`find_package() <cmake:command:find_package>` calls for
-      that dependency.
+      A required string specifying the minimum acceptable version of the
+      dependency. This value is intended to be used as the ``VERSION``
+      argument to :cmake:command:`find_package() <cmake:command:find_package>`
+      calls for that dependency.
 
     ``autodownload``
       A required boolean indicating whether the dependency may be
@@ -637,7 +637,7 @@ macro(_cmake_targets_file_load)
     string(JSON header_policy_mode GET "${target_json_block}" "headerPolicy" "mode")
     map(ADD target_config_map "headerPolicy.mode" "${header_policy_mode}")
     if("${header_policy_mode}" STREQUAL "split")
-      # 'includeDir' is only required when mode is 'split'
+      # 'includeDir' is required when mode is 'split'
       string(JSON include_dir GET "${target_json_block}" "headerPolicy" "includeDir")
       map(ADD target_config_map "headerPolicy.includeDir" "${include_dir}")
     endif()

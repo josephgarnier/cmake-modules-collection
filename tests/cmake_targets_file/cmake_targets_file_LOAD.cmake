@@ -54,13 +54,13 @@ function(${CMAKETEST_TEST})
       "dependencies": {
         "AppleLib": {
           "rulesFile": "FindAppleLib.cmake",
-          "minVersion": 2,
+          "minVersion": "2",
           "autodownload": true,
           "optional": false
         },
         "BananaLib": {
           "rulesFile": "FindBananaLib.cmake",
-          "minVersion": 4,
+          "minVersion": "4",
           "autodownload": false,
           "optional": true
         }

@@ -137,9 +137,8 @@
                       "pattern": "(.+/)?[^/]+\\.cmake$"
                     },
                     "minVersion": {
-                      "description": "The minimum acceptable version number of the dependency",
-                      "type": "integer",
-                      "minimum": 0
+                      "description": "The minimum acceptable version of the dependency",
+                      "type": "string"
                     },
                     "autodownload": {
                       "description": "Whether the dependency can be automatically downloaded if not found locally",
