@@ -95,7 +95,7 @@ introduced in upcoming versions.</p>
 <section id="format">
 <h2>Format<a class="headerlink" href="#format" title="Link to this heading">¶</a></h2>
 <p>The CMake targets declaration file is a JSON document with an object as the
-root (<a class="reference download internal" download="" href="../_downloads/e250bbcf63da3e350f7e545787b7598e/CMakeTargets.json"><code class="xref download docutils literal notranslate"><span class="pre">click</span> <span class="pre">to</span> <span class="pre">download</span></code></a>):</p>
+root (<a class="reference download internal" download="" href="../_downloads/7a57775e5e149be67b946cc781b24be0/CMakeTargets_Sample.json"><code class="xref download docutils literal notranslate"><span class="pre">click</span> <span class="pre">to</span> <span class="pre">download</span></code></a>):</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;$schema&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;schema.json&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;$id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;schema.json&quot;</span><span class="p">,</span>
@@ -118,13 +118,13 @@ root (<a class="reference download internal" download="" href="../_downloads/e25
 <span class="w">      </span><span class="nt">&quot;dependencies&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="nt">&quot;AppleLib&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">          </span><span class="nt">&quot;rulesFile&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;FindAppleLib.cmake&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;minVersion&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;minVersion&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2&quot;</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;autodownload&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;optional&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
 <span class="w">        </span><span class="p">},</span>
 <span class="w">        </span><span class="nt">&quot;BananaLib&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">          </span><span class="nt">&quot;rulesFile&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;FindBananaLib.cmake&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;minVersion&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;minVersion&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4&quot;</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;autodownload&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;optional&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="w">        </span><span class="p">}</span>
@@ -282,17 +282,21 @@ headers are located. The path must start with <code class="docutils literal notr
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">dependencies</span></code></dt><dd><p>The required object property specifying the set of dependencies needed by
 the target. Its value is an object whose keys are the names of the
-dependencies. Each name must be unique within the <code class="docutils literal notranslate"><span class="pre">dependencies</span></code> object.</p>
+dependencies. A name is intended to be used as <code class="docutils literal notranslate"><span class="pre">PackageName</span></code> argument to
+<span class="target" id="index-0-command:cmake:command:find_package"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/find_package.html#command:find_package" title="(in CMake v4.1.1)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">find_package()</span></code></a>. It must
+therefore be compatible with CMake's <code class="docutils literal notranslate"><span class="pre">PackageName</span></code> requirements. Each
+name must be unique within the <code class="docutils literal notranslate"><span class="pre">dependencies</span></code> object and cannot contain
+a space.</p>
 <p>Each entry of a <code class="docutils literal notranslate"><span class="pre">dependencies</span></code> object is a JSON object that may contain
 the following properties:</p>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">rulesFile</span></code></dt><dd><p>A required path to a CMake file ending in <code class="docutils literal notranslate"><span class="pre">.cmake</span></code> that defines how to
 integrate the dependency into the build system.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">minVersion</span></code></dt><dd><p>A required integer specifying the minimum acceptable version of the
-dependency. This value is used as the <code class="docutils literal notranslate"><span class="pre">VERSION</span></code> argument to
-<span class="target" id="index-0-command:cmake:command:find_package"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/find_package.html#command:find_package" title="(in CMake v4.1.1)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">find_package()</span></code></a> calls for
-that dependency.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">minVersion</span></code></dt><dd><p>A required string specifying the minimum acceptable version of the
+dependency. This value is intended to be used as the <code class="docutils literal notranslate"><span class="pre">VERSION</span></code>
+argument to <span class="target" id="index-1-command:cmake:command:find_package"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/find_package.html#command:find_package" title="(in CMake v4.1.1)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">find_package()</span></code></a>
+calls for that dependency.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">autodownload</span></code></dt><dd><p>A required boolean indicating whether the dependency may be
 automatically downloaded if not found locally.</p>

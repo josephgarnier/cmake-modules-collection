@@ -177,7 +177,11 @@ The root object recognizes the following fields:
   ``dependencies``
     The required object property specifying the set of dependencies needed by
     the target. Its value is an object whose keys are the names of the
-    dependencies. Each name must be unique within the ``dependencies`` object.
+    dependencies. A name is intended to be used as ``PackageName`` argument to
+    :cmake:command:`find_package() <cmake:command:find_package>`. It must
+    therefore be compatible with CMake's ``PackageName`` requirements. Each
+    name must be unique within the ``dependencies`` object and cannot contain
+    a space.
 
     Each entry of a ``dependencies`` object is a JSON object that may contain
     the following properties:
