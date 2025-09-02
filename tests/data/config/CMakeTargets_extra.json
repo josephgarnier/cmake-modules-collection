@@ -20,17 +20,20 @@
       "dependencies": {
         "AppleLib": {
           "rulesFile": "FindAppleLib.cmake",
-          "minVersion": 2,
+          "minVersion": "2",
           "autodownload": true,
-          "optional": false
+          "optional": false,
+          "extraDepKey" : "extraValue"
         },
         "BananaLib": {
           "rulesFile": "FindBananaLib.cmake",
-          "minVersion": 4,
+          "minVersion": "4",
           "autodownload": false,
-          "optional": true
+          "optional": true,
+          "extraDepKey" : "extraValue"
         }
-      }
+      },
+      "extraKey" : "extraValue"
     },
     "src/apple": {
       "name": "apple",

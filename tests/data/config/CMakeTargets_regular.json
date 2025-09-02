@@ -1,0 +1,66 @@
+{
+  "$schema": "../../../cmake/modules/schema.json",
+  "$id": "schema.json",
+  "targets": {
+    "src": {
+      "name": "fruit-salad",
+      "type": "executable",
+      "build": {
+        "compileFeatures": ["cxx_std_20"],
+        "compileDefinitions": ["MY_DEFINE=42", "MY_OTHER_DEFINE", "MY_OTHER_DEFINE=42"],
+        "compileOptions": [],
+        "linkOptions": []
+      },
+      "mainFile": "src/main.cpp",
+      "pchFile": "include/fruit_salad_pch.h",
+      "headerPolicy": {
+        "mode": "split",
+        "includeDir": "include"
+      },
+      "dependencies": {
+        "AppleLib": {
+          "rulesFile": "FindAppleLib.cmake",
+          "minVersion": "2",
+          "autodownload": true,
+          "optional": false
+        },
+        "BananaLib": {
+          "rulesFile": "FindBananaLib.cmake",
+          "minVersion": "4",
+          "autodownload": false,
+          "optional": true
+        }
+      }
+    },
+    "src/apple": {
+      "name": "apple",
+      "type": "staticLib",
+      "build": {
+        "compileFeatures": [],
+        "compileDefinitions": [],
+        "compileOptions": [],
+        "linkOptions": []
+      },
+      "mainFile": "src/apple/main.cpp",
+      "headerPolicy": {
+        "mode": "merged"
+      },
+      "dependencies": {}
+    },
+    "src/banana": {
+      "name": "banana",
+      "type": "staticLib",
+      "build": {
+        "compileFeatures": [],
+        "compileDefinitions": [],
+        "compileOptions": [],
+        "linkOptions": []
+      },
+      "mainFile": "src/banana/main.cpp",
+      "headerPolicy": {
+        "mode": "merged"
+      },
+      "dependencies": {}
+    }
+  }
+}

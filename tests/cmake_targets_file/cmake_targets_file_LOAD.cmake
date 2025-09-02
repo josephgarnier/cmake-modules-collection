@@ -143,7 +143,154 @@ function(${CMAKETEST_TEST})
       "dependencies:"
     )
 
-    cmake_targets_file(LOAD "${TESTS_DATA_DIR}/config/CMakeTargets.json")
+    cmake_targets_file(LOAD "${TESTS_DATA_DIR}/config/CMakeTargets_regular.json")
+    
+    get_property(output_property GLOBAL PROPERTY "TARGETS_CONFIG_RAW_JSON")
+    ct_assert_string(output_property)
+    ct_assert_equal(output_property "${expected_raw_json_output}")
+
+    get_property(output_property GLOBAL PROPERTY "TARGETS_CONFIG_LIST")
+    ct_assert_list(output_property)
+    ct_assert_equal(output_property "src;src/apple;src/banana")
+
+    get_property(output_property GLOBAL PROPERTY "TARGETS_CONFIG_LOADED")
+    ct_assert_string(output_property)
+    ct_assert_true(output_property)
+    ct_assert_equal(output_property "on")
+
+    get_property(output_property GLOBAL PROPERTY "TARGETS_CONFIG_src")
+    ct_assert_list(output_property)
+    ct_assert_equal(output_property "${expected_src_config_output}")
+
+    get_property(output_property GLOBAL PROPERTY "TARGETS_CONFIG_src/apple")
+    ct_assert_list(output_property)
+    ct_assert_equal(output_property "${expected_src_apple_config_output}")
+
+    get_property(output_property GLOBAL PROPERTY "TARGETS_CONFIG_src/banana")
+    ct_assert_list(output_property)
+    ct_assert_equal(output_property "${expected_src_banana_config_output}")
+  endfunction()
+
+  ct_add_section(NAME "load_config_file_with_extras")
+  function(${CMAKETEST_SECTION})
+    _set_up_test()
+    # The JSON comparison is space sensitive, so the indentation does not be changed
+    set(expected_raw_json_output
+[=[{
+  "$schema": "../../../cmake/modules/schema.json",
+  "$id": "schema.json",
+  "targets": {
+    "src": {
+      "name": "fruit-salad",
+      "type": "executable",
+      "build": {
+        "compileFeatures": ["cxx_std_20"],
+        "compileDefinitions": ["MY_DEFINE=42", "MY_OTHER_DEFINE", "MY_OTHER_DEFINE=42"],
+        "compileOptions": [],
+        "linkOptions": []
+      },
+      "mainFile": "src/main.cpp",
+      "pchFile": "include/fruit_salad_pch.h",
+      "headerPolicy": {
+        "mode": "split",
+        "includeDir": "include"
+      },
+      "dependencies": {
+        "AppleLib": {
+          "rulesFile": "FindAppleLib.cmake",
+          "minVersion": "2",
+          "autodownload": true,
+          "optional": false,
+          "extraDepKey" : "extraValue"
+        },
+        "BananaLib": {
+          "rulesFile": "FindBananaLib.cmake",
+          "minVersion": "4",
+          "autodownload": false,
+          "optional": true,
+          "extraDepKey" : "extraValue"
+        }
+      },
+      "extraKey" : "extraValue"
+    },
+    "src/apple": {
+      "name": "apple",
+      "type": "staticLib",
+      "build": {
+        "compileFeatures": [],
+        "compileDefinitions": [],
+        "compileOptions": [],
+        "linkOptions": []
+      },
+      "mainFile": "src/apple/main.cpp",
+      "headerPolicy": {
+        "mode": "merged"
+      },
+      "dependencies": {}
+    },
+    "src/banana": {
+      "name": "banana",
+      "type": "staticLib",
+      "build": {
+        "compileFeatures": [],
+        "compileDefinitions": [],
+        "compileOptions": [],
+        "linkOptions": []
+      },
+      "mainFile": "src/banana/main.cpp",
+      "headerPolicy": {
+        "mode": "merged"
+      },
+      "dependencies": {}
+    }
+  }
+}]=]
+    )
+    set(expected_src_config_output
+      "name:fruit-salad"
+      "type:executable"
+      "mainFile:src/main.cpp"
+      "pchFile:include/fruit_salad_pch.h"
+      "build.compileFeatures:cxx_std_20"
+      "build.compileDefinitions:MY_DEFINE=42|MY_OTHER_DEFINE|MY_OTHER_DEFINE=42"
+      "build.compileOptions:"
+      "build.linkOptions:"
+      "headerPolicy.mode:split"
+      "headerPolicy.includeDir:include"
+      "dependencies:AppleLib|BananaLib"
+      "dependencies.AppleLib.rulesFile:FindAppleLib.cmake"
+      "dependencies.AppleLib.minVersion:2"
+      "dependencies.AppleLib.autodownload:ON"
+      "dependencies.AppleLib.optional:OFF"
+      "dependencies.BananaLib.rulesFile:FindBananaLib.cmake"
+      "dependencies.BananaLib.minVersion:4"
+      "dependencies.BananaLib.autodownload:OFF"
+      "dependencies.BananaLib.optional:ON"
+    )
+    set(expected_src_apple_config_output
+      "name:apple"
+      "type:staticLib"
+      "mainFile:src/apple/main.cpp"
+      "build.compileFeatures:"
+      "build.compileDefinitions:"
+      "build.compileOptions:"
+      "build.linkOptions:"
+      "headerPolicy.mode:merged"
+      "dependencies:"
+    )
+    set(expected_src_banana_config_output
+      "name:banana"
+      "type:staticLib"
+      "mainFile:src/banana/main.cpp"
+      "build.compileFeatures:"
+      "build.compileDefinitions:"
+      "build.compileOptions:"
+      "build.linkOptions:"
+      "headerPolicy.mode:merged"
+      "dependencies:"
+    )
+
+    cmake_targets_file(LOAD "${TESTS_DATA_DIR}/config/CMakeTargets_extra.json")
     
     get_property(output_property GLOBAL PROPERTY "TARGETS_CONFIG_RAW_JSON")
     ct_assert_string(output_property)
