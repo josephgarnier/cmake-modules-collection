@@ -43,7 +43,7 @@ function(${CMAKETEST_TEST})
   endif()
 
   # Set global test variables
-  set(CMAKE_CURRENT_SOURCE_DIR "${TESTS_DATA_DIR}") # Required to call `source_group()`. CMakeTest change this value while it should be the same as the root of the sources.
+  set(CMAKE_SOURCE_DIR "${TESTS_DATA_DIR}") # Required to call `source_group()`. CMakeTest change this value while it should be the same as the root of the sources.
   set(input_public_header_dir "${TESTS_DATA_DIR}/include")
   set(input_pch_header "${TESTS_DATA_DIR}/include/include_pch.h")
   set(input_sources

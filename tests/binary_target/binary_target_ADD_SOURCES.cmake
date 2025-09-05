@@ -38,7 +38,7 @@ function(${CMAKETEST_TEST})
   endmacro()
 
   # Set global test variables
-  set(CMAKE_CURRENT_SOURCE_DIR "${TESTS_DATA_DIR}") # Required to call `source_group()`. CMakeTest change this value while it should be the same as the root of the sources.
+  set(CMAKE_SOURCE_DIR "${TESTS_DATA_DIR}") # Required to call `source_group()`. CMakeTest change this value while it should be the same as the root of the sources.
   set(input_sources
     "${TESTS_DATA_DIR}/src/main.cpp"
     "${TESTS_DATA_DIR}/src/source_1.cpp"
