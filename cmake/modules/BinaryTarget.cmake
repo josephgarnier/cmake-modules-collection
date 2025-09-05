@@ -62,16 +62,18 @@ Usage
   configuration options are supported:
 
   * ``COMPILE_FEATURES``: Add required compile features (e.g., ``cxx_std_20``,
-    ``cxx_lambda``) with :cmake:command:`target_compile_features() <cmake:command:target_compile_features>`
+    ``cxx_thread_local``, ``cxx_trailing_return_types``, etc.) with
+    :cmake:command:`target_compile_features() <cmake:command:target_compile_features>`
     and populates the :cmake:prop_tgt:`COMPILE_FEATURES <cmake:prop_tgt:COMPILE_FEATURES>` target property.
-  * ``COMPILE_DEFINITIONS``: Add preprocessor definitions (e.g., ``MY_DEFINE``
-    or ``MY_DEFINE=42``) with :cmake:command:`target_compile_definitions() <cmake:command:target_compile_definitions>`
+  * ``COMPILE_DEFINITIONS``: Add preprocessor definitions (e.g., ``DEFINE_ONE=1``
+    , ``DEFINE_TWO=2``, ``OPTION_1``, etc.) with
+    :cmake:command:`target_compile_definitions() <cmake:command:target_compile_definitions>`
     and populates :cmake:prop_tgt:`COMPILE_OPTIONS <cmake:prop_tgt:COMPILE_DEFINITIONS>` target property.
   * ``COMPILE_OPTIONS``: Add compiler command-line options (e.g., ``-Wall``,
-    ``/W4``) with :cmake:command:`target_compile_options() <cmake:command:target_compile_options>`
+    ``-Wextra``, ``/W4``, etc.) with :cmake:command:`target_compile_options() <cmake:command:target_compile_options>`
     and populates :cmake:prop_tgt:`COMPILE_OPTIONS <cmake:prop_tgt:COMPILE_OPTIONS>` target property.
-  * ``LINK_OPTIONS``: Add linker command-line options (e.g., ``-s``,
-    ``/INCREMENTAL:NO``) with :cmake:command:`target_link_options() <cmake:command:target_link_options>`
+  * ``LINK_OPTIONS``: Add linker command-line options (e.g., ``-s``, ``-z``, 
+    ``/INCREMENTAL:NO``, etc.) with :cmake:command:`target_link_options() <cmake:command:target_link_options>`
     and populates :cmake:prop_tgt:`LINK_OPTIONS <cmake:prop_tgt:LINK_OPTIONS>` target property.
 
   At the first call, the command sets the :cmake:prop_tgt:`CXX_STANDARD <cmake:prop_tgt:CXX_STANDARD>` property
@@ -89,10 +91,10 @@ Usage
 
     binary_target(CREATE "my_shared_lib" SHARED)
     binary_target(CONFIGURE_SETTINGS "my_shared_lib"
-      COMPILE_FEATURES "cxx_std_20"
-      COMPILE_DEFINITIONS "MY_DEFINE"
+      COMPILE_FEATURES "cxx_std_20" "cxx_thread_local" "cxx_trailing_return_types"
+      COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
-      LINK_OPTIONS "-s"
+      LINK_OPTIONS "-s" "-z"
     )
 
 .. signature::
@@ -276,10 +278,10 @@ Usage
     binary_target(
       CREATE_FULLY "my_shared_lib"
       SHARED
-      COMPILE_FEATURES "cxx_std_20"
-      COMPILE_DEFINITIONS "MY_DEFINE"
+      COMPILE_FEATURES "cxx_std_20" "cxx_thread_local" "cxx_trailing_return_types"
+      COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
-      LINK_OPTIONS "-s"
+      LINK_OPTIONS "-s" "-z"
       SOURCE_FILES "${private_sources}"
       PRIVATE_HEADER_FILES "${private_headers}"
       PUBLIC_HEADER_FILES "${public_headers}"
@@ -298,10 +300,10 @@ binary.
 
   binary_target(CREATE "my_shared_lib" SHARED)
   binary_target(CONFIGURE_SETTINGS "my_shared_lib"
-    COMPILE_FEATURES "cxx_std_20"
-    COMPILE_DEFINITIONS "MY_DEFINE"
+    COMPILE_FEATURES "cxx_std_20" "cxx_thread_local" "cxx_trailing_return_types"
+    COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
     COMPILE_OPTIONS "-Wall" "-Wextra"
-    LINK_OPTIONS "-s"
+    LINK_OPTIONS "-s" "-z"
   )
   directory(COLLECT_SOURCES_BY_POLICY
     PUBLIC_HEADERS_SEPARATED on "${CMAKE_SOURCE_DIR}/include/mylib"

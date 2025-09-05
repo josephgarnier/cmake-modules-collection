@@ -74,7 +74,7 @@ function(${CMAKETEST_TEST})
     # LINK_OPTIONS is not set, because link options cannot be added to a static library
     binary_target(CREATE_FULLY "new_static_mock_lib" STATIC
       COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
-      COMPILE_DEFINITIONS "DEFINE_ONE" "DEFINE_TWO"
+      COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
       SOURCE_FILES "${input_sources}"
       PRIVATE_HEADER_FILES "${input_private_headers}"
@@ -86,7 +86,7 @@ function(${CMAKETEST_TEST})
 
     binary_target(CREATE_FULLY "new_shared_mock_lib" SHARED
       COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
-      COMPILE_DEFINITIONS "DEFINE_ONE" "DEFINE_TWO"
+      COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
       LINK_OPTIONS "-s" "-z"
       SOURCE_FILES "${input_sources}"
@@ -141,7 +141,7 @@ function(${CMAKETEST_TEST})
   function(${CMAKETEST_SECTION})
     binary_target(CREATE_FULLY SHARED
       COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
-      COMPILE_DEFINITIONS "DEFINE_ONE" "DEFINE_TWO"
+      COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
       LINK_OPTIONS "-s" "-z"
       SOURCE_FILES "${input_sources}"
@@ -157,7 +157,7 @@ function(${CMAKETEST_TEST})
   function(${CMAKETEST_SECTION})
     binary_target(CREATE_FULLY "" SHARED
       COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
-      COMPILE_DEFINITIONS "DEFINE_ONE" "DEFINE_TWO"
+      COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
       LINK_OPTIONS "-s" "-z"
       SOURCE_FILES "${input_sources}"
@@ -173,7 +173,7 @@ function(${CMAKETEST_TEST})
   function(${CMAKETEST_SECTION})
     binary_target(CREATE_FULLY "new_shared_mock_lib_4" SHARED
       COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
-      COMPILE_DEFINITIONS "DEFINE_ONE" "DEFINE_TWO"
+      COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
       LINK_OPTIONS "-s" "-z"
       SOURCE_FILES "${input_sources}"
@@ -189,7 +189,7 @@ function(${CMAKETEST_TEST})
   function(${CMAKETEST_SECTION})
     binary_target(CREATE_FULLY "new_shared_mock_lib_5"
       COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
-      COMPILE_DEFINITIONS "DEFINE_ONE" "DEFINE_TWO"
+      COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
       LINK_OPTIONS "-s" "-z"
       SOURCE_FILES "${input_sources}"
@@ -205,7 +205,7 @@ function(${CMAKETEST_TEST})
   function(${CMAKETEST_SECTION})
     binary_target(CREATE_FULLY "new_shared_mock_lib_6" STATIC SHARED
       COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
-      COMPILE_DEFINITIONS "DEFINE_ONE" "DEFINE_TWO"
+      COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
       LINK_OPTIONS "-s" "-z"
       SOURCE_FILES "${input_sources}"
@@ -221,7 +221,7 @@ function(${CMAKETEST_TEST})
   function(${CMAKETEST_SECTION})
     binary_target(CREATE_FULLY "new_shared_mock_lib_7" SHARED
       COMPILE_FEATURES
-      COMPILE_DEFINITIONS "DEFINE_ONE" "DEFINE_TWO"
+      COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
       LINK_OPTIONS "-s" "-z"
       SOURCE_FILES "${input_sources}"
@@ -237,7 +237,39 @@ function(${CMAKETEST_TEST})
   function(${CMAKETEST_SECTION})
     binary_target(CREATE_FULLY "new_shared_mock_lib_8" SHARED
       COMPILE_FEATURES ""
-      COMPILE_DEFINITIONS "DEFINE_ONE" "DEFINE_TWO"
+      COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
+      COMPILE_OPTIONS "-Wall" "-Wextra"
+      LINK_OPTIONS "-s" "-z"
+      SOURCE_FILES "${input_sources}"
+      PRIVATE_HEADER_FILES "${input_private_headers}"
+      PUBLIC_HEADER_FILES "${input_public_headers}"
+      PRECOMPILED_HEADER_FILE "${input_pch_header}"
+      INCLUDE_DIRECTORIES "${input_public_header_dir}"
+      DEPENDENCIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
+    )
+  endfunction()
+
+  ct_add_section(NAME "throws_if_arg_compile_definition_is_missing_1" EXPECTFAIL)
+  function(${CMAKETEST_SECTION})
+    binary_target(CREATE_FULLY "new_shared_mock_lib_7" SHARED
+      COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
+      COMPILE_DEFINITIONS
+      COMPILE_OPTIONS "-Wall" "-Wextra"
+      LINK_OPTIONS "-s" "-z"
+      SOURCE_FILES "${input_sources}"
+      PRIVATE_HEADER_FILES "${input_private_headers}"
+      PUBLIC_HEADER_FILES "${input_public_headers}"
+      PRECOMPILED_HEADER_FILE "${input_pch_header}"
+      INCLUDE_DIRECTORIES "${input_public_header_dir}"
+      DEPENDENCIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
+    )
+  endfunction()
+
+  ct_add_section(NAME "throws_if_arg_compile_definition_is_missing_2" EXPECTFAIL)
+  function(${CMAKETEST_SECTION})
+    binary_target(CREATE_FULLY "new_shared_mock_lib_8" SHARED
+      COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
+      COMPILE_DEFINITIONS ""
       COMPILE_OPTIONS "-Wall" "-Wextra"
       LINK_OPTIONS "-s" "-z"
       SOURCE_FILES "${input_sources}"
@@ -253,7 +285,7 @@ function(${CMAKETEST_TEST})
   function(${CMAKETEST_SECTION})
     binary_target(CREATE_FULLY "new_shared_mock_lib_9" SHARED
       COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
-      COMPILE_DEFINITIONS "DEFINE_ONE" "DEFINE_TWO"
+      COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS
       LINK_OPTIONS "-s" "-z"
       SOURCE_FILES "${input_sources}"
@@ -269,7 +301,7 @@ function(${CMAKETEST_TEST})
   function(${CMAKETEST_SECTION})
     binary_target(CREATE_FULLY "new_shared_mock_lib_10" SHARED
       COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
-      COMPILE_DEFINITIONS "DEFINE_ONE" "DEFINE_TWO"
+      COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS ""
       LINK_OPTIONS "-s" "-z"
       SOURCE_FILES "${input_sources}"
@@ -285,7 +317,7 @@ function(${CMAKETEST_TEST})
   function(${CMAKETEST_SECTION})
     binary_target(CREATE_FULLY "new_shared_mock_lib_11" SHARED
       COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
-      COMPILE_DEFINITIONS "DEFINE_ONE" "DEFINE_TWO"
+      COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
       LINK_OPTIONS
       SOURCE_FILES "${input_sources}"
@@ -301,7 +333,7 @@ function(${CMAKETEST_TEST})
   function(${CMAKETEST_SECTION})
     binary_target(CREATE_FULLY "new_shared_mock_lib_12" SHARED
       COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
-      COMPILE_DEFINITIONS "DEFINE_ONE" "DEFINE_TWO"
+      COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
       LINK_OPTIONS ""
       SOURCE_FILES "${input_sources}"
@@ -317,7 +349,7 @@ function(${CMAKETEST_TEST})
   function(${CMAKETEST_SECTION})
     binary_target(CREATE_FULLY "new_static_mock_lib_4" STATIC
       COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
-      COMPILE_DEFINITIONS "DEFINE_ONE" "DEFINE_TWO"
+      COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
       LINK_OPTIONS "-s" "-z"
       SOURCE_FILES "${input_sources}"
@@ -334,7 +366,7 @@ function(${CMAKETEST_TEST})
     unset(CMAKE_CXX_STANDARD)
     binary_target(CREATE_FULLY "new_shared_mock_lib_13" SHARED
       COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
-      COMPILE_DEFINITIONS "DEFINE_ONE" "DEFINE_TWO"
+      COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
       LINK_OPTIONS "-s" "-z"
       SOURCE_FILES "${input_sources}"
@@ -351,7 +383,7 @@ function(${CMAKETEST_TEST})
     set(CMAKE_CXX_STANDARD "")
     binary_target(CREATE_FULLY "new_shared_mock_lib_14" SHARED
       COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
-      COMPILE_DEFINITIONS "DEFINE_ONE" "DEFINE_TWO"
+      COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
       LINK_OPTIONS "-s" "-z"
       SOURCE_FILES "${input_sources}"
@@ -367,7 +399,7 @@ function(${CMAKETEST_TEST})
   function(${CMAKETEST_SECTION})
     binary_target(CREATE_FULLY "new_shared_mock_lib_15" SHARED
       COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
-      COMPILE_DEFINITIONS "DEFINE_ONE" "DEFINE_TWO"
+      COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
       LINK_OPTIONS "-s" "-z"
       PRIVATE_HEADER_FILES "${input_private_headers}"
@@ -382,7 +414,7 @@ function(${CMAKETEST_TEST})
   function(${CMAKETEST_SECTION})
     binary_target(CREATE_FULLY "new_shared_mock_lib_16" SHARED
       COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
-      COMPILE_DEFINITIONS "DEFINE_ONE" "DEFINE_TWO"
+      COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
       LINK_OPTIONS "-s" "-z"
       SOURCE_FILES
@@ -398,7 +430,7 @@ function(${CMAKETEST_TEST})
   function(${CMAKETEST_SECTION})
     binary_target(CREATE_FULLY "new_shared_mock_lib_17" SHARED
       COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
-      COMPILE_DEFINITIONS "DEFINE_ONE" "DEFINE_TWO"
+      COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
       LINK_OPTIONS "-s" "-z"
       SOURCE_FILES "${input_sources}"
@@ -413,7 +445,7 @@ function(${CMAKETEST_TEST})
   function(${CMAKETEST_SECTION})
     binary_target(CREATE_FULLY "new_shared_mock_lib_18" SHARED
       COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
-      COMPILE_DEFINITIONS "DEFINE_ONE" "DEFINE_TWO"
+      COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
       LINK_OPTIONS "-s" "-z"
       SOURCE_FILES "${input_sources}"
@@ -429,7 +461,7 @@ function(${CMAKETEST_TEST})
   function(${CMAKETEST_SECTION})
     binary_target(CREATE_FULLY "new_shared_mock_lib_19" SHARED
       COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
-      COMPILE_DEFINITIONS "DEFINE_ONE" "DEFINE_TWO"
+      COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
       LINK_OPTIONS "-s" "-z"
       SOURCE_FILES "${input_sources}"
@@ -444,7 +476,7 @@ function(${CMAKETEST_TEST})
   function(${CMAKETEST_SECTION})
     binary_target(CREATE_FULLY "new_shared_mock_lib_20" SHARED
       COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
-      COMPILE_DEFINITIONS "DEFINE_ONE" "DEFINE_TWO"
+      COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
       LINK_OPTIONS "-s" "-z"
       SOURCE_FILES "${input_sources}"
@@ -460,7 +492,7 @@ function(${CMAKETEST_TEST})
   function(${CMAKETEST_SECTION})
     binary_target(CREATE_FULLY "new_shared_mock_lib_21" SHARED
       COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
-      COMPILE_DEFINITIONS "DEFINE_ONE" "DEFINE_TWO"
+      COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
       LINK_OPTIONS "-s" "-z"
       SOURCE_FILES "${input_sources}"
@@ -476,7 +508,7 @@ function(${CMAKETEST_TEST})
   function(${CMAKETEST_SECTION})
     binary_target(CREATE_FULLY "new_shared_mock_lib_22" SHARED
       COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
-      COMPILE_DEFINITIONS "DEFINE_ONE" "DEFINE_TWO"
+      COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
       LINK_OPTIONS "-s" "-z"
       SOURCE_FILES "${input_sources}"
@@ -492,7 +524,7 @@ function(${CMAKETEST_TEST})
   function(${CMAKETEST_SECTION})
     binary_target(CREATE_FULLY "new_shared_mock_lib_23" SHARED
       COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
-      COMPILE_DEFINITIONS "DEFINE_ONE" "DEFINE_TWO"
+      COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
       LINK_OPTIONS "-s" "-z"
       SOURCE_FILES "${input_sources}"
@@ -508,7 +540,7 @@ function(${CMAKETEST_TEST})
   function(${CMAKETEST_SECTION})
     binary_target(CREATE_FULLY "new_shared_mock_lib_24" SHARED
       COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
-      COMPILE_DEFINITIONS "DEFINE_ONE" "DEFINE_TWO"
+      COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
       LINK_OPTIONS "-s" "-z"
       SOURCE_FILES "${input_sources}"
@@ -523,7 +555,7 @@ function(${CMAKETEST_TEST})
   function(${CMAKETEST_SECTION})
     binary_target(CREATE_FULLY "new_shared_mock_lib_25" SHARED
       COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
-      COMPILE_DEFINITIONS "DEFINE_ONE" "DEFINE_TWO"
+      COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
       LINK_OPTIONS "-s" "-z"
       SOURCE_FILES "${input_sources}"
@@ -539,7 +571,7 @@ function(${CMAKETEST_TEST})
   function(${CMAKETEST_SECTION})
     binary_target(CREATE_FULLY "new_shared_mock_lib_26" SHARED
       COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
-      COMPILE_DEFINITIONS "DEFINE_ONE" "DEFINE_TWO"
+      COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
       LINK_OPTIONS "-s" "-z"
       SOURCE_FILES "${input_sources}"
