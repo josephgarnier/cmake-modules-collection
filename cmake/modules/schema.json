@@ -75,7 +75,8 @@
                 "compileDefinitions",
                 "compileOptions",
                 "linkOptions"
-              ]
+              ],
+              "additionalProperties": false
             },
             "mainFile": {
               "description": "The main source file (.cpp) that serves as the entry point or primary compilation unit for this target. Must be a path to a file ending with .cpp, .cc, or .cxx",
@@ -121,7 +122,8 @@
                     "includeDir"
                   ]
                 }
-              }
+              },
+              "additionalProperties": false
             },
             "dependencies": {
               "description": "The external packages or modules this target depends on",
@@ -175,5 +177,6 @@
   },
   "required": [
     "targets"
-  ]
+  ],
+  "additionalProperties": false
 }
