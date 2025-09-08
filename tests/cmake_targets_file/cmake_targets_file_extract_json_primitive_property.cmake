@@ -212,6 +212,14 @@ function(${CMAKETEST_TEST})
     )
   endfunction()
 
+  ct_add_section(NAME "throws_if_arg_json_block_is_not_a_primitive_type_4" EXPECTFAIL)
+  function(${CMAKETEST_SECTION})
+    _extract_json_primitive_property(
+      in_out_map "smoothie.info.calories"
+      "[]" "" off
+    )
+  endfunction()
+
   ct_add_section(NAME "throws_if_arg_json_path_is_missing" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     _extract_json_primitive_property(
