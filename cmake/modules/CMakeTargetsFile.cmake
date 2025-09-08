@@ -672,6 +672,38 @@ endmacro()
 
 #------------------------------------------------------------------------------
 # Internal usage
+function(_extract_json_primitive_property in_out_map_var map_key json_block json_path_list is_required)
+  if("${in_out_map_var}" STREQUAL "")
+    message(FATAL_ERROR "in_out_map_var argument is empty!")
+  endif()
+  if("${map_key}" STREQUAL "")
+    message(FATAL_ERROR "map_key argument is empty!")
+  endif()
+  if("${json_block}" STREQUAL "")
+    message(FATAL_ERROR "json_block argument is empty!")
+  endif()
+  if(NOT "${is_required}" MATCHES "^(on|off)$")
+    message(FATAL_ERROR "is_required must be \"on\" or \"off\"")
+  endif()
+  string(JSON json_block_type ERROR_VARIABLE err TYPE "${json_block}" ${json_path_list})
+  if(err)
+    if(${is_required})
+      list(JOIN json_path_list "." joined)
+      message(FATAL_ERROR "Missing required JSON property '${joined}'!")
+    endif()
+    return()
+  endif()
+  if(NOT "${json_block_type}" MATCHES "^(NULL|NUMBER|STRING|BOOLEAN)$")
+    message(FATAL_ERROR "Given JSON block is not a NULL, NUMBER, STRING or BOOLEAN, but a ${json_block_type}!")
+  endif()
+
+  string(JSON prop_value GET "${json_block}" ${json_path_list})
+  map(ADD "${in_out_map_var}" "${map_key}" "${prop_value}")
+  set(${in_out_map_var} "${${in_out_map_var}}" PARENT_SCOPE)
+endfunction()
+
+#------------------------------------------------------------------------------
+# Internal usage
 function(_get_json_array output_list_var json_block json_path)
   list(APPEND json_path ${ARGN}) # No quotes must be used because we don't want to keep empty elements
   if("${output_list_var}" STREQUAL "")
