@@ -10,7 +10,7 @@
 
 #-------------------------------------------------------------------------------
 # Test of [CMakeTargetsFile module::_get_json_object internal function]:
-#    _get_json_object(<output-map-var> <json-block> <json-path>)
+#    _get_json_object(<output-map-var> <json-block> <json-path-list>)
 ct_add_test(NAME "test_cmake_targets_file_get_json_object_internal_function")
 function(${CMAKETEST_TEST})
   include(CMakeTargetsFile)
@@ -66,7 +66,7 @@ function(${CMAKETEST_TEST})
       )
       string(JSON json_block_type TYPE "${input_json_object}")
       ct_assert_equal(json_block_type "OBJECT")
-      _get_json_object(output "${input_json_object}" "smoothie" "info")
+      _get_json_object(output "${input_json_object}" "smoothie;info")
       ct_assert_list(output)
       ct_assert_equal(output "${expected_output}")
 
@@ -76,7 +76,7 @@ function(${CMAKETEST_TEST})
       )
       string(JSON json_block_type TYPE "${input_json_object}")
       ct_assert_equal(json_block_type "OBJECT")
-      _get_json_object(output "${input_json_object}" "tropical mix" "variants" 0)
+      _get_json_object(output "${input_json_object}" "tropical mix;variants;0")
       ct_assert_list(output)
       ct_assert_equal(output "${expected_output}")
     endfunction()
@@ -174,7 +174,7 @@ function(${CMAKETEST_TEST})
 
   ct_add_section(NAME "throws_if_arg_json_block_is_not_a_json_object_2" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    _get_json_object(output "${input_json_object}" "fruit salad" "fruits")
+    _get_json_object(output "${input_json_object}" "fruit salad;fruits")
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_json_path_is_missing" EXPECTFAIL)
@@ -189,6 +189,6 @@ function(${CMAKETEST_TEST})
 
   ct_add_section(NAME "throws_if_arg_json_path_is_invalid_2" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    _get_json_object(output "${input_json_object}" "fruit salad" "invalid")
+    _get_json_object(output "${input_json_object}" "fruit salad;invalid")
   endfunction()
 endfunction()

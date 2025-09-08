@@ -630,14 +630,14 @@ macro(_cmake_targets_file_load)
       endif()
     endforeach()
 
-    # Extract nested 'build' configuration properties
+    # Extract nested 'build' object properties
     foreach(prop_key "compileFeatures" "compileDefinitions" "compileOptions" "linkOptions")
-      _get_json_array(build_settings_list "${target_json_block}" "build" "${prop_key}")
+      _get_json_array(build_settings_list "${target_json_block}" "build;${prop_key}")
       _serialize_list(serialized_list "${build_settings_list}")
       map(ADD target_config_map "build.${prop_key}" "${serialized_list}")
     endforeach()
 
-    # Extract nested 'header policy' configuration properties
+    # Extract nested 'header policy' object properties
     string(JSON header_policy_mode GET "${target_json_block}" "headerPolicy" "mode")
     map(ADD target_config_map "headerPolicy.mode" "${header_policy_mode}")
     if("${header_policy_mode}" STREQUAL "split")
@@ -704,21 +704,24 @@ endfunction()
 
 #------------------------------------------------------------------------------
 # Internal usage
-function(_get_json_array output_list_var json_block json_path)
-  list(APPEND json_path ${ARGN}) # No quotes must be used because we don't want to keep empty elements
+function(_get_json_array output_list_var json_block json_path_list)
   if("${output_list_var}" STREQUAL "")
     message(FATAL_ERROR "output_list_var argument is missing!")
   endif()
   if("${json_block}" STREQUAL "")
     message(FATAL_ERROR "json_block argument is missing or empty!")
   endif()
-  string(JSON json_block_type TYPE "${json_block}" ${json_path})
+  string(JSON json_block_type ERROR_VARIABLE err TYPE "${json_block}" ${json_path_list})
+  if(err)
+    list(JOIN json_path_list "." joined)
+    message(FATAL_ERROR "Missing required JSON property '${joined}'!")
+  endif()
   if(NOT "${json_block_type}" STREQUAL "ARRAY")
     message(FATAL_ERROR "Given JSON block is not an ARRAY, but a ${json_block_type}!")
   endif()
 
   set(elements_list "")
-  string(JSON json_array GET "${json_block}" ${json_path})
+  string(JSON json_array GET "${json_block}" ${json_path_list})
   _json_array_to_list(elements_list "${json_array}")
   set(${output_list_var} "${elements_list}" PARENT_SCOPE)
 endfunction()
@@ -751,21 +754,24 @@ endfunction()
 
 #------------------------------------------------------------------------------
 # Internal usage
-function(_get_json_object output_map_var json_block json_path)
-  list(APPEND json_path ${ARGN}) # No quotes must be used because we don't want to keep empty elements
+function(_get_json_object output_map_var json_block json_path_list)
   if("${output_map_var}" STREQUAL "")
     message(FATAL_ERROR "output_map_var argument is missing!")
   endif()
   if("${json_block}" STREQUAL "")
     message(FATAL_ERROR "json_block argument is missing or empty!")
   endif()
-  string(JSON json_block_type TYPE "${json_block}" ${json_path})
+  string(JSON json_block_type ERROR_VARIABLE err TYPE "${json_block}" ${json_path_list})
+  if(err)
+    list(JOIN json_path_list "." joined)
+    message(FATAL_ERROR "Missing required JSON property '${joined}'!")
+  endif()
   if(NOT "${json_block_type}" STREQUAL "OBJECT")
     message(FATAL_ERROR "Given JSON block is not an OBJECT, but a ${json_block_type}!")
   endif()
 
   set(objects_map "")
-  string(JSON json_object GET "${json_block}" ${json_path})
+  string(JSON json_object GET "${json_block}" ${json_path_list})
   _json_object_to_map(objects_map "${json_object}")
   set(${output_map_var} "${objects_map}" PARENT_SCOPE)
 endfunction()
