@@ -672,12 +672,27 @@ endmacro()
 
 #------------------------------------------------------------------------------
 # Internal usage
-function(_extract_json_primitive_property in_out_map_var map_key json_block json_path_list is_required)
-  if("${in_out_map_var}" STREQUAL "")
-    message(FATAL_ERROR "in_out_map_var argument is empty!")
+function(_has_json_property output_var json_block json_path_list)
+  if("${output_var}" STREQUAL "")
+    message(FATAL_ERROR "output_var argument is empty!")
   endif()
-  if("${map_key}" STREQUAL "")
-    message(FATAL_ERROR "map_key argument is empty!")
+  if("${json_block}" STREQUAL "")
+    message(FATAL_ERROR "json_block argument is empty!")
+  endif()
+
+  string(JSON json_block_type ERROR_VARIABLE err TYPE "${json_block}" ${json_path_list})
+  if(err)
+    set(${output_var} off PARENT_SCOPE)
+  else()
+    set(${output_var} on PARENT_SCOPE)
+  endif()
+endfunction()
+
+#------------------------------------------------------------------------------
+# Internal usage
+function(_get_json_value output_var json_block json_path_list is_required)
+    if("${output_var}" STREQUAL "")
+    message(FATAL_ERROR "output_var argument is empty!")
   endif()
   if("${json_block}" STREQUAL "")
     message(FATAL_ERROR "json_block argument is empty!")
@@ -685,36 +700,40 @@ function(_extract_json_primitive_property in_out_map_var map_key json_block json
   if(NOT "${is_required}" MATCHES "^(on|off)$")
     message(FATAL_ERROR "is_required must be \"on\" or \"off\"")
   endif()
-  string(JSON json_block_type ERROR_VARIABLE err TYPE "${json_block}" ${json_path_list})
+
+  string(JSON json_value ERROR_VARIABLE err GET "${json_block}" ${json_path_list})
   if(err)
     if(${is_required})
       list(JOIN json_path_list "." joined)
       message(FATAL_ERROR "Missing required JSON property '${joined}'!")
     endif()
-    return()
-  endif()
-  if(NOT "${json_block_type}" MATCHES "^(NULL|NUMBER|STRING|BOOLEAN)$")
-    message(FATAL_ERROR "Given JSON block is not a NULL, NUMBER, STRING or BOOLEAN, but a ${json_block_type}!")
   endif()
 
-  string(JSON prop_value GET "${json_block}" ${json_path_list})
-  map(ADD "${in_out_map_var}" "${map_key}" "${prop_value}")
-  set(${in_out_map_var} "${${in_out_map_var}}" PARENT_SCOPE)
+  set(${output_var} "${json_value}" PARENT_SCOPE)
 endfunction()
 
 #------------------------------------------------------------------------------
 # Internal usage
-function(_get_json_array output_list_var json_block json_path_list)
+function(_get_json_array output_list_var json_block json_path_list is_required)
   if("${output_list_var}" STREQUAL "")
-    message(FATAL_ERROR "output_list_var argument is missing!")
+    message(FATAL_ERROR "output_list_var argument is empty!")
   endif()
   if("${json_block}" STREQUAL "")
-    message(FATAL_ERROR "json_block argument is missing or empty!")
+    message(FATAL_ERROR "json_block argument is empty!")
   endif()
+  if(NOT "${is_required}" MATCHES "^(on|off)$")
+    message(FATAL_ERROR "is_required must be \"on\" or \"off\"")
+  endif()
+
   string(JSON json_block_type ERROR_VARIABLE err TYPE "${json_block}" ${json_path_list})
   if(err)
-    list(JOIN json_path_list "." joined)
-    message(FATAL_ERROR "Missing required JSON property '${joined}'!")
+    if(${is_required})
+      list(JOIN json_path_list "." joined)
+      message(FATAL_ERROR "Missing required JSON property '${joined}'!")
+    else()
+      set(${output_list_var} "${json_block_type}" PARENT_SCOPE) # will be <json-path...->-NOTFOUND
+      return()
+    endif()
   endif()
   if(NOT "${json_block_type}" STREQUAL "ARRAY")
     message(FATAL_ERROR "Given JSON block is not an ARRAY, but a ${json_block_type}!")
@@ -994,13 +1013,13 @@ macro(_cmake_targets_file_print_target_config)
   map(GET target_config_map "name" target_name)
   message(STATUS "Target: ${target_name}")
 
-  # Print all simple and required top-level properties
+  # Print all primitive and required top-level properties
   foreach(setting_key "type" "mainFile")
     map(GET target_config_map "${setting_key}" setting_value)
     message(STATUS "  ${setting_key}: ${setting_value}")
   endforeach()
 
-  # Print all simple and optional top-level properties
+  # Print all primitive and optional top-level properties
   foreach(setting_key "pchFile")
     map(HAS_KEY target_config_map "${setting_key}" has_setting_key)
     if(${has_setting_key})

@@ -10,7 +10,7 @@
 
 #-------------------------------------------------------------------------------
 # Test of [CMakeTargetsFile module::_get_json_array internal function]:
-#    _get_json_array(<output-list-var> <json-block> <json-path-list>)
+#    _get_json_array(<output-list-var> <json-block> <json-path-list> <is-required>)
 ct_add_test(NAME "test_cmake_targets_file_get_json_array_internal_function")
 function(${CMAKETEST_TEST})
   include(CMakeTargetsFile)
@@ -53,10 +53,10 @@ function(${CMAKETEST_TEST})
   ]=])
 
   # Functionalities checking
-  ct_add_section(NAME "get_array_with_various_elements")
+  ct_add_section(NAME "get_from_filled_array")
   function(${CMAKETEST_SECTION})
 
-    ct_add_section(NAME "with_full_path")
+    ct_add_section(NAME "get_required_property_with_path")
     function(${CMAKETEST_SECTION})
       # The JSON comparison is space sensitive, so the indentation does not be changed
       set(expected_output
@@ -71,7 +71,7 @@ function(${CMAKETEST_TEST})
       )
       string(JSON json_block_type TYPE "${input_json_object}")
       ct_assert_equal(json_block_type "OBJECT")
-      _get_json_array(output "${input_json_object}" "tropical mix;variants")
+      _get_json_array(output "${input_json_object}" "tropical mix;variants" on)
       ct_assert_list(output)
       ct_assert_equal(output "${expected_output}")
 
@@ -83,7 +83,7 @@ function(${CMAKETEST_TEST})
       )
       string(JSON json_block_type TYPE "${input_json_object}")
       ct_assert_equal(json_block_type "OBJECT")
-      _get_json_array(output "${input_json_object}" "fruit salad;fruits")
+      _get_json_array(output "${input_json_object}" "fruit salad;fruits" on)
       ct_assert_list(output)
       ct_assert_equal(output "${expected_output}")
 
@@ -93,12 +93,12 @@ function(${CMAKETEST_TEST})
       )
       string(JSON json_block_type TYPE "${input_json_object}")
       ct_assert_equal(json_block_type "OBJECT")
-      _get_json_array(output "${input_json_object}" "tropical mix;variants;0;items")
+      _get_json_array(output "${input_json_object}" "tropical mix;variants;0;items" on)
       ct_assert_list(output)
       ct_assert_equal(output "${expected_output}")
     endfunction()
 
-    ct_add_section(NAME "with_empty_path")
+    ct_add_section(NAME "get_required_property_with_no_path")
     function(${CMAKETEST_SECTION})
       set(expected_output
         "apple"
@@ -114,7 +114,77 @@ function(${CMAKETEST_TEST})
       )
       string(JSON json_block_type TYPE "${input_json_array}")
       ct_assert_equal(json_block_type "ARRAY")
-      _get_json_array(output "${input_json_array}" "")
+      _get_json_array(output "${input_json_array}" "" on)
+      ct_assert_list(output)
+      ct_assert_equal(output "${expected_output}")
+    endfunction()
+
+    ct_add_section(NAME "get_not_required_property_with_path")
+    function(${CMAKETEST_SECTION})
+      # The JSON comparison is space sensitive, so the indentation does not be changed
+      set(expected_output
+[=[{
+  "items" : [ "pineapple", "banana" ],
+  "name" : "classic"
+}]=]
+[=[{
+  "items" : [ "coconut", "papaya" ],
+  "name" : "exotic"
+}]=]
+      )
+      string(JSON json_block_type TYPE "${input_json_object}")
+      ct_assert_equal(json_block_type "OBJECT")
+      _get_json_array(output "${input_json_object}" "tropical mix;variants" off)
+      ct_assert_list(output)
+      ct_assert_equal(output "${expected_output}")
+
+      set(expected_output
+        "apple"
+        "banana"
+        "orange"
+        "grape"
+      )
+      string(JSON json_block_type TYPE "${input_json_object}")
+      ct_assert_equal(json_block_type "OBJECT")
+      _get_json_array(output "${input_json_object}" "fruit salad;fruits" off)
+      ct_assert_list(output)
+      ct_assert_equal(output "${expected_output}")
+
+      set(expected_output
+        "pineapple"
+        "banana"
+      )
+      string(JSON json_block_type TYPE "${input_json_object}")
+      ct_assert_equal(json_block_type "OBJECT")
+      _get_json_array(output "${input_json_object}" "tropical mix;variants;0;items" off)
+      ct_assert_list(output)
+      ct_assert_equal(output "${expected_output}")
+
+      # Get inexisting property
+      string(JSON json_block_type TYPE "${input_json_object}")
+      ct_assert_equal(json_block_type "OBJECT")
+      _get_json_array(output "${input_json_object}" "tropical mix;invalid" off)
+      ct_assert_equal(output "tropical mix-invalid-NOTFOUND")
+      ct_assert_false(output) # equals to "tropical mix-invalid-NOTFOUND"
+    endfunction()
+
+    ct_add_section(NAME "get_not_required_property_with_no_path")
+    function(${CMAKETEST_SECTION})
+      set(expected_output
+        "apple"
+        "banana"
+        "orange"
+        "pineapple"
+        "carrot|"
+        "strawberry|"
+        ""
+        "pineapple"
+        "grape"
+        ""
+      )
+      string(JSON json_block_type TYPE "${input_json_array}")
+      ct_assert_equal(json_block_type "ARRAY")
+      _get_json_array(output "${input_json_array}" "" off)
       ct_assert_list(output)
       ct_assert_equal(output "${expected_output}")
     endfunction()
@@ -122,7 +192,10 @@ function(${CMAKETEST_TEST})
 
   ct_add_section(NAME "get_from_empty_array")
   function(${CMAKETEST_SECTION})
-    _get_json_array(output "[]" "")
+    _get_json_array(output "[]" "" off)
+    ct_assert_equal(output "")
+
+    _get_json_array(output "[]" "" on)
     ct_assert_equal(output "")
   endfunction()
 
@@ -134,51 +207,66 @@ function(${CMAKETEST_TEST})
 
   ct_add_section(NAME "throws_if_too_many_args_are_passed" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    _get_json_array(output "${input_json_object}" "" "too" "many" "args")
+    _get_json_array(output "${input_json_object}" "" off "too" "many" "args")
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_output_list_var_is_missing_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    _get_json_array("${input_json_object}" "")
+    _get_json_array("${input_json_object}" "" off)
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_output_list_var_is_missing_2" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    _get_json_array("" "${input_json_object}" "")
+    _get_json_array("" "${input_json_object}" "" off)
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_output_list_var_is_missing_3" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    _get_json_array("output" "${input_json_object}" "")
+    _get_json_array("output" "${input_json_object}" "" off)
   endfunction()
 
-  ct_add_section(NAME "throws_if_arg_json_block_is_missing" EXPECTFAIL)
+  ct_add_section(NAME "throws_if_arg_json_block_is_missing_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    _get_json_array(output "")
+    _get_json_array(output "" off)
+  endfunction()
+
+  ct_add_section(NAME "throws_if_arg_json_block_is_missing_2" EXPECTFAIL)
+  function(${CMAKETEST_SECTION})
+    _get_json_array(output "" "" off)
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_json_block_is_not_a_json_array_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    _get_json_array(output "invalid json" "")
+    _get_json_array(output "invalid json" "" off)
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_json_block_is_not_a_json_array_2" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    _get_json_array(output "${input_json_object}" "fruit salad;info")
+    _get_json_array(output "${input_json_object}" "fruit salad;info" off)
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_json_path_is_missing" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    _get_json_array(output "${input_json_object}")
+    _get_json_array(output "${input_json_object}" off)
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_json_path_is_invalid_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    _get_json_array(output "${input_json_object}" "invalid")
+    _get_json_array(output "${input_json_object}" "invalid" off)
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_json_path_is_invalid_2" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    _get_json_array(output "${input_json_object}" "fruit salad;invalid")
+    _get_json_array(output "${input_json_object}" "fruit salad;invalid" off)
+  endfunction()
+
+  ct_add_section(NAME "throws_if_arg_is_required_is_missing" EXPECTFAIL)
+  function(${CMAKETEST_SECTION})
+    _get_json_array(output "${input_json_object}" "fruit salad;fruits")
+  endfunction()
+
+  ct_add_section(NAME "throws_if_arg_is_required_is_not_bool" EXPECTFAIL)
+  function(${CMAKETEST_SECTION})
+    _get_json_array(output "${input_json_object}" "fruit salad;fruits" "wrong")
   endfunction()
 endfunction()
