@@ -308,7 +308,7 @@ function(${CMAKETEST_TEST})
 
   ct_add_section(NAME "throws_if_arg_json_block_is_missing_2" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    _get_json_value(output "fruit salad" off)
+    _get_json_value(output "" "fruit salad" off)
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_json_path_is_missing" EXPECTFAIL)
