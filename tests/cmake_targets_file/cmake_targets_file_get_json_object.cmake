@@ -39,10 +39,10 @@ function(${CMAKETEST_TEST})
   ]=])
 
   # Functionalities checking
-  ct_add_section(NAME "get_object_with_various_elements")
+  ct_add_section(NAME "get_from_filled_object")
   function(${CMAKETEST_SECTION})
 
-    ct_add_section(NAME "with_full_path")
+    ct_add_section(NAME "with_path")
     function(${CMAKETEST_SECTION})
       # The JSON comparison is space sensitive, so the indentation does
       # not be changed
@@ -81,7 +81,7 @@ function(${CMAKETEST_TEST})
       ct_assert_equal(output "${expected_output}")
     endfunction()
 
-    ct_add_section(NAME "with_empty_path")
+    ct_add_section(NAME "with_no_path")
     function(${CMAKETEST_SECTION})
       # The JSON comparison is space sensitive, so the indentation does not be changed
       set(expected_output
@@ -162,9 +162,14 @@ function(${CMAKETEST_TEST})
     _get_json_object("output" "${input_json_object}" "")
   endfunction()
 
-  ct_add_section(NAME "throws_if_arg_json_block_is_missing" EXPECTFAIL)
+  ct_add_section(NAME "throws_if_arg_json_block_is_missing_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     _get_json_object(output "")
+  endfunction()
+
+  ct_add_section(NAME "throws_if_arg_json_block_is_missing_2" EXPECTFAIL)
+  function(${CMAKETEST_SECTION})
+    _get_json_object(output "" "")
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_json_block_is_not_a_json_object_1" EXPECTFAIL)
