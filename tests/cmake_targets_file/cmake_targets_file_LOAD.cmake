@@ -40,10 +40,10 @@ function(${CMAKETEST_TEST})
       "name": "fruit-salad",
       "type": "executable",
       "build": {
-        "compileFeatures": ["cxx_std_20"],
-        "compileDefinitions": ["MY_DEFINE=42", "MY_OTHER_DEFINE", "MY_OTHER_DEFINE=42"],
-        "compileOptions": [],
-        "linkOptions": []
+        "compileFeatures": ["cxx_std_20", "cxx_thread_local", "cxx_trailing_return_types"],
+        "compileDefinitions": ["DEFINE_ONE=1", "DEFINE_TWO=2", "OPTION_1"],
+        "compileOptions": ["-Wall", "-Wextra"],
+        "linkOptions": ["-s", "-z"]
       },
       "mainFile": "src/main.cpp",
       "pchFile": "include/fruit_salad_pch.h",
@@ -53,16 +53,61 @@ function(${CMAKETEST_TEST})
       },
       "dependencies": {
         "AppleLib": {
-          "rulesFile": "FindAppleLib.cmake",
-          "minVersion": "2",
-          "autodownload": true,
-          "optional": false
+          "rulesFile": "generic",
+          "packageLocation": {
+            "windows": "C:/Program Files/libs/apple/1.15.0",
+            "unix": "/opt/apple/1.15.0",
+            "macos": "/opt/apple/1.15.0"
+          },
+          "minVersion": "1.15.0",
+          "fetchInfo": {
+            "autodownload": true,
+            "kind": "git",
+            "repository": "https://github.com/lib/apple.git",
+            "tag": "1234567"
+          },
+          "optional": false,
+          "configuration": {
+            "compileFeatures": ["cxx_std_20"],
+            "compileDefinitions": ["DEFINE_ONE=1"],
+            "compileOptions": ["-Wall"],
+            "linkOptions": ["-s"]
+          }
         },
         "BananaLib": {
-          "rulesFile": "FindBananaLib.cmake",
+          "rulesFile": "RulesBananaLib.cmake",
           "minVersion": "4",
-          "autodownload": false,
+          "fetchInfo": {
+            "autodownload": false
+          },
           "optional": true
+        },
+        "CarrotLib": {
+          "rulesFile": "RulesCarrotLib.cmake",
+          "fetchInfo": {
+            "autodownload": true,
+            "kind": "svn",
+            "repository": "svn://svn.carrot.lib.org/links/trunk",
+            "revision": "1234567"
+          }
+        },
+        "OrangeLib": {
+          "rulesFile": "RulesOrangeLib.cmake",
+          "fetchInfo": {
+            "autodownload": true,
+            "kind": "mercurial",
+            "repository": "https://hg.example.com/RulesOrangeLib",
+            "tag": "1234567"
+          }
+        },
+        "PineappleLib": {
+          "rulesFile": "RulesPineappleLib.cmake",
+          "fetchInfo": {
+            "autodownload": true,
+            "kind": "url",
+            "repository": "https://example.com/PineappleLib.zip",
+            "hash": "1234567"
+          }
         }
       }
     },
@@ -104,21 +149,46 @@ function(${CMAKETEST_TEST})
       "type:executable"
       "mainFile:src/main.cpp"
       "pchFile:include/fruit_salad_pch.h"
-      "build.compileFeatures:cxx_std_20"
-      "build.compileDefinitions:MY_DEFINE=42|MY_OTHER_DEFINE|MY_OTHER_DEFINE=42"
-      "build.compileOptions:"
-      "build.linkOptions:"
+      "build.compileFeatures:cxx_std_20|cxx_thread_local|cxx_trailing_return_types"
+      "build.compileDefinitions:DEFINE_ONE=1|DEFINE_TWO=2|OPTION_1"
+      "build.compileOptions:-Wall|-Wextra"
+      "build.linkOptions:-s|-z"
       "headerPolicy.mode:split"
       "headerPolicy.includeDir:include"
-      "dependencies:AppleLib|BananaLib"
-      "dependencies.AppleLib.rulesFile:FindAppleLib.cmake"
-      "dependencies.AppleLib.minVersion:2"
-      "dependencies.AppleLib.autodownload:ON"
+      "dependencies:AppleLib|BananaLib|CarrotLib|OrangeLib|PineappleLib"
+      "dependencies.AppleLib.rulesFile:generic"
+      "dependencies.AppleLib.minVersion:1.15.0"
       "dependencies.AppleLib.optional:OFF"
-      "dependencies.BananaLib.rulesFile:FindBananaLib.cmake"
+      "dependencies.AppleLib.packageLocation.windows:C:/Program Files/libs/apple/1.15.0"
+      "dependencies.AppleLib.packageLocation.unix:/opt/apple/1.15.0"
+      "dependencies.AppleLib.packageLocation.macos:/opt/apple/1.15.0"
+      "dependencies.AppleLib.fetchInfo.autodownload:ON"
+      "dependencies.AppleLib.fetchInfo.kind:git"
+      "dependencies.AppleLib.fetchInfo.repository:https://github.com/lib/apple.git"
+      "dependencies.AppleLib.fetchInfo.tag:1234567"
+      "dependencies.AppleLib.configuration.compileFeatures:cxx_std_20"
+      "dependencies.AppleLib.configuration.compileDefinitions:DEFINE_ONE=1"
+      "dependencies.AppleLib.configuration.compileOptions:-Wall"
+      "dependencies.AppleLib.configuration.linkOptions:-s"
+      "dependencies.BananaLib.rulesFile:RulesBananaLib.cmake"
       "dependencies.BananaLib.minVersion:4"
-      "dependencies.BananaLib.autodownload:OFF"
       "dependencies.BananaLib.optional:ON"
+      "dependencies.BananaLib.fetchInfo.autodownload:OFF"
+      "dependencies.CarrotLib.rulesFile:RulesCarrotLib.cmake"
+      "dependencies.CarrotLib.fetchInfo.autodownload:ON"
+      "dependencies.CarrotLib.fetchInfo.kind:svn"
+      "dependencies.CarrotLib.fetchInfo.repository:svn://svn.carrot.lib.org/links/trunk"
+      "dependencies.CarrotLib.fetchInfo.revision:1234567"
+      "dependencies.OrangeLib.rulesFile:RulesOrangeLib.cmake"
+      "dependencies.OrangeLib.fetchInfo.autodownload:ON"
+      "dependencies.OrangeLib.fetchInfo.kind:mercurial"
+      "dependencies.OrangeLib.fetchInfo.repository:https://hg.example.com/RulesOrangeLib"
+      "dependencies.OrangeLib.fetchInfo.tag:1234567"
+      "dependencies.PineappleLib.rulesFile:RulesPineappleLib.cmake"
+      "dependencies.PineappleLib.fetchInfo.autodownload:ON"
+      "dependencies.PineappleLib.fetchInfo.kind:url"
+      "dependencies.PineappleLib.fetchInfo.repository:https://example.com/PineappleLib.zip"
+      "dependencies.PineappleLib.fetchInfo.hash:1234567"
     )
     set(expected_src_apple_config_output
       "name:apple"
@@ -184,10 +254,10 @@ function(${CMAKETEST_TEST})
       "name": "fruit-salad",
       "type": "executable",
       "build": {
-        "compileFeatures": ["cxx_std_20"],
-        "compileDefinitions": ["MY_DEFINE=42", "MY_OTHER_DEFINE", "MY_OTHER_DEFINE=42"],
-        "compileOptions": [],
-        "linkOptions": []
+        "compileFeatures": ["cxx_std_20", "cxx_thread_local", "cxx_trailing_return_types"],
+        "compileDefinitions": ["DEFINE_ONE=1", "DEFINE_TWO=2", "OPTION_1"],
+        "compileOptions": ["-Wall", "-Wextra"],
+        "linkOptions": ["-s", "-z"]
       },
       "mainFile": "src/main.cpp",
       "pchFile": "include/fruit_salad_pch.h",
@@ -197,21 +267,66 @@ function(${CMAKETEST_TEST})
       },
       "dependencies": {
         "AppleLib": {
-          "rulesFile": "FindAppleLib.cmake",
-          "minVersion": "2",
-          "autodownload": true,
+          "rulesFile": "generic",
+          "packageLocation": {
+            "windows": "C:/Program Files/libs/apple/1.15.0",
+            "unix": "/opt/apple/1.15.0",
+            "macos": "/opt/apple/1.15.0"
+          },
+          "minVersion": "1.15.0",
+          "fetchInfo": {
+            "autodownload": true,
+            "kind": "git",
+            "repository": "https://github.com/lib/apple.git",
+            "tag": "1234567"
+          },
           "optional": false,
-          "extraDepKey" : "extraValue"
+          "configuration": {
+            "compileFeatures": ["cxx_std_20"],
+            "compileDefinitions": ["DEFINE_ONE=1"],
+            "compileOptions": ["-Wall"],
+            "linkOptions": ["-s"]
+          },
+          "extraDepKey": "extraValue"
         },
         "BananaLib": {
-          "rulesFile": "FindBananaLib.cmake",
+          "rulesFile": "RulesBananaLib.cmake",
           "minVersion": "4",
-          "autodownload": false,
+          "fetchInfo": {
+            "autodownload": false
+          },
           "optional": true,
-          "extraDepKey" : "extraValue"
+          "extraDepKey": "extraValue"
+        },
+        "CarrotLib": {
+          "rulesFile": "RulesCarrotLib.cmake",
+          "fetchInfo": {
+            "autodownload": true,
+            "kind": "svn",
+            "repository": "svn://svn.carrot.lib.org/links/trunk",
+            "revision": "1234567"
+          }
+        },
+        "OrangeLib": {
+          "rulesFile": "RulesOrangeLib.cmake",
+          "fetchInfo": {
+            "autodownload": true,
+            "kind": "mercurial",
+            "repository": "https://hg.example.com/RulesOrangeLib",
+            "tag": "1234567"
+          }
+        },
+        "PineappleLib": {
+          "rulesFile": "RulesPineappleLib.cmake",
+          "fetchInfo": {
+            "autodownload": true,
+            "kind": "url",
+            "repository": "https://example.com/PineappleLib.zip",
+            "hash": "1234567"
+          }
         }
       },
-      "extraKey" : "extraValue"
+      "extraKey": "extraValue"
     },
     "src/apple": {
       "name": "apple",
@@ -251,21 +366,46 @@ function(${CMAKETEST_TEST})
       "type:executable"
       "mainFile:src/main.cpp"
       "pchFile:include/fruit_salad_pch.h"
-      "build.compileFeatures:cxx_std_20"
-      "build.compileDefinitions:MY_DEFINE=42|MY_OTHER_DEFINE|MY_OTHER_DEFINE=42"
-      "build.compileOptions:"
-      "build.linkOptions:"
+      "build.compileFeatures:cxx_std_20|cxx_thread_local|cxx_trailing_return_types"
+      "build.compileDefinitions:DEFINE_ONE=1|DEFINE_TWO=2|OPTION_1"
+      "build.compileOptions:-Wall|-Wextra"
+      "build.linkOptions:-s|-z"
       "headerPolicy.mode:split"
       "headerPolicy.includeDir:include"
-      "dependencies:AppleLib|BananaLib"
-      "dependencies.AppleLib.rulesFile:FindAppleLib.cmake"
-      "dependencies.AppleLib.minVersion:2"
-      "dependencies.AppleLib.autodownload:ON"
+      "dependencies:AppleLib|BananaLib|CarrotLib|OrangeLib|PineappleLib"
+      "dependencies.AppleLib.rulesFile:generic"
+      "dependencies.AppleLib.minVersion:1.15.0"
       "dependencies.AppleLib.optional:OFF"
-      "dependencies.BananaLib.rulesFile:FindBananaLib.cmake"
+      "dependencies.AppleLib.packageLocation.windows:C:/Program Files/libs/apple/1.15.0"
+      "dependencies.AppleLib.packageLocation.unix:/opt/apple/1.15.0"
+      "dependencies.AppleLib.packageLocation.macos:/opt/apple/1.15.0"
+      "dependencies.AppleLib.fetchInfo.autodownload:ON"
+      "dependencies.AppleLib.fetchInfo.kind:git"
+      "dependencies.AppleLib.fetchInfo.repository:https://github.com/lib/apple.git"
+      "dependencies.AppleLib.fetchInfo.tag:1234567"
+      "dependencies.AppleLib.configuration.compileFeatures:cxx_std_20"
+      "dependencies.AppleLib.configuration.compileDefinitions:DEFINE_ONE=1"
+      "dependencies.AppleLib.configuration.compileOptions:-Wall"
+      "dependencies.AppleLib.configuration.linkOptions:-s"
+      "dependencies.BananaLib.rulesFile:RulesBananaLib.cmake"
       "dependencies.BananaLib.minVersion:4"
-      "dependencies.BananaLib.autodownload:OFF"
       "dependencies.BananaLib.optional:ON"
+      "dependencies.BananaLib.fetchInfo.autodownload:OFF"
+      "dependencies.CarrotLib.rulesFile:RulesCarrotLib.cmake"
+      "dependencies.CarrotLib.fetchInfo.autodownload:ON"
+      "dependencies.CarrotLib.fetchInfo.kind:svn"
+      "dependencies.CarrotLib.fetchInfo.repository:svn://svn.carrot.lib.org/links/trunk"
+      "dependencies.CarrotLib.fetchInfo.revision:1234567"
+      "dependencies.OrangeLib.rulesFile:RulesOrangeLib.cmake"
+      "dependencies.OrangeLib.fetchInfo.autodownload:ON"
+      "dependencies.OrangeLib.fetchInfo.kind:mercurial"
+      "dependencies.OrangeLib.fetchInfo.repository:https://hg.example.com/RulesOrangeLib"
+      "dependencies.OrangeLib.fetchInfo.tag:1234567"
+      "dependencies.PineappleLib.rulesFile:RulesPineappleLib.cmake"
+      "dependencies.PineappleLib.fetchInfo.autodownload:ON"
+      "dependencies.PineappleLib.fetchInfo.kind:url"
+      "dependencies.PineappleLib.fetchInfo.repository:https://example.com/PineappleLib.zip"
+      "dependencies.PineappleLib.fetchInfo.hash:1234567"
     )
     set(expected_src_apple_config_output
       "name:apple"

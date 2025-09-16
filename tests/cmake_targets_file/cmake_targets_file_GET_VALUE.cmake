@@ -21,21 +21,46 @@ function(${CMAKETEST_TEST})
     "type:executable"
     "mainFile:src/main.cpp"
     "pchFile:include/fruit_salad_pch.h"
-    "build.compileFeatures:cxx_std_20"
-    "build.compileDefinitions:MY_DEFINE=42|MY_OTHER_DEFINE|MY_OTHER_DEFINE=42"
-    "build.compileOptions:"
-    "build.linkOptions:"
+    "build.compileFeatures:cxx_std_20|cxx_thread_local|cxx_trailing_return_types"
+    "build.compileDefinitions:DEFINE_ONE=1|DEFINE_TWO=2|OPTION_1"
+    "build.compileOptions:-Wall|-Wextra"
+    "build.linkOptions:-s|-z"
     "headerPolicy.mode:split"
     "headerPolicy.includeDir:include"
-    "dependencies:AppleLib|BananaLib"
-    "dependencies.AppleLib.rulesFile:FindAppleLib.cmake"
-    "dependencies.AppleLib.minVersion:2"
-    "dependencies.AppleLib.autodownload:ON"
+    "dependencies:AppleLib|BananaLib|CarrotLib|OrangeLib|PineappleLib"
+    "dependencies.AppleLib.rulesFile:generic"
+    "dependencies.AppleLib.minVersion:1.15.0"
     "dependencies.AppleLib.optional:OFF"
-    "dependencies.BananaLib.rulesFile:FindBananaLib.cmake"
+    "dependencies.AppleLib.packageLocation.windows:C:/Program Files/libs/apple/1.15.0"
+    "dependencies.AppleLib.packageLocation.unix:/opt/apple/1.15.0"
+    "dependencies.AppleLib.packageLocation.macos:/opt/apple/1.15.0"
+    "dependencies.AppleLib.fetchInfo.autodownload:ON"
+    "dependencies.AppleLib.fetchInfo.kind:git"
+    "dependencies.AppleLib.fetchInfo.repository:https://github.com/lib/apple.git"
+    "dependencies.AppleLib.fetchInfo.tag:1234567"
+    "dependencies.AppleLib.configuration.compileFeatures:cxx_std_20"
+    "dependencies.AppleLib.configuration.compileDefinitions:DEFINE_ONE=1"
+    "dependencies.AppleLib.configuration.compileOptions:-Wall"
+    "dependencies.AppleLib.configuration.linkOptions:-s"
+    "dependencies.BananaLib.rulesFile:RulesBananaLib.cmake"
     "dependencies.BananaLib.minVersion:4"
-    "dependencies.BananaLib.autodownload:OFF"
     "dependencies.BananaLib.optional:ON"
+    "dependencies.BananaLib.fetchInfo.autodownload:OFF"
+    "dependencies.CarrotLib.rulesFile:RulesCarrotLib.cmake"
+    "dependencies.CarrotLib.fetchInfo.autodownload:ON"
+    "dependencies.CarrotLib.fetchInfo.kind:svn"
+    "dependencies.CarrotLib.fetchInfo.repository:svn://svn.carrot.lib.org/links/trunk"
+    "dependencies.CarrotLib.fetchInfo.revision:1234567"
+    "dependencies.OrangeLib.rulesFile:RulesOrangeLib.cmake"
+    "dependencies.OrangeLib.fetchInfo.autodownload:ON"
+    "dependencies.OrangeLib.fetchInfo.kind:mercurial"
+    "dependencies.OrangeLib.fetchInfo.repository:https://hg.example.com/RulesOrangeLib"
+    "dependencies.OrangeLib.fetchInfo.tag:1234567"
+    "dependencies.PineappleLib.rulesFile:RulesPineappleLib.cmake"
+    "dependencies.PineappleLib.fetchInfo.autodownload:ON"
+    "dependencies.PineappleLib.fetchInfo.kind:url"
+    "dependencies.PineappleLib.fetchInfo.repository:https://example.com/PineappleLib.zip"
+    "dependencies.PineappleLib.fetchInfo.hash:1234567"
     "invalid"
     ":invalid"
   )
@@ -48,25 +73,65 @@ function(${CMAKETEST_TEST})
   endmacro()
 
   # Functionalities checking
-  ct_add_section(NAME "get_from_existing_key")
+  ct_add_section(NAME "get_primitive_value")
   function(${CMAKETEST_SECTION})
     _set_up_test()
     set_property(GLOBAL PROPERTY TARGETS_CONFIG_LOADED "on")
     set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src" "${input_config_map}")
 
-    # Get a simple value
+    # Get string values
     cmake_targets_file(GET_VALUE output TARGET "src" KEY "name")
     ct_assert_equal(output "fruit-salad")
+    cmake_targets_file(GET_VALUE output TARGET "src" KEY "type")
+    ct_assert_equal(output "executable")
+    cmake_targets_file(GET_VALUE output TARGET "src" KEY "headerPolicy.includeDir")
+    ct_assert_equal(output "include")
+    cmake_targets_file(GET_VALUE output TARGET "src" KEY "dependencies.AppleLib.minVersion")
+    ct_assert_equal(output "1.15.0")
     
-    # Get an array
-    set(expected_output
-      "MY_DEFINE=42"
-      "MY_OTHER_DEFINE"
-      "MY_OTHER_DEFINE=42"
-    )
+    # Get boolean values
+    cmake_targets_file(GET_VALUE output TARGET "src" KEY "dependencies.AppleLib.fetchInfo.autodownload")
+    ct_assert_true(output)
+    ct_assert_equal(output "ON")
+    cmake_targets_file(GET_VALUE output TARGET "src" KEY "dependencies.AppleLib.optional")
+    ct_assert_false(output)
+    ct_assert_equal(output "OFF")
+  endfunction()
+
+  ct_add_section(NAME "get_array_value")
+  function(${CMAKETEST_SECTION})
+    _set_up_test()
+    set_property(GLOBAL PROPERTY TARGETS_CONFIG_LOADED "on")
+    set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src" "${input_config_map}")
+
+    # Get arrays in 'build' object properties
+    cmake_targets_file(GET_VALUE output TARGET "src" KEY "build.compileFeatures")
+    ct_assert_list(output)
+    ct_assert_equal(output "cxx_std_20;cxx_thread_local;cxx_trailing_return_types")
     cmake_targets_file(GET_VALUE output TARGET "src" KEY "build.compileDefinitions")
     ct_assert_list(output)
-    ct_assert_equal(output "${expected_output}")
+    ct_assert_equal(output "DEFINE_ONE=1;DEFINE_TWO=2;OPTION_1")
+    cmake_targets_file(GET_VALUE output TARGET "src" KEY "build.compileOptions")
+    ct_assert_list(output)
+    ct_assert_equal(output "-Wall;-Wextra")
+    cmake_targets_file(GET_VALUE output TARGET "src" KEY "build.linkOptions")
+    ct_assert_list(output)
+    ct_assert_equal(output "-s;-z")
+
+    # Get arrays in 'dependencies' object properties
+    cmake_targets_file(GET_VALUE output TARGET "src" KEY "dependencies")
+    ct_assert_list(output)
+    ct_assert_equal(output "AppleLib;BananaLib;CarrotLib;OrangeLib;PineappleLib")
+
+    # Get arrays in 'dependencies.AppleLib.configuration' object properties
+    cmake_targets_file(GET_VALUE output TARGET "src" KEY "dependencies.AppleLib.configuration.compileFeatures")
+    ct_assert_equal(output "cxx_std_20")
+    cmake_targets_file(GET_VALUE output TARGET "src" KEY "dependencies.AppleLib.configuration.compileDefinitions")
+    ct_assert_equal(output "DEFINE_ONE=1")
+    cmake_targets_file(GET_VALUE output TARGET "src" KEY "dependencies.AppleLib.configuration.compileOptions")
+    ct_assert_equal(output "-Wall")
+    cmake_targets_file(GET_VALUE output TARGET "src" KEY "dependencies.AppleLib.configuration.linkOptions")
+    ct_assert_equal(output "-s")
   endfunction()
 
   # Errors checking

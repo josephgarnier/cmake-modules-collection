@@ -610,53 +610,140 @@ macro(_cmake_targets_file_load)
   file(READ "${CTF_LOAD}" json_file_content)
 
   # Extract and parse the list of target paths (keys of the "targets" object)
+  # Use '_get_json_object' because the property keys of 'targets'
+  # (target paths) are of type 'pattern property' (set by user)
   _get_json_object(targets_map "${json_file_content}" "targets")
   map(KEYS targets_map target_paths)
   foreach(target_path IN ITEMS ${target_paths})
     set(target_config_map "")
     map(GET targets_map "${target_path}" target_json_block)
 
-    # Extract all simple and required top-level properties
+    # Extract all top-level and required primitive properties
     foreach(prop_key "name" "type" "mainFile")
-      string(JSON prop_value GET "${target_json_block}" "${prop_key}")
+      _get_json_value(prop_value "${target_json_block}" "${prop_key}" on)
       map(ADD target_config_map "${prop_key}" "${prop_value}")
     endforeach()
 
-    # Extract all simple and optional top-level properties
+    # Extract all top-level and optional primitive properties
     foreach(prop_key "pchFile")
-      string(JSON prop_value ERROR_VARIABLE err GET "${target_json_block}" "${prop_key}")
-      if(NOT err)
+      _get_json_value(prop_value "${target_json_block}" "${prop_key}" off)
+      if(NOT "${prop_value}" MATCHES "NOTFOUND$")
         map(ADD target_config_map "${prop_key}" "${prop_value}")
       endif()
     endforeach()
 
     # Extract nested 'build' object properties
+    _get_json_value(build_json_block "${target_json_block}" "build" on)
     foreach(prop_key "compileFeatures" "compileDefinitions" "compileOptions" "linkOptions")
-      _get_json_array(build_settings_list "${target_json_block}" "build;${prop_key}")
+      _get_json_array(build_settings_list "${build_json_block}" "${prop_key}" on)
       _serialize_list(serialized_list "${build_settings_list}")
       map(ADD target_config_map "build.${prop_key}" "${serialized_list}")
     endforeach()
 
     # Extract nested 'header policy' object properties
-    string(JSON header_policy_mode GET "${target_json_block}" "headerPolicy" "mode")
+    _get_json_value(header_policy_mode "${target_json_block}" "headerPolicy;mode" on)
+    if(NOT "${header_policy_mode}" MATCHES "^(split|merged)$")
+      message(FATAL_ERROR "Invalid headerPolicy.mode JSON value '${header_policy_mode}': Should be 'split' or 'merged'!")
+    endif()
     map(ADD target_config_map "headerPolicy.mode" "${header_policy_mode}")
     if("${header_policy_mode}" STREQUAL "split")
       # 'includeDir' is required when mode is 'split'
-      string(JSON include_dir GET "${target_json_block}" "headerPolicy" "includeDir")
+      _get_json_value(include_dir
+        "${target_json_block}" "headerPolicy;includeDir" on)
       map(ADD target_config_map "headerPolicy.includeDir" "${include_dir}")
     endif()
-    
-    # Extract nested target 'dependencies' properties
+
+    # Extract nested 'dependencies' object properties
+    # Use '_get_json_object' because the property keys of 'dependencies'
+    # (dep. names) are of type 'pattern property' (set by user)
     _get_json_object(deps_map "${target_json_block}" "dependencies")
     map(KEYS deps_map dep_names)
     _serialize_list(serialized_dep_names "${dep_names}")
     map(ADD target_config_map "dependencies" "${serialized_dep_names}")
     foreach(dep_name IN ITEMS ${dep_names})
       map(GET deps_map "${dep_name}" dep_json_block)
-      foreach(prop_key "rulesFile" "minVersion" "autodownload" "optional")
-        string(JSON prop_value GET "${dep_json_block}" "${prop_key}")
-        map(ADD target_config_map "dependencies.${dep_name}.${prop_key}" "${prop_value}")
+
+      # Only 'rulesFile' is required, others properties are required only if
+      # rulesFile is 'generic'
+      _get_json_value(dep_rules_file "${dep_json_block}" "rulesFile" on)
+      map(ADD target_config_map "dependencies.${dep_name}.rulesFile" "${dep_rules_file}")
+      # Required flag (true/false depending on rulesFile)
+      set(is_generic off)
+      if("${dep_rules_file}" STREQUAL "generic")
+        set(is_generic on)
+      endif()
+
+      # Extract all top-level primitive properties
+      foreach(prop_key "minVersion" "optional")
+        _get_json_value(prop_value "${dep_json_block}" "${prop_key}" ${is_generic})
+        if(NOT "${prop_value}" MATCHES "NOTFOUND$")
+          map(ADD target_config_map "dependencies.${dep_name}.${prop_key}" "${prop_value}")
+        endif()
       endforeach()
+
+      # Extract nested 'packageLocation' object properties
+      _get_json_value(dep_package_loc_json_block "${dep_json_block}" "packageLocation" ${is_generic})
+      if(NOT "${dep_package_loc_json_block}" MATCHES "NOTFOUND$")
+        foreach(prop_key "windows" "unix" "macos")
+          _get_json_value(prop_value "${dep_package_loc_json_block}" "${prop_key}" off)
+          if(NOT "${prop_value}" MATCHES "NOTFOUND$")
+            map(ADD target_config_map "dependencies.${dep_name}.packageLocation.${prop_key}" "${prop_value}")
+          endif()
+        endforeach()
+      endif()
+      
+      # Extract nested 'fetchInfo' object properties
+      _get_json_value(dep_fetch_info_json_block "${dep_json_block}" "fetchInfo" ${is_generic})
+      if(NOT "${dep_fetch_info_json_block}" MATCHES "NOTFOUND$")
+        # Only 'autodownload' is required in fetchInfo when rulesFile is 'generic',
+        # others properties are required only if autodownload is 'true'
+        _get_json_value(dep_fetch_autodownload "${dep_fetch_info_json_block}" "autodownload" ${is_generic})
+        if(NOT "${dep_fetch_autodownload}" MATCHES "NOTFOUND$")
+          map(ADD target_config_map "dependencies.${dep_name}.fetchInfo.autodownload" "${dep_fetch_autodownload}")
+        endif()
+
+        # Required flag (true/false depending on autodownload)
+        set(is_autodownload_true off)
+        if(${dep_fetch_autodownload})
+          set(is_autodownload_true on)
+        endif()
+
+        # Others properties depends on 'kind'
+        _get_json_value(dep_fetch_kind "${dep_fetch_info_json_block}" "kind" ${is_autodownload_true})
+        if(NOT "${dep_fetch_kind}" MATCHES "NOTFOUND$")
+            map(ADD target_config_map "dependencies.${dep_name}.fetchInfo.kind" "${dep_fetch_kind}")
+            if("${dep_fetch_kind}" MATCHES "^(git|mercurial)$")
+              foreach(prop_key "repository" "tag")
+                _get_json_value(prop_value "${dep_fetch_info_json_block}" "${prop_key}" on)
+                map(ADD target_config_map "dependencies.${dep_name}.fetchInfo.${prop_key}" "${prop_value}")
+              endforeach()
+            endif()
+            if("${dep_fetch_kind}" STREQUAL "url")
+              foreach(prop_key "repository" "hash")
+                _get_json_value(prop_value "${dep_fetch_info_json_block}" "${prop_key}" on)
+                map(ADD target_config_map "dependencies.${dep_name}.fetchInfo.${prop_key}" "${prop_value}")
+              endforeach()
+            endif()
+            if("${dep_fetch_kind}" STREQUAL "svn")
+              foreach(prop_key "repository" "revision")
+                _get_json_value(prop_value "${dep_fetch_info_json_block}" "${prop_key}" on)
+                map(ADD target_config_map "dependencies.${dep_name}.fetchInfo.${prop_key}" "${prop_value}")
+              endforeach()
+            endif()
+        endif()
+      endif()
+
+      # Extract nested 'configuration' object properties
+      _get_json_value(dep_config_json_block "${dep_json_block}" "configuration" ${is_generic})
+      if(NOT "${dep_config_json_block}" MATCHES "NOTFOUND$")
+        foreach(prop_key "compileFeatures" "compileDefinitions" "compileOptions" "linkOptions")
+          _get_json_array(dep_configs_list "${dep_config_json_block}" "${prop_key}" ${is_generic})
+          if(NOT "${dep_configs_list}" MATCHES "NOTFOUND$")
+            _serialize_list(serialized_list "${dep_configs_list}")
+            map(ADD target_config_map "dependencies.${dep_name}.configuration.${prop_key}" "${serialized_list}")
+          endif()
+        endforeach()
+      endif()
     endforeach()
     
     # Store the target configuration
@@ -1030,14 +1117,8 @@ macro(_cmake_targets_file_print_target_config)
   map(GET target_config_map "name" target_name)
   message(STATUS "Target: ${target_name}")
 
-  # Print all primitive and required top-level properties
-  foreach(setting_key "type" "mainFile")
-    map(GET target_config_map "${setting_key}" setting_value)
-    message(STATUS "  ${setting_key}: ${setting_value}")
-  endforeach()
-
-  # Print all primitive and optional top-level properties
-  foreach(setting_key "pchFile")
+  # Print all top-level properties
+  foreach(setting_key "type" "build.compileFeatures" "build.compileDefinitions" "build.compileOptions" "build.linkOptions" "mainFile" "pchFile" "headerPolicy.mode" "headerPolicy.includeDir")
     map(HAS_KEY target_config_map "${setting_key}" has_setting_key)
     if(${has_setting_key})
       map(GET target_config_map "${setting_key}" setting_value)
@@ -1045,33 +1126,20 @@ macro(_cmake_targets_file_print_target_config)
     endif()
   endforeach()
 
-  # Print nested 'build' configuration settings
-  foreach(setting_key "compileFeatures" "compileDefinitions" "compileOptions" "linkOptions")
-    map(GET target_config_map "build.${setting_key}" setting_value)
-    message(STATUS "  build.${setting_key}: ${setting_value}")
-  endforeach()
-
-  # Print nested 'header policy' configuration settings
-  map(GET target_config_map "headerPolicy.mode" header_policy_mode)
-  message(STATUS "  headerPolicy.mode: ${header_policy_mode}")
-  if("${header_policy_mode}" STREQUAL "split")
-    map(GET target_config_map "headerPolicy.includeDir" include_dir)
-    message(STATUS "  headerPolicy.includeDir: ${include_dir}")
-  endif()
-
-  # Print nested target 'dependencies' configuration settings
+  # Print nested 'dependencies' object properties
   message(STATUS "  Dependencies:")
   map(GET target_config_map "dependencies" dep_names)
-  if(NOT "${dep_names}" STREQUAL "")
-    _deserialize_list(dep_names "${dep_names}")
-    foreach(dep_name IN ITEMS ${dep_names})
-      message(STATUS "    ${dep_name}:")
-      foreach(dep_prop_key "rulesFile" "minVersion" "autodownload" "optional")
+  _deserialize_list(dep_names "${dep_names}")
+  foreach(dep_name IN ITEMS ${dep_names})
+    message(STATUS "    ${dep_name}:")
+    foreach(dep_prop_key "rulesFile" "packageLocation.windows" "packageLocation.unix" "packageLocation.macos" "minVersion" "fetchInfo.autodownload" "fetchInfo.kind" "fetchInfo.repository" "fetchInfo.tag" "fetchInfo.hash" "fetchInfo.revision" "optional" "configuration.compileFeatures" "configuration.compileDefinitions" "configuration.compileOptions" "configuration.linkOptions")
+      map(HAS_KEY target_config_map "dependencies.${dep_name}.${dep_prop_key}" has_setting_key)
+      if(${has_setting_key})
         map(GET target_config_map "dependencies.${dep_name}.${dep_prop_key}" dep_prop_value)
         message(STATUS "      ${dep_prop_key}: ${dep_prop_value}")
-      endforeach()
+      endif()
     endforeach()
-  endif()
+  endforeach()
 endmacro()
 
 #------------------------------------------------------------------------------
