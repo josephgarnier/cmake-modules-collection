@@ -849,6 +849,22 @@ endfunction()
 
 #------------------------------------------------------------------------------
 # Internal usage
+function(_is_serialized_list output_var input_string)
+  if("${output_var}" STREQUAL "")
+    message(FATAL_ERROR "output_var argument is empty!")
+  endif()
+
+  string(REPLACE "\\|" "<PIPE_ESC>" result "${input_string}")
+  string(FIND "${result}" "|" pos)
+  if(${pos} EQUAL -1)
+    set(${output_var} off PARENT_SCOPE)
+  else()
+    set(${output_var} on PARENT_SCOPE)
+  endif()
+endfunction()
+
+#------------------------------------------------------------------------------
+# Internal usage
 macro(_cmake_targets_file_is_loaded)
   if(NOT DEFINED CTF_IS_LOADED)
     message(FATAL_ERROR "IS_LOADED argument is missing or need a value!")
@@ -925,8 +941,8 @@ macro(_cmake_targets_file_get_value)
   map(GET target_config_map "${CTF_KEY}" setting_value)
   
   # Deserialize the value if needed
-  if("${CTF_KEY}"
-    MATCHES "(dependencies|compileFeatures|compileDefinitions|compileOptions|linkOptions)$")
+  _is_serialized_list(is_serialized "${setting_value}")
+  if(${is_serialized})
     _deserialize_list(setting_value "${setting_value}")
   endif()
   set(${CTF_GET_VALUE} "${setting_value}" PARENT_SCOPE)
