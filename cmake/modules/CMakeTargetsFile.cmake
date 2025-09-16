@@ -22,6 +22,10 @@ targets is identical across projects, with only the data changing. The
 definition logic for the binary target remains the same, while only its
 declarations (i.e., its configuration) change.
 
+One option could be to declare the configuration with variables in the JSON of
+:cmake:manual:`cmake-presets <cmake:manual:cmake-presets(7)>`, but it is not
+possible to have structured properties and they would be difficult to read.
+
 The purpose of this module is to simplify the automated creation of binary
 targets by allowing their settings to be declared in a standardized JSON
 configuration file. The structure of this file is defined using a
@@ -46,9 +50,9 @@ Format
 ^^^^^^
 
 The CMake targets declaration file is a JSON document with an object as the
-root (:download:`click to download <../../../cmake/modules/CMakeTargets_Sample.json>`):
+root (:download:`click to download <../../../cmake/modules/CMakeTargets_sample.json>`):
 
-.. literalinclude:: ../../../cmake/modules/CMakeTargets_Sample.json
+.. literalinclude:: ../../../cmake/modules/CMakeTargets_sample.json
   :language: json
 
 The JSON document must be conformed to the :download:`CMakeTargets.json schema <../../../cmake/modules/schema.json>` described below.
@@ -112,17 +116,17 @@ The root object recognizes the following fields:
     CMake logic.
 
   ``build``
-    A required object describing build settings. It contains the
-    following array properties:
+    A required object describing build settings. It contains the following
+    array properties:
 
       ``compileFeatures``
-        A list of optional compile features to pass to the target. It is
+        A list of compile features to pass to the target. It is
         used as a parameter for the
         :cmake:command:`target_compile_features() <cmake:command:target_compile_features>`
         command. The property is required, but the array can be empty.
 
       ``compileDefinitions``
-        A list of optional preprocessor definitions applied when compiling this
+        A list of preprocessor definitions applied when compiling this
         target. It is used as a parameter for the
         :cmake:command:`target_compile_definitions() <cmake:command:target_compile_definitions>`
         command. The property is required, but the array can be empty.
@@ -187,24 +191,111 @@ The root object recognizes the following fields:
     the following properties:
 
     ``rulesFile``
-      A required path to a CMake file ending in ``.cmake`` that defines how to
-      integrate the dependency into the build system.
+      A required property that specifies how to integrate the dependency into
+      the build system. It can be either:
+
+      * ``generic`` - use the predefined generic rules for integration.
+      * a path to a ``.cmake`` file - the file must exist and contain the
+        logic for handling the dependency.
+
+    ``packageLocation``
+      A required object when ``rulesFile`` is ``generic``, otherwise optional.
+      It defines the location where the dependency package can be found. These
+      values are intended to be used to set the ``<PackageName>_DIR`` variable
+      for :cmake:command:`find_package() <cmake:command:find_package>`. It
+      may contain the following properties:
+
+      ``windows``
+        An optional string representing the path to a directory containing
+        the package for Windows.
+
+      ``unix``
+        An optional string representing the path to a directory containing
+        the package for Unix. Whitespace is not allowed.
+
+      ``macos``
+        An optional string representing the path to a directory containing
+        the package for macOS. Whitespace is not allowed.
 
     ``minVersion``
-      A required string specifying the minimum acceptable version of the
-      dependency. This value is intended to be used as the ``VERSION``
-      argument to :cmake:command:`find_package() <cmake:command:find_package>`
+      A required string when ``rulesFile`` is ``generic``, otherwise optional,
+      specifying the minimum acceptable version of the dependency. This value
+      is intended to be used as the ``VERSION`` argument to
+      :cmake:command:`find_package() <cmake:command:find_package>`
       calls for that dependency.
 
-    ``autodownload``
-      A required boolean indicating whether the dependency may be
-      automatically downloaded if not found locally.
+    ``fetchInfo``
+      A required object when ``rulesFile`` is ``generic``, otherwise optional.
+      It provides the information needed to download the dependency package if
+      it is not available locally. Theses informations are intended to be used
+      as argument to :cmake:command:`FetchContent_Declare() <cmake:command:FetchContent_Declare>`
+      or :cmake:command:`ExternalProject_Add() <cmake:command:ExternalProject_Add>`.
+      It has the following properties:
+
+        ``autodownload``
+          A required boolean indicating whether the dependency may be
+          automatically downloaded if not found locally.
+
+        ``kind``
+          An required string specifying the download method to use when
+          ``autodownload`` is ``true`` (otherwise optional). Valid values are
+          ``url``, ``git``, ``svn``, and ``mercurial``. It support all download
+          methods supported by `External Project <https://cmake.org/cmake/help/latest/module/ExternalProject.html#download-step-options>`_.
+
+        ``repository``
+          A required URL to the repository to use when ``autodownload`` is
+          ``true`` (otherwise optional).
+
+        ``tag``
+          A required string specifying a branch name, tag, or commit identifier
+          to checkout when ``kind`` is ``git`` or ``mercurial`` (otherwise
+          optional).
+
+        ``hash``
+          A required string specifying a hash of the file to be downloaded when
+          ``kind`` is ``url`` (otherwise optional).
+
+        ``revision``
+          A required string specifying a revision to checkout when ``kind`` is
+          ``svn`` (otherwise optional).
 
     ``optional``
-      A required boolean indicating whether the dependency is optional.
-      If ``true`` and the dependency cannot be found, it is ignored and
-      not linked. If ``false`` and the dependency is missing, the build
-      will fail.
+      A required boolean when ``rulesFile`` is ``generic``, otherwise optional,
+      indicating whether the dependency is optional (``true``) or required
+      (``false``).
+
+    ``configuration``
+      A required object when ``rulesFile`` is ``generic``, otherwise optional,
+      specifying some additional settings applied to the dependency. It
+      contains the following array properties:
+
+        ``compileFeatures``
+          A list of compile features to pass to the dependency. It is used as
+          a parameter for the
+          :cmake:command:`target_compile_features() <cmake:command:target_compile_features>`
+          command. The property is required when ``rulesFile`` is ``generic``,
+          otherwise optional, but the array can be empty.
+
+        ``compileDefinitions``
+          A list of preprocessor definitions applied when compiling the
+          dependency. It is used as a parameter for the
+          :cmake:command:`target_compile_definitions() <cmake:command:target_compile_definitions>`
+          command. The property is required when ``rulesFile`` is ``generic``,
+          otherwise optional, but the array can be empty.
+
+        ``compileOptions``
+          A list of compiler options to pass when building the dependency. It
+          is used as a parameter for the
+          :cmake:command:`target_compile_options() <cmake:command:target_compile_options>`
+          command. The property is required when ``rulesFile`` is ``generic``,
+          otherwise optional, but the array can be empty.
+
+        ``linkOptions``
+          A list of linker options to pass when building this dependency. It is
+          used as a parameter for the
+          :cmake:command:`target_link_options() <cmake:command:target_link_options>`
+          command. The property is required when ``rulesFile`` is ``generic``,
+          otherwise optional, but the array can be empty.
 
 Schema
 ^^^^^^
@@ -293,10 +384,9 @@ Usage
   Since CMake does not support two-dimensional arrays, and because a :module:`Map`
   is itself a particular type of list, JSON arrays are serialized before being
   stored. Elements in a serialized array are separated by a pipe (``|``)
-  character. For example, the JSON array ``["MY_DEFINE=42", "MY_OTHER_DEFINE",
-  "MY_OTHER_DEFINE=42"]`` become
-  ``MY_DEFINE=42|MY_OTHER_DEFINE|MY_OTHER_DEFINE=42``. And to avoid conflicts,
-  pipe characters (``|``) are first escaped with a slash (``\|``).
+  character. For example, the JSON array ``["DEFINE_ONE=1", "DEFINE_TWO=2",
+  "OPTION_1"]`` become ``DEFINE_ONE=1|DEFINE_TWO=2|OPTION_1``. And to avoid
+  conflicts, pipe characters (``|``) are first escaped with a slash (``\|``).
 
   Example usage:
 
@@ -313,14 +403,9 @@ Usage
     # output is:
     #   'src' array is: name:fruit-salad;type:executable;mainFile:src/main.cpp;
     #   pchFile:include/fruit_salad_pch.h;build.compileFeatures:cxx_std_20;
-    #   build.compileDefinitions:MY_DEFINE=42|MY_OTHER_DEFINE|
-    #   MY_OTHER_DEFINE=42;build.compileOptions:;build.linkOptions:;
-    #   headerPolicy.mode:split;headerPolicy.includeDir:include;dependencies:
-    #   AppleLib|BananaLib;dependencies.AppleLib.rulesFile:FindAppleLib.cmake;
-    #   dependencies.AppleLib.minVersion:2;dependencies.AppleLib.autodownload:
-    #   ON;dependencies.AppleLib.optional:OFF;dependencies.BananaLib.rulesFile
-    #   :FindBananaLib.cmake;dependencies.BananaLib.minVersion:4;dependencies.
-    #   BananaLib.autodownload:OFF;dependencies.BananaLib.optional:ON
+    #   build.compileDefinitions:DEFINE_ONE=1|DEFINE_TWO=2|
+    #   OPTION_1;build.compileOptions:;build.linkOptions:;
+    #   headerPolicy.mode:split;...
 
 .. signature::
   cmake_targets_file(IS_LOADED <output-var>)
@@ -451,11 +536,7 @@ Usage
     # With the JSON example above, output is:
     #   setting_keys: name;type;mainFile;pchFile;build.compileFeatures;build.
     #   compileDefinitions;build.compileOptions;build.linkOptions;headerPolicy.
-    #   mode;headerPolicy.includeDir;dependencies;dependencies.AppleLib.
-    #   rulesFile;dependencies.AppleLib.minVersion;dependencies.AppleLib.
-    #   autodownload;dependencies.AppleLib.optional;dependencies.BananaLib.
-    #   rulesFile;dependencies.BananaLib.minVersion;dependencies.BananaLib.
-    #   autodownload;dependencies.BananaLib.optional
+    #   mode;headerPolicy.includeDir...
 
 .. signature::
   cmake_targets_file(GET_VALUE <output-var> TARGET <target-dir-path> KEY <setting-name>)
@@ -492,12 +573,13 @@ Usage
     cmake_targets_file(GET_VALUE setting_value TARGET "src" KEY "build.compileDefinitions")
     message("setting_value (build.compileDefinitions): ${setting_value}")
     # output is:
-    #   setting_value (build.compileDefinitions): MY_DEFINE=42;MY_OTHER_DEFINE;
-    #   MY_OTHER_DEFINE=42
+    #   setting_value (build.compileDefinitions): DEFINE_ONE=1;DEFINE_TWO=2;
+    #   OPTION_1
     cmake_targets_file(GET_VALUE setting_value TARGET "src" KEY "dependencies")
     message("setting_value (dependencies): ${setting_value}")
     # output is:
-    #   setting_value (dependencies): AppleLib;BananaLib
+    #   setting_value (dependencies): AppleLib;BananaLib;CarrotLib;OrangeLib;
+    #   PineappleLib
 
 .. signature::
   cmake_targets_file(PRINT_CONFIGS [])
@@ -517,9 +599,12 @@ Usage
     # output is:
     #   -- Target: fruit-salad
     #   --   type: executable
+    #   --   build.compileFeatures: cxx_std_20|cxx_thread_local|cxx_trailing_return_types
+    #   --   build.compileDefinitions: DEFINE_ONE=1|DEFINE_TWO=2|OPTION_1
+    #   --   build.compileOptions: -Wall|-Wextra
+    #   --   build.linkOptions: -s|-z
     #   --   mainFile: src/main.cpp
     #   --   pchFile: include/fruit_salad_pch.h
-    #   --   build.compileFeatures: cxx_std_20
     #   ...
 
 .. signature::
@@ -546,9 +631,12 @@ Usage
     # output is:
     #   -- Target: fruit-salad
     #   --   type: executable
+    #   --   build.compileFeatures: cxx_std_20|cxx_thread_local|cxx_trailing_return_types
+    #   --   build.compileDefinitions: DEFINE_ONE=1|DEFINE_TWO=2|OPTION_1
+    #   --   build.compileOptions: -Wall|-Wextra
+    #   --   build.linkOptions: -s|-z
     #   --   mainFile: src/main.cpp
     #   --   pchFile: include/fruit_salad_pch.h
-    #   --   build.compileFeatures: cxx_std_20
     #   ...
 #]=======================================================================]
 
