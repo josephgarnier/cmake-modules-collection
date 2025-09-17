@@ -450,19 +450,24 @@ readable JSON schema for the <code class="docutils literal notranslate"><span cl
 </section>
 <section id="synopsis">
 <h2>Synopsis<a class="headerlink" href="#synopsis" title="Link to this heading">¶</a></h2>
-<pre class="literal-block">cmake_targets_file(<a class="reference internal" href="#load">LOAD</a> &lt;json-file-path&gt;)
-cmake_targets_file(<a class="reference internal" href="#is-loaded">IS_LOADED</a> &lt;output-var&gt;)
-cmake_targets_file(<a class="reference internal" href="#get-loaded-file">GET_LOADED_FILE</a> &lt;output-var&gt;)
-cmake_targets_file(<a class="reference internal" href="#has-config">HAS_CONFIG</a> &lt;output-var&gt; TARGET &lt;target-dir-path&gt;)
-cmake_targets_file(<a class="reference internal" href="#get-settings">GET_SETTINGS</a> &lt;output-map-var&gt; TARGET &lt;target-dir-path&gt;)
-cmake_targets_file(<a class="reference internal" href="#has-setting">HAS_SETTING</a> &lt;output-var&gt; TARGET &lt;target-dir-path&gt; KEY &lt;setting-name&gt;)
-cmake_targets_file(<a class="reference internal" href="#get-keys">GET_KEYS</a> &lt;output-list-var&gt; TARGET &lt;target-dir-path&gt;)
-cmake_targets_file(<a class="reference internal" href="#get-value">GET_VALUE</a> &lt;output-var&gt; TARGET &lt;target-dir-path&gt; KEY &lt;setting-name&gt;)
-cmake_targets_file(<a class="reference internal" href="#print-configs">PRINT_CONFIGS</a> [])
-cmake_targets_file(<a class="reference internal" href="#print-target-config">PRINT_TARGET_CONFIG</a> &lt;target-dir-path&gt;)</pre>
+<pre class="literal-block"><a class="reference internal" href="#loading">Loading</a>
+  cmake_targets_file(<a class="reference internal" href="#load">LOAD</a> &lt;json-file-path&gt;)
+  cmake_targets_file(<a class="reference internal" href="#is-loaded">IS_LOADED</a> &lt;output-var&gt;)
+  cmake_targets_file(<a class="reference internal" href="#get-loaded-file">GET_LOADED_FILE</a> &lt;output-var&gt;)
+
+<a class="reference internal" href="#querying">Querying</a>
+  cmake_targets_file(<a class="reference internal" href="#has-config">HAS_CONFIG</a> &lt;output-var&gt; TARGET &lt;target-dir-path&gt;)
+  cmake_targets_file(<a class="reference internal" href="#get-settings">GET_SETTINGS</a> &lt;output-map-var&gt; TARGET &lt;target-dir-path&gt;)
+  cmake_targets_file(<a class="reference internal" href="#has-setting">HAS_SETTING</a> &lt;output-var&gt; TARGET &lt;target-dir-path&gt; KEY &lt;setting-name&gt;)
+  cmake_targets_file(<a class="reference internal" href="#get-keys">GET_KEYS</a> &lt;output-list-var&gt; TARGET &lt;target-dir-path&gt;)
+  cmake_targets_file(<a class="reference internal" href="#get-value">GET_VALUE</a> &lt;output-var&gt; TARGET &lt;target-dir-path&gt; KEY &lt;setting-name&gt;)
+
+<a class="reference internal" href="#debugging">Debugging</a>
+  cmake_targets_file(<a class="reference internal" href="#print-configs">PRINT_CONFIGS</a> [])
+  cmake_targets_file(<a class="reference internal" href="#print-target-config">PRINT_TARGET_CONFIG</a> &lt;target-dir-path&gt;)</pre>
 </section>
-<section id="usage">
-<h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h2>
+<section id="loading">
+<h2>Loading<a class="headerlink" href="#loading" title="Link to this heading">¶</a></h2>
 <dl class="cmake signature">
 <dt class="sig sig-object cmake" id="load">
 <span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">cmake_targets_file(</span></span><span class="no"><span class="pre">LOAD</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;json-file-path&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#load" title="Link to this definition">¶</a></dt>
@@ -515,6 +520,9 @@ example, the JSON key <code class="docutils literal notranslate"><span class="pr
 map as <code class="docutils literal notranslate"><span class="pre">dependencies.AppleLib.rulesFile</span></code>. The list of all keys for a target
 's map can be retrieved using the <span class="target" id="index-1-command:cmake_targets_file"></span><a class="reference internal" href="#get-keys" title="cmake_targets_file(get_keys)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(GET_KEYS)</span></code></a>
 command.</p>
+<p>In this context, a setting is a key/value pair, and the set of settings for
+a target represents the configuration for that target. The key of a setting
+is named &quot;setting name&quot; and its value is named &quot;setting value&quot;.</p>
 <p>Since CMake does not support two-dimensional arrays, and because a <span class="target" id="index-3-module:Map"></span><a class="reference internal" href="Map.html#module:Map" title="Map"><code class="xref cmake cmake-module docutils literal notranslate"><span class="pre">Map</span></code></a>
 is itself a particular type of list, JSON arrays are serialized before being
 stored. Elements in a serialized array are separated by a pipe (<code class="docutils literal notranslate"><span class="pre">|</span></code>)
@@ -580,6 +588,9 @@ targets configuration file. The content is retrieved from the global property
 </div>
 </dd></dl>
 
+</section>
+<section id="querying">
+<h2>Querying<a class="headerlink" href="#querying" title="Link to this heading">¶</a></h2>
 <dl class="cmake signature">
 <dt class="sig sig-object cmake" id="has-config">
 <span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">cmake_targets_file(</span></span><span class="no"><span class="pre">HAS_CONFIG</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;output-var&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">TARGET</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;target-dir-path&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#has-config" title="Link to this definition">¶</a></dt>
@@ -696,6 +707,9 @@ the target configuration.</p>
 </div>
 </dd></dl>
 
+</section>
+<section id="debugging">
+<h2>Debugging<a class="headerlink" href="#debugging" title="Link to this heading">¶</a></h2>
 <dl class="cmake signature">
 <dt class="sig sig-object cmake" id="print-configs">
 <span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">cmake_targets_file(</span></span><span class="no"><span class="pre">PRINT_CONFIGS</span></span><span class="w"> </span><span class="p"><span class="pre">[]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#print-configs" title="Link to this definition">¶</a></dt>
@@ -767,7 +781,9 @@ the <span class="target" id="index-9-command:cmake_targets_file"></span><a class
 <li><a class="reference internal" href="#format">Format</a></li>
 <li><a class="reference internal" href="#schema">Schema</a></li>
 <li><a class="reference internal" href="#synopsis">Synopsis</a></li>
-<li><a class="reference internal" href="#usage">Usage</a></li>
+<li><a class="reference internal" href="#loading">Loading</a></li>
+<li><a class="reference internal" href="#querying">Querying</a></li>
+<li><a class="reference internal" href="#debugging">Debugging</a></li>
 </ul>
 </li>
 </ul>

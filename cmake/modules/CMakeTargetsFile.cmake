@@ -308,19 +308,24 @@ Synopsis
 
 .. parsed-literal::
 
-  cmake_targets_file(`LOAD`_ <json-file-path>)
-  cmake_targets_file(`IS_LOADED`_ <output-var>)
-  cmake_targets_file(`GET_LOADED_FILE`_ <output-var>)
-  cmake_targets_file(`HAS_CONFIG`_ <output-var> TARGET <target-dir-path>)
-  cmake_targets_file(`GET_SETTINGS`_ <output-map-var> TARGET <target-dir-path>)
-  cmake_targets_file(`HAS_SETTING`_ <output-var> TARGET <target-dir-path> KEY <setting-name>)
-  cmake_targets_file(`GET_KEYS`_ <output-list-var> TARGET <target-dir-path>)
-  cmake_targets_file(`GET_VALUE`_ <output-var> TARGET <target-dir-path> KEY <setting-name>)
-  cmake_targets_file(`PRINT_CONFIGS`_ [])
-  cmake_targets_file(`PRINT_TARGET_CONFIG`_ <target-dir-path>)
+  `Loading`_
+    cmake_targets_file(`LOAD`_ <json-file-path>)
+    cmake_targets_file(`IS_LOADED`_ <output-var>)
+    cmake_targets_file(`GET_LOADED_FILE`_ <output-var>)
 
-Usage
-^^^^^
+  `Querying`_
+    cmake_targets_file(`HAS_CONFIG`_ <output-var> TARGET <target-dir-path>)
+    cmake_targets_file(`GET_SETTINGS`_ <output-map-var> TARGET <target-dir-path>)
+    cmake_targets_file(`HAS_SETTING`_ <output-var> TARGET <target-dir-path> KEY <setting-name>)
+    cmake_targets_file(`GET_KEYS`_ <output-list-var> TARGET <target-dir-path>)
+    cmake_targets_file(`GET_VALUE`_ <output-var> TARGET <target-dir-path> KEY <setting-name>)
+
+  `Debugging`_
+    cmake_targets_file(`PRINT_CONFIGS`_ [])
+    cmake_targets_file(`PRINT_TARGET_CONFIG`_ <target-dir-path>)
+
+Loading
+^^^^^^^
 
 .. signature::
   cmake_targets_file(LOAD <json-file-path>)
@@ -380,6 +385,10 @@ Usage
   map as ``dependencies.AppleLib.rulesFile``. The list of all keys for a target
   's map can be retrieved using the :command:`cmake_targets_file(GET_KEYS)`
   command.
+
+  In this context, a setting is a key/value pair, and the set of settings for
+  a target represents the configuration for that target. The key of a setting
+  is named "setting name" and its value is named "setting value".
 
   Since CMake does not support two-dimensional arrays, and because a :module:`Map`
   is itself a particular type of list, JSON arrays are serialized before being
@@ -449,6 +458,9 @@ Usage
     #       ...
     #     }
     #   }
+
+Querying
+^^^^^^^^
 
 .. signature::
   cmake_targets_file(HAS_CONFIG <output-var> TARGET <target-dir-path>)
@@ -580,6 +592,9 @@ Usage
     # output is:
     #   setting_value (dependencies): AppleLib;BananaLib;CarrotLib;OrangeLib;
     #   PineappleLib
+
+Debugging
+^^^^^^^^^
 
 .. signature::
   cmake_targets_file(PRINT_CONFIGS [])
