@@ -23,7 +23,7 @@ Synopsis
     map(`VALUES`_ <map-var> <output-list-var>)
 
   `Search`_
-    map(`FIND`_ <map-var> <value> <output-list-var>)
+    map(`FIND`_ <map-var> <key> <output-var>)
     map(`SEARCH`_ <map-var> <value> <output-list-var>)
     map(`HAS_KEY`_ <map-var> <key> <output-var>)
     map(`HAS_VALUE`_ <map-var> <value> <output-var>)
@@ -63,9 +63,11 @@ Reading
 .. signature::
   map(GET <map-var> <key> <output-var>)
 
-  Store in ``output-var`` the value associated with ``key`` in ``map-var``.
-  If the key is not found or malformed in the list, ``output-var`` is set to
-  ``<output-var>-NOTFOUND``.
+  Store in ``output-var`` the value associated with ``key`` in ``map-var``. An
+  error is raised if the key is not found or malformed in the list.
+
+  Compared to :command:`map(FIND)`, this command is stricter: it raises an
+  error instead of setting ``<output-var>-NOTFOUND``.
 
   Example usage:
 
@@ -75,7 +77,7 @@ Reading
     map(GET input_map "four" value)
     # value = 4:4
     map(GET input_map "invalid" value)
-    # value = value-NOTFOUND
+    # Uncaught exception: Cannot find the key 'invalid'!
 
 .. signature::
   map(KEYS <map-var> <output-list-var>)
@@ -107,6 +109,26 @@ Reading
 
 Search
 ^^^^^^
+
+.. signature::
+  map(FIND <map-var> <key> <output-var>)
+
+  Store in ``output-var`` the value associated with ``key`` in ``map-var``.
+  If the key is not found or malformed in the list, ``output-var`` is set to
+  ``<output-var>-NOTFOUND``.
+
+  Compared to :command:`map(GET)`, this command is more tolerant: it never
+  raises an error, but requires checking the sentinel value.
+
+  Example usage:
+
+  .. code-block:: cmake
+
+    set(input_map "one:1" "two:2" "three:" "four:4:4" "invalid" ":missing key")
+    map(FIND input_map "four" value)
+    # value = 4:4
+    map(FIND input_map "invalid" value)
+    # value = value-NOTFOUND
 
 .. signature::
   map(SEARCH <map-var> <value> <output-list-var>)
@@ -223,7 +245,7 @@ cmake_minimum_required (VERSION 3.20 FATAL_ERROR)
 function(map)
   set(options "")
   set(one_value_args "")
-  set(multi_value_args SIZE GET KEYS VALUES SEARCH HAS_KEY HAS_VALUE SET ADD REMOVE)
+  set(multi_value_args SIZE GET KEYS VALUES FIND SEARCH HAS_KEY HAS_VALUE SET ADD REMOVE)
   cmake_parse_arguments(MAP "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 
   set(MAP_ARGV "${ARGV}") # `cmake_parse_arguments` removing empty arguments, we will work directly with ARGN to retrieve empty values when they are allowed.
@@ -239,6 +261,8 @@ function(map)
     _map_keys()
   elseif(DEFINED MAP_VALUES)
     _map_values()
+  elseif(DEFINED MAP_FIND)
+    _map_find()
   elseif(DEFINED MAP_SEARCH)
     _map_search()
   elseif(DEFINED MAP_HAS_KEY)
@@ -289,34 +313,12 @@ macro(_map_get)
     message(FATAL_ERROR "GET requires exactly 3 arguments, got ${nb_args}!")
   endif()
 
-  list(GET MAP_GET 0 map_var)
-  list(GET MAP_GET 1 key)
-  list(GET MAP_GET 2 output_var)
-  if("${key}" STREQUAL "")
-    message(FATAL_ERROR "Cannot get empty key!")
+  set(MAP_FIND "${MAP_GET}")
+  _map_find()
+
+  if(NOT ${key_is_found})
+    message(FATAL_ERROR "Cannot find the key '${key}'!")
   endif()
-
-  set(map_content "${${map_var}}")
-  set(found_value "${output_var}-NOTFOUND")
-  set(key_is_found off)
-
-  foreach(entry IN ITEMS ${map_content})
-    _validate_map_key("${entry}" entry_key key_is_valid)
-    if(NOT ${key_is_valid})
-      continue()
-    endif()
-
-    string(LENGTH "${entry_key}" key_len)
-    math(EXPR value_start "${key_len} + 1") # Skip the colon separator
-    string(SUBSTRING "${entry}" ${value_start} -1 entry_value)
-    if("${entry_key}" STREQUAL "${key}")
-      set(found_value "${entry_value}")
-      set(key_is_found on)
-      break()
-    endif()
-  endforeach()
-
-  set(${output_var} "${found_value}" PARENT_SCOPE)
 endmacro()
 
 #------------------------------------------------------------------------------
@@ -371,6 +373,44 @@ macro(_map_values)
   endforeach()
 
   set(${output_var} "${result_values}" PARENT_SCOPE)
+endmacro()
+
+#------------------------------------------------------------------------------
+# Internal usage
+macro(_map_find)
+  list(LENGTH MAP_FIND nb_args)
+  if(NOT ${nb_args} EQUAL 3)
+    message(FATAL_ERROR "FIND requires exactly 3 arguments, got ${nb_args}!")
+  endif()
+
+  list(GET MAP_FIND 0 map_var)
+  list(GET MAP_FIND 1 key)
+  list(GET MAP_FIND 2 output_var)
+  if("${key}" STREQUAL "")
+    message(FATAL_ERROR "Cannot get empty key!")
+  endif()
+
+  set(map_content "${${map_var}}")
+  set(found_value "${output_var}-NOTFOUND")
+  set(key_is_found off)
+
+  foreach(entry IN ITEMS ${map_content})
+    _validate_map_key("${entry}" entry_key key_is_valid)
+    if(NOT ${key_is_valid})
+      continue()
+    endif()
+
+    string(LENGTH "${entry_key}" key_len)
+    math(EXPR value_start "${key_len} + 1") # Skip the colon separator
+    string(SUBSTRING "${entry}" ${value_start} -1 entry_value)
+    if("${entry_key}" STREQUAL "${key}")
+      set(found_value "${entry_value}")
+      set(key_is_found on)
+      break()
+    endif()
+  endforeach()
+
+  set(${output_var} "${found_value}" PARENT_SCOPE)
 endmacro()
 
 #------------------------------------------------------------------------------
