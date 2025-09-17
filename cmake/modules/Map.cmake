@@ -24,6 +24,7 @@ Synopsis
 
   `Search`_
     map(`FIND`_ <map-var> <value> <output-list-var>)
+    map(`SEARCH`_ <map-var> <value> <output-list-var>)
     map(`HAS_KEY`_ <map-var> <key> <output-var>)
     map(`HAS_VALUE`_ <map-var> <value> <output-var>)
 
@@ -108,7 +109,7 @@ Search
 ^^^^^^
 
 .. signature::
-  map(FIND <map-var> <value> <output-list-var>)
+  map(SEARCH <map-var> <value> <output-list-var>)
 
   Store in ``output-list-var`` the list of keys whose associated value matches
   ``value`` in ``map-var``. Entries with invalid format are ignored.
@@ -118,9 +119,9 @@ Search
   .. code-block:: cmake
 
     set(input_map "one:1" "two:2" "three:" "four:4:4" "invalid" ":missing key")
-    map(FIND input_map "2" map_keys)
+    map(SEARCH input_map "2" map_keys)
     # map_keys = two
-    map(FIND input_map "" map_keys)
+    map(SEARCH input_map "" map_keys)
     # map_keys = three
 
 .. signature::
@@ -222,7 +223,7 @@ cmake_minimum_required (VERSION 3.20 FATAL_ERROR)
 function(map)
   set(options "")
   set(one_value_args "")
-  set(multi_value_args SIZE GET KEYS VALUES FIND HAS_KEY HAS_VALUE SET ADD REMOVE)
+  set(multi_value_args SIZE GET KEYS VALUES SEARCH HAS_KEY HAS_VALUE SET ADD REMOVE)
   cmake_parse_arguments(MAP "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 
   set(MAP_ARGV "${ARGV}") # `cmake_parse_arguments` removing empty arguments, we will work directly with ARGN to retrieve empty values when they are allowed.
@@ -238,8 +239,8 @@ function(map)
     _map_keys()
   elseif(DEFINED MAP_VALUES)
     _map_values()
-  elseif(DEFINED MAP_FIND)
-    _map_find()
+  elseif(DEFINED MAP_SEARCH)
+    _map_search()
   elseif(DEFINED MAP_HAS_KEY)
     _map_has_key()
   elseif(DEFINED MAP_HAS_VALUE)
@@ -374,17 +375,17 @@ endmacro()
 
 #------------------------------------------------------------------------------
 # Internal usage
-macro(_map_find)
-  list(LENGTH MAP_ARGV nb_args) # MAP_FIND must not be used here, because it can't contain empty arguments due to `cmake_parse_arguments` working
+macro(_map_search)
+  list(LENGTH MAP_ARGV nb_args) # MAP_SEARCH must not be used here, because it can't contain empty arguments due to `cmake_parse_arguments` working
   if(NOT ${nb_args} EQUAL 3)
-    message(FATAL_ERROR "FIND requires exactly 3 arguments, got ${nb_args}!")
+    message(FATAL_ERROR "SEARCH requires exactly 3 arguments, got ${nb_args}!")
   endif()
 
   list(GET MAP_ARGV 0 map_var)
   list(GET MAP_ARGV 1 value)
   list(GET MAP_ARGV 2 output_var)
   if("${map_var}" STREQUAL "")
-    message(FATAL_ERROR "Cannot find in empty map!")
+    message(FATAL_ERROR "Cannot search in empty map!")
   endif()
   if("${output_var}" STREQUAL "")
     message(FATAL_ERROR "Cannot store result in empty variable!")
