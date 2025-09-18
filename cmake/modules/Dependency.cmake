@@ -645,10 +645,10 @@ macro(_dependency_import)
     # Only shared libraries use import libraries, so make sure implib
     # is set to empty when it is equals to `implib-NOTFOUND` (especially
     # for static libraries)
-    if(implib STREQUAL "implib-NOTFOUND")
+    if("${implib}" MATCHES "-NOTFOUND$")
       set(implib "")
     endif()
-    
+
     # Add library properties for release
     cmake_path(GET lib FILENAME lib_name)
     set_target_properties("${DEP_IMPORT}" PROPERTIES
