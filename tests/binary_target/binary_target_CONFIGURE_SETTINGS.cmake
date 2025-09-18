@@ -309,6 +309,68 @@ function(${CMAKETEST_TEST})
         INTERFACE_COMPILE_FEATURES)
     endfunction()
 
+    ct_add_section(NAME "cxx_standard_is_restored_after_delete")
+    function(${CMAKETEST_SECTION})
+      _set_up_test()
+      binary_target(CONFIGURE_SETTINGS "new_static_mock_lib"
+        COMPILE_FEATURES ""
+        COMPILE_DEFINITIONS ""
+        COMPILE_OPTIONS ""
+        LINK_OPTIONS ""
+      )
+      # Delete C++ standard
+      set_property(TARGET "new_static_mock_lib" PROPERTY COMPILE_FEATURES)
+      binary_target(CONFIGURE_SETTINGS "new_static_mock_lib"
+        COMPILE_FEATURES ""
+        COMPILE_DEFINITIONS ""
+        COMPILE_OPTIONS ""
+        LINK_OPTIONS ""
+      )
+      # Delete C++ standard
+      set_property(TARGET "new_static_mock_lib" PROPERTY COMPILE_FEATURES)
+      binary_target(CONFIGURE_SETTINGS "new_static_mock_lib"
+        COMPILE_FEATURES "cxx_thread_local"
+        COMPILE_DEFINITIONS ""
+        COMPILE_OPTIONS ""
+        LINK_OPTIONS ""
+      )
+      get_target_property(output_bin_property "new_static_mock_lib"
+        COMPILE_FEATURES)
+      ct_assert_list(output_bin_property)
+      ct_assert_equal(output_bin_property "cxx_std_${CMAKE_CXX_STANDARD};cxx_thread_local")
+      ct_assert_target_does_not_have_property("new_static_mock_lib"
+        INTERFACE_COMPILE_FEATURES)
+
+      binary_target(CONFIGURE_SETTINGS "new_shared_mock_lib"
+        COMPILE_FEATURES ""
+        COMPILE_DEFINITIONS ""
+        COMPILE_OPTIONS ""
+        LINK_OPTIONS ""
+      )
+      # Delete C++ standard
+      set_property(TARGET "new_shared_mock_lib" PROPERTY COMPILE_FEATURES)
+      binary_target(CONFIGURE_SETTINGS "new_shared_mock_lib"
+        COMPILE_FEATURES ""
+        COMPILE_DEFINITIONS ""
+        COMPILE_OPTIONS ""
+        LINK_OPTIONS ""
+      )
+      # Delete C++ standard
+      set_property(TARGET "new_shared_mock_lib" PROPERTY COMPILE_FEATURES)
+      binary_target(CONFIGURE_SETTINGS "new_shared_mock_lib"
+        COMPILE_FEATURES "cxx_thread_local"
+        COMPILE_DEFINITIONS ""
+        COMPILE_OPTIONS ""
+        LINK_OPTIONS ""
+      )
+      get_target_property(output_bin_property "new_shared_mock_lib"
+        COMPILE_FEATURES)
+      ct_assert_list(output_bin_property)
+      ct_assert_equal(output_bin_property "cxx_std_${CMAKE_CXX_STANDARD};cxx_thread_local")
+      ct_assert_target_does_not_have_property("new_shared_mock_lib"
+        INTERFACE_COMPILE_FEATURES)
+    endfunction()
+
     ct_add_section(NAME "add_compile_features")
     function(${CMAKETEST_SECTION})
       _set_up_test()

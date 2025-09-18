@@ -76,11 +76,11 @@ Usage
     ``/INCREMENTAL:NO``, etc.) with :cmake:command:`target_link_options() <cmake:command:target_link_options>`
     and populates :cmake:prop_tgt:`LINK_OPTIONS <cmake:prop_tgt:LINK_OPTIONS>` target property.
 
-  At the first call, the command sets the :cmake:prop_tgt:`CXX_STANDARD <cmake:prop_tgt:CXX_STANDARD>` property
-  using the value of :cmake:variable:`CMAKE_CXX_STANDARD <cmake:variable:CMAKE_CXX_STANDARD>`, which must be defined.
-  The target is also assigned to a default folder for improved IDE
-  integration. All options are optional and may appear in any order. If a
-  section is missing, it is simply ignored without warning.
+  At each call, the command sets the :cmake:prop_tgt:`CXX_STANDARD <cmake:prop_tgt:CXX_STANDARD>` property
+  using the value of :cmake:variable:`CMAKE_CXX_STANDARD <cmake:variable:CMAKE_CXX_STANDARD>` if it not
+  already set, which must be defined. The target is also assigned to a default
+  folder for improved IDE integration. All options are optional and may appear
+  in any order. If a section is missing, it is simply ignored without warning.
 
   This command is intended for targets that have been previously created
   using :command:`binary_target(CREATE)`.
@@ -439,11 +439,7 @@ macro(_binary_target_config_settings)
   # Add C++ standard in target compile features
   get_target_property(compile_features "${BBT_CONFIGURE_SETTINGS}" COMPILE_FEATURES)
   set(cxx_standard "cxx_std_${CMAKE_CXX_STANDARD}")
-  if(NOT compile_features STREQUAL "NOTFOUND")
-    list(FIND compile_features "${cxx_standard}" index_of)
-  else()
-    set(index_of -1)
-  endif()
+  list(FIND compile_features "${cxx_standard}" index_of)
   if(index_of EQUAL -1)
     target_compile_features("${BBT_CONFIGURE_SETTINGS}" PRIVATE "${cxx_standard}")
   endif()
@@ -452,7 +448,7 @@ macro(_binary_target_config_settings)
   if(DEFINED BBT_COMPILE_FEATURES)
     target_compile_features("${BBT_CONFIGURE_SETTINGS}"
       PRIVATE
-        ${BBT_COMPILE_FEATURES} # don't add quote (but yeah, it's inconsistent with the other CMake functions)
+        ${BBT_COMPILE_FEATURES} # don't add quote (yeah, the signature is inconsistent with other CMake target commands)
     )
     message(STATUS "C++ standard set to: C++${CMAKE_CXX_STANDARD}")
     message(STATUS "Applied compile features: ${BBT_COMPILE_FEATURES}")
