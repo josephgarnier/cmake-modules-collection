@@ -67,7 +67,7 @@ Reading
   error is raised if the key is not found or malformed in the list.
 
   Compared to :command:`map(FIND)`, this command is stricter: it raises an
-  error instead of setting ``<output-var>-NOTFOUND``.
+  error instead of setting ``<key>-NOTFOUND``.
 
   Example usage:
 
@@ -115,7 +115,7 @@ Search
 
   Store in ``output-var`` the value associated with ``key`` in ``map-var``.
   If the key is not found or malformed in the list, ``output-var`` is set to
-  ``<output-var>-NOTFOUND``.
+  ``<key>-NOTFOUND``.
 
   Compared to :command:`map(GET)`, this command is more tolerant: it never
   raises an error, but requires checking the sentinel value.
@@ -128,7 +128,7 @@ Search
     map(FIND input_map "four" value)
     # value = 4:4
     map(FIND input_map "invalid" value)
-    # value = value-NOTFOUND
+    # value = invalid-NOTFOUND
 
 .. signature::
   map(SEARCH <map-var> <value> <output-list-var>)
@@ -391,7 +391,7 @@ macro(_map_find)
   endif()
 
   set(map_content "${${map_var}}")
-  set(found_value "${output_var}-NOTFOUND")
+  set(found_value "${key}-NOTFOUND")
   set(key_is_found off)
 
   foreach(entry IN ITEMS ${map_content})

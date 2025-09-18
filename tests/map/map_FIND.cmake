@@ -52,16 +52,16 @@ function(${CMAKETEST_TEST})
   function(${CMAKETEST_SECTION})
     map(FIND input_map "entry 11" value)
     ct_assert_string(value)
-    ct_assert_equal(value "value-NOTFOUND")
-    ct_assert_false(value) # equals to "value-NOTFOUND"
+    ct_assert_equal(value "entry 11-NOTFOUND")
+    ct_assert_false(value) # equals to "entry 11-NOTFOUND"
   endfunction()
 
   ct_add_section(NAME "find_from_invalid_key")
   function(${CMAKETEST_SECTION})
     map(FIND input_map "invalid" value)
     ct_assert_string(value)
-    ct_assert_equal(value "value-NOTFOUND")
-    ct_assert_false(value) # equals to "value-NOTFOUND"
+    ct_assert_equal(value "invalid-NOTFOUND")
+    ct_assert_false(value) # equals to "invalid-NOTFOUND"
   endfunction()
 
   ct_add_section(NAME "find_from_empty_map")
@@ -69,8 +69,8 @@ function(${CMAKETEST_TEST})
     set(input_map "")
     map(FIND input_map "entry 6" value)
     ct_assert_string(value)
-    ct_assert_equal(value "value-NOTFOUND")
-    ct_assert_false(value) # equals to "value-NOTFOUND"
+    ct_assert_equal(value "entry 6-NOTFOUND")
+    ct_assert_false(value) # equals to "entry 6-NOTFOUND"
   endfunction()
 
   # Errors checking
