@@ -319,6 +319,7 @@ Synopsis
     cmake_targets_file(`HAS_SETTING`_ <output-var> TARGET <target-dir-path> KEY <setting-name>)
     cmake_targets_file(`GET_KEYS`_ <output-list-var> TARGET <target-dir-path>)
     cmake_targets_file(`GET_VALUE`_ <output-var> TARGET <target-dir-path> KEY <setting-name>)
+    cmake_targets_file(`TRY_GET_VALUE`_ <output-var> TARGET <target-dir-path> KEY <setting-name>)
 
   `Debugging`_
     cmake_targets_file(`PRINT_CONFIGS`_ [])
@@ -593,6 +594,54 @@ Querying
     #   setting_value (dependencies): AppleLib;BananaLib;CarrotLib;OrangeLib;
     #   PineappleLib
 
+.. signature::
+  cmake_targets_file(TRY_GET_VALUE <output-var> TARGET <target-dir-path> KEY <setting-name>)
+
+  Try to retrieve the value associated to a specific setting key
+  ``<setting-name>`` defined for a given target configuration in the global
+  property ``TARGETS_CONFIG_<target-dir-path>``.
+
+  The ``<target-dir-path>`` specifies the directory path of the target whose
+  configuration setting should be retrieved. This must correspond to a path
+  listed in the global property ``TARGETS_CONFIG_LIST``, and must match one
+  of the keys in the ``targets`` JSON object of the loaded configuration file.
+
+  The ``<setting-name>`` specifies the flattened key name as stored in the
+  :module:`Map` ``TARGETS_CONFIG_<target-dir-path>``. Nested JSON properties
+  are concatenated using a dot (``.``) separator (e.g.,
+  ``build.compileDefinitions``).
+
+  The result is stored in ``<output-var>`` as a value or a deserialized list.
+  If the ``KEY`` does not exist in the target configuration, ``<output-var>``
+  is set to ``<setting-name>-NOTFOUND``.
+
+  An error is raised if no configuration file has been previously loaded with
+  the :command:`cmake_targets_file(LOAD)` command or if the ``TARGET`` does not
+  exist in the loaded configuration file.
+
+  Example usage:
+
+  .. code-block:: cmake
+
+    cmake_targets_file(TRY_GET_VALUE setting_value TARGET "src" KEY "type")
+    message("setting_value (type): ${setting_value}")
+    # output is:
+    #   setting_value (type): executable
+    cmake_targets_file(TRY_GET_VALUE setting_value TARGET "src" KEY "build.compileDefinitions")
+    message("setting_value (build.compileDefinitions): ${setting_value}")
+    # output is:
+    #   setting_value (build.compileDefinitions): DEFINE_ONE=1;DEFINE_TWO=2;
+    #   OPTION_1
+    cmake_targets_file(TRY_GET_VALUE setting_value TARGET "src" KEY "dependencies")
+    message("setting_value (dependencies): ${setting_value}")
+    # output is:
+    #   setting_value (dependencies): AppleLib;BananaLib;CarrotLib;OrangeLib;
+    #   PineappleLib
+    cmake_targets_file(TRY_GET_VALUE setting_value TARGET "src" KEY "inexisting.setting")
+    message("setting_value (inexisting.setting): ${setting_value}")
+    # output is:
+    #   setting_value (inexisting.setting): inexisting.setting-NOTFOUND
+
 Debugging
 ^^^^^^^^^
 
@@ -664,7 +713,7 @@ include(Map)
 # Public function of this module
 function(cmake_targets_file)
   set(options PRINT_CONFIGS)
-  set(one_value_args LOAD IS_LOADED GET_LOADED_FILE GET_VALUE TARGET KEY GET_SETTINGS GET_KEYS PRINT_TARGET_CONFIG HAS_CONFIG HAS_SETTING)
+  set(one_value_args LOAD IS_LOADED GET_LOADED_FILE GET_VALUE TRY_GET_VALUE TARGET KEY GET_SETTINGS GET_KEYS PRINT_TARGET_CONFIG HAS_CONFIG HAS_SETTING)
   set(multi_value_args "")
   cmake_parse_arguments(CTF "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 
@@ -681,6 +730,8 @@ function(cmake_targets_file)
     _cmake_targets_file_has_config()
   elseif(DEFINED CTF_GET_VALUE)
     _cmake_targets_file_get_value()
+  elseif(DEFINED CTF_TRY_GET_VALUE)
+    _cmake_targets_file_try_get_value()
   elseif(DEFINED CTF_GET_SETTINGS)
     _cmake_targets_file_get_settings()
   elseif(DEFINED CTF_HAS_SETTING)
@@ -1136,6 +1187,35 @@ macro(_cmake_targets_file_get_value)
     _deserialize_list(setting_value "${setting_value}")
   endif()
   set(${CTF_GET_VALUE} "${setting_value}" PARENT_SCOPE)
+endmacro()
+
+#------------------------------------------------------------------------------
+# Internal usage
+macro(_cmake_targets_file_try_get_value)
+  if(NOT DEFINED CTF_TRY_GET_VALUE)
+    message(FATAL_ERROR "TRY_GET_VALUE argument is missing or need a value!")
+  endif()
+  if(NOT DEFINED CTF_TARGET)
+    message(FATAL_ERROR "TARGET argument is missing or need a value!")
+  endif()
+  if(NOT DEFINED CTF_KEY)
+    message(FATAL_ERROR "KEY argument is missing or need a value!")
+  endif()
+  _assert_config_file_loaded()
+  _assert_target_config_exists("${CTF_TARGET}")
+  
+  get_property(target_config_map GLOBAL PROPERTY "TARGETS_CONFIG_${CTF_TARGET}")
+
+  map(FIND target_config_map "${CTF_KEY}" setting_value)
+  if(NOT "${setting_value}" MATCHES "-NOTFOUND$")
+    # Deserialize the value if needed
+    _is_serialized_list(is_serialized "${setting_value}")
+    if(${is_serialized})
+      _deserialize_list(setting_value "${setting_value}")
+    endif()
+  endif()
+
+  set(${CTF_TRY_GET_VALUE} "${setting_value}" PARENT_SCOPE)
 endmacro()
 
 #------------------------------------------------------------------------------

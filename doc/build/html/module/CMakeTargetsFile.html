@@ -461,6 +461,7 @@ readable JSON schema for the <code class="docutils literal notranslate"><span cl
   cmake_targets_file(<a class="reference internal" href="#has-setting">HAS_SETTING</a> &lt;output-var&gt; TARGET &lt;target-dir-path&gt; KEY &lt;setting-name&gt;)
   cmake_targets_file(<a class="reference internal" href="#get-keys">GET_KEYS</a> &lt;output-list-var&gt; TARGET &lt;target-dir-path&gt;)
   cmake_targets_file(<a class="reference internal" href="#get-value">GET_VALUE</a> &lt;output-var&gt; TARGET &lt;target-dir-path&gt; KEY &lt;setting-name&gt;)
+  cmake_targets_file(<a class="reference internal" href="#try-get-value">TRY_GET_VALUE</a> &lt;output-var&gt; TARGET &lt;target-dir-path&gt; KEY &lt;setting-name&gt;)
 
 <a class="reference internal" href="#debugging">Debugging</a>
   cmake_targets_file(<a class="reference internal" href="#print-configs">PRINT_CONFIGS</a> [])
@@ -707,6 +708,49 @@ the target configuration.</p>
 </div>
 </dd></dl>
 
+<dl class="cmake signature">
+<dt class="sig sig-object cmake" id="try-get-value">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">cmake_targets_file(</span></span><span class="no"><span class="pre">TRY_GET_VALUE</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;output-var&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">TARGET</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;target-dir-path&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">KEY</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;setting-name&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#try-get-value" title="Link to this definition">¶</a></dt>
+<dd><p>Try to retrieve the value associated to a specific setting key
+<code class="docutils literal notranslate"><span class="pre">&lt;setting-name&gt;</span></code> defined for a given target configuration in the global
+property <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_&lt;target-dir-path&gt;</span></code>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">&lt;target-dir-path&gt;</span></code> specifies the directory path of the target whose
+configuration setting should be retrieved. This must correspond to a path
+listed in the global property <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_LIST</span></code>, and must match one
+of the keys in the <code class="docutils literal notranslate"><span class="pre">targets</span></code> JSON object of the loaded configuration file.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">&lt;setting-name&gt;</span></code> specifies the flattened key name as stored in the
+<span class="target" id="index-6-module:Map"></span><a class="reference internal" href="Map.html#module:Map" title="Map"><code class="xref cmake cmake-module docutils literal notranslate"><span class="pre">Map</span></code></a> <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_&lt;target-dir-path&gt;</span></code>. Nested JSON properties
+are concatenated using a dot (<code class="docutils literal notranslate"><span class="pre">.</span></code>) separator (e.g.,
+<code class="docutils literal notranslate"><span class="pre">build.compileDefinitions</span></code>).</p>
+<p>The result is stored in <code class="docutils literal notranslate"><span class="pre">&lt;output-var&gt;</span></code> as a value or a deserialized list.
+If the <code class="docutils literal notranslate"><span class="pre">KEY</span></code> does not exist in the target configuration, <code class="docutils literal notranslate"><span class="pre">&lt;output-var&gt;</span></code>
+is set to <code class="docutils literal notranslate"><span class="pre">&lt;setting-name&gt;-NOTFOUND</span></code>.</p>
+<p>An error is raised if no configuration file has been previously loaded with
+the <span class="target" id="index-8-command:cmake_targets_file"></span><a class="reference internal" href="#load" title="cmake_targets_file(load)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(LOAD)</span></code></a> command or if the <code class="docutils literal notranslate"><span class="pre">TARGET</span></code> does not
+exist in the loaded configuration file.</p>
+<p>Example usage:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">cmake_targets_file(</span><span class="no">TRY_GET_VALUE</span><span class="w"> </span><span class="nb">setting_value</span><span class="w"> </span><span class="no">TARGET</span><span class="w"> </span><span class="s">&quot;src&quot;</span><span class="w"> </span><span class="no">KEY</span><span class="w"> </span><span class="s">&quot;type&quot;</span><span class="nf">)</span>
+<span class="nf">message(</span><span class="s">&quot;setting_value (type): ${setting_value}&quot;</span><span class="nf">)</span>
+<span class="c"># output is:</span>
+<span class="c">#   setting_value (type): executable</span>
+<span class="nf">cmake_targets_file(</span><span class="no">TRY_GET_VALUE</span><span class="w"> </span><span class="nb">setting_value</span><span class="w"> </span><span class="no">TARGET</span><span class="w"> </span><span class="s">&quot;src&quot;</span><span class="w"> </span><span class="no">KEY</span><span class="w"> </span><span class="s">&quot;build.compileDefinitions&quot;</span><span class="nf">)</span>
+<span class="nf">message(</span><span class="s">&quot;setting_value (build.compileDefinitions): ${setting_value}&quot;</span><span class="nf">)</span>
+<span class="c"># output is:</span>
+<span class="c">#   setting_value (build.compileDefinitions): DEFINE_ONE=1;DEFINE_TWO=2;</span>
+<span class="c">#   OPTION_1</span>
+<span class="nf">cmake_targets_file(</span><span class="no">TRY_GET_VALUE</span><span class="w"> </span><span class="nb">setting_value</span><span class="w"> </span><span class="no">TARGET</span><span class="w"> </span><span class="s">&quot;src&quot;</span><span class="w"> </span><span class="no">KEY</span><span class="w"> </span><span class="s">&quot;dependencies&quot;</span><span class="nf">)</span>
+<span class="nf">message(</span><span class="s">&quot;setting_value (dependencies): ${setting_value}&quot;</span><span class="nf">)</span>
+<span class="c"># output is:</span>
+<span class="c">#   setting_value (dependencies): AppleLib;BananaLib;CarrotLib;OrangeLib;</span>
+<span class="c">#   PineappleLib</span>
+<span class="nf">cmake_targets_file(</span><span class="no">TRY_GET_VALUE</span><span class="w"> </span><span class="nb">setting_value</span><span class="w"> </span><span class="no">TARGET</span><span class="w"> </span><span class="s">&quot;src&quot;</span><span class="w"> </span><span class="no">KEY</span><span class="w"> </span><span class="s">&quot;inexisting.setting&quot;</span><span class="nf">)</span>
+<span class="nf">message(</span><span class="s">&quot;setting_value (inexisting.setting): ${setting_value}&quot;</span><span class="nf">)</span>
+<span class="c"># output is:</span>
+<span class="c">#   setting_value (inexisting.setting): inexisting.setting-NOTFOUND</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 <section id="debugging">
 <h2>Debugging<a class="headerlink" href="#debugging" title="Link to this heading">¶</a></h2>
@@ -717,7 +761,7 @@ the target configuration.</p>
 configuration file. It is primarily intended for debugging or inspecting the
 parsed target settings after loading a configuration file.</p>
 <p>An error is raised if no configuration file has been previously loaded with
-the <span class="target" id="index-8-command:cmake_targets_file"></span><a class="reference internal" href="#load" title="cmake_targets_file(load)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(LOAD)</span></code></a> command</p>
+the <span class="target" id="index-9-command:cmake_targets_file"></span><a class="reference internal" href="#load" title="cmake_targets_file(load)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(LOAD)</span></code></a> command</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">cmake_targets_file(</span><span class="no">PRINT_CONFIGS</span><span class="nf">)</span>
 <span class="c"># output is:</span>
@@ -746,7 +790,7 @@ configuration setting should be retrieved. This must correspond to a path
 listed in the global property <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_LIST</span></code>, and must match one
 of the keys in the <code class="docutils literal notranslate"><span class="pre">targets</span></code> JSON object of the loaded configuration file.</p>
 <p>An error is raised if no configuration file has been previously loaded with
-the <span class="target" id="index-9-command:cmake_targets_file"></span><a class="reference internal" href="#load" title="cmake_targets_file(load)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(LOAD)</span></code></a> command.</p>
+the <span class="target" id="index-10-command:cmake_targets_file"></span><a class="reference internal" href="#load" title="cmake_targets_file(load)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(LOAD)</span></code></a> command.</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">cmake_targets_file(</span><span class="no">PRINT_TARGET_CONFIG</span><span class="w"> </span><span class="s">&quot;src&quot;</span><span class="nf">)</span>
 <span class="c"># output is:</span>
