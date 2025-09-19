@@ -781,7 +781,7 @@ macro(_cmake_targets_file_load)
     # Extract all top-level and optional primitive properties
     foreach(prop_key "pchFile")
       _get_json_value(prop_value "${target_json_block}" "${prop_key}" off)
-      if(NOT "${prop_value}" MATCHES "NOTFOUND$")
+      if(NOT "${prop_value}" MATCHES "-NOTFOUND$")
         map(ADD target_config_map "${prop_key}" "${prop_value}")
       endif()
     endforeach()
@@ -830,17 +830,17 @@ macro(_cmake_targets_file_load)
       # Extract all top-level primitive properties
       foreach(prop_key "minVersion" "optional")
         _get_json_value(prop_value "${dep_json_block}" "${prop_key}" ${is_generic})
-        if(NOT "${prop_value}" MATCHES "NOTFOUND$")
+        if(NOT "${prop_value}" MATCHES "-NOTFOUND$")
           map(ADD target_config_map "dependencies.${dep_name}.${prop_key}" "${prop_value}")
         endif()
       endforeach()
 
       # Extract nested 'packageLocation' object properties
       _get_json_value(dep_package_loc_json_block "${dep_json_block}" "packageLocation" ${is_generic})
-      if(NOT "${dep_package_loc_json_block}" MATCHES "NOTFOUND$")
+      if(NOT "${dep_package_loc_json_block}" MATCHES "-NOTFOUND$")
         foreach(prop_key "windows" "unix" "macos")
           _get_json_value(prop_value "${dep_package_loc_json_block}" "${prop_key}" off)
-          if(NOT "${prop_value}" MATCHES "NOTFOUND$")
+          if(NOT "${prop_value}" MATCHES "-NOTFOUND$")
             map(ADD target_config_map "dependencies.${dep_name}.packageLocation.${prop_key}" "${prop_value}")
           endif()
         endforeach()
@@ -848,11 +848,11 @@ macro(_cmake_targets_file_load)
       
       # Extract nested 'fetchInfo' object properties
       _get_json_value(dep_fetch_info_json_block "${dep_json_block}" "fetchInfo" ${is_generic})
-      if(NOT "${dep_fetch_info_json_block}" MATCHES "NOTFOUND$")
+      if(NOT "${dep_fetch_info_json_block}" MATCHES "-NOTFOUND$")
         # Only 'autodownload' is required in fetchInfo when rulesFile is 'generic',
         # others properties are required only if autodownload is 'true'
         _get_json_value(dep_fetch_autodownload "${dep_fetch_info_json_block}" "autodownload" ${is_generic})
-        if(NOT "${dep_fetch_autodownload}" MATCHES "NOTFOUND$")
+        if(NOT "${dep_fetch_autodownload}" MATCHES "-NOTFOUND$")
           map(ADD target_config_map "dependencies.${dep_name}.fetchInfo.autodownload" "${dep_fetch_autodownload}")
         endif()
 
@@ -864,7 +864,7 @@ macro(_cmake_targets_file_load)
 
         # Others properties depends on 'kind'
         _get_json_value(dep_fetch_kind "${dep_fetch_info_json_block}" "kind" ${is_autodownload_true})
-        if(NOT "${dep_fetch_kind}" MATCHES "NOTFOUND$")
+        if(NOT "${dep_fetch_kind}" MATCHES "-NOTFOUND$")
             map(ADD target_config_map "dependencies.${dep_name}.fetchInfo.kind" "${dep_fetch_kind}")
             if("${dep_fetch_kind}" MATCHES "^(git|mercurial)$")
               foreach(prop_key "repository" "tag")
@@ -889,10 +889,10 @@ macro(_cmake_targets_file_load)
 
       # Extract nested 'configuration' object properties
       _get_json_value(dep_config_json_block "${dep_json_block}" "configuration" ${is_generic})
-      if(NOT "${dep_config_json_block}" MATCHES "NOTFOUND$")
+      if(NOT "${dep_config_json_block}" MATCHES "-NOTFOUND$")
         foreach(prop_key "compileFeatures" "compileDefinitions" "compileOptions" "linkOptions")
           _get_json_array(dep_configs_list "${dep_config_json_block}" "${prop_key}" ${is_generic})
-          if(NOT "${dep_configs_list}" MATCHES "NOTFOUND$")
+          if(NOT "${dep_configs_list}" MATCHES "-NOTFOUND$")
             _serialize_list(serialized_list "${dep_configs_list}")
             map(ADD target_config_map "dependencies.${dep_name}.configuration.${prop_key}" "${serialized_list}")
           endif()
