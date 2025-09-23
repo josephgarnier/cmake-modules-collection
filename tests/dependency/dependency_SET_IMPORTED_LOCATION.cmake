@@ -527,6 +527,26 @@ function(${CMAKETEST_TEST})
     )
   endfunction()
 
+  ct_add_section(NAME "throws_if_arg_configuration_is_missing_1" EXPECTFAIL)
+  function(${CMAKETEST_SECTION})
+    dependency(SET_IMPORTED_LOCATION "imp_shared_mock_lib"
+      CONFIGURATION
+      PUBLIC
+        "$<BUILD_INTERFACE:${shared_lib_file_path}>"
+        "$<INSTALL_INTERFACE:lib/${shared_lib_file_name}>"
+    )
+  endfunction()
+
+  ct_add_section(NAME "throws_if_arg_configuration_is_missing_1" EXPECTFAIL)
+  function(${CMAKETEST_SECTION})
+    dependency(SET_IMPORTED_LOCATION "imp_shared_mock_lib"
+      CONFIGURATION ""
+      PUBLIC
+        "$<BUILD_INTERFACE:${shared_lib_file_path}>"
+        "$<INSTALL_INTERFACE:lib/${shared_lib_file_name}>"
+    )
+  endfunction()
+
   ct_add_section(NAME "throws_if_arg_public_is_missing_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     dependency(SET_IMPORTED_LOCATION "imp_shared_mock_lib"
