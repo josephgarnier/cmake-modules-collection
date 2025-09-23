@@ -361,8 +361,6 @@ function(${CMAKETEST_TEST})
   endfunction()
 
   # Errors checking
-  _validate_json_number(PROP_PATH "one;two;three" PROP_VALUE "1")
-  
   ct_add_section(NAME "throws_if_unknown_argument" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     _validate_json_number(FOO)
@@ -375,7 +373,7 @@ function(${CMAKETEST_TEST})
 
   ct_add_section(NAME "throws_if_arg_prop_path_is_missing_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    _validate_json_number("one;two;three" PROP_VALUE "1")
+    _validate_json_number(PROP_VALUE "1")
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_prop_path_is_missing_2" EXPECTFAIL)
