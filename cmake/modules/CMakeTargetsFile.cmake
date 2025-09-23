@@ -1103,17 +1103,107 @@ function(_is_serialized_list output_var input_string)
     set(${output_var} on PARENT_SCOPE)
   endif()
 endfunction()
-#------------------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
-# Internal usage. This function validates a JSON boolean property
+# Internal usage. This function validates a JSON string property.
+# Signature:
+#   _validate_json_string(PROP_PATH [<prop-key>...]
+#                         PROP_VALUE [<string>]
+#                         [MIN_LENGTH <number>]
+#                         [MAX_LENGTH <number>]
+#                         [PATTERN <regex>])
+# Parameters:
+#   PROP_PATH: the path (as list of keys) to the property to validate.
+#   PROP_VALUE: the string coming from the property to validate. The value must
+#               be a string of text.
+#   MIN_LENGTH: the minimum length of the string for the PROP_VALUE. The value
+#               MUST be a non-negative integer. To be valid, the length of
+#               PROP_VALUE must be greater than, or equal to, MIN_LENGTH.
+#   MAX_LENGTH: the maximum length of the string for the PROP_VALUE. The value
+#               MUST be a non-negative integer. To be valid, the length of
+#               PROP_VALUE must be less than, or equal to, MAX_LENGTH.
+#   PATTERN: the regular expression that the PROP_VALUE must match. The value
+#            MUST be a string. This string SHOULD be a valid regular expression,
+#            according to the CMake regular expression dialect. The be valid,
+#            PROP_VALUE must match the regular expression matches successfully.
+function(_validate_json_string)
+  set(options "")
+  set(one_value_args PROP_VALUE MIN_LENGTH MAX_LENGTH PATTERN)
+  set(multi_value_args PROP_PATH)
+  cmake_parse_arguments(VJS "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
+
+  if(DEFINED VJS_UNPARSED_ARGUMENTS)
+    message(FATAL_ERROR "Unrecognized arguments: \"${VJS_UNPARSED_ARGUMENTS}\"")
+  endif()
+  if((NOT DEFINED VJS_PROP_PATH)
+    AND (NOT "PROP_PATH" IN_LIST VJS_KEYWORDS_MISSING_VALUES))
+    message(FATAL_ERROR "PROP_PATH argument is missing or need a value!")
+  endif()
+  if((NOT DEFINED VJS_PROP_VALUE)
+    AND (NOT "PROP_VALUE" IN_LIST VJS_KEYWORDS_MISSING_VALUES))
+    message(FATAL_ERROR "PROP_VALUE argument is missing or need a value!")
+  endif()
+  if("MIN_LENGTH" IN_LIST VJS_KEYWORDS_MISSING_VALUES)
+    message(FATAL_ERROR "MIN_LENGTH argument is missing or need a value!")
+  endif()
+  if("MAX_LENGTH" IN_LIST VJS_KEYWORDS_MISSING_VALUES)
+    message(FATAL_ERROR "MAX_LENGTH argument is missing or need a value!")
+  endif()
+  if("PATTERN" IN_LIST VJS_KEYWORDS_MISSING_VALUES)
+    message(FATAL_ERROR "PATTERN argument is missing or need a value!")
+  endif()
+
+  # Join path for errors
+  list(JOIN VJS_PROP_PATH "." prop_path_joined)
+
+  # Check the value is a positive integer:
+  #   ^ and $ -> start and end of the string (avoid false positives).
+  #   +? -> optional sign.
+  #   [0-9] -> first mandatory digit.
+  #   [0-9]* -> optional additional digits.
+  set(is_positive_integer_regex "^\\+?[1-9][0-9]*$")
+
+  # Check length "min length" constraint
+  if(DEFINED VJS_MIN_LENGTH)
+    if(NOT ${VJS_MIN_LENGTH} MATCHES "${is_positive_integer_regex}")
+      message(FATAL_ERROR "MIN_LENGTH argument is not an integer strictly greater than 0!")
+    endif()
+  
+    string(LENGTH "${VJS_PROP_VALUE}" string_length)
+    if(NOT ${string_length} GREATER_EQUAL ${VJS_MIN_LENGTH})
+      message(FATAL_ERROR "Incorrect value for '${prop_path_joined}'. ${VJS_PROP_VALUE} is shorter than the minimum length of ${VJS_MIN_LENGTH}!")
+    endif()
+  endif()
+
+  # Check length "max length" constraint
+  if(DEFINED VJS_MAX_LENGTH)
+    if(NOT ${VJS_MAX_LENGTH} MATCHES "${is_positive_integer_regex}")
+      message(FATAL_ERROR "MAX_LENGTH argument is not an integer strictly greater than 0!")
+    endif()
+
+    string(LENGTH "${VJS_PROP_VALUE}" string_length)
+    if(NOT ${string_length} LESS_EQUAL ${VJS_MAX_LENGTH})
+      message(FATAL_ERROR "Incorrect value for '${prop_path_joined}'. ${VJS_PROP_VALUE} is longer than the maximum length of ${VJS_MAX_LENGTH}!")
+    endif()
+  endif()
+
+  # Check regular expression "pattern" constraint
+  if(DEFINED VJS_PATTERN)
+    if(NOT "${VJS_PROP_VALUE}" MATCHES ${VJS_PATTERN})
+      message(FATAL_ERROR "Incorrect value for '${prop_path_joined}'. ${VJS_PROP_VALUE} does not match the pattern of ${VJS_PATTERN}!")
+    endif()
+  endif()
+endfunction()
+
+#------------------------------------------------------------------------------
+# Internal usage. This function validates a JSON boolean property.
 # Signature:
 #   _validate_json_boolean(PROP_PATH [<prop-key>...]
 #                         PROP_VALUE <number>)
 # Parameters:
-#   PROP_VALUE: the boolean coming from the property to validate. Te value must
-#               be 'ON' or 'OFF'.
 #   PROP_PATH: the path (as list of keys) to the property to validate.
+#   PROP_VALUE: the boolean coming from the property to validate. The value must
+#               be 'ON' or 'OFF'.
 function(_validate_json_boolean)
   set(options "")
   set(one_value_args PROP_VALUE)
@@ -1138,7 +1228,7 @@ function(_validate_json_boolean)
 endfunction()
 
 #------------------------------------------------------------------------------
-# Internal usage. This function validates a JSON number property
+# Internal usage. This function validates a JSON number property.
 # Signature:
 #   _validate_json_number(PROP_PATH [<prop-key>...]
 #                         PROP_VALUE <number>
@@ -1148,9 +1238,9 @@ endfunction()
 #                         [MAX <number>]
 #                         [EXCLU_MAX <number>])
 # Parameters:
+#   PROP_PATH: the path (as list of keys) to the property to validate.
 #   PROP_VALUE: the number coming from the property to validate. Can be an
 #               integer (e.g. 1) or floating-point (e.g. 1.0) value.
-#   PROP_PATH: the path (as list of keys) to the property to validate.
 #   MULTIPLE_OF: the multiple of which the PROP_VALUE must be a multiple. The
 #                value MUST be an integer, strictly greater than 0.
 #   MIN: the minimum value allowed for the PROP_VALUE. The value MUST be a
@@ -1199,7 +1289,7 @@ function(_validate_json_number)
 
   # Join path for errors
   list(JOIN VJN_PROP_PATH "." prop_path_joined)
-  
+
   # Check the value is a number:
   #   ^ and $ -> start and end of the string (avoid false positives).
   #   [+-]? -> optional sign.
@@ -1213,7 +1303,7 @@ function(_validate_json_number)
 
   # Check "multiple of" constraint
   if(DEFINED VJN_MULTIPLE_OF)
-    # Check the value is an integer:
+    # Check the value is a positive integer:
     #   ^ and $ -> start and end of the string (avoid false positives).
     #   +? -> optional sign.
     #   [0-9] -> first mandatory digit.
