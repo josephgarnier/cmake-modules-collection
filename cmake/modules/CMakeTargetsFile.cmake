@@ -339,7 +339,7 @@ Loading
     they comply with the
     :download:`CMakeTargets.json schema <../../../cmake/modules/schema.json>`.
     The command only verifies that the expected JSON structure is present and
-    that the properties are defined.
+    that the required properties are defined.
 
     This behavior is intended to give users more flexibility and to avoid code
     duplication in cases where both syntactic and semantic validation may be
@@ -932,7 +932,7 @@ endfunction()
 #------------------------------------------------------------------------------
 # Internal usage
 function(_get_json_value output_var json_block json_path_list is_required)
-    if("${output_var}" STREQUAL "")
+  if("${output_var}" STREQUAL "")
     message(FATAL_ERROR "output_var argument is empty!")
   endif()
   if("${json_block}" STREQUAL "")

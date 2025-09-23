@@ -43,7 +43,7 @@ function(${CMAKETEST_TEST})
     ct_assert_equal(output_property "")
     ct_assert_not_defined(output_property)
     
-    ct_add_section(NAME "check_when_global_property_is_empty_inner" EXPECTFAIL)
+    ct_add_section(NAME "check_when_global_property_is_not_set" EXPECTFAIL)
     function(${CMAKETEST_SECTION})
       _assert_config_file_loaded()
     endfunction()
