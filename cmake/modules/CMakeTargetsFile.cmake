@@ -1103,6 +1103,149 @@ function(_is_serialized_list output_var input_string)
     set(${output_var} on PARENT_SCOPE)
   endif()
 endfunction()
+#------------------------------------------------------------------------------
+
+#------------------------------------------------------------------------------
+# Internal usage. This function validates a JSON number property
+# Signature:
+#   _validate_json_number(PROP_PATH [<prop-key>...]
+#                         PROP_VALUE <number>
+#                         [MULTIPLE_OF <number>]
+#                         [MIN <number>]
+#                         [EXCLU_MIN <number>]
+#                         [MAX <number>]
+#                         [EXCLU_MAX <number>])
+# Parameters:
+#   PROP_VALUE: the number coming from the property to validate. Can be an
+#               integer (e.g. 1) or floating-point (e.g. 1.0) value.
+#   PROP_PATH: the path (as list of keys) to the property to validate.
+#   MULTIPLE_OF: the multiple of which the PROP_VALUE must be a multiple. The
+#                value MUST be an integer, strictly greater than 0.
+#   MIN: the minimum value allowed for the PROP_VALUE. The value MUST be a
+#        number, representing an inclusive lower limit. To be valid, PROP_VALUE
+#        >= MIN must be true.
+#   EXCLU_MIN: the minimum exclusive value allowed for the PROP_VALUE. The value
+#              MUST be a number, representing an exclusive lower limit. To be
+#              valid, PROP_VALUE > EXCLU_MIN must be true.
+#   MAX: the maximum value allowed for the PROP_VALUE. The value MUST be a
+#        number, representing an inclusive upper limit. To be valid, PROP_VALUE
+#        <= MAX must be true.
+#   EXCLU_MAX: the maximum exclusive value allowed for the PROP_VALUE. The value
+#              MUST be a number, representing an exclusive upper limit. To be
+#              valid, PROP_VALUE < EXCLU_MAX must be true.
+function(_validate_json_number)
+  set(options "")
+  set(one_value_args PROP_VALUE MULTIPLE_OF MIN MAX EXCLU_MIN EXCLU_MAX)
+  set(multi_value_args PROP_PATH)
+  cmake_parse_arguments(VJN "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
+
+  if(DEFINED VJN_UNPARSED_ARGUMENTS)
+    message(FATAL_ERROR "Unrecognized arguments: \"${VJN_UNPARSED_ARGUMENTS}\"")
+  endif()
+  if((NOT DEFINED VJN_PROP_PATH)
+    AND (NOT "PROP_PATH" IN_LIST VJN_KEYWORDS_MISSING_VALUES))
+    message(FATAL_ERROR "PROP_PATH argument is missing or need a value!")
+  endif()
+  if(NOT DEFINED VJN_PROP_VALUE)
+    message(FATAL_ERROR "PROP_VALUE argument is missing or need a value!")
+  endif()
+  if("MULTIPLE_OF" IN_LIST VJN_KEYWORDS_MISSING_VALUES)
+    message(FATAL_ERROR "MULTIPLE_OF argument is missing or need a value!")
+  endif()
+  if("MIN" IN_LIST VJN_KEYWORDS_MISSING_VALUES)
+    message(FATAL_ERROR "MIN argument is missing or need a value!")
+  endif()
+  if("MAX" IN_LIST VJN_KEYWORDS_MISSING_VALUES)
+    message(FATAL_ERROR "MAX argument is missing or need a value!")
+  endif()
+  if("EXCLU_MIN" IN_LIST VJN_KEYWORDS_MISSING_VALUES)
+    message(FATAL_ERROR "EXCLU_MIN argument is missing or need a value!")
+  endif()
+  if("EXCLU_MAX" IN_LIST VJN_KEYWORDS_MISSING_VALUES)
+    message(FATAL_ERROR "EXCLU_MAX argument is missing or need a value!")
+  endif()
+
+  # Join path for errors
+  list(JOIN VJN_PROP_PATH "." prop_path_joined)
+  
+  # Check the value is a number:
+  #   ^ and $ -> start and end of the string (avoid false positives).
+  #   [+-]? -> optional sign.
+  #   [0-9]+ -> at least one mandatory digit.
+  #   ([.][0-9]+)? -> optional fractional part with a point followed by at
+  #                   least one digit.
+  set(is_number_regex "^[\\+-]?[0-9]+([.][0-9]+)?$")
+  if(NOT ${VJN_PROP_VALUE} MATCHES "${is_number_regex}")
+    message(FATAL_ERROR "Incorrect type for '${prop_path_joined}'. Expected 'number'!")
+  endif()
+
+  # Check "multiple of" constraint
+  if(DEFINED VJN_MULTIPLE_OF)
+    # Check the value is an integer:
+    #   ^ and $ -> start and end of the string (avoid false positives).
+    #   +? -> optional sign.
+    #   [0-9] -> first mandatory digit.
+    #   [0-9]* -> optional additional digits.
+    set(is_positive_integer_regex "^\\+?[1-9][0-9]*$")
+    if(NOT ${VJN_MULTIPLE_OF} MATCHES "${is_positive_integer_regex}")
+      message(FATAL_ERROR "MULTIPLE_OF argument is not an integer strictly greater than 0!")
+    endif()
+    # Prevent division by zero
+    set(is_zero_regex "^[\\+-]?(0+)(\\.0+)?$")
+    if(${VJN_MULTIPLE_OF} MATCHES "${is_zero_regex}")
+      message(FATAL_ERROR "MULTIPLE_OF argument is an incorrect value. Division by 0 is not allowed!")
+    endif()
+
+    # Perform scaled division to simulate floating point support
+    math(EXPR scaled_div "(${VJN_PROP_VALUE} * 1000000) / ${VJN_MULTIPLE_OF}")
+
+    # Check if the division result is an integer by testing modulo 1e6
+    math(EXPR mod "${scaled_div} % 1000000")
+    if(NOT ${mod} EQUAL 0)
+      message(FATAL_ERROR "Incorrect value for '${prop_path_joined}'. ${VJN_PROP_VALUE} is not divisible by ${VJN_MULTIPLE_OF}!")
+    endif()
+  endif()
+
+  # Check range "min" constraint
+  if(DEFINED VJN_MIN)
+    if(NOT ${VJN_MIN} MATCHES "${is_number_regex}")
+      message(FATAL_ERROR "MIN argument is not a number!")
+    endif()
+    if(NOT ${VJN_PROP_VALUE} GREATER_EQUAL ${VJN_MIN})
+      message(FATAL_ERROR "Incorrect value for '${prop_path_joined}'. ${VJN_PROP_VALUE} is below the minimum of ${VJN_MIN}!")
+    endif()
+  endif()
+
+  # Check range "min exclusive" constraint
+  if(DEFINED VJN_EXCLU_MIN)
+    if(NOT ${VJN_EXCLU_MIN} MATCHES "${is_number_regex}")
+      message(FATAL_ERROR "EXCLU_MIN argument is not a number!")
+    endif()
+    if(NOT ${VJN_PROP_VALUE} GREATER ${VJN_EXCLU_MIN})
+      message(FATAL_ERROR "Incorrect value for '${prop_path_joined}'. ${VJN_PROP_VALUE} is below the exclusive minimum of ${VJN_EXCLU_MIN}!")
+    endif()
+  endif()
+
+  # Check range "max" constraint
+  if(DEFINED VJN_MAX)
+    if(NOT ${VJN_MAX} MATCHES "${is_number_regex}")
+      message(FATAL_ERROR "MAX argument is not a number!")
+    endif()
+    if(NOT ${VJN_PROP_VALUE} LESS_EQUAL ${VJN_MAX})
+      message(FATAL_ERROR "Incorrect value for '${prop_path_joined}'. ${VJN_PROP_VALUE} is above the maximum of ${VJN_MAX}!")
+    endif()
+  endif()
+
+  # Check range "max exclusive" constraint
+  if(DEFINED VJN_EXCLU_MAX)
+    if(NOT ${VJN_EXCLU_MAX} MATCHES "${is_number_regex}")
+      message(FATAL_ERROR "EXCLU_MAX argument is not a number!")
+    endif()
+    if(NOT ${VJN_PROP_VALUE} LESS ${VJN_EXCLU_MAX})
+      message(FATAL_ERROR "Incorrect value for '${prop_path_joined}'. ${VJN_PROP_VALUE} is above the exclusive maximum of ${VJN_EXCLU_MAX}!")
+    endif()
+  endif()
+endfunction()
 
 #------------------------------------------------------------------------------
 # Internal usage
