@@ -1106,6 +1106,38 @@ endfunction()
 #------------------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
+# Internal usage. This function validates a JSON boolean property
+# Signature:
+#   _validate_json_boolean(PROP_PATH [<prop-key>...]
+#                         PROP_VALUE <number>)
+# Parameters:
+#   PROP_VALUE: the boolean coming from the property to validate. Te value must
+#               be 'ON' or 'OFF'.
+#   PROP_PATH: the path (as list of keys) to the property to validate.
+function(_validate_json_boolean)
+  set(options "")
+  set(one_value_args PROP_VALUE)
+  set(multi_value_args PROP_PATH)
+  cmake_parse_arguments(VJB "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
+
+  if(DEFINED VJB_UNPARSED_ARGUMENTS)
+    message(FATAL_ERROR "Unrecognized arguments: \"${VJB_UNPARSED_ARGUMENTS}\"")
+  endif()
+  if((NOT DEFINED VJB_PROP_PATH)
+    AND (NOT "PROP_PATH" IN_LIST VJB_KEYWORDS_MISSING_VALUES))
+    message(FATAL_ERROR "PROP_PATH argument is missing or need a value!")
+  endif()
+  if(NOT DEFINED VJB_PROP_VALUE)
+    message(FATAL_ERROR "PROP_VALUE argument is missing or need a value!")
+  endif()
+  
+  if(NOT "${VJB_PROP_VALUE}" MATCHES "^(ON|OFF)$")
+    list(JOIN VJB_PROP_PATH "." prop_path_joined)
+    message(FATAL_ERROR "Incorrect type for '${prop_path_joined}'. Expected 'boolean'!")
+  endif()
+endfunction()
+
+#------------------------------------------------------------------------------
 # Internal usage. This function validates a JSON number property
 # Signature:
 #   _validate_json_number(PROP_PATH [<prop-key>...]
