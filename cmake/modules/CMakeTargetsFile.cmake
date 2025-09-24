@@ -921,7 +921,7 @@ function(_has_json_property output_var json_block json_path_list)
     message(FATAL_ERROR "json_block argument is empty!")
   endif()
 
-  string(JSON json_block_type ERROR_VARIABLE err TYPE "${json_block}" ${json_path_list})
+  string(JSON json_value ERROR_VARIABLE err GET "${json_block}" ${json_path_list})
   if(err)
     set(${output_var} off PARENT_SCOPE)
   else()
