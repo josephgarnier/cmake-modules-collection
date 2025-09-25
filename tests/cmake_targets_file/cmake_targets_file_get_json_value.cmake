@@ -10,7 +10,7 @@
 
 #-------------------------------------------------------------------------------
 # Test of [CMakeTargetsFile module::_get_json_value internal function]:
-#    _get_json_value(<output-var> <json-block> <json-path-list> <is-required>)
+#    _get_json_value(<output-var> <json-block> <json-path-list> <json-type> <is-required>)
 ct_add_test(NAME "test_cmake_targets_file_get_json_value_internal_function")
 function(${CMAKETEST_TEST})
   include(CMakeTargetsFile)
@@ -74,7 +74,7 @@ function(${CMAKETEST_TEST})
       )
       string(JSON json_block_type TYPE "${input_json_object}")
       ct_assert_equal(json_block_type "OBJECT")
-      _get_json_value(output "${input_json_object}" "tropical mix;variants" on)
+      _get_json_value(output "${input_json_object}" "tropical mix;variants" "ARRAY" on)
       ct_assert_equal(output "${expected_output}")
 
       # Get a JSON array of values
@@ -84,7 +84,7 @@ function(${CMAKETEST_TEST})
       )
       string(JSON json_block_type TYPE "${input_json_object}")
       ct_assert_equal(json_block_type "OBJECT")
-      _get_json_value(output "${input_json_object}" "fruit salad;fruits" on)
+      _get_json_value(output "${input_json_object}" "fruit salad;fruits" "ARRAY" on)
       ct_assert_equal(output "${expected_output}")
 
       # Get a JSON sub-array of values
@@ -94,25 +94,25 @@ function(${CMAKETEST_TEST})
       )
       string(JSON json_block_type TYPE "${input_json_object}")
       ct_assert_equal(json_block_type "OBJECT")
-      _get_json_value(output "${input_json_object}" "tropical mix;variants;0;items" on)
+      _get_json_value(output "${input_json_object}" "tropical mix;variants;0;items" "ARRAY" on)
       ct_assert_equal(output "${expected_output}")
 
       # Get a string
       string(JSON json_block_type TYPE "${input_json_object}")
       ct_assert_equal(json_block_type "OBJECT")
-      _get_json_value(output "${input_json_object}" "tropical mix;variants;0;name" on)
+      _get_json_value(output "${input_json_object}" "tropical mix;variants;0;name" "STRING" on)
       ct_assert_equal(output "classic")
 
       # Get a number
       string(JSON json_block_type TYPE "${input_json_object}")
       ct_assert_equal(json_block_type "OBJECT")
-      _get_json_value(output "${input_json_object}" "tropical mix;info;calories" on)
+      _get_json_value(output "${input_json_object}" "tropical mix;info;calories" "NUMBER" on)
       ct_assert_equal(output "300")
 
       # Get a boolean
       string(JSON json_block_type TYPE "${input_json_object}")
       ct_assert_equal(json_block_type "OBJECT")
-      _get_json_value(output "${input_json_object}" "tropical mix;info;organic" on)
+      _get_json_value(output "${input_json_object}" "tropical mix;info;organic" "BOOLEAN" on)
       ct_assert_true(output)
       ct_assert_equal(output "ON")
     endfunction()
@@ -137,19 +137,19 @@ function(${CMAKETEST_TEST})
       )
       string(JSON json_block_type TYPE "${input_json_array}")
       ct_assert_equal(json_block_type "ARRAY")
-      _get_json_value(output "${input_json_array}" "" on)
+      _get_json_value(output "${input_json_array}" "" "ARRAY" on)
       ct_assert_equal(output "${expected_output}")
       
       # Get a string
-      _get_json_value(output "\"name\"" "" on)
+      _get_json_value(output "\"name\"" "" "STRING" on)
       ct_assert_equal(output "name")
 
       # Get a number
-      _get_json_value(output "300" "" on)
+      _get_json_value(output "300" "" "NUMBER" on)
       ct_assert_equal(output "300")
 
       # Get a boolean
-      _get_json_value(output "true" "" on)
+      _get_json_value(output "true" "" "BOOLEAN" on)
       ct_assert_true(output)
       ct_assert_equal(output "ON")
     endfunction()
@@ -172,7 +172,7 @@ function(${CMAKETEST_TEST})
       )
       string(JSON json_block_type TYPE "${input_json_object}")
       ct_assert_equal(json_block_type "OBJECT")
-      _get_json_value(output "${input_json_object}" "tropical mix;variants" off)
+      _get_json_value(output "${input_json_object}" "tropical mix;variants" "ARRAY" off)
       ct_assert_equal(output "${expected_output}")
 
       # Get a JSON array of values
@@ -182,7 +182,7 @@ function(${CMAKETEST_TEST})
       )
       string(JSON json_block_type TYPE "${input_json_object}")
       ct_assert_equal(json_block_type "OBJECT")
-      _get_json_value(output "${input_json_object}" "fruit salad;fruits" off)
+      _get_json_value(output "${input_json_object}" "fruit salad;fruits" "ARRAY" off)
       ct_assert_equal(output "${expected_output}")
 
       # Get a JSON sub-array of values
@@ -192,32 +192,32 @@ function(${CMAKETEST_TEST})
       )
       string(JSON json_block_type TYPE "${input_json_object}")
       ct_assert_equal(json_block_type "OBJECT")
-      _get_json_value(output "${input_json_object}" "tropical mix;variants;0;items" off)
+      _get_json_value(output "${input_json_object}" "tropical mix;variants;0;items" "ARRAY" off)
       ct_assert_equal(output "${expected_output}")
 
       # Get a string
       string(JSON json_block_type TYPE "${input_json_object}")
       ct_assert_equal(json_block_type "OBJECT")
-      _get_json_value(output "${input_json_object}" "tropical mix;variants;0;name" off)
+      _get_json_value(output "${input_json_object}" "tropical mix;variants;0;name" "STRING" off)
       ct_assert_equal(output "classic")
 
       # Get a number
       string(JSON json_block_type TYPE "${input_json_object}")
       ct_assert_equal(json_block_type "OBJECT")
-      _get_json_value(output "${input_json_object}" "tropical mix;info;calories" off)
+      _get_json_value(output "${input_json_object}" "tropical mix;info;calories" "NUMBER" off)
       ct_assert_equal(output "300")
 
       # Get a boolean
       string(JSON json_block_type TYPE "${input_json_object}")
       ct_assert_equal(json_block_type "OBJECT")
-      _get_json_value(output "${input_json_object}" "tropical mix;info;organic" off)
+      _get_json_value(output "${input_json_object}" "tropical mix;info;organic" "BOOLEAN" off)
       ct_assert_true(output)
       ct_assert_equal(output "ON")
 
       # Get inexisting property
       string(JSON json_block_type TYPE "${input_json_object}")
       ct_assert_equal(json_block_type "OBJECT")
-      _get_json_value(output "${input_json_object}" "tropical mix;invalid" off)
+      _get_json_value(output "${input_json_object}" "tropical mix;invalid" "STRING" off)
       ct_assert_equal(output "tropical mix-invalid-NOTFOUND")
       ct_assert_false(output) # equals to "tropical mix-invalid-NOTFOUND"
     endfunction()
@@ -242,19 +242,19 @@ function(${CMAKETEST_TEST})
       )
       string(JSON json_block_type TYPE "${input_json_array}")
       ct_assert_equal(json_block_type "ARRAY")
-      _get_json_value(output "${input_json_array}" "" off)
+      _get_json_value(output "${input_json_array}" "" "ARRAY" off)
       ct_assert_equal(output "${expected_output}")
       
       # Get a string
-      _get_json_value(output "\"name\"" "" off)
+      _get_json_value(output "\"name\"" "" "STRING" off)
       ct_assert_equal(output "name")
 
       # Get a number
-      _get_json_value(output "300" "" off)
+      _get_json_value(output "300" "" "NUMBER" off)
       ct_assert_equal(output "300")
 
       # Get a boolean
-      _get_json_value(output "true" "" off)
+      _get_json_value(output "true" "" "BOOLEAN" off)
       ct_assert_true(output)
       ct_assert_equal(output "ON")
     endfunction()
@@ -262,16 +262,16 @@ function(${CMAKETEST_TEST})
 
   ct_add_section(NAME "get_from_empty_json")
   function(${CMAKETEST_SECTION})
-    _get_json_value(output "{}" "" off)
+    _get_json_value(output "{}" "" "OBJECT" off)
     ct_assert_equal(output "{}")
 
-    _get_json_value(output "{}" "" on)
+    _get_json_value(output "{}" "" "OBJECT" on)
     ct_assert_equal(output "{}")
 
-    _get_json_value(output "[]" "" off)
+    _get_json_value(output "[]" "" "ARRAY" off)
     ct_assert_equal(output "[]")
 
-    _get_json_value(output "[]" "" on)
+    _get_json_value(output "[]" "" "ARRAY" on)
     ct_assert_equal(output "[]")
   endfunction()
 
@@ -283,56 +283,71 @@ function(${CMAKETEST_TEST})
 
   ct_add_section(NAME "throws_if_too_many_args_are_passed" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    _get_json_value(output "${input_json_object}" "fruit salad" off "too" "many" "args")
+    _get_json_value(output "${input_json_object}" "fruit salad" "OBJECT" off "too" "many" "args")
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_output_var_is_missing_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    _get_json_value("${input_json_object}" "fruit salad" off)
+    _get_json_value("${input_json_object}" "fruit salad" "OBJECT" off)
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_output_var_is_missing_2" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    _get_json_value("" "${input_json_object}" "fruit salad" off)
+    _get_json_value("" "${input_json_object}" "fruit salad" "OBJECT" off)
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_output_var_is_missing_3" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    _get_json_value("output" "${input_json_object}" "fruit salad" off)
+    _get_json_value("output" "${input_json_object}" "fruit salad" "OBJECT" off)
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_json_block_is_missing_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    _get_json_value(output "fruit salad" off)
+    _get_json_value(output "fruit salad" "OBJECT" off)
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_json_block_is_missing_2" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    _get_json_value(output "" "fruit salad" off)
+    _get_json_value(output "" "fruit salad" "OBJECT" off)
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_json_path_is_missing" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    _get_json_value(output "${input_json_object}" off)
+    _get_json_value(output "${input_json_object}" "OBJECT" off)
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_json_path_is_invalid_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    _get_json_value(output "${input_json_object}" "invalid" off)
+    _get_json_value(output "${input_json_object}" "invalid" "STRING" off)
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_json_path_is_invalid_2" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    _get_json_value(output "${input_json_object}" "fruit salad:invalid" off)
+    _get_json_value(output "${input_json_object}" "fruit salad:invalid" "STRING" off)
+  endfunction()
+
+  ct_add_section(NAME "throws_if_arg_json_type_is_missing_1" EXPECTFAIL)
+  function(${CMAKETEST_SECTION})
+    _get_json_value(output "${input_json_object}" "fruit salad" off)
+  endfunction()
+
+  ct_add_section(NAME "throws_if_arg_json_type_is_missing_2" EXPECTFAIL)
+  function(${CMAKETEST_SECTION})
+    _get_json_value(output "${input_json_object}" "fruit salad" "" off)
+  endfunction()
+
+  ct_add_section(NAME "throws_if_arg_json_type_is_wrong" EXPECTFAIL)
+  function(${CMAKETEST_SECTION})
+    _get_json_value(output "${input_json_object}" "fruit salad" "STRING" off)
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_is_required_is_missing" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    _get_json_value(output "${input_json_object}" "fruit salad")
+    _get_json_value(output "${input_json_object}" "fruit salad" "OBJECT")
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_is_required_is_not_bool" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    _get_json_value(output "${input_json_object}" "fruit salad" "wrong")
+    _get_json_value(output "${input_json_object}" "fruit salad" "OBJECT" "wrong")
   endfunction()
 endfunction()
