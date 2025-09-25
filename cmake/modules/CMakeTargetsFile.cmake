@@ -331,23 +331,13 @@ Loading
 .. signature::
   cmake_targets_file(LOAD <json-file-path>)
 
-  Load and parses a targets configuration file in `JSON format <https://json-schema.org/>`_.
-
-  .. note::
-
-    During loading, no checks are performed on property values to ensure that
-    they comply with the
-    :download:`CMakeTargets.json schema <../../../cmake/modules/schema.json>`.
-    The command only verifies that the expected JSON structure is present and
-    that the required properties are defined.
-
-    This behavior is intended to give users more flexibility and to avoid code
-    duplication in cases where both syntactic and semantic validation may be
-    required.
+  Load and parses a targets configuration file in `JSON schema <https://json-schema.org/>`_.
 
   The ``<json-file-path>`` specifies the location of the configuration file to
   load. It must refer to an existing file on disk and must have a ``.json``
   extension. The file must conform to the :download:`CMakeTargets.json schema <../../../cmake/modules/schema.json>`.
+  During loading, the command verifies that the JSON file if conform to the
+  JSON schema.
 
   When this command is invoked, the JSON content is read into memory and stored
   in global properties for later retrieval. Each target entry described in the
@@ -769,22 +759,30 @@ macro(_cmake_targets_file_load)
   _get_json_object(targets_map "${json_file_content}" "targets" on)
   map(KEYS targets_map target_paths)
   foreach(target_path IN ITEMS ${target_paths})
+    _validate_json_string(PROP_PATH "targets;${target_path}" PROP_VALUE "${target_path}" PATTERN "^[A-Za-z0-9_]+(/.+)?$")
+  
     set(target_config_map "")
     map(GET targets_map "${target_path}" target_json_block)
 
     # Extract all top-level and required primitive properties
-    foreach(prop_key "name" "type" "mainFile")
-      _get_json_value(prop_value "${target_json_block}" "${prop_key}" "STRING" on)
-      map(ADD target_config_map "${prop_key}" "${prop_value}")
-    endforeach()
+    _get_json_value(name "${target_json_block}" "name" "STRING" on)
+    _validate_json_string(PROP_PATH "name" PROP_VALUE "${name}" MIN_LENGTH "1")
+    map(ADD target_config_map "name" "${name}")
+
+    _get_json_value(type "${target_json_block}" "type" "STRING" on)
+    _validate_json_string(PROP_PATH "type" PROP_VALUE "${type}" PATTERN "^(staticLib|sharedLib|interfaceLib|executable)$")
+    map(ADD target_config_map "type" "${type}")
+
+    _get_json_value(main_file "${target_json_block}" "mainFile" "STRING" on)
+    _validate_json_string(PROP_PATH "mainFile" PROP_VALUE "${main_file}" PATTERN "(.+/)?[^/]+\\.(cpp|cc|cxx)$")
+    map(ADD target_config_map "mainFile" "${main_file}")
 
     # Extract all top-level and optional primitive properties
-    foreach(prop_key "pchFile")
-      _get_json_value(prop_value "${target_json_block}" "${prop_key}" "STRING" off)
-      if(NOT "${prop_value}" MATCHES "-NOTFOUND$")
-        map(ADD target_config_map "${prop_key}" "${prop_value}")
-      endif()
-    endforeach()
+    _get_json_value(pch_file "${target_json_block}" "pchFile" "STRING" off)
+    if(NOT "${pch_file}" MATCHES "-NOTFOUND$")
+      _validate_json_string(PROP_PATH "pchFile" PROP_VALUE "${pch_file}" PATTERN "(.+/)?[^/]+\\.(h|hpp|hxx|inl|tpp)$")
+      map(ADD target_config_map "pchFile" "${pch_file}")
+    endif()
 
     # Extract nested 'build' object properties
     _get_json_value(build_json_block "${target_json_block}" "build" "OBJECT" on)
@@ -796,14 +794,13 @@ macro(_cmake_targets_file_load)
 
     # Extract nested 'header policy' object properties
     _get_json_value(header_policy_mode "${target_json_block}" "headerPolicy;mode" "STRING" on)
-    if(NOT "${header_policy_mode}" MATCHES "^(split|merged)$")
-      message(FATAL_ERROR "Invalid headerPolicy.mode JSON value '${header_policy_mode}': Should be 'split' or 'merged'!")
-    endif()
+    _validate_json_string(PROP_PATH "headerPolicy;mode" PROP_VALUE "${header_policy_mode}" PATTERN "^(split|merged)$")
     map(ADD target_config_map "headerPolicy.mode" "${header_policy_mode}")
     if("${header_policy_mode}" STREQUAL "split")
       # 'includeDir' is required when mode is 'split'
       _get_json_value(include_dir
         "${target_json_block}" "headerPolicy;includeDir" "STRING" on)
+      _validate_json_string(PROP_PATH "headerPolicy;includeDir" PROP_VALUE "${include_dir}" PATTERN "^include(/.+)?$")
       map(ADD target_config_map "headerPolicy.includeDir" "${include_dir}")
     endif()
 
@@ -815,11 +812,13 @@ macro(_cmake_targets_file_load)
     _serialize_list(serialized_dep_names "${dep_names}")
     map(ADD target_config_map "dependencies" "${serialized_dep_names}")
     foreach(dep_name IN ITEMS ${dep_names})
+      _validate_json_string(PROP_PATH "dependencies;${dep_name}" PROP_VALUE "${target_path}" PATTERN "^[^ \t\r\n]+$")
       map(GET deps_map "${dep_name}" dep_json_block)
 
       # Only 'rulesFile' is required, others properties are required only if
       # rulesFile is 'generic'
       _get_json_value(dep_rules_file "${dep_json_block}" "rulesFile" "STRING" on)
+      _validate_json_string(PROP_PATH "rulesFile" PROP_VALUE "${dep_rules_file}" PATTERN "^((.+/)?[^/]+\\.cmake|generic)$")
       map(ADD target_config_map "dependencies.${dep_name}.rulesFile" "${dep_rules_file}")
       # Required flag (true/false depending on rulesFile)
       set(is_generic off)
@@ -838,12 +837,29 @@ macro(_cmake_targets_file_load)
       endif()
 
       # Extract nested 'packageLocation' object properties
-      _get_json_value(dep_package_loc_json_block "${dep_json_block}" "packageLocation" "OBJECT" ${is_generic})
+      _get_json_value(dep_package_loc_json_block
+        "${dep_json_block}" "packageLocation" "OBJECT" ${is_generic})
       if(NOT "${dep_package_loc_json_block}" MATCHES "-NOTFOUND$")
         foreach(prop_key "windows" "unix" "macos")
-          _get_json_value(prop_value "${dep_package_loc_json_block}" "${prop_key}" "STRING" off)
+          _get_json_value(prop_value
+            "${dep_package_loc_json_block}" "windows" "STRING" off)
           if(NOT "${prop_value}" MATCHES "-NOTFOUND$")
-            map(ADD target_config_map "dependencies.${dep_name}.packageLocation.${prop_key}" "${prop_value}")
+            _validate_json_string(PROP_PATH "packageLocation.windows" PROP_VALUE "${prop_value}" PATTERN "^[A-Za-z]:[/]([^<>:\"/\\\\|?*]+[/]?)*$")
+            map(ADD target_config_map "dependencies.${dep_name}.packageLocation.windows" "${prop_value}")
+          endif()
+
+          _get_json_value(prop_value
+            "${dep_package_loc_json_block}" "unix" "STRING" off)
+          if(NOT "${prop_value}" MATCHES "-NOTFOUND$")
+            _validate_json_string(PROP_PATH "packageLocation.unix" PROP_VALUE "${prop_value}" PATTERN "^(/[^/ \t\r\n]+)+/?$")
+            map(ADD target_config_map "dependencies.${dep_name}.packageLocation.unix" "${prop_value}")
+          endif()
+
+          _get_json_value(prop_value
+            "${dep_package_loc_json_block}" "macos" "STRING" off)
+          if(NOT "${prop_value}" MATCHES "-NOTFOUND$")
+            _validate_json_string(PROP_PATH "packageLocation.macos" PROP_VALUE "${prop_value}" PATTERN "^(/[^/ \t\r\n]+)+/?$")
+            map(ADD target_config_map "dependencies.${dep_name}.packageLocation.macos" "${prop_value}")
           endif()
         endforeach()
       endif()
@@ -867,6 +883,7 @@ macro(_cmake_targets_file_load)
         # Others properties depends on 'kind'
         _get_json_value(dep_fetch_kind "${dep_fetch_info_json_block}" "kind" "STRING" ${is_autodownload_true})
         if(NOT "${dep_fetch_kind}" MATCHES "-NOTFOUND$")
+            _validate_json_string(PROP_PATH "fetchInfo;kind" PROP_VALUE "${dep_fetch_kind}" PATTERN "^(url|git|svn|mercurial)$")
             map(ADD target_config_map "dependencies.${dep_name}.fetchInfo.kind" "${dep_fetch_kind}")
             if("${dep_fetch_kind}" MATCHES "^(git|mercurial)$")
               foreach(prop_key "repository" "tag")
