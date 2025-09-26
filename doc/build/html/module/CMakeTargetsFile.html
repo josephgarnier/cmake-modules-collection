@@ -472,21 +472,12 @@ readable JSON schema for the <code class="docutils literal notranslate"><span cl
 <dl class="cmake signature">
 <dt class="sig sig-object cmake" id="load">
 <span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">cmake_targets_file(</span></span><span class="no"><span class="pre">LOAD</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;json-file-path&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#load" title="Link to this definition">¶</a></dt>
-<dd><p>Load and parses a targets configuration file in <a class="reference external" href="https://json-schema.org/">JSON format</a>.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>During loading, no checks are performed on property values to ensure that
-they comply with the
-<a class="reference download internal" download="" href="../_downloads/5b942f77e2979479a8ab4c64608b796a/schema.json"><code class="xref download docutils literal notranslate"><span class="pre">CMakeTargets.json</span> <span class="pre">schema</span></code></a>.
-The command only verifies that the expected JSON structure is present and
-that the properties are defined.</p>
-<p>This behavior is intended to give users more flexibility and to avoid code
-duplication in cases where both syntactic and semantic validation may be
-required.</p>
-</div>
+<dd><p>Load and parses a targets configuration file in <a class="reference external" href="https://json-schema.org/">JSON schema</a>.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">&lt;json-file-path&gt;</span></code> specifies the location of the configuration file to
 load. It must refer to an existing file on disk and must have a <code class="docutils literal notranslate"><span class="pre">.json</span></code>
-extension. The file must conform to the <a class="reference download internal" download="" href="../_downloads/5b942f77e2979479a8ab4c64608b796a/schema.json"><code class="xref download docutils literal notranslate"><span class="pre">CMakeTargets.json</span> <span class="pre">schema</span></code></a>.</p>
+extension. The file must conform to the <a class="reference download internal" download="" href="../_downloads/5b942f77e2979479a8ab4c64608b796a/schema.json"><code class="xref download docutils literal notranslate"><span class="pre">CMakeTargets.json</span> <span class="pre">schema</span></code></a>.
+During loading, the command verifies that the JSON file if conform to the
+JSON schema.</p>
 <p>When this command is invoked, the JSON content is read into memory and stored
 in global properties for later retrieval. Each target entry described in the
 JSON file is parsed into an independent configuration <span class="target" id="index-0-module:Map"></span><a class="reference internal" href="Map.html#module:Map" title="Map"><code class="xref cmake cmake-module docutils literal notranslate"><span class="pre">Map</span></code></a>, keyed by its

@@ -152,7 +152,7 @@
                         "windows": {
                           "description": "Path to a directory containing the package for Windows. Must be absolute",
                           "type": "string",
-                          "pattern": "^[A-Za-z]:[\\\\/](?:[^<>:\"/\\\\|?*]+[\\\\/]?)*$"
+                          "pattern": "^[A-Za-z]:[/](?:[^<>:\"/\\\\|?*]+[/]?)*$"
                         },
                         "unix": {
                           "description": "Path to a directory containing the package for Unix. Must be absolute, with no whitespace",

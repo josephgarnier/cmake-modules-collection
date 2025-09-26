@@ -68,7 +68,7 @@
 <pre class="literal-block">debug(<a class="reference internal" href="#dump-variables">DUMP_VARIABLES</a> [EXCLUDE_REGEX &lt;regular-expression&gt;])
 debug(<a class="reference internal" href="#dump-properties">DUMP_PROPERTIES</a> [])
 debug(<a class="reference internal" href="#dump-target-properties">DUMP_TARGET_PROPERTIES</a> &lt;target-name&gt;)
-debug(<a class="reference internal" href="#dump-project-variables">DUMP_PROJECT_VARIABLES</a> [])</pre>
+debug(<a class="reference internal" href="#dump-project-variables">DUMP_PROJECT_VARIABLES</a> &lt;project-name&gt;)</pre>
 </section>
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h2>
@@ -159,17 +159,18 @@ known to trigger errors on access are excluded from the output.</p>
 
 <dl class="cmake signature">
 <dt class="sig sig-object cmake" id="dump-project-variables">
-<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">debug(</span></span><span class="no"><span class="pre">DUMP_PROJECT_VARIABLES</span></span><span class="w"> </span><span class="p"><span class="pre">[]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#dump-project-variables" title="Link to this definition">¶</a></dt>
-<dd><p>Display all global CMake variables related to the current project.</p>
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">debug(</span></span><span class="no"><span class="pre">DUMP_PROJECT_VARIABLES</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;project-name&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#dump-project-variables" title="Link to this definition">¶</a></dt>
+<dd><p>Display all global CMake variables related to the current project and
+prefixed with <code class="docutils literal notranslate"><span class="pre">&lt;project-name&gt;_</span></code>.</p>
 <p>This command prints the values of all defined variables whose name starts
-with the current <span class="target" id="index-0-variable:cmake:variable:PROJECT_NAME"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/variable/PROJECT_NAME.html#variable:PROJECT_NAME" title="(in CMake v4.1.1)"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">PROJECT_NAME</span></code></a>. This relies on the naming
-convention that project-specific variables are prefixed with the project
-name followed by an underscore.</p>
+with the current <code class="docutils literal notranslate"><span class="pre">&lt;project-name&gt;_</span></code>. This relies on the naming convention
+that project-specific variables are prefixed with the project name followed
+by an underscore.</p>
 <p>This command is useful for debugging and inspecting variables that are
 explicitly scoped to the project. It filters out unrelated variables
 defined by CMake or third-party scripts.</p>
 <p>Example usage:</p>
-<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">debug(</span><span class="no">DUMP_PROJECT_VARIABLES</span><span class="nf">)</span>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">debug(</span><span class="no">DUMP_PROJECT_VARIABLES</span><span class="w"> </span><span class="s">&quot;my_project&quot;</span><span class="nf">)</span>
 <span class="c"># output is:</span>
 <span class="c">#</span>
 <span class="c">#   -----</span>
@@ -177,7 +178,7 @@ defined by CMake or third-party scripts.</p>
 <span class="c">#     my_project_SOURCE_DIR = &quot;/home/user/my_project/src&quot;</span>
 <span class="c">#     my_project_BUILD_DIR = &quot;/home/user/my_project/build&quot;</span>
 <span class="c">#     ...</span>
-<span class="c">#     -----</span>
+<span class="c">#   -----</span>
 <span class="c">#</span>
 </pre></div>
 </div>

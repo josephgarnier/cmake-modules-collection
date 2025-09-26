@@ -18,7 +18,7 @@ Synopsis
     debug(`DUMP_VARIABLES`_ [EXCLUDE_REGEX <regular-expression>])
     debug(`DUMP_PROPERTIES`_ [])
     debug(`DUMP_TARGET_PROPERTIES`_ <target-name>)
-    debug(`DUMP_PROJECT_VARIABLES`_ [])
+    debug(`DUMP_PROJECT_VARIABLES`_ <project-name>)
 
 Usage
 ^^^^^
@@ -120,14 +120,15 @@ Usage
     #
 
 .. signature::
-  debug(DUMP_PROJECT_VARIABLES [])
+  debug(DUMP_PROJECT_VARIABLES <project-name>)
 
-  Display all global CMake variables related to the current project.
+  Display all global CMake variables related to the current project and
+  prefixed with ``<project-name>_``.
 
   This command prints the values of all defined variables whose name starts
-  with the current :cmake:variable:`PROJECT_NAME <cmake:variable:PROJECT_NAME>`. This relies on the naming
-  convention that project-specific variables are prefixed with the project
-  name followed by an underscore.
+  with the current ``<project-name>_``. This relies on the naming convention
+  that project-specific variables are prefixed with the project name followed
+  by an underscore.
 
   This command is useful for debugging and inspecting variables that are
   explicitly scoped to the project. It filters out unrelated variables
@@ -137,7 +138,7 @@ Usage
 
   .. code-block:: cmake
 
-    debug(DUMP_PROJECT_VARIABLES)
+    debug(DUMP_PROJECT_VARIABLES "my_project")
     # output is:
     #
     #   -----
@@ -145,7 +146,7 @@ Usage
     #     my_project_SOURCE_DIR = "/home/user/my_project/src"
     #     my_project_BUILD_DIR = "/home/user/my_project/build"
     #     ...
-    #     -----
+    #   -----
     #
 
 Additional commands
@@ -215,8 +216,8 @@ include(CMakePrintHelpers)
 #------------------------------------------------------------------------------
 # Public function of this module
 function(debug)
-  set(options DUMP_VARIABLES DUMP_PROPERTIES DUMP_PROJECT_VARIABLES)
-  set(one_value_args EXCLUDE_REGEX DUMP_TARGET_PROPERTIES)
+  set(options DUMP_VARIABLES DUMP_PROPERTIES)
+  set(one_value_args EXCLUDE_REGEX DUMP_TARGET_PROPERTIES DUMP_PROJECT_VARIABLES)
   set(multi_value_args "")
   cmake_parse_arguments(DB "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
   
@@ -230,7 +231,7 @@ function(debug)
     _debug_dump_properties()
   elseif(DEFINED DB_DUMP_TARGET_PROPERTIES)
     _debug_dump_target_properties()
-  elseif(${DB_DUMP_PROJECT_VARIABLES})
+  elseif(DEFINED DB_DUMP_PROJECT_VARIABLES)
     _debug_dump_project_variables()
   else()
     message(FATAL_ERROR "The operation name or arguments are missing!")
@@ -279,7 +280,7 @@ endmacro()
 # Internal usage
 macro(_debug_dump_target_properties)
   if(NOT DEFINED DB_DUMP_TARGET_PROPERTIES)
-    message(FATAL_ERROR "DB_DUMP_TARGET_PROPERTIES arguments is missing!")
+    message(FATAL_ERROR "DUMP_TARGET_PROPERTIES arguments is missing!")
   endif()
   if(NOT TARGET "${DB_DUMP_TARGET_PROPERTIES}")
     message(FATAL_ERROR "There is no target named \"${DB_DUMP_TARGET_PROPERTIES}\"!")
@@ -340,7 +341,7 @@ endmacro()
 #------------------------------------------------------------------------------
 # Internal usage
 macro(_debug_dump_project_variables)
-  if(NOT ${DB_DUMP_PROJECT_VARIABLES})
+  if(NOT DEFINED DB_DUMP_PROJECT_VARIABLES)
     message(FATAL_ERROR "DUMP_PROJECT_VARIABLES arguments is missing!")
   endif()
 
@@ -350,10 +351,10 @@ macro(_debug_dump_project_variables)
   message("")
   message("-----")
   list(APPEND CMAKE_MESSAGE_INDENT " ")
-  message("Variables for PROJECT ${PROJECT_NAME}:")
+  message("Variables for PROJECT ${DB_DUMP_PROJECT_VARIABLES}:")
   list(APPEND CMAKE_MESSAGE_INDENT "  ")
   foreach (variable_name IN ITEMS ${variable_names})
-    if("${variable_name}" MATCHES "${PROJECT_NAME}_")
+    if("${variable_name}" MATCHES "${DB_DUMP_PROJECT_VARIABLES}_")
       message("${variable_name} = \"${${variable_name}}\"")
     endif()
   endforeach()
