@@ -45,6 +45,11 @@ Usage
   command combines behavior similar to :cmake:command:`find_library() <cmake:command:find_library()>` and
   :cmake:command:`add_library(IMPORTED) <cmake:command:add_library(imported)>`.
 
+  The main purpose of this command is to manually import a target from a
+  package that does not provide a generated import script for the build-tree
+  (with :cmake:command:`export(TARGETS) <cmake:command:export(targets)>`) or
+  the install-tree (with :cmake:command:`install(EXPORT) <cmake:command:install(export)>`).
+
   The command requires either the ``STATIC`` or ``SHARED`` keyword to specify
   the type of library. Only one may be used. At least one of
   ``RELEASE_NAME <raw-filename>`` or ``DEBUG_NAME <raw-filename>`` must be
