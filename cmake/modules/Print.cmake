@@ -16,7 +16,7 @@ Synopsis
 .. parsed-literal::
 
   `Print Formated Message`_
-    print([<mode>] "message with format text" <argument>...)
+    print([<mode>] "message with formated text" <argument>...)
 
   `Print Paths List`_
     print([<mode>] PATHS <file-path>... [INDENT])
@@ -37,7 +37,7 @@ Usage
 .. _`Print Formated Message`:
 
 .. signature::
-  print([<mode>] "message with format text" <argument>...)
+  print([<mode>] "message with formated text" <argument>...)
   :target: normal
 
   Record the specified message text in the log, optionally specifying a message
@@ -61,6 +61,16 @@ Usage
     ``@rp@``
       Converts the corresponding argument into a path relative to the value of
       the :variable:`PRINT_BASE_DIR` variable. The file or the directory must exist on the disk.
+
+    ``@apl@``
+      Converts all the corresponding arguments into a list of absolute paths
+      to existing files or directories. This directive should be used last
+      when the message includes several directives.
+
+    ``@rpl@``
+      Converts all the corresponding argument into a list of path relative to
+      the value of the :variable:`PRINT_BASE_DIR` variable. The files or the
+      directories must exist on the disk.
 
   Example usage:
 
@@ -226,7 +236,7 @@ macro(_substitute_directives)
   set(message_tail "${message}")
   set(message_cursor "")
   while(on)
-    # Extract the directive "@...@ "in traveling through the message parsed like
+    # Extract the directive "@...@" in traveling through the message parsed like
     # a cursor moving on a ribbon (like on a Turing machine).
     # `message_head` is what has already been parsed, `message_cursor` is what is
     # currently parsed () and `message_tail` is what will be parsed.
@@ -251,17 +261,33 @@ macro(_substitute_directives)
     set(directive_to_substitute "@${message_cursor}@")
     list(POP_FRONT message_args_list message_arg)
     if("${message_arg}" STREQUAL "")
-      message(FATAL_ERROR "Argument missing for directive \"${directive_to_substitute}\"!")
+      message(FATAL_ERROR "Argument missing for directive ${directive_to_substitute}!")
     endif()
 
     if("${directive_to_substitute}" STREQUAL "@ap@")
-      file(REAL_PATH "${message_arg}" message_arg BASE_DIRECTORY "${PRINT_BASE_DIR}")
-      set(directive_to_substitute "${message_arg}")
+      file(REAL_PATH "${message_arg}" absolute_path BASE_DIRECTORY "${PRINT_BASE_DIR}")
+      set(directive_to_substitute "${absolute_path}")
     elseif("${directive_to_substitute}" STREQUAL "@rp@")
-      file(RELATIVE_PATH message_arg "${PRINT_BASE_DIR}" "${message_arg}")
-      set(directive_to_substitute "${message_arg}")
+      file(RELATIVE_PATH relative_path "${PRINT_BASE_DIR}" "${message_arg}")
+      set(directive_to_substitute "${relative_path}")
+    elseif("${directive_to_substitute}" STREQUAL "@apl@")
+      foreach(file IN ITEMS ${message_arg} ${message_args_list})
+        file(REAL_PATH "${file}" absolute_path BASE_DIRECTORY "${PRINT_BASE_DIR}")
+        list(APPEND absolute_path_list "${absolute_path}")
+      endforeach()
+      list(JOIN absolute_path_list ", " formated_path_list)
+      set(directive_to_substitute "${formated_path_list}")
+      set(message_args_list "")
+    elseif("${directive_to_substitute}" STREQUAL "@rpl@")
+      foreach(file IN ITEMS ${message_arg} ${message_args_list})
+        file(RELATIVE_PATH relative_path "${PRINT_BASE_DIR}" "${file}")
+        list(APPEND relative_path_list "${relative_path}")
+      endforeach()
+      list(JOIN relative_path_list ", " formated_path_list)
+      set(directive_to_substitute "${formated_path_list}")
+      set(message_args_list "")
     else()
-      message(FATAL_ERROR "Directive \"${directive_to_substitute}\" is unsupported!")
+      message(FATAL_ERROR "Directive ${directive_to_substitute} is unsupported!")
     endif()
     set(message_cursor "${directive_to_substitute}")
     
@@ -291,12 +317,12 @@ macro(_print_paths_list)
   endif()
 
   # Format the paths
-  set(relative_paths_list "")
+  set(relative_path_list "")
   foreach(file IN ITEMS ${PRT_PATHS})
     file(RELATIVE_PATH relative_path "${PRINT_BASE_DIR}" "${file}")
-    list(APPEND relative_paths_list "${relative_path}")
+    list(APPEND relative_path_list "${relative_path}")
   endforeach()
-  list(JOIN relative_paths_list " ; " formated_message)
+  list(JOIN relative_path_list " ; " formated_message)
   set(message "${formated_message}")
 
   if(${PRT_INDENT})
