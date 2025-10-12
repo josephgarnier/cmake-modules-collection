@@ -24,17 +24,16 @@ message(CHECK_START "Importing CMakeTest")
 list(APPEND CMAKE_MESSAGE_INDENT "  ")
 
 include(cmake_test/cmake_test OPTIONAL RESULT_VARIABLE cmake_test_found)
-if(cmake_test_found)
-  message(STATUS "CMakeTest found....... YES")
+if(NOT "${cmake_test_found}" STREQUAL "NOTFOUND")
+  message(STATUS "CMakeTest found locally")
 else()
-  message(STATUS "CMakeTest found....... NO")
-  
+  message(STATUS "CMakeTest not found locally, try to download it in the build-tree")
+
   # Store whether we are building tests or not, then turn off the tests
   set(build_testing_old "${BUILD_TESTING}")
   set(BUILD_TESTING off CACHE BOOL "" FORCE)
   
   # Download CMakeTest and bring it into scope
-  message(STATUS "Downloading CMakeTest in the build-tree...")
   include(FetchContent)
   set(FETCHCONTENT_QUIET off)
   FetchContent_Declare(
@@ -63,13 +62,14 @@ else()
   set(BUILD_TESTING "${build_testing_old}" CACHE BOOL "" FORCE)
   
   if(${cmake_test_POPULATED})
-    message(STATUS "CMakeTest downloaded.......... YES")
+    message(STATUS "CMakeTest downloaded with success")
   else()
-    message(STATUS "CMakeTest downloaded.......... NO")
+    message(STATUS "CMakeTest downloading failed")
+    set(cmake_test_found "NOTFOUND")
   endif()
 endif()
 
-if(NOT ${cmake_test_found} AND NOT ${cmake_test_POPULATED})
+if("${cmake_test_found}" STREQUAL "NOTFOUND")
   message(STATUS "Please install the CMakeTest CMake module")
   list(POP_BACK CMAKE_MESSAGE_INDENT)
   message(CHECK_FAIL "failed")

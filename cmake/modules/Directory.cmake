@@ -653,7 +653,10 @@ macro(_directory_collect_sources_by_policy)
   endif()
   
   # Collect files
+  file(RELATIVE_PATH rel_private_dir_path "${CMAKE_SOURCE_DIR}" "${DIR_PRIVATE_SOURCE_DIR}")
   if(${is_headers_separated})
+    file(RELATIVE_PATH rel_public_dir_path "${CMAKE_SOURCE_DIR}" "${include_dir_path}")
+    message(VERBOSE "Header separation enabled - public in \"${rel_public_dir_path}/\", private in \"${rel_private_dir_path}/\"")
     directory(COLLECT_SOURCES_BY_LOCATION
       SRC_DIR "${DIR_PRIVATE_SOURCE_DIR}"
       SRC_SOURCE_FILES src_source_files_list
@@ -666,8 +669,8 @@ macro(_directory_collect_sources_by_policy)
     set(${DIR_PUBLIC_HEADER_FILES} "${include_header_files_list}" PARENT_SCOPE)
     set(${DIR_PRIVATE_HEADER_DIR} "${DIR_PRIVATE_SOURCE_DIR}" PARENT_SCOPE)
     set(${DIR_PRIVATE_HEADER_FILES} "${src_header_files_list}" PARENT_SCOPE)
-    message(STATUS "Considering headers from \"include/\" as public and from \"src/\" as private")
   else()
+    message(VERBOSE "Header separation disabled - using \"${rel_private_dir_path}/\" headers as public, ignoring \"include/\"")
     directory(COLLECT_SOURCES_BY_LOCATION
       SRC_DIR "${DIR_PRIVATE_SOURCE_DIR}"
       SRC_SOURCE_FILES src_source_files_list
@@ -678,6 +681,5 @@ macro(_directory_collect_sources_by_policy)
     set(${DIR_PUBLIC_HEADER_FILES} "${src_header_files_list}" PARENT_SCOPE)
     set(${DIR_PRIVATE_HEADER_DIR} "" PARENT_SCOPE)
     set(${DIR_PRIVATE_HEADER_FILES} "" PARENT_SCOPE)
-    message(STATUS "Considering headers from \"src/\" as public, ignoring \"include/\"")
   endif()
 endmacro()

@@ -17,12 +17,11 @@ list(APPEND CMAKE_MESSAGE_INDENT "  ")
 find_package(Sphinx)
 
 if(Sphinx_FOUND)
-  message(STATUS "Sphinx found....... YES")
+  message(STATUS "Sphinx found locally")
   list(POP_BACK CMAKE_MESSAGE_INDENT)
   message(CHECK_PASS "done")
 else()
-  message(STATUS "Sphinx found....... NO")
-  message(STATUS "Sphinx not found. Doc target not available.")
+  message(STATUS "Sphinx not found locally, 'doc' target will not be available")
   list(POP_BACK CMAKE_MESSAGE_INDENT)
   message(CHECK_FAIL "failed")
   return()
@@ -44,7 +43,7 @@ if(NOT TARGET "doc")
     COMMENT "Generating the doc with Sphinx..."
     VERBATIM
   )
-  message(STATUS "Doc target added to buildsystem and all target")
+  message(STATUS "Doc target 'doc' added to buildsystem and 'all' target")
 endif()
 
 # Add generated doc files to the `clean` target

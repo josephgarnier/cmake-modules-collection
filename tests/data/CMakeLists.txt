@@ -54,7 +54,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY           "${BIN_DIR}")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG     "${BIN_DIR}")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE   "${BIN_DIR}")
 file(RELATIVE_PATH relative_bin_dir "${${PROJECT_NAME}_PROJECT_DIR}" "${BIN_DIR}")
-message(STATUS "Output directory set to: ${relative_bin_dir}/")
+message(STATUS "Built files will be located into ${relative_bin_dir}/")
 
 ####################### Create a static mock library ##########################
 message(CHECK_START "Creating static mock library")
@@ -64,7 +64,7 @@ set(STATIC_MOCK_LIB_TARGET_NAME "static_mock_lib")
 if("${CMAKE_BUILD_TYPE}" STREQUAL "DEBUG")
   set(STATIC_MOCK_LIB_TARGET_NAME "static_mock_libd")
 endif()
-message(STATUS "Lib target name set to: ${STATIC_MOCK_LIB_TARGET_NAME}")
+message(STATUS "Lib target name set to '${STATIC_MOCK_LIB_TARGET_NAME}'")
 add_library("${STATIC_MOCK_LIB_TARGET_NAME}" STATIC)
 target_compile_features("${STATIC_MOCK_LIB_TARGET_NAME}"
   PRIVATE
@@ -113,7 +113,7 @@ if("${CMAKE_BUILD_TYPE}" STREQUAL "DEBUG")
   set(SHARED_MOCK_LIB_TARGET_NAME "shared_mock_libd")
 endif()
 add_library("${SHARED_MOCK_LIB_TARGET_NAME}" SHARED)
-message(STATUS "Lib target name set to: ${SHARED_MOCK_LIB_TARGET_NAME}")
+message(STATUS "Lib target name set to '${SHARED_MOCK_LIB_TARGET_NAME}'")
 target_compile_features("${SHARED_MOCK_LIB_TARGET_NAME}"
   PRIVATE "cxx_std_${CMAKE_CXX_STANDARD}"
 )
