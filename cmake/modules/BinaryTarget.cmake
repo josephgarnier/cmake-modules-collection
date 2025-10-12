@@ -23,7 +23,7 @@ Synopsis
   binary_target(`CONFIGURE_SETTINGS`_ <target-name> [...])
   binary_target(`ADD_SOURCES`_ <target-name> [...])
   binary_target(`ADD_PRECOMPILE_HEADER`_ <target-name> HEADER_FILE <file-path>)
-  binary_target(`ADD_INCLUDE_DIRECTORIES`_ <target-name> INCLUDE_DIRECTORIES [<dir-path>...])
+  binary_target(`ADD_INCLUDE_DIRECTORIES`_ <target-name> INCLUDE_DIRECTORIES [<dir-path>...|<gen-expr>...])
   binary_target(`ADD_DEPENDENCIES`_ <target-name> DEPENDENCIES [<target-name>...|<gen-expr>...])
   binary_target(`CREATE_FULLY`_ <target-name> [...])
 
@@ -76,7 +76,7 @@ Usage
     ``/INCREMENTAL:NO``, etc.) with :cmake:command:`target_link_options() <cmake:command:target_link_options>`
     and populates :cmake:prop_tgt:`LINK_OPTIONS <cmake:prop_tgt:LINK_OPTIONS>` target property.
 
-  The command automatically adds compile feature `cxx_std_<CMAKE_CXX_STANDARD>`
+  The command automatically adds compile feature ``cxx_std_<CMAKE_CXX_STANDARD>``
   to the target to set the :cmake:prop_tgt:`CXX_STANDARD <cmake:prop_tgt:CXX_STANDARD>`
   property, using the value of :cmake:variable:`CMAKE_CXX_STANDARD <cmake:variable:CMAKE_CXX_STANDARD>`.
   However, to avoid unnecessary duplication, it first checks whether the
@@ -166,7 +166,7 @@ Usage
 .. signature::
   binary_target(ADD_PRECOMPILE_HEADER <target-name> HEADER_FILE <file-path>)
 
-  Add a precompiled header file (PCH) ``<file_path>`` to an existing binary
+  Add a precompile header file (PCH) ``<file_path>`` to an existing binary
   target ``<target_name>`` with ``PRIVATE`` visibility. The file is added to
   the target with :cmake:command:`target_precompile_headers() <cmake:command:target_precompile_headers>` to populate the
   :cmake:prop_tgt:`PRECOMPILE_HEADERS <cmake:prop_tgt:PRECOMPILE_HEADERS>` target property.
@@ -184,12 +184,13 @@ Usage
     )
 
 .. signature::
-  binary_target(ADD_INCLUDE_DIRECTORIES <target-name> INCLUDE_DIRECTORIES [<dir-path>...])
+  binary_target(ADD_INCLUDE_DIRECTORIES <target-name> INCLUDE_DIRECTORIES [<dir-path>...|<gen-expr>...])
 
   Add include directories to an existing binary target ``<target_name>`` with
   ``PRIVATE`` visibility. The file is added to the target with
   :cmake:command:`target_include_directories() <cmake:command:target_include_directories>` to populate the
-  :cmake:prop_tgt:`INCLUDE_DIRECTORIES <cmake:prop_tgt:INCLUDE_DIRECTORIES>` target property.
+  :cmake:prop_tgt:`INCLUDE_DIRECTORIES <cmake:prop_tgt:INCLUDE_DIRECTORIES>` target property. Arguments may use generator expressions with the
+  syntax ``$<...>``.
 
   This command is intended for targets that have been previously created
   using :command:`binary_target(CREATE)`, and is typically used in conjunction
@@ -211,7 +212,7 @@ Usage
   Add dependencies to use when linking a given target ``<target-name>``.
 
   The ``DEPENDENCIES`` keyword lists the names of other targets or generator
-  expressions to linke to ``<target-name>``.
+  expressions to link to ``<target-name>``.
 
   The behavior is equivalent to calling :cmake:command:`target_link_libraries() <cmake:command:target_link_libraries>`.
 
