@@ -76,11 +76,16 @@ Usage
     ``/INCREMENTAL:NO``, etc.) with :cmake:command:`target_link_options() <cmake:command:target_link_options>`
     and populates :cmake:prop_tgt:`LINK_OPTIONS <cmake:prop_tgt:LINK_OPTIONS>` target property.
 
-  At each call, the command sets the :cmake:prop_tgt:`CXX_STANDARD <cmake:prop_tgt:CXX_STANDARD>` property
-  using the value of :cmake:variable:`CMAKE_CXX_STANDARD <cmake:variable:CMAKE_CXX_STANDARD>` if it not
-  already set, which must be defined. The target is also assigned to a default
-  folder for improved IDE integration. All options are optional and may appear
-  in any order. If a section is missing, it is simply ignored without warning.
+  The command automatically adds compile feature `cxx_std_<CMAKE_CXX_STANDARD>`
+  to the target to set the :cmake:prop_tgt:`CXX_STANDARD <cmake:prop_tgt:CXX_STANDARD>`
+  property, using the value of :cmake:variable:`CMAKE_CXX_STANDARD <cmake:variable:CMAKE_CXX_STANDARD>`.
+  However, to avoid unnecessary duplication, it first checks whether the
+  compile feature is already assigned to the target or in the arguments. An
+  error is raised if :cmake:variable:`CMAKE_CXX_STANDARD <cmake:variable:CMAKE_CXX_STANDARD>` is not defined.
+
+  The target is also assigned to a default folder for improved IDE
+  integration. All options are optional and may appear in any order. If a
+  section is missing, it is simply ignored without warning.
 
   This command is intended for targets that have been previously created
   using :command:`binary_target(CREATE)`.
@@ -435,14 +440,6 @@ macro(_binary_target_config_settings)
 
   # Add the bin target in a folder for IDE project
   set_target_properties("${BBT_CONFIGURE_SETTINGS}" PROPERTIES FOLDER "")
-  
-  # Add C++ standard in target compile features
-  get_target_property(compile_features "${BBT_CONFIGURE_SETTINGS}" COMPILE_FEATURES)
-  set(cxx_standard "cxx_std_${CMAKE_CXX_STANDARD}")
-  list(FIND compile_features "${cxx_standard}" index_of)
-  if(index_of EQUAL -1)
-    target_compile_features("${BBT_CONFIGURE_SETTINGS}" PRIVATE "${cxx_standard}")
-  endif()
 
   # Add input target compile features
   if(DEFINED BBT_COMPILE_FEATURES)
@@ -450,10 +447,6 @@ macro(_binary_target_config_settings)
       PRIVATE
         ${BBT_COMPILE_FEATURES} # don't add quote (yeah, the signature is inconsistent with other CMake target commands)
     )
-    message(STATUS "C++ standard set to: C++${CMAKE_CXX_STANDARD}")
-    message(STATUS "Applied compile features: ${BBT_COMPILE_FEATURES}")
-  else()
-    message(STATUS "Applied compile features: (none)")
   endif()
 
   # Add input target compile definitions
@@ -462,20 +455,14 @@ macro(_binary_target_config_settings)
       PRIVATE
         "${BBT_COMPILE_DEFINITIONS}"
     )
-    message(STATUS "Applied compile definitions: ${BBT_COMPILE_DEFINITIONS}")
-  else()
-    message(STATUS "Applied compile definitions: (none)")
   endif()
-  
+
   # Add input target compile options
   if(DEFINED BBT_COMPILE_OPTIONS)
     target_compile_options("${BBT_CONFIGURE_SETTINGS}"
       PRIVATE
         "${BBT_COMPILE_OPTIONS}"
     )
-    message(STATUS "Applied compile options: ${BBT_COMPILE_OPTIONS}")
-  else()
-    message(STATUS "Applied compile options: (none)")
   endif()
 
   # Add input target link options
@@ -488,9 +475,15 @@ macro(_binary_target_config_settings)
       PRIVATE
         "${BBT_LINK_OPTIONS}"
     )
-    message(STATUS "Applied link options: ${BBT_LINK_OPTIONS}")
-  else()
-    message(STATUS "Applied link options: (none)")
+  endif()
+
+  # Add C++ standard in target compile features if not already set
+  set(cxx_standard "cxx_std_${CMAKE_CXX_STANDARD}")
+  get_target_property(compile_features "${BBT_CONFIGURE_SETTINGS}" COMPILE_FEATURES)
+  list(FIND compile_features "${cxx_standard}" index_of)
+  if(index_of EQUAL -1)
+    message(VERBOSE "Setting target C++ standard to C++${CMAKE_CXX_STANDARD} by adding ${cxx_standard} to compile features")
+    target_compile_features("${BBT_CONFIGURE_SETTINGS}" PRIVATE "${cxx_standard}")
   endif()
 endmacro()
 

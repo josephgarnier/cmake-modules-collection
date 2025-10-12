@@ -122,7 +122,7 @@ function(${CMAKETEST_TEST})
       get_target_property(output_bin_property "new_static_mock_lib"
         COMPILE_FEATURES)
       ct_assert_list(output_bin_property)
-      ct_assert_equal(output_bin_property "cxx_std_${CMAKE_CXX_STANDARD};cxx_thread_local;cxx_trailing_return_types")
+      ct_assert_equal(output_bin_property "cxx_thread_local;cxx_trailing_return_types;cxx_std_${CMAKE_CXX_STANDARD}")
       ct_assert_target_does_not_have_property("new_static_mock_lib"
         INTERFACE_COMPILE_FEATURES)
       get_target_property(output_bin_property "new_static_mock_lib"
@@ -151,7 +151,7 @@ function(${CMAKETEST_TEST})
       get_target_property(output_bin_property "new_shared_mock_lib"
         COMPILE_FEATURES)
       ct_assert_list(output_bin_property)
-      ct_assert_equal(output_bin_property "cxx_std_${CMAKE_CXX_STANDARD};cxx_thread_local;cxx_trailing_return_types")
+      ct_assert_equal(output_bin_property "cxx_thread_local;cxx_trailing_return_types;cxx_std_${CMAKE_CXX_STANDARD}")
       ct_assert_target_does_not_have_property("new_shared_mock_lib"
         INTERFACE_COMPILE_FEATURES)
       get_target_property(output_bin_property "new_shared_mock_lib"
@@ -193,7 +193,7 @@ function(${CMAKETEST_TEST})
       get_target_property(output_bin_property "new_static_mock_lib"
         COMPILE_FEATURES)
       ct_assert_list(output_bin_property)
-      ct_assert_equal(output_bin_property "cxx_std_${CMAKE_CXX_STANDARD};cxx_thread_local;cxx_trailing_return_types")
+      ct_assert_equal(output_bin_property "cxx_thread_local;cxx_std_${CMAKE_CXX_STANDARD};cxx_trailing_return_types")
       ct_assert_target_does_not_have_property("new_static_mock_lib"
         INTERFACE_COMPILE_FEATURES)
       get_target_property(output_bin_property "new_static_mock_lib"
@@ -228,7 +228,7 @@ function(${CMAKETEST_TEST})
       get_target_property(output_bin_property "new_shared_mock_lib"
         COMPILE_FEATURES)
       ct_assert_list(output_bin_property)
-      ct_assert_equal(output_bin_property "cxx_std_${CMAKE_CXX_STANDARD};cxx_thread_local;cxx_trailing_return_types")
+      ct_assert_equal(output_bin_property "cxx_thread_local;cxx_std_${CMAKE_CXX_STANDARD};cxx_trailing_return_types")
       ct_assert_target_does_not_have_property("new_shared_mock_lib"
         INTERFACE_COMPILE_FEATURES)
       get_target_property(output_bin_property "new_shared_mock_lib"
@@ -255,7 +255,7 @@ function(${CMAKETEST_TEST})
   ct_add_section(NAME "configure_compile_features")
   function(${CMAKETEST_SECTION})
 
-    ct_add_section(NAME "cxx_standard_is_not_duplicated")
+    ct_add_section(NAME "cxx_standard_is_set_automatically")
     function(${CMAKETEST_SECTION})
       _set_up_test()
       binary_target(CONFIGURE_SETTINGS "new_static_mock_lib"
@@ -264,12 +264,50 @@ function(${CMAKETEST_TEST})
         COMPILE_OPTIONS ""
         LINK_OPTIONS ""
       )
+      get_target_property(output_bin_property "new_static_mock_lib"
+        COMPILE_FEATURES)
+      ct_assert_equal(output_bin_property "cxx_std_${CMAKE_CXX_STANDARD}")
+      ct_assert_target_does_not_have_property("new_static_mock_lib"
+        INTERFACE_COMPILE_FEATURES)
+
+      binary_target(CONFIGURE_SETTINGS "new_shared_mock_lib"
+        COMPILE_FEATURES ""
+        COMPILE_DEFINITIONS ""
+        COMPILE_OPTIONS ""
+        LINK_OPTIONS ""
+      )
+      get_target_property(output_bin_property "new_shared_mock_lib"
+        COMPILE_FEATURES)
+      ct_assert_equal(output_bin_property "cxx_std_${CMAKE_CXX_STANDARD}")
+      ct_assert_target_does_not_have_property("new_shared_mock_lib"
+        INTERFACE_COMPILE_FEATURES)
+    endfunction()
+
+    ct_add_section(NAME "cxx_standard_is_set_by_user_first")
+    function(${CMAKETEST_SECTION})
+      _set_up_test()
+      binary_target(CONFIGURE_SETTINGS "new_static_mock_lib"
+        COMPILE_FEATURES "cxx_std_${CMAKE_CXX_STANDARD}"
+        COMPILE_DEFINITIONS ""
+        COMPILE_OPTIONS ""
+        LINK_OPTIONS ""
+      )
+      get_target_property(output_bin_property "new_static_mock_lib"
+        COMPILE_FEATURES)
+      ct_assert_equal(output_bin_property "cxx_std_${CMAKE_CXX_STANDARD}")
+      ct_assert_target_does_not_have_property("new_static_mock_lib"
+        INTERFACE_COMPILE_FEATURES)
       binary_target(CONFIGURE_SETTINGS "new_static_mock_lib"
         COMPILE_FEATURES ""
         COMPILE_DEFINITIONS ""
         COMPILE_OPTIONS ""
         LINK_OPTIONS ""
       )
+      get_target_property(output_bin_property "new_static_mock_lib"
+        COMPILE_FEATURES)
+      ct_assert_equal(output_bin_property "cxx_std_${CMAKE_CXX_STANDARD}")
+      ct_assert_target_does_not_have_property("new_static_mock_lib"
+        INTERFACE_COMPILE_FEATURES)
       binary_target(CONFIGURE_SETTINGS "new_static_mock_lib"
         COMPILE_FEATURES "cxx_thread_local"
         COMPILE_DEFINITIONS ""
@@ -284,17 +322,27 @@ function(${CMAKETEST_TEST})
         INTERFACE_COMPILE_FEATURES)
 
       binary_target(CONFIGURE_SETTINGS "new_shared_mock_lib"
-        COMPILE_FEATURES ""
+        COMPILE_FEATURES "cxx_std_${CMAKE_CXX_STANDARD}"
         COMPILE_DEFINITIONS ""
         COMPILE_OPTIONS ""
         LINK_OPTIONS ""
       )
+      get_target_property(output_bin_property "new_shared_mock_lib"
+        COMPILE_FEATURES)
+      ct_assert_equal(output_bin_property "cxx_std_${CMAKE_CXX_STANDARD}")
+      ct_assert_target_does_not_have_property("new_shared_mock_lib"
+        INTERFACE_COMPILE_FEATURES)
       binary_target(CONFIGURE_SETTINGS "new_shared_mock_lib"
         COMPILE_FEATURES ""
         COMPILE_DEFINITIONS ""
         COMPILE_OPTIONS ""
         LINK_OPTIONS ""
       )
+      get_target_property(output_bin_property "new_shared_mock_lib"
+        COMPILE_FEATURES)
+      ct_assert_equal(output_bin_property "cxx_std_${CMAKE_CXX_STANDARD}")
+      ct_assert_target_does_not_have_property("new_shared_mock_lib"
+        INTERFACE_COMPILE_FEATURES)
       binary_target(CONFIGURE_SETTINGS "new_shared_mock_lib"
         COMPILE_FEATURES "cxx_thread_local"
         COMPILE_DEFINITIONS ""
@@ -309,7 +357,7 @@ function(${CMAKETEST_TEST})
         INTERFACE_COMPILE_FEATURES)
     endfunction()
 
-    ct_add_section(NAME "cxx_standard_is_restored_after_delete")
+    ct_add_section(NAME "cxx_standard_is_set_by_user_second")
     function(${CMAKETEST_SECTION})
       _set_up_test()
       binary_target(CONFIGURE_SETTINGS "new_static_mock_lib"
@@ -318,6 +366,87 @@ function(${CMAKETEST_TEST})
         COMPILE_OPTIONS ""
         LINK_OPTIONS ""
       )
+      get_target_property(output_bin_property "new_static_mock_lib"
+        COMPILE_FEATURES)
+      ct_assert_equal(output_bin_property "cxx_std_${CMAKE_CXX_STANDARD}")
+      ct_assert_target_does_not_have_property("new_static_mock_lib"
+        INTERFACE_COMPILE_FEATURES)
+      binary_target(CONFIGURE_SETTINGS "new_static_mock_lib"
+        COMPILE_FEATURES "cxx_std_${CMAKE_CXX_STANDARD}"
+        COMPILE_DEFINITIONS ""
+        COMPILE_OPTIONS ""
+        LINK_OPTIONS ""
+      )
+      get_target_property(output_bin_property "new_static_mock_lib"
+        COMPILE_FEATURES)
+      ct_assert_list(output_bin_property)
+      ct_assert_equal(output_bin_property "cxx_std_${CMAKE_CXX_STANDARD};cxx_std_${CMAKE_CXX_STANDARD}")
+      ct_assert_target_does_not_have_property("new_static_mock_lib"
+        INTERFACE_COMPILE_FEATURES)
+      binary_target(CONFIGURE_SETTINGS "new_static_mock_lib"
+        COMPILE_FEATURES "cxx_thread_local"
+        COMPILE_DEFINITIONS ""
+        COMPILE_OPTIONS ""
+        LINK_OPTIONS ""
+      )
+      get_target_property(output_bin_property "new_static_mock_lib"
+        COMPILE_FEATURES)
+      ct_assert_list(output_bin_property)
+      ct_assert_equal(output_bin_property "cxx_std_${CMAKE_CXX_STANDARD};cxx_std_${CMAKE_CXX_STANDARD};cxx_thread_local")
+      ct_assert_target_does_not_have_property("new_static_mock_lib"
+        INTERFACE_COMPILE_FEATURES)
+
+      binary_target(CONFIGURE_SETTINGS "new_shared_mock_lib"
+        COMPILE_FEATURES ""
+        COMPILE_DEFINITIONS ""
+        COMPILE_OPTIONS ""
+        LINK_OPTIONS ""
+      )
+      get_target_property(output_bin_property "new_shared_mock_lib"
+        COMPILE_FEATURES)
+      ct_assert_equal(output_bin_property "cxx_std_${CMAKE_CXX_STANDARD}")
+      ct_assert_target_does_not_have_property("new_shared_mock_lib"
+        INTERFACE_COMPILE_FEATURES)
+      binary_target(CONFIGURE_SETTINGS "new_shared_mock_lib"
+        COMPILE_FEATURES "cxx_std_${CMAKE_CXX_STANDARD}"
+        COMPILE_DEFINITIONS ""
+        COMPILE_OPTIONS ""
+        LINK_OPTIONS ""
+      )
+      get_target_property(output_bin_property "new_shared_mock_lib"
+        COMPILE_FEATURES)
+      ct_assert_list(output_bin_property)
+      ct_assert_equal(output_bin_property "cxx_std_${CMAKE_CXX_STANDARD};cxx_std_${CMAKE_CXX_STANDARD}")
+      ct_assert_target_does_not_have_property("new_shared_mock_lib"
+        INTERFACE_COMPILE_FEATURES)
+      binary_target(CONFIGURE_SETTINGS "new_shared_mock_lib"
+        COMPILE_FEATURES "cxx_thread_local"
+        COMPILE_DEFINITIONS ""
+        COMPILE_OPTIONS ""
+        LINK_OPTIONS ""
+      )
+      get_target_property(output_bin_property "new_shared_mock_lib"
+        COMPILE_FEATURES)
+      ct_assert_list(output_bin_property)
+      ct_assert_equal(output_bin_property "cxx_std_${CMAKE_CXX_STANDARD};cxx_std_${CMAKE_CXX_STANDARD};cxx_thread_local")
+      ct_assert_target_does_not_have_property("new_shared_mock_lib"
+        INTERFACE_COMPILE_FEATURES)
+    endfunction()
+
+    ct_add_section(NAME "cxx_standard_is_restored_after_deletion")
+    function(${CMAKETEST_SECTION})
+      _set_up_test()
+      binary_target(CONFIGURE_SETTINGS "new_static_mock_lib"
+        COMPILE_FEATURES ""
+        COMPILE_DEFINITIONS ""
+        COMPILE_OPTIONS ""
+        LINK_OPTIONS ""
+      )
+      get_target_property(output_bin_property "new_static_mock_lib"
+        COMPILE_FEATURES)
+      ct_assert_equal(output_bin_property "cxx_std_${CMAKE_CXX_STANDARD}")
+      ct_assert_target_does_not_have_property("new_static_mock_lib"
+        INTERFACE_COMPILE_FEATURES)
       # Delete C++ standard
       set_property(TARGET "new_static_mock_lib" PROPERTY COMPILE_FEATURES)
       binary_target(CONFIGURE_SETTINGS "new_static_mock_lib"
@@ -326,7 +455,12 @@ function(${CMAKETEST_TEST})
         COMPILE_OPTIONS ""
         LINK_OPTIONS ""
       )
-      # Delete C++ standard
+      get_target_property(output_bin_property "new_static_mock_lib"
+        COMPILE_FEATURES)
+      ct_assert_equal(output_bin_property "cxx_std_${CMAKE_CXX_STANDARD}")
+      ct_assert_target_does_not_have_property("new_static_mock_lib"
+        INTERFACE_COMPILE_FEATURES)
+      # Delete C++ standard again
       set_property(TARGET "new_static_mock_lib" PROPERTY COMPILE_FEATURES)
       binary_target(CONFIGURE_SETTINGS "new_static_mock_lib"
         COMPILE_FEATURES "cxx_thread_local"
@@ -337,7 +471,7 @@ function(${CMAKETEST_TEST})
       get_target_property(output_bin_property "new_static_mock_lib"
         COMPILE_FEATURES)
       ct_assert_list(output_bin_property)
-      ct_assert_equal(output_bin_property "cxx_std_${CMAKE_CXX_STANDARD};cxx_thread_local")
+      ct_assert_equal(output_bin_property "cxx_thread_local;cxx_std_${CMAKE_CXX_STANDARD}")
       ct_assert_target_does_not_have_property("new_static_mock_lib"
         INTERFACE_COMPILE_FEATURES)
 
@@ -347,6 +481,11 @@ function(${CMAKETEST_TEST})
         COMPILE_OPTIONS ""
         LINK_OPTIONS ""
       )
+      get_target_property(output_bin_property "new_shared_mock_lib"
+        COMPILE_FEATURES)
+      ct_assert_equal(output_bin_property "cxx_std_${CMAKE_CXX_STANDARD}")
+      ct_assert_target_does_not_have_property("new_shared_mock_lib"
+        INTERFACE_COMPILE_FEATURES)
       # Delete C++ standard
       set_property(TARGET "new_shared_mock_lib" PROPERTY COMPILE_FEATURES)
       binary_target(CONFIGURE_SETTINGS "new_shared_mock_lib"
@@ -355,7 +494,12 @@ function(${CMAKETEST_TEST})
         COMPILE_OPTIONS ""
         LINK_OPTIONS ""
       )
-      # Delete C++ standard
+      get_target_property(output_bin_property "new_shared_mock_lib"
+        COMPILE_FEATURES)
+      ct_assert_equal(output_bin_property "cxx_std_${CMAKE_CXX_STANDARD}")
+      ct_assert_target_does_not_have_property("new_shared_mock_lib"
+        INTERFACE_COMPILE_FEATURES)
+      # Delete C++ standard again
       set_property(TARGET "new_shared_mock_lib" PROPERTY COMPILE_FEATURES)
       binary_target(CONFIGURE_SETTINGS "new_shared_mock_lib"
         COMPILE_FEATURES "cxx_thread_local"
@@ -366,7 +510,7 @@ function(${CMAKETEST_TEST})
       get_target_property(output_bin_property "new_shared_mock_lib"
         COMPILE_FEATURES)
       ct_assert_list(output_bin_property)
-      ct_assert_equal(output_bin_property "cxx_std_${CMAKE_CXX_STANDARD};cxx_thread_local")
+      ct_assert_equal(output_bin_property "cxx_thread_local;cxx_std_${CMAKE_CXX_STANDARD}")
       ct_assert_target_does_not_have_property("new_shared_mock_lib"
         INTERFACE_COMPILE_FEATURES)
     endfunction()
@@ -383,7 +527,7 @@ function(${CMAKETEST_TEST})
       get_target_property(output_bin_property "new_static_mock_lib"
         COMPILE_FEATURES)
       ct_assert_list(output_bin_property)
-      ct_assert_equal(output_bin_property "cxx_std_${CMAKE_CXX_STANDARD};cxx_thread_local;cxx_trailing_return_types")
+      ct_assert_equal(output_bin_property "cxx_thread_local;cxx_trailing_return_types;cxx_std_${CMAKE_CXX_STANDARD}")
       ct_assert_target_does_not_have_property("new_static_mock_lib"
         INTERFACE_COMPILE_FEATURES)
 
@@ -396,7 +540,7 @@ function(${CMAKETEST_TEST})
       get_target_property(output_bin_property "new_shared_mock_lib"
         COMPILE_FEATURES)
       ct_assert_list(output_bin_property)
-      ct_assert_equal(output_bin_property "cxx_std_${CMAKE_CXX_STANDARD};cxx_thread_local;cxx_trailing_return_types")
+      ct_assert_equal(output_bin_property "cxx_thread_local;cxx_trailing_return_types;cxx_std_${CMAKE_CXX_STANDARD}")
       ct_assert_target_does_not_have_property("new_shared_mock_lib"
         INTERFACE_COMPILE_FEATURES)
     endfunction()
@@ -419,7 +563,7 @@ function(${CMAKETEST_TEST})
       get_target_property(output_bin_property "new_static_mock_lib"
         COMPILE_FEATURES)
       ct_assert_list(output_bin_property)
-      ct_assert_equal(output_bin_property "cxx_std_${CMAKE_CXX_STANDARD};cxx_thread_local;cxx_trailing_return_types")
+      ct_assert_equal(output_bin_property "cxx_thread_local;cxx_std_${CMAKE_CXX_STANDARD};cxx_trailing_return_types")
       ct_assert_target_does_not_have_property("new_static_mock_lib"
         INTERFACE_COMPILE_FEATURES)
 
@@ -438,7 +582,7 @@ function(${CMAKETEST_TEST})
       get_target_property(output_bin_property "new_shared_mock_lib"
         COMPILE_FEATURES)
       ct_assert_list(output_bin_property)
-      ct_assert_equal(output_bin_property "cxx_std_${CMAKE_CXX_STANDARD};cxx_thread_local;cxx_trailing_return_types")
+      ct_assert_equal(output_bin_property "cxx_thread_local;cxx_std_${CMAKE_CXX_STANDARD};cxx_trailing_return_types")
       ct_assert_target_does_not_have_property("new_shared_mock_lib"
         INTERFACE_COMPILE_FEATURES)
     endfunction()
