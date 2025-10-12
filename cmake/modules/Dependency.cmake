@@ -821,7 +821,7 @@ macro(_dependency_export)
 
   # Throw an error if export command already specified for the file and 'APPEND' keyword is not used
   list(LENGTH existing_export_parts nb_parts)
-  if((NOT nb_parts EQUAL 0) AND (NOT ${DEP_APPEND}))
+  if((NOT ${nb_parts} EQUAL 0) AND (NOT ${DEP_APPEND}))
     message(FATAL_ERROR "Export command already specified for the file \"${DEP_OUTPUT_FILE}\". Did you miss 'APPEND' keyword?")
   endif()
   
