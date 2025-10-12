@@ -41,7 +41,7 @@ set(PRIVATE_HEADER_FILES
   "${PRIVATE_HEADER_DIR}/source_5.h"
   "${PRIVATE_HEADER_DIR}/sub_1/source_sub_1.h"
   "${PRIVATE_HEADER_DIR}/sub_2/source_sub_2.h")
-set(PRECOMPILED_HEADER_FILE "${PUBLIC_HEADER_DIR}/include_pch.h")
+set(PRECOMPILE_HEADER_FILE "${PUBLIC_HEADER_DIR}/include_pch.h")
 
 ####################### Set up output directories #############################
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY           "${BIN_DIR}")
@@ -87,7 +87,7 @@ target_sources("${STATIC_MOCK_LIB_TARGET_NAME}"
 )
 target_precompile_headers("${STATIC_MOCK_LIB_TARGET_NAME}"
   PRIVATE
-    "${PRECOMPILED_HEADER_FILE}"
+    "${PRECOMPILE_HEADER_FILE}"
 )
 target_include_directories("${STATIC_MOCK_LIB_TARGET_NAME}"
   PRIVATE
@@ -134,7 +134,7 @@ target_sources("${SHARED_MOCK_LIB_TARGET_NAME}"
 )
 target_precompile_headers("${SHARED_MOCK_LIB_TARGET_NAME}"
   PRIVATE
-    "${PRECOMPILED_HEADER_FILE}"
+    "${PRECOMPILE_HEADER_FILE}"
 )
 target_include_directories("${SHARED_MOCK_LIB_TARGET_NAME}"
   PRIVATE

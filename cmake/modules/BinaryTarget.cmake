@@ -22,7 +22,7 @@ Synopsis
   binary_target(`CREATE`_ <target-name> <STATIC|SHARED|HEADER|EXEC>)
   binary_target(`CONFIGURE_SETTINGS`_ <target-name> [...])
   binary_target(`ADD_SOURCES`_ <target-name> [...])
-  binary_target(`ADD_PRECOMPILED_HEADER`_ <target-name> HEADER_FILE <file-path>)
+  binary_target(`ADD_PRECOMPILE_HEADER`_ <target-name> HEADER_FILE <file-path>)
   binary_target(`ADD_INCLUDE_DIRECTORIES`_ <target-name> INCLUDE_DIRECTORIES [<dir-path>...])
   binary_target(`ADD_DEPENDENCIES`_ <target-name> DEPENDENCIES [<target-name>...|<gen-expr>...])
   binary_target(`CREATE_FULLY`_ <target-name> [...])
@@ -164,7 +164,7 @@ Usage
     )
 
 .. signature::
-  binary_target(ADD_PRECOMPILED_HEADER <target-name> HEADER_FILE <file-path>)
+  binary_target(ADD_PRECOMPILE_HEADER <target-name> HEADER_FILE <file-path>)
 
   Add a precompiled header file (PCH) ``<file_path>`` to an existing binary
   target ``<target_name>`` with ``PRIVATE`` visibility. The file is added to
@@ -179,7 +179,7 @@ Usage
   .. code-block:: cmake
 
     binary_target(CREATE "my_static_lib" STATIC)
-    binary_target(ADD_PRECOMPILED_HEADER "my_static_lib"
+    binary_target(ADD_PRECOMPILE_HEADER "my_static_lib"
       HEADER_FILE "src/header_pch.h"
     )
 
@@ -249,7 +249,7 @@ Usage
                   SOURCE_FILES [<file-path>...]
                   PRIVATE_HEADER_FILES [<file-path>...]
                   PUBLIC_HEADER_FILES [<file-path>...]
-                  [PRECOMPILED_HEADER_FILE <file-path>]
+                  [PRECOMPILE_HEADER_FILE <file-path>]
                   INCLUDE_DIRECTORIES [<dir-path>...]
                   [DEPENDENCIES [<target-name>...] ])
 
@@ -257,7 +257,7 @@ Usage
   to the current project. This command acts as a high-level wrapper that
   combines the behavior of other module sub-commands, including
   :command:`binary_target(CREATE)`, :command:`binary_target(CONFIGURE_SETTINGS)`,
-  :command:`binary_target(ADD_SOURCES)`, :command:`binary_target(ADD_PRECOMPILED_HEADER)`,
+  :command:`binary_target(ADD_SOURCES)`, :command:`binary_target(ADD_PRECOMPILE_HEADER)`,
   :command:`binary_target(ADD_INCLUDE_DIRECTORIES)`, and :command:`binary_target(ADD_DEPENDENCIES)`.
 
   The second argument must specify the type of binary target to create:
@@ -290,7 +290,7 @@ Usage
       SOURCE_FILES "${private_sources}"
       PRIVATE_HEADER_FILES "${private_headers}"
       PUBLIC_HEADER_FILES "${public_headers}"
-      PRECOMPILED_HEADER_FILE "src/header_pch.h"
+      PRECOMPILE_HEADER_FILE "src/header_pch.h"
       INCLUDE_DIRECTORIES "$<$<BOOL:${private_header_dir}>:${private_header_dir}>" "${public_header_dir}"
       DEPENDENCIES "dep_1" "dep_2"
     )
@@ -324,7 +324,7 @@ binary.
     PRIVATE_HEADER_FILES "${private_headers}"
     PUBLIC_HEADER_FILES "${public_headers}"
   )
-  binary_target(ADD_PRECOMPILED_HEADER "my_shared_lib"
+  binary_target(ADD_PRECOMPILE_HEADER "my_shared_lib"
     HEADER_FILE "src/header_pch.h"
   )
   binary_target(ADD_INCLUDE_DIRECTORIES "my_shared_lib"
@@ -340,7 +340,7 @@ cmake_minimum_required (VERSION 3.20 FATAL_ERROR)
 # Public function of this module
 function(binary_target)
   set(options STATIC SHARED HEADER EXEC)
-  set(one_value_args CREATE CONFIGURE_SETTINGS ADD_SOURCES ADD_PRECOMPILED_HEADER HEADER_FILE ADD_INCLUDE_DIRECTORIES ADD_DEPENDENCIES CREATE_FULLY PRECOMPILED_HEADER_FILE)
+  set(one_value_args CREATE CONFIGURE_SETTINGS ADD_SOURCES ADD_PRECOMPILE_HEADER HEADER_FILE ADD_INCLUDE_DIRECTORIES ADD_DEPENDENCIES CREATE_FULLY PRECOMPILE_HEADER_FILE)
   set(multi_value_args COMPILE_FEATURES COMPILE_DEFINITIONS COMPILE_OPTIONS LINK_OPTIONS SOURCE_FILES PRIVATE_HEADER_FILES PUBLIC_HEADER_FILES INCLUDE_DIRECTORIES DEPENDENCIES)
   cmake_parse_arguments(BBT "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
   
@@ -355,7 +355,7 @@ function(binary_target)
     _binary_target_config_settings()
   elseif(DEFINED BBT_ADD_SOURCES)
     _binary_target_add_sources()
-  elseif(DEFINED BBT_ADD_PRECOMPILED_HEADER)
+  elseif(DEFINED BBT_ADD_PRECOMPILE_HEADER)
     _binary_target_add_pre_header()
   elseif(DEFINED BBT_ADD_INCLUDE_DIRECTORIES)
     _binary_target_add_include_dirs()
@@ -527,11 +527,11 @@ endmacro()
 #------------------------------------------------------------------------------
 # Internal usage
 macro(_binary_target_add_pre_header)
-  if(NOT DEFINED BBT_ADD_PRECOMPILED_HEADER)
-    message(FATAL_ERROR "ADD_PRECOMPILED_HEADER argument is missing or need a value!")
+  if(NOT DEFINED BBT_ADD_PRECOMPILE_HEADER)
+    message(FATAL_ERROR "ADD_PRECOMPILE_HEADER argument is missing or need a value!")
   endif()
-  if(NOT TARGET "${BBT_ADD_PRECOMPILED_HEADER}")
-    message(FATAL_ERROR "The target \"${BBT_ADD_PRECOMPILED_HEADER}\" does not exists!")
+  if(NOT TARGET "${BBT_ADD_PRECOMPILE_HEADER}")
+    message(FATAL_ERROR "The target \"${BBT_ADD_PRECOMPILE_HEADER}\" does not exists!")
   endif()
   if(NOT DEFINED BBT_HEADER_FILE)
     message(FATAL_ERROR "HEADER_FILE argument is missing or need a value!")
@@ -540,7 +540,7 @@ macro(_binary_target_add_pre_header)
     message(FATAL_ERROR "Given path: ${BBT_HEADER_FILE} does not refer to an existing path or directory on disk!")
   endif()
 
-  target_precompile_headers("${BBT_ADD_PRECOMPILED_HEADER}"
+  target_precompile_headers("${BBT_ADD_PRECOMPILE_HEADER}"
     PRIVATE
       "${BBT_HEADER_FILE}"
   )
@@ -642,12 +642,12 @@ macro(_binary_target_create_fully)
     AND (NOT "PUBLIC_HEADER_FILES" IN_LIST BBT_KEYWORDS_MISSING_VALUES))
     message(FATAL_ERROR "PUBLIC_HEADER_FILES argument is missing or need a value!")
   endif()
-  if("PRECOMPILED_HEADER_FILE" IN_LIST BBT_KEYWORDS_MISSING_VALUES)
-    message(FATAL_ERROR "PRECOMPILED_HEADER_FILE argument is missing or need a value!")
+  if("PRECOMPILE_HEADER_FILE" IN_LIST BBT_KEYWORDS_MISSING_VALUES)
+    message(FATAL_ERROR "PRECOMPILE_HEADER_FILE argument is missing or need a value!")
   endif()
-  if((DEFINED BBT_PRECOMPILED_HEADER_FILE)
-    AND (NOT EXISTS "${BBT_PRECOMPILED_HEADER_FILE}"))
-    message(FATAL_ERROR "Given path: ${BBT_PRECOMPILED_HEADER_FILE} does not refer to an existing path or directory on disk!")
+  if((DEFINED BBT_PRECOMPILE_HEADER_FILE)
+    AND (NOT EXISTS "${BBT_PRECOMPILE_HEADER_FILE}"))
+    message(FATAL_ERROR "Given path: ${BBT_PRECOMPILE_HEADER_FILE} does not refer to an existing path or directory on disk!")
   endif()
   if((NOT DEFINED BBT_INCLUDE_DIRECTORIES)
     AND (NOT "INCLUDE_DIRECTORIES" IN_LIST BBT_KEYWORDS_MISSING_VALUES))
@@ -678,10 +678,10 @@ macro(_binary_target_create_fully)
   set(BBT_ADD_SOURCES "${BBT_CREATE_FULLY}")
   _binary_target_add_sources()
 
-  # Call binary_target(ADD_PRECOMPILED_HEADER)
-  if(DEFINED BBT_PRECOMPILED_HEADER_FILE)
-    set(BBT_ADD_PRECOMPILED_HEADER "${BBT_CREATE_FULLY}")
-    set(BBT_HEADER_FILE "${BBT_PRECOMPILED_HEADER_FILE}")
+  # Call binary_target(ADD_PRECOMPILE_HEADER)
+  if(DEFINED BBT_PRECOMPILE_HEADER_FILE)
+    set(BBT_ADD_PRECOMPILE_HEADER "${BBT_CREATE_FULLY}")
+    set(BBT_HEADER_FILE "${BBT_PRECOMPILE_HEADER_FILE}")
     _binary_target_add_pre_header()
   endif()
 
