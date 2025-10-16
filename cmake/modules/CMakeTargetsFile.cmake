@@ -1144,26 +1144,37 @@ endfunction()
 
 #------------------------------------------------------------------------------
 # Internal usage. This function validates a JSON string property.
+#
 # Signature:
 #   _validate_json_string(PROP_PATH [<prop-key>...]
 #                         PROP_VALUE [<string>]
 #                         [MIN_LENGTH <number>]
 #                         [MAX_LENGTH <number>]
 #                         [PATTERN <regex>])
+#
 # Parameters:
-#   PROP_PATH: the path (as list of keys) to the property to validate.
-#   PROP_VALUE: the string coming from the property to validate. The value must
+#   PROP_PATH: The path (as list of keys) to the property to validate.
+#   PROP_VALUE: The string coming from the property to validate. The value must
 #               be a string of text.
-#   MIN_LENGTH: the minimum length of the string for the PROP_VALUE. The value
+#   MIN_LENGTH: The minimum length of the string for the PROP_VALUE. The value
 #               MUST be a non-negative integer. To be valid, the length of
 #               PROP_VALUE must be greater than, or equal to, MIN_LENGTH.
-#   MAX_LENGTH: the maximum length of the string for the PROP_VALUE. The value
+#   MAX_LENGTH: The maximum length of the string for the PROP_VALUE. The value
 #               MUST be a non-negative integer. To be valid, the length of
 #               PROP_VALUE must be less than, or equal to, MAX_LENGTH.
-#   PATTERN: the regular expression that the PROP_VALUE must match. The value
+#   PATTERN: The regular expression that the PROP_VALUE must match. The value
 #            MUST be a string. This string SHOULD be a valid regular expression,
 #            according to the CMake regular expression dialect. The be valid,
 #            PROP_VALUE must match the regular expression matches successfully.
+#
+# Returns:
+#   None
+#
+# Example:
+#   _validate_json_string(PROP_PATH "name"
+#                         PROP_VALUE "${name}"
+#                         PATTERN "^[A-Za-z0-9_]+$")
+#------------------------------------------------------------------------------
 function(_validate_json_string)
   set(options "")
   set(one_value_args PROP_VALUE MIN_LENGTH MAX_LENGTH PATTERN)
@@ -1235,13 +1246,23 @@ endfunction()
 
 #------------------------------------------------------------------------------
 # Internal usage. This function validates a JSON boolean property.
+#
 # Signature:
 #   _validate_json_boolean(PROP_PATH [<prop-key>...]
-#                         PROP_VALUE <number>)
+#                          PROP_VALUE <number>)
+#
 # Parameters:
-#   PROP_PATH: the path (as list of keys) to the property to validate.
-#   PROP_VALUE: the boolean coming from the property to validate. The value must
+#   PROP_PATH: The path (as list of keys) to the property to validate.
+#   PROP_VALUE: The boolean coming from the property to validate. The value must
 #               be 'ON' or 'OFF'.
+#
+# Returns:
+#   None
+#
+# Example:
+#   _validate_json_boolean(PROP_PATH "isDefined"
+#                          PROP_VALUE "${isDefined}")
+#------------------------------------------------------------------------------
 function(_validate_json_boolean)
   set(options "")
   set(one_value_args PROP_VALUE)
@@ -1267,6 +1288,7 @@ endfunction()
 
 #------------------------------------------------------------------------------
 # Internal usage. This function validates a JSON number property.
+#
 # Signature:
 #   _validate_json_number(PROP_PATH [<prop-key>...]
 #                         PROP_VALUE <number>
@@ -1275,24 +1297,35 @@ endfunction()
 #                         [EXCLU_MIN <number>]
 #                         [MAX <number>]
 #                         [EXCLU_MAX <number>])
+#
 # Parameters:
-#   PROP_PATH: the path (as list of keys) to the property to validate.
-#   PROP_VALUE: the number coming from the property to validate. Can be an
+#   PROP_PATH: The path (as list of keys) to the property to validate.
+#   PROP_VALUE: The number coming from the property to validate. Can be an
 #               integer (e.g. 1) or floating-point (e.g. 1.0) value.
-#   MULTIPLE_OF: the multiple of which the PROP_VALUE must be a multiple. The
+#   MULTIPLE_OF: The multiple of which the PROP_VALUE must be a multiple. The
 #                value MUST be an integer, strictly greater than 0.
-#   MIN: the minimum value allowed for the PROP_VALUE. The value MUST be a
+#   MIN: The minimum value allowed for the PROP_VALUE. The value MUST be a
 #        number, representing an inclusive lower limit. To be valid, PROP_VALUE
 #        >= MIN must be true.
-#   EXCLU_MIN: the minimum exclusive value allowed for the PROP_VALUE. The value
+#   EXCLU_MIN: The minimum exclusive value allowed for the PROP_VALUE. The value
 #              MUST be a number, representing an exclusive lower limit. To be
 #              valid, PROP_VALUE > EXCLU_MIN must be true.
-#   MAX: the maximum value allowed for the PROP_VALUE. The value MUST be a
+#   MAX: The maximum value allowed for the PROP_VALUE. The value MUST be a
 #        number, representing an inclusive upper limit. To be valid, PROP_VALUE
 #        <= MAX must be true.
-#   EXCLU_MAX: the maximum exclusive value allowed for the PROP_VALUE. The value
+#   EXCLU_MAX: The maximum exclusive value allowed for the PROP_VALUE. The value
 #              MUST be a number, representing an exclusive upper limit. To be
 #              valid, PROP_VALUE < EXCLU_MAX must be true.
+#
+# Returns:
+#   None
+#
+# Example:
+#   _validate_json_number(PROP_PATH "age"
+#                         PROP_VALUE "${age}"
+#                         MIN 0
+#                         MAX 150)
+#------------------------------------------------------------------------------
 function(_validate_json_number)
   set(options "")
   set(one_value_args PROP_VALUE MULTIPLE_OF MIN MAX EXCLU_MIN EXCLU_MAX)

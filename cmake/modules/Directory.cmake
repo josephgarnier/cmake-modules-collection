@@ -32,10 +32,10 @@ Usage
   .. code-block:: cmake
 
     directory(SCAN <output-list-var>
-             LIST_DIRECTORIES <on|off>
-             RELATIVE <on|off>
-             ROOT_DIR <dir-path>
-             <INCLUDE_REGEX|EXCLUDE_REGEX> <regular-expression>)
+              LIST_DIRECTORIES <on|off>
+              RELATIVE <on|off>
+              ROOT_DIR <dir-path>
+              <INCLUDE_REGEX|EXCLUDE_REGEX> <regular-expression>)
 
   Recursively scans files and directories under ``ROOT_DIR``, applies an
   optional filter based on ``INCLUDE_REGEX`` or ``EXCLUDE_REGEX``, and
@@ -656,7 +656,7 @@ macro(_directory_collect_sources_by_policy)
   file(RELATIVE_PATH rel_private_dir_path "${CMAKE_SOURCE_DIR}" "${DIR_PRIVATE_SOURCE_DIR}")
   if(${is_headers_separated})
     file(RELATIVE_PATH rel_public_dir_path "${CMAKE_SOURCE_DIR}" "${include_dir_path}")
-    message(VERBOSE "Header separation enabled - public in \"${rel_public_dir_path}/\", private in \"${rel_private_dir_path}/\"")
+    message(VERBOSE "Header separation enabled - publics in \"${rel_public_dir_path}/\", privates in \"${rel_private_dir_path}/\"")
     directory(COLLECT_SOURCES_BY_LOCATION
       SRC_DIR "${DIR_PRIVATE_SOURCE_DIR}"
       SRC_SOURCE_FILES src_source_files_list
