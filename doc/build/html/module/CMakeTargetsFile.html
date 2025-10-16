@@ -74,7 +74,7 @@ targets is identical across projects, with only the data changing. The
 definition logic for the binary target remains the same, while only its
 declarations (i.e., its configuration) change.</p>
 <p>One option could be to declare the configuration with variables in the JSON of
-<span class="target" id="index-0-manual:cmake:manual:cmake-presets(7)"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/manual/cmake-presets.7.html#manual:cmake-presets(7)" title="(in CMake v4.1.1)"><code class="xref cmake cmake-manual docutils literal notranslate"><span class="pre">cmake-presets</span></code></a>, but it is not
+<span class="target" id="index-0-manual:cmake:manual:cmake-presets(7)"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/manual/cmake-presets.7.html#manual:cmake-presets(7)" title="(in CMake v4.1.2)"><code class="xref cmake cmake-manual docutils literal notranslate"><span class="pre">cmake-presets</span></code></a>, but it is not
 possible to have structured properties and they would be difficult to read.</p>
 <p>The purpose of this module is to simplify the automated creation of binary
 targets by allowing their settings to be declared in a standardized JSON
@@ -271,22 +271,22 @@ array properties:</p>
 <div><dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">compileFeatures</span></code></dt><dd><p>A list of compile features to pass to the target. It is
 used as a parameter for the
-<span class="target" id="index-0-command:cmake:command:target_compile_features"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/target_compile_features.html#command:target_compile_features" title="(in CMake v4.1.1)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_compile_features()</span></code></a>
+<span class="target" id="index-0-command:cmake:command:target_compile_features"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/target_compile_features.html#command:target_compile_features" title="(in CMake v4.1.2)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_compile_features()</span></code></a>
 command. The property is required, but the array can be empty.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">compileDefinitions</span></code></dt><dd><p>A list of preprocessor definitions applied when compiling this
 target. It is used as a parameter for the
-<span class="target" id="index-0-command:cmake:command:target_compile_definitions"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/target_compile_definitions.html#command:target_compile_definitions" title="(in CMake v4.1.1)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_compile_definitions()</span></code></a>
+<span class="target" id="index-0-command:cmake:command:target_compile_definitions"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/target_compile_definitions.html#command:target_compile_definitions" title="(in CMake v4.1.2)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_compile_definitions()</span></code></a>
 command. The property is required, but the array can be empty.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">compileOptions</span></code></dt><dd><p>A list of compiler options to pass when building this
 target. It is used as a parameter for the
-<span class="target" id="index-0-command:cmake:command:target_compile_options"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/target_compile_options.html#command:target_compile_options" title="(in CMake v4.1.1)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_compile_options()</span></code></a>
+<span class="target" id="index-0-command:cmake:command:target_compile_options"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/target_compile_options.html#command:target_compile_options" title="(in CMake v4.1.2)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_compile_options()</span></code></a>
 command. The property is required, but the array can be empty.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">linkOptions</span></code></dt><dd><p>A list of linker options to pass when building this target. It is used
 as a parameter for the
-<span class="target" id="index-0-command:cmake:command:target_link_options"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/target_link_options.html#command:target_link_options" title="(in CMake v4.1.1)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_link_options()</span></code></a>
+<span class="target" id="index-0-command:cmake:command:target_link_options"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/target_link_options.html#command:target_link_options" title="(in CMake v4.1.2)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_link_options()</span></code></a>
 command. The property is required, but the array can be empty.</p>
 </dd>
 </dl>
@@ -331,7 +331,7 @@ headers are located. The path must start with <code class="docutils literal notr
 <dt><code class="docutils literal notranslate"><span class="pre">dependencies</span></code></dt><dd><p>The required object property specifying the set of dependencies needed by
 the target. Its value is an object whose keys are the names of the
 dependencies. A name is intended to be used as <code class="docutils literal notranslate"><span class="pre">PackageName</span></code> argument to
-<span class="target" id="index-0-command:cmake:command:find_package"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/find_package.html#command:find_package" title="(in CMake v4.1.1)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">find_package()</span></code></a>. It must
+<span class="target" id="index-0-command:cmake:command:find_package"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/find_package.html#command:find_package" title="(in CMake v4.1.2)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">find_package()</span></code></a>. It must
 therefore be compatible with CMake's <code class="docutils literal notranslate"><span class="pre">PackageName</span></code> requirements. Each
 name must be unique within the <code class="docutils literal notranslate"><span class="pre">dependencies</span></code> object and cannot contain
 a space.</p>
@@ -349,7 +349,7 @@ logic for handling the dependency.</p></li>
 <dt><code class="docutils literal notranslate"><span class="pre">packageLocation</span></code></dt><dd><p>A required object when <code class="docutils literal notranslate"><span class="pre">rulesFile</span></code> is <code class="docutils literal notranslate"><span class="pre">generic</span></code>, otherwise optional.
 It defines the location where the dependency package can be found. These
 values are intended to be used to set the <code class="docutils literal notranslate"><span class="pre">&lt;PackageName&gt;_DIR</span></code> variable
-for <span class="target" id="index-1-command:cmake:command:find_package"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/find_package.html#command:find_package" title="(in CMake v4.1.1)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">find_package()</span></code></a>. It
+for <span class="target" id="index-1-command:cmake:command:find_package"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/find_package.html#command:find_package" title="(in CMake v4.1.2)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">find_package()</span></code></a>. It
 may contain the following properties:</p>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">windows</span></code></dt><dd><p>An optional string representing the path to a directory containing
@@ -366,14 +366,14 @@ the package for macOS. Whitespace is not allowed.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">minVersion</span></code></dt><dd><p>A required string when <code class="docutils literal notranslate"><span class="pre">rulesFile</span></code> is <code class="docutils literal notranslate"><span class="pre">generic</span></code>, otherwise optional,
 specifying the minimum acceptable version of the dependency. This value
 is intended to be used as the <code class="docutils literal notranslate"><span class="pre">VERSION</span></code> argument to
-<span class="target" id="index-2-command:cmake:command:find_package"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/find_package.html#command:find_package" title="(in CMake v4.1.1)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">find_package()</span></code></a>
+<span class="target" id="index-2-command:cmake:command:find_package"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/find_package.html#command:find_package" title="(in CMake v4.1.2)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">find_package()</span></code></a>
 calls for that dependency.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">fetchInfo</span></code></dt><dd><p>A required object when <code class="docutils literal notranslate"><span class="pre">rulesFile</span></code> is <code class="docutils literal notranslate"><span class="pre">generic</span></code>, otherwise optional.
 It provides the information needed to download the dependency package if
 it is not available locally. Theses informations are intended to be used
-as argument to <span class="target" id="index-0-command:cmake:command:fetchcontent_declare"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/module/FetchContent.html#command:fetchcontent_declare" title="(in CMake v4.1.1)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">FetchContent_Declare()</span></code></a>
-or <span class="target" id="index-0-command:cmake:command:externalproject_add"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/module/ExternalProject.html#command:externalproject_add" title="(in CMake v4.1.1)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">ExternalProject_Add()</span></code></a>.
+as argument to <span class="target" id="index-0-command:cmake:command:fetchcontent_declare"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/module/FetchContent.html#command:fetchcontent_declare" title="(in CMake v4.1.2)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">FetchContent_Declare()</span></code></a>
+or <span class="target" id="index-0-command:cmake:command:externalproject_add"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/module/ExternalProject.html#command:externalproject_add" title="(in CMake v4.1.2)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">ExternalProject_Add()</span></code></a>.
 It has the following properties:</p>
 <blockquote>
 <div><dl class="simple">
@@ -412,25 +412,25 @@ contains the following array properties:</p>
 <div><dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">compileFeatures</span></code></dt><dd><p>A list of compile features to pass to the dependency. It is used as
 a parameter for the
-<span class="target" id="index-1-command:cmake:command:target_compile_features"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/target_compile_features.html#command:target_compile_features" title="(in CMake v4.1.1)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_compile_features()</span></code></a>
+<span class="target" id="index-1-command:cmake:command:target_compile_features"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/target_compile_features.html#command:target_compile_features" title="(in CMake v4.1.2)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_compile_features()</span></code></a>
 command. The property is required when <code class="docutils literal notranslate"><span class="pre">rulesFile</span></code> is <code class="docutils literal notranslate"><span class="pre">generic</span></code>,
 otherwise optional, but the array can be empty.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">compileDefinitions</span></code></dt><dd><p>A list of preprocessor definitions applied when compiling the
 dependency. It is used as a parameter for the
-<span class="target" id="index-1-command:cmake:command:target_compile_definitions"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/target_compile_definitions.html#command:target_compile_definitions" title="(in CMake v4.1.1)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_compile_definitions()</span></code></a>
+<span class="target" id="index-1-command:cmake:command:target_compile_definitions"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/target_compile_definitions.html#command:target_compile_definitions" title="(in CMake v4.1.2)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_compile_definitions()</span></code></a>
 command. The property is required when <code class="docutils literal notranslate"><span class="pre">rulesFile</span></code> is <code class="docutils literal notranslate"><span class="pre">generic</span></code>,
 otherwise optional, but the array can be empty.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">compileOptions</span></code></dt><dd><p>A list of compiler options to pass when building the dependency. It
 is used as a parameter for the
-<span class="target" id="index-1-command:cmake:command:target_compile_options"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/target_compile_options.html#command:target_compile_options" title="(in CMake v4.1.1)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_compile_options()</span></code></a>
+<span class="target" id="index-1-command:cmake:command:target_compile_options"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/target_compile_options.html#command:target_compile_options" title="(in CMake v4.1.2)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_compile_options()</span></code></a>
 command. The property is required when <code class="docutils literal notranslate"><span class="pre">rulesFile</span></code> is <code class="docutils literal notranslate"><span class="pre">generic</span></code>,
 otherwise optional, but the array can be empty.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">linkOptions</span></code></dt><dd><p>A list of linker options to pass when building this dependency. It is
 used as a parameter for the
-<span class="target" id="index-1-command:cmake:command:target_link_options"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/target_link_options.html#command:target_link_options" title="(in CMake v4.1.1)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_link_options()</span></code></a>
+<span class="target" id="index-1-command:cmake:command:target_link_options"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/target_link_options.html#command:target_link_options" title="(in CMake v4.1.2)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_link_options()</span></code></a>
 command. The property is required when <code class="docutils literal notranslate"><span class="pre">rulesFile</span></code> is <code class="docutils literal notranslate"><span class="pre">generic</span></code>,
 otherwise optional, but the array can be empty.</p>
 </dd>

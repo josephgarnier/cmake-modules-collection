@@ -15,6 +15,7 @@ Synopsis
 
 .. parsed-literal::
 
+    debug(`DUMP_TARGETS`_ <root-dir>)
     debug(`DUMP_VARIABLES`_ [EXCLUDE_REGEX <regular-expression>])
     debug(`DUMP_PROPERTIES`_ [])
     debug(`DUMP_TARGET_PROPERTIES`_ <target-name>)
@@ -22,6 +23,27 @@ Synopsis
 
 Usage
 ^^^^^
+
+.. signature::
+  debug(DUMP_TARGETS <root-dir>)
+
+  Print all buildsystem targets defined in the given directory ``<root-dir>``
+  and its subdirectories. The output displays each target prefixed by its
+  relative directory path from
+  :cmake:variable:`CMAKE_SOURCE_DIR <cmake:variable:CMAKE_SOURCE_DIR>`.
+
+  Example usage:
+
+  .. code-block:: cmake
+
+    debug(DUMP_TARGETS "${CMAKE_SOURCE_DIR}")
+    # output is:
+    #   -- [] Experimental
+    #   -- [] Nightly
+    #   ...
+    #   -- [tests/data] static_mock_lib
+    #   -- [tests/data] shared_mock_lib
+    #   -- [doc] doc
 
 .. signature::
   debug(DUMP_VARIABLES [EXCLUDE_REGEX <regular-expression>])
@@ -217,7 +239,7 @@ include(CMakePrintHelpers)
 # Public function of this module
 function(debug)
   set(options DUMP_VARIABLES DUMP_PROPERTIES)
-  set(one_value_args EXCLUDE_REGEX DUMP_TARGET_PROPERTIES DUMP_PROJECT_VARIABLES)
+  set(one_value_args DUMP_TARGETS EXCLUDE_REGEX DUMP_TARGET_PROPERTIES DUMP_PROJECT_VARIABLES)
   set(multi_value_args "")
   cmake_parse_arguments(DB "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
   
@@ -225,7 +247,9 @@ function(debug)
     message(FATAL_ERROR "Unrecognized arguments: \"${DB_UNPARSED_ARGUMENTS}\"!")
   endif()
 
-  if(${DB_DUMP_VARIABLES})
+  if(DEFINED DB_DUMP_TARGETS)
+    _debug_dump_targets()
+  elseif(${DB_DUMP_VARIABLES})
     _debug_dump_variables()
   elseif(${DB_DUMP_PROPERTIES})
     _debug_dump_properties()
@@ -237,6 +261,30 @@ function(debug)
     message(FATAL_ERROR "The operation name or arguments are missing!")
   endif()
 endfunction()
+
+#------------------------------------------------------------------------------
+# Internal usage
+macro(_debug_dump_targets)
+  if(NOT DEFINED DB_DUMP_TARGETS)
+    message(FATAL_ERROR "DUMP_TARGETS arguments is missing!")
+  endif()
+  if((NOT EXISTS "${DB_DUMP_TARGETS}")
+    OR (NOT IS_DIRECTORY "${DB_DUMP_TARGETS}"))
+      message(FATAL_ERROR "Given path: ${DB_DUMP_TARGETS} does not refer to an existing path or directory on disk!")
+  endif()
+
+  get_directory_property(targets DIRECTORY "${DB_DUMP_TARGETS}" BUILDSYSTEM_TARGETS)
+  file(RELATIVE_PATH rel_dir_path "${CMAKE_SOURCE_DIR}" "${DB_DUMP_TARGETS}")
+  foreach(target IN ITEMS ${targets})
+    message(STATUS "[${rel_dir_path}] ${target}")
+  endforeach()
+
+  get_directory_property(subdirs DIRECTORY "${DB_DUMP_TARGETS}" SUBDIRECTORIES)
+  foreach(subdir IN ITEMS ${subdirs})
+    set(DB_DUMP_TARGETS "${subdir}")
+    _debug_dump_targets()
+  endforeach()
+endmacro()
 
 #------------------------------------------------------------------------------
 # Internal usage
