@@ -388,6 +388,16 @@ function(${CMAKETEST_TEST})
     )
   endfunction()
 
+  ct_add_section(NAME "throws_if_arg_root_dir_is_not_a_diretory" EXPECTFAIL)
+  function(${CMAKETEST_SECTION})
+    directory(SCAN output
+      LIST_DIRECTORIES on
+      RELATIVE off
+      ROOT_DIR "${TESTS_DATA_DIR}/src/source_1.cpp"
+      INCLUDE_REGEX ".*"
+    )
+  endfunction()
+
   ct_add_section(NAME "throws_if_arg_regex_is_missing_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     directory(SCAN output

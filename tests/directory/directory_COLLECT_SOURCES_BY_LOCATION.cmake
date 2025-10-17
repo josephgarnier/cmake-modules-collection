@@ -154,6 +154,17 @@ function(${CMAKETEST_TEST})
     )
   endfunction()
 
+  ct_add_section(NAME "throws_if_arg_src_dir_is_not_a_directory" EXPECTFAIL)
+  function(${CMAKETEST_SECTION})
+    directory(COLLECT_SOURCES_BY_LOCATION
+      SRC_DIR "${TESTS_DATA_DIR}/src/source_1.cpp"
+      SRC_SOURCE_FILES src_sources
+      SRC_HEADER_FILES src_headers
+      INCLUDE_DIR "${TESTS_DATA_DIR}/include"
+      INCLUDE_HEADER_FILES include_headers
+    )
+  endfunction()
+
   ct_add_section(NAME "throws_if_arg_src_source_files_var_is_missing_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     directory(COLLECT_SOURCES_BY_LOCATION
@@ -279,6 +290,17 @@ function(${CMAKETEST_TEST})
       SRC_SOURCE_FILES src_sources
       SRC_HEADER_FILES src_headers
       INCLUDE_DIR "fake/directory"
+      INCLUDE_HEADER_FILES include_headers
+    )
+  endfunction()
+
+  ct_add_section(NAME "throws_if_arg_include_dir_is_not_a_directory" EXPECTFAIL)
+  function(${CMAKETEST_SECTION})
+    directory(COLLECT_SOURCES_BY_LOCATION
+      SRC_DIR "${TESTS_DATA_DIR}/src"
+      SRC_SOURCE_FILES src_sources
+      SRC_HEADER_FILES src_headers
+      INCLUDE_DIR "${TESTS_DATA_DIR}/src/source_1.cpp"
       INCLUDE_HEADER_FILES include_headers
     )
   endfunction()

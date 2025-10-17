@@ -385,6 +385,16 @@ function(${CMAKETEST_TEST})
     )
   endfunction()
 
+  ct_add_section(NAME "throws_if_arg_root_dir_is_not_a_diretory" EXPECTFAIL)
+  function(${CMAKETEST_SECTION})
+    dependency(IMPORT "${lib_target_name}"
+      SHARED
+      ${build_type_arg}
+      ROOT_DIR "${TESTS_DATA_DIR}/src/source_1.cpp"
+      INCLUDE_DIR "${TESTS_DATA_DIR}/include"
+    )
+  endfunction()
+
   ct_add_section(NAME "throws_if_arg_include_dir_is_missing_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     dependency(IMPORT "${lib_target_name}"

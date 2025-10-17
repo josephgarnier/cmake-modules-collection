@@ -546,6 +546,18 @@ function(${CMAKETEST_TEST})
     )
   endfunction()
 
+  ct_add_section(NAME "throws_if_arg_root_dir_is_not_a_diretory" EXPECTFAIL)
+  function(${CMAKETEST_SECTION})
+    set(lib_name "shared_mock_lib")
+    directory(FIND_LIB output_lib
+      FIND_IMPLIB output_implib
+      NAME "${lib_name}"
+      SHARED
+      RELATIVE off
+      ROOT_DIR "${TESTS_DATA_DIR}/src/source_1.cpp"
+    )
+  endfunction()
+
   ct_add_section(NAME "throws_if_arg_root_dir_is_not_a_directory" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     set(lib_name "shared_mock_lib")
