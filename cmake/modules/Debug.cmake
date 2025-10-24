@@ -16,7 +16,7 @@ Synopsis
 .. parsed-literal::
 
     debug(`DUMP_TARGETS`_ <root-dir>)
-    debug(`DUMP_VARIABLES`_ [EXCLUDE_REGEX <regular-expression>])
+    debug(`DUMP_VARIABLES`_ [<INCLUDE_REGEX|EXCLUDE_REGEX> <regular-expression>])
     debug(`DUMP_PROPERTIES`_ [])
     debug(`DUMP_TARGET_PROPERTIES`_ <target-name>)
 
@@ -45,20 +45,15 @@ Usage
     #   -- [doc] doc
 
 .. signature::
-  debug(DUMP_VARIABLES [EXCLUDE_REGEX <regular-expression>])
+  debug(DUMP_VARIABLES [<INCLUDE_REGEX|EXCLUDE_REGEX> <regular-expression>])
 
-  Disaply all CMake variables except those that match with the optional
-  ``<regular-expression>`` parameter.
+  Print the list of all currently defined CMake variables and their values,
+  useful for debugging and inspecting project scope variables. The output is
+  sorted alphabetically and contains no duplicates.
 
-  Display all defined CMake variables, optionally excluding those whose names
-  match a given regular expression.
-
-  This command retrieves all variables currently defined in the CMake
-  context and prints their names and values using :cmake:command:`message() <cmake:command:message()>`.
-  The output is sorted alphabetically and contains no duplicates.
-
-  If ``<regular-expression>`` is provided, any variable whose name matches the
-  given expression is omitted from the output.
+  If ``INCLUDE_REGEX`` is provided, only variables whose names match the given
+  regular expression are printed. If ``EXCLUDE_REGEX`` is provided, variables
+  whose names match the given expression are omitted from the output.
 
   Example usage:
 
@@ -72,9 +67,14 @@ Usage
     #   PROJECT_NAME=MyProject
     #   ...
 
-    debug(DUMP_VARIABLES
-      EXCLUDE_REGEX "^CMAKE_"
-    )
+    debug(DUMP_VARIABLES INCLUDE_REGEX "^PROJECT_")
+    # output is:
+    #   ...
+    #   PROJECT_IS_TOP_LEVEL=ON
+    #   PROJECT_NAME=MyProject
+    #   ...
+
+    debug(DUMP_VARIABLES EXCLUDE_REGEX "^CMAKE_")
     # output is:
     #   BUILD_SHARED_LIBS=ON
     #   PROJECT_NAME=MyProject
@@ -207,7 +207,7 @@ include(CMakePrintHelpers)
 # Public function of this module
 function(debug)
   set(options DUMP_VARIABLES DUMP_PROPERTIES)
-  set(one_value_args DUMP_TARGETS EXCLUDE_REGEX DUMP_TARGET_PROPERTIES DUMP_PROJECT_VARIABLES)
+  set(one_value_args DUMP_TARGETS INCLUDE_REGEX EXCLUDE_REGEX DUMP_TARGET_PROPERTIES)
   set(multi_value_args "")
   cmake_parse_arguments(DB "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
   
@@ -258,13 +258,24 @@ macro(_debug_dump_variables)
   if(NOT ${DB_DUMP_VARIABLES})
     message(FATAL_ERROR "DUMP_VARIABLES arguments is missing!")
   endif()
+  if("INCLUDE_REGEX" IN_LIST DB_KEYWORDS_MISSING_VALUES)
+    message(FATAL_ERROR "INCLUDE_REGEX argument is missing or need a value!")
+  endif()
+  if("EXCLUDE_REGEX" IN_LIST DB_KEYWORDS_MISSING_VALUES)
+    message(FATAL_ERROR "EXCLUDE_REGEX argument is missing or need a value!")
+  endif()
+  if((DEFINED DB_INCLUDE_REGEX)
+    AND (DEFINED DB_EXCLUDE_REGEX))
+    message(FATAL_ERROR "INCLUDE_REGEX|EXCLUDE_REGEX cannot be used together!")
+  endif()
 
   get_cmake_property(variable_names VARIABLES)
   list(SORT variable_names)
   list(REMOVE_DUPLICATES variable_names)
   foreach (variable_name IN ITEMS ${variable_names})
-    if((NOT DEFINED DB_EXCLUDE_REGEX)
-      OR (NOT "${variable_name}" MATCHES "${DB_EXCLUDE_REGEX}"))
+    if((NOT DEFINED DB_INCLUDE_REGEX AND NOT DEFINED DB_EXCLUDE_REGEX)
+      OR (DEFINED DB_INCLUDE_REGEX AND "${variable_name}" MATCHES "${DB_INCLUDE_REGEX}")
+      OR (DEFINED DB_EXCLUDE_REGEX AND NOT "${variable_name}" MATCHES "${DB_EXCLUDE_REGEX}"))
       message(STATUS "${variable_name}= ${${variable_name}}")
     endif()
   endforeach()

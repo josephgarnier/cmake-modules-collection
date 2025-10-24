@@ -77,7 +77,7 @@ it into components using the following criteria:</p>
 <ul class="simple">
 <li><p>Transitions between lowercase and uppercase letters
 (e.g., <code class="docutils literal notranslate"><span class="pre">MyValue</span></code> becomes <code class="docutils literal notranslate"><span class="pre">My;Value</span></code>).</p></li>
-<li><p>Non-alphanumeric characters, as defined by the <span class="target" id="index-0-command:cmake:command:string"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/string.html#make-c-identifier" title="(in CMake v4.1.1)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">string(MAKE_C_IDENTIFIER)</span></code></a>
+<li><p>Non-alphanumeric characters, as defined by the <span class="target" id="index-0-command:cmake:command:string"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/string.html#make-c-identifier" title="(in CMake v4.2.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">string(MAKE_C_IDENTIFIER)</span></code></a>
 transformation in CMake.</p></li>
 </ul>
 <p>The resulting list is stored in <code class="docutils literal notranslate"><span class="pre">&lt;output-list-var&gt;</span></code>. If no split point is
@@ -121,7 +121,7 @@ option is provided.</p>
 <div><dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">START_CASE</span></code></dt><dd><p>Converts each word to Start Case (first letter uppercase, others lowercase).</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">C_IDENTIFIER_UPPER</span></code></dt><dd><p>Applies a transformation inspired by <span class="target" id="index-1-command:cmake:command:string"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/string.html#make-c-identifier" title="(in CMake v4.1.1)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">string(MAKE_C_IDENTIFIER)</span></code></a>:
+<dt><code class="docutils literal notranslate"><span class="pre">C_IDENTIFIER_UPPER</span></code></dt><dd><p>Applies a transformation inspired by <span class="target" id="index-1-command:cmake:command:string"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/string.html#make-c-identifier" title="(in CMake v4.2.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">string(MAKE_C_IDENTIFIER)</span></code></a>:
 each word is converted to uppercase and suffixed with an underscore.
 If the first character is a digit, an underscore is also prepended to
 the result.</p>
