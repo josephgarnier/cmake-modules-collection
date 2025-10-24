@@ -19,7 +19,6 @@ Synopsis
     debug(`DUMP_VARIABLES`_ [EXCLUDE_REGEX <regular-expression>])
     debug(`DUMP_PROPERTIES`_ [])
     debug(`DUMP_TARGET_PROPERTIES`_ <target-name>)
-    debug(`DUMP_PROJECT_VARIABLES`_ <project-name>)
 
 Usage
 ^^^^^
@@ -139,37 +138,6 @@ Usage
     #     my_library.INTERFACE_INCLUDE_DIRECTORIES = "include"
     #     ...
     #   -----
-    #
-
-.. signature::
-  debug(DUMP_PROJECT_VARIABLES <project-name>)
-
-  Display all global CMake variables related to the current project and
-  prefixed with ``<project-name>_``.
-
-  This command prints the values of all defined variables whose name starts
-  with the current ``<project-name>_``. This relies on the naming convention
-  that project-specific variables are prefixed with the project name followed
-  by an underscore.
-
-  This command is useful for debugging and inspecting variables that are
-  explicitly scoped to the project. It filters out unrelated variables
-  defined by CMake or third-party scripts.
-
-  Example usage:
-
-  .. code-block:: cmake
-
-    debug(DUMP_PROJECT_VARIABLES "my_project")
-    # output is:
-    #
-    #   -----
-    #   Variables for PROJECT my_project:
-    #     my_project_SOURCE_DIR = "/home/user/my_project/src"
-    #     my_project_BUILD_DIR = "/home/user/my_project/build"
-    #     ...
-    #   -----
-    #
 
 Additional commands
 ^^^^^^^^^^^^^^^^^^^
@@ -255,8 +223,6 @@ function(debug)
     _debug_dump_properties()
   elseif(DEFINED DB_DUMP_TARGET_PROPERTIES)
     _debug_dump_target_properties()
-  elseif(DEFINED DB_DUMP_PROJECT_VARIABLES)
-    _debug_dump_project_variables()
   else()
     message(FATAL_ERROR "The operation name or arguments are missing!")
   endif()
@@ -378,32 +344,6 @@ macro(_debug_dump_target_properties)
     if(${propertie_set})
       get_target_property(propertie_value "${DB_DUMP_TARGET_PROPERTIES}" "${propertie_name}")
       message("${DB_DUMP_TARGET_PROPERTIES}.${propertie_name} = \"${propertie_value}\"")
-    endif()
-  endforeach()
-  list(POP_BACK CMAKE_MESSAGE_INDENT)
-  list(POP_BACK CMAKE_MESSAGE_INDENT)
-  message("-----")
-  message("")
-endmacro()
-
-#------------------------------------------------------------------------------
-# Internal usage
-macro(_debug_dump_project_variables)
-  if(NOT DEFINED DB_DUMP_PROJECT_VARIABLES)
-    message(FATAL_ERROR "DUMP_PROJECT_VARIABLES arguments is missing!")
-  endif()
-
-  get_cmake_property(variable_names VARIABLES)
-  list(SORT variable_names)
-  
-  message("")
-  message("-----")
-  list(APPEND CMAKE_MESSAGE_INDENT " ")
-  message("Variables for PROJECT ${DB_DUMP_PROJECT_VARIABLES}:")
-  list(APPEND CMAKE_MESSAGE_INDENT "  ")
-  foreach (variable_name IN ITEMS ${variable_names})
-    if("${variable_name}" MATCHES "${DB_DUMP_PROJECT_VARIABLES}_")
-      message("${variable_name} = \"${${variable_name}}\"")
     endif()
   endforeach()
   list(POP_BACK CMAKE_MESSAGE_INDENT)
