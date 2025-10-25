@@ -26,9 +26,9 @@ Usage
 .. signature::
   debug(DUMP_TARGETS <root-dir>)
 
-  Print all buildsystem targets defined in the given directory ``<root-dir>``
-  and its subdirectories. The output displays each target prefixed by its
-  relative directory path from
+  Print all buildsystem and imported targets defined in the given directory
+  ``<root-dir>`` and its subdirectories. The output displays each target
+  prefixed by its relative directory path from
   :cmake:variable:`CMAKE_SOURCE_DIR <cmake:variable:CMAKE_SOURCE_DIR>`.
 
   Example usage:
@@ -37,12 +37,13 @@ Usage
 
     debug(DUMP_TARGETS "${CMAKE_SOURCE_DIR}")
     # output is:
-    #   -- [] Experimental
-    #   -- [] Nightly
+    #   -- [][Buildsystem] Experimental
+    #   -- [][Buildsystem] Nightly
     #   ...
-    #   -- [tests/data] static_mock_lib
-    #   -- [tests/data] shared_mock_lib
-    #   -- [doc] doc
+    #   -- [tests/data][Buildsystem] static_mock_lib
+    #   -- [tests/data][Buildsystem] shared_mock_lib
+    #   -- [doc][Buildsystem] doc
+    #   -- [src][Imported   ] Qt6::Platform
 
 .. signature::
   debug(DUMP_VARIABLES [<INCLUDE_REGEX|EXCLUDE_REGEX> <regular-expression>])
@@ -239,10 +240,15 @@ macro(_debug_dump_targets)
       message(FATAL_ERROR "Given path: ${DB_DUMP_TARGETS} does not refer to an existing path or directory on disk!")
   endif()
 
-  get_directory_property(targets DIRECTORY "${DB_DUMP_TARGETS}" BUILDSYSTEM_TARGETS)
+  get_directory_property(local_targets DIRECTORY "${DB_DUMP_TARGETS}" BUILDSYSTEM_TARGETS)
+  get_directory_property(imp_targets DIRECTORY "${DB_DUMP_TARGETS}" IMPORTED_TARGETS)
   file(RELATIVE_PATH rel_dir_path "${CMAKE_SOURCE_DIR}" "${DB_DUMP_TARGETS}")
-  foreach(target IN ITEMS ${targets})
-    message(STATUS "[${rel_dir_path}] ${target}")
+
+  foreach(target IN ITEMS ${local_targets})
+    message(STATUS "[${rel_dir_path}][Buildsystem] ${target}")
+  endforeach()
+  foreach(target IN ITEMS ${imp_targets})
+    message(STATUS "[${rel_dir_path}][Imported   ] ${target}")
   endforeach()
 
   get_directory_property(subdirs DIRECTORY "${DB_DUMP_TARGETS}" SUBDIRECTORIES)

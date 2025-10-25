@@ -75,9 +75,9 @@ debug(<a class="reference internal" href="#dump-target-properties">DUMP_TARGET_P
 <dl class="cmake signature">
 <dt class="sig sig-object cmake" id="dump-targets">
 <span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">debug(</span></span><span class="no"><span class="pre">DUMP_TARGETS</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;root-dir&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#dump-targets" title="Link to this definition">¶</a></dt>
-<dd><p>Print all buildsystem targets defined in the given directory <code class="docutils literal notranslate"><span class="pre">&lt;root-dir&gt;</span></code>
-and its subdirectories. The output displays each target prefixed by its
-relative directory path from
+<dd><p>Print all buildsystem and imported targets defined in the given directory
+<code class="docutils literal notranslate"><span class="pre">&lt;root-dir&gt;</span></code> and its subdirectories. The output displays each target
+prefixed by its relative directory path from
 <span class="target" id="index-0-variable:cmake:variable:CMAKE_SOURCE_DIR"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/variable/CMAKE_SOURCE_DIR.html#variable:CMAKE_SOURCE_DIR" title="(in CMake v4.2.0)"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">CMAKE_SOURCE_DIR</span></code></a>.</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">debug(</span><span class="no">DUMP_TARGETS</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}&quot;</span><span class="nf">)</span>
@@ -88,6 +88,7 @@ relative directory path from
 <span class="c">#   -- [tests/data] static_mock_lib</span>
 <span class="c">#   -- [tests/data] shared_mock_lib</span>
 <span class="c">#   -- [doc] doc</span>
+<span class="c">#   -- [src] Qt6::Platform (imported)</span>
 </pre></div>
 </div>
 </dd></dl>
