@@ -16,50 +16,68 @@ function(${CMAKETEST_TEST})
   include(Print)
 
   # Functionalities checking
-  ct_add_section(NAME "print_without_mode")
+  ct_add_section(NAME "print_empty_message")
   function(${CMAKETEST_SECTION})
-    set(input "")
-    print(STRINGS "${input}")
-    ct_assert_prints("")
 
-    set(input
-      "apple"
-      "banana"
-      "orange"
-      "carrot"
-      "strawberry"
-      "pineapple"
-      "grape"
-      "lemon"
-      "watermelon")
-    print(STRINGS "${input}")
-    ct_assert_prints("apple ; banana ; orange ; carrot ; strawberry ; pineapple ; grape ; lemon ; watermelon")
+    ct_add_section(NAME "without_mode")
+    function(${CMAKETEST_SECTION})
+      print(STRINGS "")
+      ct_assert_prints("")
 
-    print(STRINGS "${input}" INDENT)
-    ct_assert_prints("apple ; banana ; orange ; carrot ; strawberry ; pineapple ; grape ; lemon ; watermelon") # This function ignores the indentation
+      print(STRINGS "" INDENT)
+      ct_assert_prints("")
+    endfunction()
+
+    ct_add_section(NAME "with_mode")
+    function(${CMAKETEST_SECTION})
+      print(STATUS STRINGS "")
+      ct_assert_prints("") # This function ignores the status
+
+      print(STATUS STRINGS "" INDENT)
+      ct_assert_prints("") # This function ignores the status
+    endfunction()
   endfunction()
 
-  ct_add_section(NAME "print_with_status_mode")
+  ct_add_section(NAME "print_strings")
   function(${CMAKETEST_SECTION})
-    set(input "")
-    print(STATUS STRINGS "${input}")
-    ct_assert_prints("") # This function ignores the status
 
-    set(input
-      "apple"
-      "banana"
-      "orange"
-      "carrot"
-      "strawberry"
-      "pineapple"
-      "grape"
-      "lemon"
-      "watermelon")
-    print(STATUS STRINGS "${input}")
-    ct_assert_prints("apple ; banana ; orange ; carrot ; strawberry ; pineapple ; grape ; lemon ; watermelon") # This function ignores the status
+    ct_add_section(NAME "without_mode")
+    function(${CMAKETEST_SECTION})
+      set(input
+        "apple"
+        "banana"
+        "orange"
+        "carrot"
+        "strawberry"
+        "pineapple"
+        "grape"
+        "lemon"
+        "watermelon")
+      print(STRINGS "${input}")
+      ct_assert_prints("apple ; banana ; orange ; carrot ; strawberry ; pineapple ; grape ; lemon ; watermelon") # This function ignores the indentation
 
-    print(STATUS STRINGS "${input}" INDENT)
-    ct_assert_prints("apple ; banana ; orange ; carrot ; strawberry ; pineapple ; grape ; lemon ; watermelon") # This function ignores the indentation and the status
+      print(STRINGS "${input}" INDENT)
+      ct_assert_prints("apple ; banana ; orange ; carrot ; strawberry ; pineapple ; grape ; lemon ; watermelon") # This function ignores the indentation
+    endfunction()
+
+    ct_add_section(NAME "with_mode")
+    function(${CMAKETEST_SECTION})
+      set(input
+        "apple"
+        "banana"
+        "orange"
+        "carrot"
+        "strawberry"
+        "pineapple"
+        "grape"
+        "lemon"
+        "watermelon")
+      print(STATUS STRINGS "${input}")
+      ct_assert_prints("apple ; banana ; orange ; carrot ; strawberry ; pineapple ; grape ; lemon ; watermelon") # This function ignores the status
+
+      print(STATUS STRINGS "${input}" INDENT)
+      ct_assert_prints("apple ; banana ; orange ; carrot ; strawberry ; pineapple ; grape ; lemon ; watermelon") # This function ignores the indentation and the status
+    endfunction()
   endfunction()
 
   # Errors checking	
