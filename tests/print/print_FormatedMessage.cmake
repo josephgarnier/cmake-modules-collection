@@ -16,121 +16,275 @@ function(${CMAKETEST_TEST})
   include(Print)
 
   # Functionalities checking
-  ct_add_section(NAME "message_without_directive")
+  ct_add_section(NAME "print_empty_message")
   function(${CMAKETEST_SECTION})
-    set(input "")
-    print("")
-    ct_assert_prints("")
-    
-    set(input "a text to print")
-    print("${input}")
-    ct_assert_prints("${input}")
+  
+    ct_add_section(NAME "without_mode")
+    function(${CMAKETEST_SECTION})
+      set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
+      print("")
+      ct_assert_prints("")
+    endfunction()
 
-    print(STATUS "${input}")
-    ct_assert_prints("${input}") # This function ignores the status mode
+    ct_add_section(NAME "with_mode")
+    function(${CMAKETEST_SECTION})
+      set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
+      print(STATUS "")
+      ct_assert_prints("")
 
-    print(STATUS "${input}" "unused argument")
-    ct_assert_prints("${input}") # This function ignores the status mode
+      # The extra argument should be ignored
+      print(STATUS "" "extra argument")
+      ct_assert_prints("")
+    endfunction()
 
-    set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
-    set(input "../data/src/main.cpp")
-    print("" "${input}")
-    ct_assert_prints("")
   endfunction()
 
-  ct_add_section(NAME "message_with_ap_directive")
+  ct_add_section(NAME "print_message_without_directive")
   function(${CMAKETEST_SECTION})
-    set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
-    set(input "../data/src/main.cpp")
-    set(expected_result "${TESTS_DATA_DIR}/src/main.cpp")
 
-    print("Absolute: @ap@." "${input}")
-    ct_assert_prints("Absolute: ${expected_result}.")
+    ct_add_section(NAME "without_mode")
+    function(${CMAKETEST_SECTION})
+      set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
+      set(input "a text to print")
+      print("${input}")
+      ct_assert_prints("${input}")
+    endfunction()
 
-    print(STATUS "Absolute: @ap@." "${input}")
-    ct_assert_prints("Absolute: ${expected_result}.") # This function ignores the status mode
+    ct_add_section(NAME "with_mode")
+    function(${CMAKETEST_SECTION})
+      set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
+      set(input "a text to print")
+      print(STATUS "${input}")
+      ct_assert_prints("${input}") # This function ignores the status mode
+
+      # The extra argument should be ignored
+      print(STATUS "${input}" "extra argument")
+      ct_assert_prints("${input}") # This function ignores the status mode
+    endfunction()
   endfunction()
 
-  ct_add_section(NAME "message_with_rp_directive")
+  ct_add_section(NAME "print_message_with_ap_directive")
   function(${CMAKETEST_SECTION})
-    set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
-    set(input "${TESTS_DATA_DIR}/src/main.cpp")
-    set(expected_result "../data/src/main.cpp")
 
-    print("Relative: @rp@." "${input}")
-    ct_assert_prints("Relative: ${expected_result}.")
+    ct_add_section(NAME "without_mode")
+    function(${CMAKETEST_SECTION})
+      set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
+      set(input "../data/src/main.cpp")
+      set(expected_result "${TESTS_DATA_DIR}/src/main.cpp")
 
-    print(STATUS "Relative: @rp@." "${input}")
-    ct_assert_prints("Relative: ${expected_result}.") # This function ignores the status mode
+      print("Absolute: @ap@." "${input}")
+      ct_assert_prints("Absolute: ${expected_result}.")
+
+      # Test with empty input
+      print("Absolute: @ap@." "")
+      ct_assert_prints("Absolute: .")
+    endfunction()
+
+    ct_add_section(NAME "with_mode")
+    function(${CMAKETEST_SECTION})
+      set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
+      set(input "../data/src/main.cpp")
+      set(expected_result "${TESTS_DATA_DIR}/src/main.cpp")
+
+      print(STATUS "Absolute: @ap@." "${input}")
+      ct_assert_prints("Absolute: ${expected_result}.") # This function ignores the status mode
+
+      # Test with empty input
+      print(STATUS "Absolute: @ap@." "")
+      ct_assert_prints("Absolute: .") # This function ignores the status mode
+    endfunction()
   endfunction()
 
-  ct_add_section(NAME "message_with_apl_directive")
+  ct_add_section(NAME "print_message_with_rp_directive")
   function(${CMAKETEST_SECTION})
-    set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
-    set(input
-      "../data/src/main.cpp"
-      "../data/src/source_1.cpp"
-      "../data/src/source_2.cpp"
-      "../data/src/source_3.cpp"
-      "../data/src/source_4.cpp"
-      "../data/src/source_5.cpp"
-      "../data/src/sub_1/source_sub_1.cpp"
-      "../data/src/sub_2/source_sub_2.cpp")
 
-    print("Absolute path list: @apl@." "${input}")
-    ct_assert_prints("Absolute path list: ${TESTS_DATA_DIR}/src/main.cpp, ${TESTS_DATA_DIR}/src/source_1.cpp, ${TESTS_DATA_DIR}/src/source_2.cpp, ${TESTS_DATA_DIR}/src/source_3.cpp, ${TESTS_DATA_DIR}/src/source_4.cpp, ${TESTS_DATA_DIR}/src/source_5.cpp, ${TESTS_DATA_DIR}/src/sub_1/source_sub_1.cpp, ${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp.")
+    ct_add_section(NAME "without_mode")
+    function(${CMAKETEST_SECTION})
+      set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
+      set(input "${TESTS_DATA_DIR}/src/main.cpp")
+      set(expected_result "../data/src/main.cpp")
 
-    print(STATUS "Absolute path list: @apl@." "${input}")
-    ct_assert_prints("Absolute path list: ${TESTS_DATA_DIR}/src/main.cpp, ${TESTS_DATA_DIR}/src/source_1.cpp, ${TESTS_DATA_DIR}/src/source_2.cpp, ${TESTS_DATA_DIR}/src/source_3.cpp, ${TESTS_DATA_DIR}/src/source_4.cpp, ${TESTS_DATA_DIR}/src/source_5.cpp, ${TESTS_DATA_DIR}/src/sub_1/source_sub_1.cpp, ${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp.") # This function ignores the status mode
+      print("Relative: @rp@." "${input}")
+      ct_assert_prints("Relative: ${expected_result}.")
+
+      # Test with empty input
+      print("Relative: @rp@." "")
+      ct_assert_prints("Relative: .")
+    endfunction()
+
+    ct_add_section(NAME "with_mode")
+    function(${CMAKETEST_SECTION})
+      set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
+      set(input "${TESTS_DATA_DIR}/src/main.cpp")
+      set(expected_result "../data/src/main.cpp")
+
+      print(STATUS "Relative: @rp@." "${input}")
+      ct_assert_prints("Relative: ${expected_result}.") # This function ignores the status mode
+
+      # Test with empty input
+      print(STATUS "Relative: @rp@." "")
+      ct_assert_prints("Relative: .") # This function ignores the status mode
+    endfunction()
   endfunction()
 
-  ct_add_section(NAME "message_with_rpl_directive")
+  ct_add_section(NAME "print_message_with_apl_directive")
   function(${CMAKETEST_SECTION})
-    set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
-    set(input
-      "${TESTS_DATA_DIR}/src/main.cpp"
-      "${TESTS_DATA_DIR}/src/source_1.cpp"
-      "${TESTS_DATA_DIR}/src/source_2.cpp"
-      "${TESTS_DATA_DIR}/src/source_3.cpp"
-      "${TESTS_DATA_DIR}/src/source_4.cpp"
-      "${TESTS_DATA_DIR}/src/source_5.cpp"
-      "${TESTS_DATA_DIR}/src/sub_1/source_sub_1.cpp"
-      "${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp")
+  
+    ct_add_section(NAME "without_mode")
+    function(${CMAKETEST_SECTION})
+      set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
+      set(input
+        "../data/src/main.cpp"
+        "../data/src/source_1.cpp"
+        "../data/src/source_2.cpp"
+        "../data/src/source_3.cpp"
+        "../data/src/source_4.cpp"
+        "../data/src/source_5.cpp"
+        "../data/src/sub_1/source_sub_1.cpp"
+        "../data/src/sub_2/source_sub_2.cpp")
 
-    print("Relative path list: @rpl@." "${input}")
-    ct_assert_prints("Relative path list: ../data/src/main.cpp, ../data/src/source_1.cpp, ../data/src/source_2.cpp, ../data/src/source_3.cpp, ../data/src/source_4.cpp, ../data/src/source_5.cpp, ../data/src/sub_1/source_sub_1.cpp, ../data/src/sub_2/source_sub_2.cpp.")
+      print("Absolute path list: @apl@." "${input}")
+      ct_assert_prints("Absolute path list: ${TESTS_DATA_DIR}/src/main.cpp, ${TESTS_DATA_DIR}/src/source_1.cpp, ${TESTS_DATA_DIR}/src/source_2.cpp, ${TESTS_DATA_DIR}/src/source_3.cpp, ${TESTS_DATA_DIR}/src/source_4.cpp, ${TESTS_DATA_DIR}/src/source_5.cpp, ${TESTS_DATA_DIR}/src/sub_1/source_sub_1.cpp, ${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp.")
 
-    print(STATUS "Relative path list: @rpl@." "${input}")
-    ct_assert_prints("Relative path list: ../data/src/main.cpp, ../data/src/source_1.cpp, ../data/src/source_2.cpp, ../data/src/source_3.cpp, ../data/src/source_4.cpp, ../data/src/source_5.cpp, ../data/src/sub_1/source_sub_1.cpp, ../data/src/sub_2/source_sub_2.cpp.") # This function ignores the status mode
+      # Test with empty input
+      print("Absolute path list: @apl@." "")
+      ct_assert_prints("Absolute path list: .")
+    endfunction()
+
+    ct_add_section(NAME "with_mode")
+    function(${CMAKETEST_SECTION})
+      set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
+      set(input
+        "../data/src/main.cpp"
+        "../data/src/source_1.cpp"
+        "../data/src/source_2.cpp"
+        "../data/src/source_3.cpp"
+        "../data/src/source_4.cpp"
+        "../data/src/source_5.cpp"
+        "../data/src/sub_1/source_sub_1.cpp"
+        "../data/src/sub_2/source_sub_2.cpp")
+
+      print(STATUS "Absolute path list: @apl@." "${input}")
+      ct_assert_prints("Absolute path list: ${TESTS_DATA_DIR}/src/main.cpp, ${TESTS_DATA_DIR}/src/source_1.cpp, ${TESTS_DATA_DIR}/src/source_2.cpp, ${TESTS_DATA_DIR}/src/source_3.cpp, ${TESTS_DATA_DIR}/src/source_4.cpp, ${TESTS_DATA_DIR}/src/source_5.cpp, ${TESTS_DATA_DIR}/src/sub_1/source_sub_1.cpp, ${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp.") # This function ignores the status mode
+      
+      # Test with empty input
+      print(STATUS "Absolute path list: @apl@." "")
+      ct_assert_prints("Absolute path list: .") # This function ignores the status mode
+    endfunction()
   endfunction()
 
-  ct_add_section(NAME "message_with_mixed_directives")
+  ct_add_section(NAME "print_message_with_rpl_directive")
   function(${CMAKETEST_SECTION})
-    set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
-    
-    # RP + AP
-    set(input_relative_path "../data/src/main.cpp")
-    set(input_absolute_path "${TESTS_DATA_DIR}/src/main.cpp")
-    print("Relative: @rp@, Absolute: @ap@." "${input_absolute_path}" "${input_relative_path}")
-    ct_assert_prints("Relative: ../data/src/main.cpp, Absolute: ${TESTS_DATA_DIR}/src/main.cpp.")
-    print(STATUS "Relative: @rp@, Absolute: @ap@." "${input_absolute_path}" "${input_relative_path}")
-    ct_assert_prints("Relative: ../data/src/main.cpp, Absolute: ${TESTS_DATA_DIR}/src/main.cpp.") # This function ignores the status mode
 
-    # RP + APL
-    set(input_relative_path_list
-      "../data/src/main.cpp"
-      "../data/src/source_1.cpp"
-      "../data/src/source_2.cpp"
-      "../data/src/source_3.cpp"
-      "../data/src/source_4.cpp"
-      "../data/src/source_5.cpp"
-      "../data/src/sub_1/source_sub_1.cpp"
-      "../data/src/sub_2/source_sub_2.cpp")
-    print("Relative: @rp@, Absolute path list: @apl@." "${input_absolute_path}" "${input_relative_path_list}")
-    ct_assert_prints("Relative: ../data/src/main.cpp, Absolute path list: ${TESTS_DATA_DIR}/src/main.cpp, ${TESTS_DATA_DIR}/src/source_1.cpp, ${TESTS_DATA_DIR}/src/source_2.cpp, ${TESTS_DATA_DIR}/src/source_3.cpp, ${TESTS_DATA_DIR}/src/source_4.cpp, ${TESTS_DATA_DIR}/src/source_5.cpp, ${TESTS_DATA_DIR}/src/sub_1/source_sub_1.cpp, ${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp.")
+    ct_add_section(NAME "without_mode")
+    function(${CMAKETEST_SECTION})
+      set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
+      set(input
+        "${TESTS_DATA_DIR}/src/main.cpp"
+        "${TESTS_DATA_DIR}/src/source_1.cpp"
+        "${TESTS_DATA_DIR}/src/source_2.cpp"
+        "${TESTS_DATA_DIR}/src/source_3.cpp"
+        "${TESTS_DATA_DIR}/src/source_4.cpp"
+        "${TESTS_DATA_DIR}/src/source_5.cpp"
+        "${TESTS_DATA_DIR}/src/sub_1/source_sub_1.cpp"
+        "${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp")
 
-    print(STATUS "Relative: @rp@, Absolute path list: @apl@." "${input_absolute_path}" "${input_relative_path_list}")
-    ct_assert_prints("Relative: ../data/src/main.cpp, Absolute path list: ${TESTS_DATA_DIR}/src/main.cpp, ${TESTS_DATA_DIR}/src/source_1.cpp, ${TESTS_DATA_DIR}/src/source_2.cpp, ${TESTS_DATA_DIR}/src/source_3.cpp, ${TESTS_DATA_DIR}/src/source_4.cpp, ${TESTS_DATA_DIR}/src/source_5.cpp, ${TESTS_DATA_DIR}/src/sub_1/source_sub_1.cpp, ${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp.") # This function ignores the status mode
+      print("Relative path list: @rpl@." "${input}")
+      ct_assert_prints("Relative path list: ../data/src/main.cpp, ../data/src/source_1.cpp, ../data/src/source_2.cpp, ../data/src/source_3.cpp, ../data/src/source_4.cpp, ../data/src/source_5.cpp, ../data/src/sub_1/source_sub_1.cpp, ../data/src/sub_2/source_sub_2.cpp.")
+
+      # Test with empty input
+      print("Relative path list: @rpl@." "")
+      ct_assert_prints("Relative path list: .")
+    endfunction()
+
+    ct_add_section(NAME "with_mode")
+    function(${CMAKETEST_SECTION})
+      set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
+      set(input
+        "${TESTS_DATA_DIR}/src/main.cpp"
+        "${TESTS_DATA_DIR}/src/source_1.cpp"
+        "${TESTS_DATA_DIR}/src/source_2.cpp"
+        "${TESTS_DATA_DIR}/src/source_3.cpp"
+        "${TESTS_DATA_DIR}/src/source_4.cpp"
+        "${TESTS_DATA_DIR}/src/source_5.cpp"
+        "${TESTS_DATA_DIR}/src/sub_1/source_sub_1.cpp"
+        "${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp")
+
+      print(STATUS "Relative path list: @rpl@." "${input}")
+      ct_assert_prints("Relative path list: ../data/src/main.cpp, ../data/src/source_1.cpp, ../data/src/source_2.cpp, ../data/src/source_3.cpp, ../data/src/source_4.cpp, ../data/src/source_5.cpp, ../data/src/sub_1/source_sub_1.cpp, ../data/src/sub_2/source_sub_2.cpp.") # This function ignores the status mode
+      
+      # Test with empty input
+      print(STATUS "Relative path list: @rpl@." "")
+      ct_assert_prints("Relative path list: .") # This function ignores the status mode
+    endfunction()
+  endfunction()
+
+  ct_add_section(NAME "print_message_with_mixed_directives")
+  function(${CMAKETEST_SECTION})
+  
+    ct_add_section(NAME "without_mode")
+    function(${CMAKETEST_SECTION})
+      set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
+      
+      # RP + AP
+      set(input_relative_path "../data/src/main.cpp")
+      set(input_absolute_path "${TESTS_DATA_DIR}/src/main.cpp")
+      print("Relative: @rp@, Absolute: @ap@." "${input_absolute_path}" "${input_relative_path}")
+      ct_assert_prints("Relative: ../data/src/main.cpp, Absolute: ${TESTS_DATA_DIR}/src/main.cpp.")
+
+      # Test RP + AP with empty input
+      print("Relative: @rp@, Absolute: @ap@." "" "")
+      ct_assert_prints("Relative: , Absolute: .")
+
+      # RP + APL
+      set(input_relative_path_list
+        "../data/src/main.cpp"
+        "../data/src/source_1.cpp"
+        "../data/src/source_2.cpp"
+        "../data/src/source_3.cpp"
+        "../data/src/source_4.cpp"
+        "../data/src/source_5.cpp"
+        "../data/src/sub_1/source_sub_1.cpp"
+        "../data/src/sub_2/source_sub_2.cpp")
+      print("Relative: @rp@, Absolute path list: @apl@." "${input_absolute_path}" "${input_relative_path_list}")
+      ct_assert_prints("Relative: ../data/src/main.cpp, Absolute path list: ${TESTS_DATA_DIR}/src/main.cpp, ${TESTS_DATA_DIR}/src/source_1.cpp, ${TESTS_DATA_DIR}/src/source_2.cpp, ${TESTS_DATA_DIR}/src/source_3.cpp, ${TESTS_DATA_DIR}/src/source_4.cpp, ${TESTS_DATA_DIR}/src/source_5.cpp, ${TESTS_DATA_DIR}/src/sub_1/source_sub_1.cpp, ${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp.")
+
+      # Test RP + APL with empty input
+      print("Relative: @rp@, Absolute path list: @apl@." "" "")
+      ct_assert_prints("Relative: , Absolute path list: .")
+    endfunction()
+
+    ct_add_section(NAME "with_mode")
+    function(${CMAKETEST_SECTION})
+      set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
+
+      # RP + AP
+      set(input_relative_path "../data/src/main.cpp")
+      set(input_absolute_path "${TESTS_DATA_DIR}/src/main.cpp")
+      print(STATUS "Relative: @rp@, Absolute: @ap@." "${input_absolute_path}" "${input_relative_path}")
+      ct_assert_prints("Relative: ../data/src/main.cpp, Absolute: ${TESTS_DATA_DIR}/src/main.cpp.") # This function ignores the status mode
+
+      # Test RP + AP with empty input
+      print(STATUS "Relative: @rp@, Absolute: @ap@." "" "")
+      ct_assert_prints("Relative: , Absolute: .") # This function ignores the status mode
+
+      # RP + APL
+      set(input_relative_path_list
+        "../data/src/main.cpp"
+        "../data/src/source_1.cpp"
+        "../data/src/source_2.cpp"
+        "../data/src/source_3.cpp"
+        "../data/src/source_4.cpp"
+        "../data/src/source_5.cpp"
+        "../data/src/sub_1/source_sub_1.cpp"
+        "../data/src/sub_2/source_sub_2.cpp")
+      print(STATUS "Relative: @rp@, Absolute path list: @apl@." "${input_absolute_path}" "${input_relative_path_list}")
+      ct_assert_prints("Relative: ../data/src/main.cpp, Absolute path list: ${TESTS_DATA_DIR}/src/main.cpp, ${TESTS_DATA_DIR}/src/source_1.cpp, ${TESTS_DATA_DIR}/src/source_2.cpp, ${TESTS_DATA_DIR}/src/source_3.cpp, ${TESTS_DATA_DIR}/src/source_4.cpp, ${TESTS_DATA_DIR}/src/source_5.cpp, ${TESTS_DATA_DIR}/src/sub_1/source_sub_1.cpp, ${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp.") # This function ignores the status mode
+
+      # Test RP + APL with empty input
+      print(STATUS "Relative: @rp@, Absolute path list: @apl@." "" "")
+      ct_assert_prints("Relative: , Absolute path list: .") # This function ignores the status mode
+    endfunction()
   endfunction()
 
   # Errors checking
