@@ -131,14 +131,11 @@ Usage
 
     debug(DUMP_TARGET_PROPERTIES my_library)
     # output is:
-    #
-    #   -----
-    #   Properties for TARGET my_library:
-    #     my_library.TYPE = "STATIC_LIBRARY"
-    #     my_library.SOURCES = "src/a.cpp;src/b.cpp"
-    #     my_library.INTERFACE_INCLUDE_DIRECTORIES = "include"
+    #   -- Properties for TARGET my_library:
+    #   --   my_library.TYPE = "STATIC_LIBRARY"
+    #   --   my_library.SOURCES = "src/a.cpp;src/b.cpp"
+    #   --   my_library.INTERFACE_INCLUDE_DIRECTORIES = "include"
     #     ...
-    #   -----
 
 Additional commands
 ^^^^^^^^^^^^^^^^^^^
@@ -351,20 +348,13 @@ macro(_debug_dump_target_properties)
   list(REMOVE_DUPLICATES propertie_names)
   list(SORT propertie_names)
 
-  message("")
-  message("-----")
-  list(APPEND CMAKE_MESSAGE_INDENT " ")
-  message("Properties for TARGET ${DB_DUMP_TARGET_PROPERTIES}:")
-  list(APPEND CMAKE_MESSAGE_INDENT "  ")
+  message(STATUS "Properties of TARGET ${DB_DUMP_TARGET_PROPERTIES}:")
   foreach(propertie_name IN ITEMS ${propertie_names})
-    get_property(propertie_set TARGET "${DB_DUMP_TARGET_PROPERTIES}" PROPERTY "${propertie_name}" SET)
+    get_property(propertie_set TARGET "${DB_DUMP_TARGET_PROPERTIES}"
+      PROPERTY "${propertie_name}" SET)
     if(${propertie_set})
       get_target_property(propertie_value "${DB_DUMP_TARGET_PROPERTIES}" "${propertie_name}")
-      message("${DB_DUMP_TARGET_PROPERTIES}.${propertie_name} = \"${propertie_value}\"")
+      message(STATUS "  ${DB_DUMP_TARGET_PROPERTIES}.${propertie_name} = \"${propertie_value}\"")
     endif()
   endforeach()
-  list(POP_BACK CMAKE_MESSAGE_INDENT)
-  list(POP_BACK CMAKE_MESSAGE_INDENT)
-  message("-----")
-  message("")
 endmacro()
