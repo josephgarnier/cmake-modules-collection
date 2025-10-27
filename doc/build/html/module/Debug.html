@@ -82,13 +82,13 @@ prefixed by its relative directory path from
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">debug(</span><span class="no">DUMP_TARGETS</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}&quot;</span><span class="nf">)</span>
 <span class="c"># output is:</span>
-<span class="c">#   -- [] Experimental</span>
-<span class="c">#   -- [] Nightly</span>
+<span class="c">#   -- [][Buildsystem] Experimental</span>
+<span class="c">#   -- [][Buildsystem] Nightly</span>
 <span class="c">#   ...</span>
-<span class="c">#   -- [tests/data] static_mock_lib</span>
-<span class="c">#   -- [tests/data] shared_mock_lib</span>
-<span class="c">#   -- [doc] doc</span>
-<span class="c">#   -- [src] Qt6::Platform (imported)</span>
+<span class="c">#   -- [tests/data][Buildsystem] static_mock_lib</span>
+<span class="c">#   -- [tests/data][Buildsystem] shared_mock_lib</span>
+<span class="c">#   -- [doc][Buildsystem] doc</span>
+<span class="c">#   -- [src][Imported   ] Qt6::Platform</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -167,14 +167,11 @@ known to trigger errors on access are excluded from the output.</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">debug(</span><span class="no">DUMP_TARGET_PROPERTIES</span><span class="w"> </span><span class="nb">my_library</span><span class="nf">)</span>
 <span class="c"># output is:</span>
-<span class="c">#</span>
-<span class="c">#   -----</span>
-<span class="c">#   Properties for TARGET my_library:</span>
-<span class="c">#     my_library.TYPE = &quot;STATIC_LIBRARY&quot;</span>
-<span class="c">#     my_library.SOURCES = &quot;src/a.cpp;src/b.cpp&quot;</span>
-<span class="c">#     my_library.INTERFACE_INCLUDE_DIRECTORIES = &quot;include&quot;</span>
+<span class="c">#   -- Properties for TARGET my_library:</span>
+<span class="c">#   --   my_library.TYPE = &quot;STATIC_LIBRARY&quot;</span>
+<span class="c">#   --   my_library.SOURCES = &quot;src/a.cpp;src/b.cpp&quot;</span>
+<span class="c">#   --   my_library.INTERFACE_INCLUDE_DIRECTORIES = &quot;include&quot;</span>
 <span class="c">#     ...</span>
-<span class="c">#   -----</span>
 </pre></div>
 </div>
 </dd></dl>

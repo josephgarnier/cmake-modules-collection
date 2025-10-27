@@ -269,23 +269,27 @@ CMake logic.</p>
 array properties:</p>
 <blockquote>
 <div><dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">compileFeatures</span></code></dt><dd><p>A list of compile features to pass to the target. It is
-used as a parameter for the
+<dt><code class="docutils literal notranslate"><span class="pre">compileFeatures</span></code></dt><dd><p>A list of compile features to pass to the target. Example:
+<code class="docutils literal notranslate"><span class="pre">[&quot;cxx_std_20&quot;,</span> <span class="pre">&quot;cxx_thread_local&quot;,</span> <span class="pre">&quot;cxx_trailing_return_types&quot;]</span></code>.
+It is intended to be used as a parameter for the
 <span class="target" id="index-0-command:cmake:command:target_compile_features"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/target_compile_features.html#command:target_compile_features" title="(in CMake v4.2.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_compile_features()</span></code></a>
 command. The property is required, but the array can be empty.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">compileDefinitions</span></code></dt><dd><p>A list of preprocessor definitions applied when compiling this
-target. It is used as a parameter for the
+<dt><code class="docutils literal notranslate"><span class="pre">compileDefinitions</span></code></dt><dd><p>A list of preprocessor definitions applied when compiling this target.
+Example: <code class="docutils literal notranslate"><span class="pre">[&quot;DEFINE_ONE=1&quot;,</span> <span class="pre">&quot;DEFINE_TWO=2&quot;,</span> <span class="pre">&quot;OPTION_1&quot;]</span></code>. It is
+intended to be used as a parameter for the
 <span class="target" id="index-0-command:cmake:command:target_compile_definitions"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/target_compile_definitions.html#command:target_compile_definitions" title="(in CMake v4.2.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_compile_definitions()</span></code></a>
 command. The property is required, but the array can be empty.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">compileOptions</span></code></dt><dd><p>A list of compiler options to pass when building this
-target. It is used as a parameter for the
+<dt><code class="docutils literal notranslate"><span class="pre">compileOptions</span></code></dt><dd><p>A list of compiler options to pass when building this target. Example:
+<code class="docutils literal notranslate"><span class="pre">[&quot;-Wall&quot;,</span> <span class="pre">&quot;-Wextra&quot;,</span> <span class="pre">&quot;/W4&quot;]</span></code>. It is intended to be used as a
+parameter for the
 <span class="target" id="index-0-command:cmake:command:target_compile_options"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/target_compile_options.html#command:target_compile_options" title="(in CMake v4.2.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_compile_options()</span></code></a>
 command. The property is required, but the array can be empty.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">linkOptions</span></code></dt><dd><p>A list of linker options to pass when building this target. It is used
-as a parameter for the
+<dt><code class="docutils literal notranslate"><span class="pre">linkOptions</span></code></dt><dd><p>A list of linker options to pass when building this target. Example:
+<code class="docutils literal notranslate"><span class="pre">[&quot;-s&quot;,</span> <span class="pre">&quot;-z&quot;,</span> <span class="pre">&quot;/INCREMENTAL:NO&quot;]</span></code>. It is intended to be used as a
+parameter for the
 <span class="target" id="index-0-command:cmake:command:target_link_options"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/target_link_options.html#command:target_link_options" title="(in CMake v4.2.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_link_options()</span></code></a>
 command. The property is required, but the array can be empty.</p>
 </dd>
@@ -410,26 +414,33 @@ specifying some additional settings applied to the dependency. It
 contains the following array properties:</p>
 <blockquote>
 <div><dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">compileFeatures</span></code></dt><dd><p>A list of compile features to pass to the dependency. It is used as
-a parameter for the
+<dt><code class="docutils literal notranslate"><span class="pre">compileFeatures</span></code></dt><dd><p>A list of compile features that must be enabled or disabled when
+compiling code that consumes the dependency. Example:
+<code class="docutils literal notranslate"><span class="pre">[&quot;cxx_std_20&quot;,</span> <span class="pre">&quot;cxx_thread_local&quot;,</span> <span class="pre">&quot;cxx_trailing_return_types&quot;]</span></code>.
+It is intended to be used as a parameter for the
 <span class="target" id="index-1-command:cmake:command:target_compile_features"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/target_compile_features.html#command:target_compile_features" title="(in CMake v4.2.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_compile_features()</span></code></a>
 command. The property is required when <code class="docutils literal notranslate"><span class="pre">rulesFile</span></code> is <code class="docutils literal notranslate"><span class="pre">generic</span></code>,
 otherwise optional, but the array can be empty.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">compileDefinitions</span></code></dt><dd><p>A list of preprocessor definitions applied when compiling the
-dependency. It is used as a parameter for the
+<dt><code class="docutils literal notranslate"><span class="pre">compileDefinitions</span></code></dt><dd><p>A list of compile definitions that must be defined when compiling
+code that consumes the dependency. Example: <code class="docutils literal notranslate"><span class="pre">[&quot;DEFINE_ONE=1&quot;,</span>
+<span class="pre">&quot;DEFINE_TWO=2&quot;,</span> <span class="pre">&quot;OPTION_1&quot;]</span></code>. It is intended to be used as a
+parameter for the
 <span class="target" id="index-1-command:cmake:command:target_compile_definitions"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/target_compile_definitions.html#command:target_compile_definitions" title="(in CMake v4.2.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_compile_definitions()</span></code></a>
 command. The property is required when <code class="docutils literal notranslate"><span class="pre">rulesFile</span></code> is <code class="docutils literal notranslate"><span class="pre">generic</span></code>,
 otherwise optional, but the array can be empty.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">compileOptions</span></code></dt><dd><p>A list of compiler options to pass when building the dependency. It
-is used as a parameter for the
+<dt><code class="docutils literal notranslate"><span class="pre">compileOptions</span></code></dt><dd><p>A list of compiler options that must be supplied to the compiler when
+compiling code that consumes the dependency. Example: <code class="docutils literal notranslate"><span class="pre">[&quot;-Wall&quot;,</span>
+<span class="pre">&quot;-Wextra&quot;,</span> <span class="pre">&quot;/W4&quot;]</span></code>. It is intended to be used as a parameter for the
 <span class="target" id="index-1-command:cmake:command:target_compile_options"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/target_compile_options.html#command:target_compile_options" title="(in CMake v4.2.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_compile_options()</span></code></a>
 command. The property is required when <code class="docutils literal notranslate"><span class="pre">rulesFile</span></code> is <code class="docutils literal notranslate"><span class="pre">generic</span></code>,
 otherwise optional, but the array can be empty.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">linkOptions</span></code></dt><dd><p>A list of linker options to pass when building this dependency. It is
-used as a parameter for the
+<dt><code class="docutils literal notranslate"><span class="pre">linkOptions</span></code></dt><dd><p>A list of linker options that must be enabled or disabled when
+linking code that consumes the dependency. Example: <code class="docutils literal notranslate"><span class="pre">[&quot;-s&quot;,</span> <span class="pre">&quot;-z&quot;,</span>
+<span class="pre">&quot;/INCREMENTAL:NO&quot;]</span></code>. It is intended to be used as a parameter for
+the
 <span class="target" id="index-1-command:cmake:command:target_link_options"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/target_link_options.html#command:target_link_options" title="(in CMake v4.2.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_link_options()</span></code></a>
 command. The property is required when <code class="docutils literal notranslate"><span class="pre">rulesFile</span></code> is <code class="docutils literal notranslate"><span class="pre">generic</span></code>,
 otherwise optional, but the array can be empty.</p>
