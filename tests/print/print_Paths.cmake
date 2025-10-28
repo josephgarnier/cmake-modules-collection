@@ -56,10 +56,10 @@ function(${CMAKETEST_TEST})
         "${TESTS_DATA_DIR}/src/sub_1/source_sub_1.cpp"
         "${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp")
       print(PATHS "${input}")
-      ct_assert_prints("src/main.cpp ; src/source_1.cpp ; src/source_2.cpp ; src/source_3.cpp ; src/source_4.cpp ; src/source_5.cpp ; src/sub_1/source_sub_1.cpp ; src/sub_2/source_sub_2.cpp")
+      ct_assert_prints("src/main.cpp, src/source_1.cpp, src/source_2.cpp, src/source_3.cpp, src/source_4.cpp, src/source_5.cpp, src/sub_1/source_sub_1.cpp, src/sub_2/source_sub_2.cpp")
 
       print(PATHS "${input}" INDENT)
-      ct_assert_prints("src/main.cpp ; src/source_1.cpp ; src/source_2.cpp ; src/source_3.cpp ; src/source_4.cpp ; src/source_5.cpp ; src/sub_1/source_sub_1.cpp ; src/sub_2/source_sub_2.cpp") # This function ignores the indentation
+      ct_assert_prints("src/main.cpp, src/source_1.cpp, src/source_2.cpp, src/source_3.cpp, src/source_4.cpp, src/source_5.cpp, src/sub_1/source_sub_1.cpp, src/sub_2/source_sub_2.cpp") # This function ignores the indentation
     endfunction()
 
     ct_add_section(NAME "with_mode")
@@ -75,10 +75,10 @@ function(${CMAKETEST_TEST})
         "${TESTS_DATA_DIR}/src/sub_1/source_sub_1.cpp"
         "${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp")
       print(STATUS PATHS "${input}")
-      ct_assert_prints("src/main.cpp ; src/source_1.cpp ; src/source_2.cpp ; src/source_3.cpp ; src/source_4.cpp ; src/source_5.cpp ; src/sub_1/source_sub_1.cpp ; src/sub_2/source_sub_2.cpp")
+      ct_assert_prints("src/main.cpp, src/source_1.cpp, src/source_2.cpp, src/source_3.cpp, src/source_4.cpp, src/source_5.cpp, src/sub_1/source_sub_1.cpp, src/sub_2/source_sub_2.cpp")
 
       print(STATUS PATHS "${input}" INDENT)
-      ct_assert_prints("src/main.cpp ; src/source_1.cpp ; src/source_2.cpp ; src/source_3.cpp ; src/source_4.cpp ; src/source_5.cpp ; src/sub_1/source_sub_1.cpp ; src/sub_2/source_sub_2.cpp") # This function ignores the indentation and the status
+      ct_assert_prints("src/main.cpp, src/source_1.cpp, src/source_2.cpp, src/source_3.cpp, src/source_4.cpp, src/source_5.cpp, src/sub_1/source_sub_1.cpp, src/sub_2/source_sub_2.cpp") # This function ignores the indentation and the status
     endfunction()
   endfunction()
 

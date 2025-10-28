@@ -54,10 +54,10 @@ function(${CMAKETEST_TEST})
         "lemon"
         "watermelon")
       print(STRINGS "${input}")
-      ct_assert_prints("apple ; banana ; orange ; carrot ; strawberry ; pineapple ; grape ; lemon ; watermelon") # This function ignores the indentation
+      ct_assert_prints("apple, banana, orange, carrot, strawberry, pineapple, grape, lemon, watermelon") # This function ignores the indentation
 
       print(STRINGS "${input}" INDENT)
-      ct_assert_prints("apple ; banana ; orange ; carrot ; strawberry ; pineapple ; grape ; lemon ; watermelon") # This function ignores the indentation
+      ct_assert_prints("apple, banana, orange, carrot, strawberry, pineapple, grape, lemon, watermelon") # This function ignores the indentation
     endfunction()
 
     ct_add_section(NAME "with_mode")
@@ -73,10 +73,10 @@ function(${CMAKETEST_TEST})
         "lemon"
         "watermelon")
       print(STATUS STRINGS "${input}")
-      ct_assert_prints("apple ; banana ; orange ; carrot ; strawberry ; pineapple ; grape ; lemon ; watermelon") # This function ignores the status
+      ct_assert_prints("apple, banana, orange, carrot, strawberry, pineapple, grape, lemon, watermelon") # This function ignores the status
 
       print(STATUS STRINGS "${input}" INDENT)
-      ct_assert_prints("apple ; banana ; orange ; carrot ; strawberry ; pineapple ; grape ; lemon ; watermelon") # This function ignores the indentation and the status
+      ct_assert_prints("apple, banana, orange, carrot, strawberry, pineapple, grape, lemon, watermelon") # This function ignores the indentation and the status
     endfunction()
   endfunction()
 
