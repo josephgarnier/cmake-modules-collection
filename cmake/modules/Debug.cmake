@@ -187,13 +187,21 @@ print various information about the CMake environment.
 
 * Since generator expressions are evaluated during generation of the
   buildsystem, and not during processing of ``CMakeLists.txt`` files, this
-  command allows to interpret  a generator expression:
+  command allows to interpret a generator expression:
 
   .. code-block:: cmake
 
     file(GENERATE OUTPUT debug.txt CONTENT "$<...>")
 
   Check `the documentation <https://cmake.org/cmake/help/latest/manual/cmake-generator-expressions.7.html#debugging>`__ for more informations.
+
+* Watch a CMake variable for change:
+
+  .. code-block:: cmake
+
+    variable_watch(CMAKE_CXX_STANDARD)
+
+  Check `the documentation <https://cmake.org/cmake/help/latest/command/variable_watch.html>`__ for more informations.
 #]=======================================================================]
 
 include_guard()
