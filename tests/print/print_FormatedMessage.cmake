@@ -304,7 +304,7 @@ function(${CMAKETEST_TEST})
         "lemon"
         "watermelon")
       print("String list: @sl@." "${input}")
-      ct_assert_prints("String list: banana, orange, pineapple, carrot, strawberry, pineapple, grape, lemon, watermelon.")
+      ct_assert_prints("String list: apple, banana, orange, pineapple, carrot, strawberry, pineapple, grape, lemon, watermelon.")
 
       # Test with empty input
       print("String list: @sl@." "")
@@ -325,7 +325,7 @@ function(${CMAKETEST_TEST})
         "lemon"
         "watermelon")
       print(STATUS "String list: @sl@." "${input}")
-      ct_assert_prints("String list: banana, orange, pineapple, carrot, strawberry, pineapple, grape, lemon, watermelon.") # This function ignores the status mode
+      ct_assert_prints("String list: apple, banana, orange, pineapple, carrot, strawberry, pineapple, grape, lemon, watermelon.") # This function ignores the status mode
 
       # Test with empty input
       print(STATUS "String list: @sl@." "")

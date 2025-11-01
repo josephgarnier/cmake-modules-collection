@@ -145,7 +145,7 @@ Usage
       "watermelon")
     print(STATUS "String list: @sl@." "${string_list}")
     # output is:
-    #   -- String list: banana, orange, pineapple, carrot, strawberry, pineapple, grape, lemon, watermelon.
+    #   -- String list: apple, banana, orange, pineapple, carrot, strawberry, pineapple, grape, lemon, watermelon.
 
 .. _`Print Path List`:
 
@@ -360,6 +360,7 @@ macro(_substitute_directives)
       set(directive_to_substitute "${formated_path_list}")
       set(message_args_list "")
     elseif("${directive_to_substitute}" STREQUAL "@sl@")
+      list(PREPEND message_args_list "${message_arg}")
       list(JOIN message_args_list ", " formated_string_list)
       set(directive_to_substitute "${formated_string_list}")
       set(message_args_list "")
