@@ -18,10 +18,10 @@ Synopsis
   `Print Formated Message`_
     print([<mode>] "message with formated text" <argument>...)
 
-  `Print Paths List`_
+  `Print Path List`_
     print([<mode>] PATHS <file-path>... [INDENT])
 
-  `Print Strings List`_
+  `Print String List`_
     print([<mode>] STRINGS <string>... [INDENT])
 
 Module Variables
@@ -55,26 +55,33 @@ Usage
   Each directive takes the form ``@specifier@``, where ``specifier`` is one of
   the following:
 
-    ``@ap@``
+    ``@ap@`` (for "absolute path")
       Converts the corresponding argument into an absolute path to an existing
       file or directory.
 
-    ``@rp@``
+    ``@rp@`` (for "relative path")
       Converts the corresponding argument into a path relative to the value of
       the :variable:`PRINT_BASE_DIR` variable. The file or the directory must
       exist on the disk.
 
-    ``@apl@``
+    ``@apl@`` (for "absolute path list")
       Converts all the corresponding arguments into a list of absolute paths
       to existing files or directories. Each item is separated by a comma:
       ``item1, item2, ...``. This directive should be used last when the
       message includes several directives.
 
-    ``@rpl@``
+    ``@rpl@`` (for "relative path list")
       Converts all the corresponding argument into a list of path relative to
       the value of the :variable:`PRINT_BASE_DIR` variable. Each item is
       separated by a comma: ``item1, item2, ...``. The files or the directories
-      must exist on the disk.
+      must exist on the disk. This directive should be used last when the
+      message includes several directives.
+
+    ``@sl@`` (for "string list")
+      Converts all the corresponding argument into a list of strings where each
+      item is separated by a comma: ``item1, item2, ...`` like with the
+      :command:`print(STRINGS)` command. This directive should be used last
+      when the message includes several directives.
 
   Example usage:
 
@@ -124,7 +131,23 @@ Usage
     # output is:
     #   -- Relative path list: src/main.cpp, src/source_1.cpp, src/source_2.cpp, src/source_3.cpp, src/source_4.cpp, src/source_5.cpp, src/sub_1/source_sub_1.cpp, src/sub_2/source_sub_2.cpp.
 
-.. _`Print Paths List`:
+    # Message with sl directive
+    set(string_list
+      "apple"
+      "banana"
+      "orange"
+      "pineapple"
+      "carrot"
+      "strawberry"
+      "pineapple"
+      "grape"
+      "lemon"
+      "watermelon")
+    print(STATUS "String list: @sl@." "${string_list}")
+    # output is:
+    #   -- String list: banana, orange, pineapple, carrot, strawberry, pineapple, grape, lemon, watermelon.
+
+.. _`Print Path List`:
 
 .. signature::
   print([<mode>] PATHS <file-path>... [INDENT])
@@ -162,7 +185,7 @@ Usage
     # output is:
     #   -- src/main.cpp, src/source_2.cpp, src/source_3.cpp, src/source_4.cpp, src/source_5.cpp, src/sub_1/source_sub_1.cpp, src/sub_2/source_sub_2.cpp
 
-.. _`Print Strings List`:
+.. _`Print String List`:
 
 .. signature::
   print([<mode>] STRINGS <string>... [INDENT])
@@ -336,11 +359,15 @@ macro(_substitute_directives)
       list(JOIN relative_path_list ", " formated_path_list)
       set(directive_to_substitute "${formated_path_list}")
       set(message_args_list "")
+    elseif("${directive_to_substitute}" STREQUAL "@sl@")
+      list(JOIN message_args_list ", " formated_string_list)
+      set(directive_to_substitute "${formated_string_list}")
+      set(message_args_list "")
     else()
       message(FATAL_ERROR "Directive ${directive_to_substitute} is unsupported!")
     endif()
     set(message_cursor "${directive_to_substitute}")
-    
+
     string(APPEND message_head "${message_cursor}")
     set(message "${message_head}${message_tail}")
   endwhile()
@@ -349,7 +376,7 @@ endmacro()
 #------------------------------------------------------------------------------
 # Internal usage
 macro(_remove_directives)
-  string(REGEX REPLACE "@(ap|rp|apl|rpl)@" "" message "${message}")
+  string(REGEX REPLACE "@(ap|rp|apl|rpl|sl)@" "" message "${message}")
 endmacro()
 
 #------------------------------------------------------------------------------

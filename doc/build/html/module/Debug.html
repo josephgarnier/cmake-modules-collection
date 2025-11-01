@@ -218,11 +218,17 @@ diagnostics:</p>
 </li>
 <li><p>Since generator expressions are evaluated during generation of the
 buildsystem, and not during processing of <code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code> files, this
-command allows to interpret  a generator expression:</p>
+command allows to interpret a generator expression:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">file(</span><span class="no">GENERATE</span><span class="w"> </span><span class="no">OUTPUT</span><span class="w"> </span><span class="nb">debug.txt</span><span class="w"> </span><span class="no">CONTENT</span><span class="w"> </span><span class="s">&quot;$&lt;...&gt;&quot;</span><span class="nf">)</span>
 </pre></div>
 </div>
 <p>Check <a class="reference external" href="https://cmake.org/cmake/help/latest/manual/cmake-generator-expressions.7.html#debugging">the documentation</a> for more informations.</p>
+</li>
+<li><p>Watch a CMake variable for change:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">variable_watch(</span><span class="no">CMAKE_CXX_STANDARD</span><span class="nf">)</span>
+</pre></div>
+</div>
+<p>Check <a class="reference external" href="https://cmake.org/cmake/help/latest/command/variable_watch.html">the documentation</a> for more informations.</p>
 </li>
 </ul>
 </section>

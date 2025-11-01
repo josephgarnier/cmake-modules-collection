@@ -118,7 +118,7 @@ root (<a class="reference download internal" download="" href="../_downloads/38d
 <span class="w">        </span><span class="nt">&quot;mode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;split&quot;</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;includeDir&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;include&quot;</span>
 <span class="w">      </span><span class="p">},</span>
-<span class="w">      </span><span class="nt">&quot;dependencies&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;extDependencies&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="nt">&quot;AppleLib&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">          </span><span class="nt">&quot;rulesFile&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;generic&quot;</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;packageLocation&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
@@ -175,6 +175,29 @@ root (<a class="reference download internal" download="" href="../_downloads/38d
 <span class="w">            </span><span class="nt">&quot;repository&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://example.com/PineappleLib.zip&quot;</span><span class="p">,</span>
 <span class="w">            </span><span class="nt">&quot;hash&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1234567&quot;</span>
 <span class="w">          </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;intDependencies&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;StrawberryLib&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;rulesFile&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;generic&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;packageLocation&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;windows&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;C:/Program Files/libs/apple/1.15.0&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;unix&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/opt/apple/1.15.0&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;macos&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/opt/apple/1.15.0&quot;</span>
+<span class="w">          </span><span class="p">},</span>
+<span class="w">          </span><span class="nt">&quot;minVersion&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1.15.0&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;optional&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;configuration&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;compileFeatures&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;cxx_std_20&quot;</span><span class="p">],</span>
+<span class="w">            </span><span class="nt">&quot;compileDefinitions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;DEFINE_ONE=1&quot;</span><span class="p">],</span>
+<span class="w">            </span><span class="nt">&quot;compileOptions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;-Wall&quot;</span><span class="p">],</span>
+<span class="w">            </span><span class="nt">&quot;linkOptions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;-s&quot;</span><span class="p">]</span>
+<span class="w">          </span><span class="p">}</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">&quot;GrapeLib&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;rulesFile&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;RulesGrapeLib.cmake&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;minVersion&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;optional&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">      </span><span class="p">}</span>
 <span class="w">    </span><span class="p">},</span>

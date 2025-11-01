@@ -287,6 +287,52 @@ function(${CMAKETEST_TEST})
     endfunction()
   endfunction()
 
+  ct_add_section(NAME "print_message_with_sl_directive")
+  function(${CMAKETEST_SECTION})
+
+    ct_add_section(NAME "without_mode")
+    function(${CMAKETEST_SECTION})
+      set(input
+        "apple"
+        "banana"
+        "orange"
+        "pineapple"
+        "carrot"
+        "strawberry"
+        "pineapple"
+        "grape"
+        "lemon"
+        "watermelon")
+      print("String list: @sl@." "${input}")
+      ct_assert_prints("String list: banana, orange, pineapple, carrot, strawberry, pineapple, grape, lemon, watermelon.")
+
+      # Test with empty input
+      print("String list: @sl@." "")
+      ct_assert_prints("String list: .")
+    endfunction()
+
+    ct_add_section(NAME "with_mode")
+    function(${CMAKETEST_SECTION})
+      set(input
+        "apple"
+        "banana"
+        "orange"
+        "pineapple"
+        "carrot"
+        "strawberry"
+        "pineapple"
+        "grape"
+        "lemon"
+        "watermelon")
+      print(STATUS "String list: @sl@." "${input}")
+      ct_assert_prints("String list: banana, orange, pineapple, carrot, strawberry, pineapple, grape, lemon, watermelon.") # This function ignores the status mode
+
+      # Test with empty input
+      print(STATUS "String list: @sl@." "")
+      ct_assert_prints("String list: .") # This function ignores the status mode
+    endfunction()
+  endfunction()
+
   # Errors checking
   ct_add_section(NAME "throws_if_arg_message_is_missing_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
@@ -348,5 +394,23 @@ function(${CMAKETEST_TEST})
       "${TESTS_DATA_DIR}/src/sub_1/source_sub_1.cpp"
       "${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp")
     print("Relative path list: @rpl@, Absolute: @ap@." "${input_absolute_path_list}" "${input_relative_path}")
+  endfunction()
+
+  ct_add_section(NAME "throws_if_sl_directrive_is_not_the_last" EXPECTFAIL)
+  function(${CMAKETEST_SECTION})
+    set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
+    set(input_relative_path "data/src/main.cpp")
+    set(input_string_list
+        "apple"
+        "banana"
+        "orange"
+        "pineapple"
+        "carrot"
+        "strawberry"
+        "pineapple"
+        "grape"
+        "lemon"
+        "watermelon")
+    print("String list: @sl@, Absolute: @ap@." "${input_string_list}" "${input_relative_path}")
   endfunction()
 endfunction()
