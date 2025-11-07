@@ -230,6 +230,19 @@ command allows to interpret a generator expression:</p>
 </div>
 <p>Check <a class="reference external" href="https://cmake.org/cmake/help/latest/command/variable_watch.html">the documentation</a> for more informations.</p>
 </li>
+<li><p>Debugging facility to print the origin of the contents of properties which
+may be determined by dependencies:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">set(</span><span class="no">CMAKE_DEBUG_TARGET_PROPERTIES</span>
+<span class="w">  </span><span class="no">INCLUDE_DIRECTORIES</span>
+<span class="w">  </span><span class="no">COMPILE_DEFINITIONS</span>
+<span class="w">  </span><span class="no">POSITION_INDEPENDENT_CODE</span>
+<span class="w">  </span><span class="no">CONTAINER_SIZE_REQUIRED</span>
+<span class="w">  </span><span class="no">LIB_VERSION</span>
+<span class="nf">)</span>
+</pre></div>
+</div>
+<p>Check <a class="reference external" href="https://cmake.org/cmake/help/latest/variable/CMAKE_DEBUG_TARGET_PROPERTIES.html">the documentation</a> for more informations.</p>
+</li>
 </ul>
 </section>
 </section>

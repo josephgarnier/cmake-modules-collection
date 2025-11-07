@@ -17,6 +17,7 @@ Synopsis
 
 .. parsed-literal::
 
+  dependency(`BUILD`_ <lib-target-name> [...])
   dependency(`IMPORT`_ <lib-target-name> [...])
   dependency(`ADD_INCLUDE_DIRECTORIES`_ <lib-target-name> <SET|APPEND> PUBLIC <gen-expr>...)
   dependency(`SET_IMPORTED_LOCATION`_ <lib-target-name> [CONFIGURATION <config-type>] PUBLIC <gen-expr>...)
@@ -39,15 +40,17 @@ Usage
               ROOT_DIR <dir-path>
               INCLUDE_DIR <dir-path>)
 
-  Create an imported library target named ``<lib-target-name>``, which should
-  represent the base name of the library (without prefix or suffix), by
-  locating its binary files and setting the necessary target properties. This
-  command combines behavior similar to :cmake:command:`find_library() <cmake:command:find_library()>` and
-  :cmake:command:`add_library(IMPORTED) <cmake:command:add_library(imported)>`.
+  Create an imported library target named ``<lib-target-name>`` by locating its
+  binary files in ``ROOT_DIR`` and setting the necessary target properties. The
+  value of ``<lib-target-name>`` should represent the base name of the library
+  (without prefix or suffix).
 
-  The main purpose of this command is to manually import a target from a
-  package that does not provide a generated import script for the build-tree
-  (with :cmake:command:`export(TARGETS) <cmake:command:export(targets)>`) or
+  This command combines calls to :command:`directory(FIND_LIB)`,
+  :cmake:command:`add_library(IMPORTED) <cmake:command:add_library(imported)>` and
+  :cmake:command:`set_target_properties() <cmake:command:set_target_properties()>`.
+  Its main purpose is to manually import a target from a package that does not
+  provide a generated import script for the build-tree (with
+  :cmake:command:`export(TARGETS) <cmake:command:export(targets)>`) or
   the install-tree (with :cmake:command:`install(EXPORT) <cmake:command:install(export)>`).
 
   The command requires either the ``STATIC`` or ``SHARED`` keyword to specify
@@ -163,15 +166,20 @@ Usage
       ROOT_DIR "${CMAKE_SOURCE_DIR}/lib"
       INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/mylib"
     )
-    # Is more or less equivalent to:
+    # Is equivalent to:
     add_library("my_shared_lib" SHARED IMPORTED)
     set_target_properties("my_shared_lib" PROPERTIES
       INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_SOURCE_DIR}/include/mylib"
       INTERFACE_INCLUDE_DIRECTORIES_BUILD ""
       INTERFACE_INCLUDE_DIRECTORIES_INSTALL ""
     )
-    find_library(lib NAMES "mylib_1.11.0")
-    find_library(implib NAMES "mylibd_1.11.0")
+    directory(FIND_LIB lib
+      FIND_IMPLIB implib
+      NAME "mylib_1.11.0"
+      SHARED
+      RELATIVE off
+      ROOT_DIR "${CMAKE_SOURCE_DIR}/lib"
+    )
     cmake_path(GET lib FILENAME lib_name)
     set_target_properties("my_shared_lib" PROPERTIES
       IMPORTED_LOCATION_RELEASE "${lib}"
@@ -181,7 +189,25 @@ Usage
       IMPORTED_SONAME_RELEASE "${lib_name}"
     )
     set_property(TARGET "my_shared_lib"
-      APPEND PROPERTY IMPORTED_CONFIGURATIONS "${CMAKE_BUILD_TYPE}"
+      APPEND PROPERTY IMPORTED_CONFIGURATIONS "RELEASE"
+    )
+    directory(FIND_LIB lib
+      FIND_IMPLIB implib
+      NAME "mylibd_1.11.0"
+      SHARED
+      RELATIVE off
+      ROOT_DIR "${CMAKE_SOURCE_DIR}/lib"
+    )
+    cmake_path(GET lib FILENAME lib_name)
+    set_target_properties("my_shared_lib" PROPERTIES
+      IMPORTED_LOCATION_DEBUG "${lib}"
+      IMPORTED_LOCATION_BUILD_DEBUG ""
+      IMPORTED_LOCATION_INSTALL_DEBUG ""
+      IMPORTED_IMPLIB_DEBUG "${implib}"
+      IMPORTED_SONAME_DEBUG "${lib_name}"
+    )
+    set_property(TARGET "my_shared_lib"
+      APPEND PROPERTY IMPORTED_CONFIGURATIONS "DEBUG"
     )
 
     # Import static lib
@@ -192,25 +218,48 @@ Usage
       ROOT_DIR "${CMAKE_SOURCE_DIR}/lib"
       INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/mylib"
     )
-    # Is more or less equivalent to:
-    add_library("my_shared_lib" SHARED IMPORTED)
-    set_target_properties("my_shared_lib" PROPERTIES
+    # Is equivalent to:
+    add_library("my_static_lib" SHARED IMPORTED)
+    set_target_properties("my_static_lib" PROPERTIES
       INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_SOURCE_DIR}/include/mylib"
       INTERFACE_INCLUDE_DIRECTORIES_BUILD ""
       INTERFACE_INCLUDE_DIRECTORIES_INSTALL ""
     )
-    find_library(lib NAMES "mylib_1.11.0")
-    find_library(implib NAMES "mylibd_1.11.0")
+    directory(FIND_LIB lib
+      FIND_IMPLIB implib
+      NAME "mylib_1.11.0"
+      SHARED
+      RELATIVE off
+      ROOT_DIR "${CMAKE_SOURCE_DIR}/lib"
+    )
     cmake_path(GET lib FILENAME lib_name)
-    set_target_properties("my_shared_lib" PROPERTIES
+    set_target_properties("my_static_lib" PROPERTIES
       IMPORTED_LOCATION_RELEASE "${lib}"
       IMPORTED_LOCATION_BUILD_RELEASE ""
       IMPORTED_LOCATION_INSTALL_RELEASE ""
       IMPORTED_IMPLIB_RELEASE "${implib}"
       IMPORTED_SONAME_RELEASE "${lib_name}"
     )
-    set_property(TARGET "my_shared_lib"
-      APPEND PROPERTY IMPORTED_CONFIGURATIONS "${CMAKE_BUILD_TYPE}"
+    set_property(TARGET "my_static_lib"
+      APPEND PROPERTY IMPORTED_CONFIGURATIONS "RELEASE"
+    )
+    directory(FIND_LIB lib
+      FIND_IMPLIB implib
+      NAME "mylibd_1.11.0"
+      SHARED
+      RELATIVE off
+      ROOT_DIR "${CMAKE_SOURCE_DIR}/lib"
+    )
+    cmake_path(GET lib FILENAME lib_name)
+    set_target_properties("my_static_lib" PROPERTIES
+      IMPORTED_LOCATION_DEBUG "${lib}"
+      IMPORTED_LOCATION_BUILD_DEBUG ""
+      IMPORTED_LOCATION_INSTALL_DEBUG ""
+      IMPORTED_IMPLIB_DEBUG "${implib}"
+      IMPORTED_SONAME_DEBUG "${lib_name}"
+    )
+    set_property(TARGET "my_static_lib"
+      APPEND PROPERTY IMPORTED_CONFIGURATIONS "DEBUG"
     )
 
 .. signature::
@@ -314,7 +363,7 @@ Usage
         "$<INSTALL_INTERFACE:include/mylib>"
     )
     # Is more or less equivalent to:
-    target_include_directories(static_mock_lib
+    target_include_directories(my_shared_lib
       PUBLIC
           "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include/mylib>"
           "$<INSTALL_INTERFACE:include/mylib>"
@@ -327,7 +376,7 @@ Usage
         "$<INSTALL_INTERFACE:include/mylib>"
     )
     # Is more or less equivalent to:
-    target_include_directories(static_mock_lib
+    target_include_directories(my_static_lib
       PUBLIC
           "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include/mylib>"
           "$<INSTALL_INTERFACE:include/mylib>"
@@ -512,24 +561,24 @@ Usage
     )
 
     # Export from Build-Tree
-    dependency(EXPORT "myimportedlib-1" "myimportedlib-2"
+    dependency(EXPORT "my_shared_lib" "my_static_lib"
       BUILD_TREE
       OUTPUT_FILE "InternalDependencyTargets.cmake"
     )
     # Is more or less equivalent to:
-    export(TARGETS "myimportedlib-1" "myimportedlib-2"
+    export(TARGETS "my_shared_lib" "my_static_lib"
       APPEND
       FILE "InternalDependencyTargets.cmake"
     )
 
     # Exporting from Install-Tree
     set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/install")
-    dependency(EXPORT "myimportedlib-1" "myimportedlib-2"
+    dependency(EXPORT "my_shared_lib" "my_static_lib"
       INSTALL_TREE
       OUTPUT_FILE "InternalDependencyTargets.cmake"
     )
     # Is more or less equivalent to:
-    install(TARGETS "myimportedlib-1" "myimportedlib-2"
+    install(TARGETS "my_shared_lib" "my_static_lib"
       EXPORT "LibExport"
     )
     install(EXPORT "LibExport"

@@ -28,9 +28,10 @@ possible to have structured properties and they would be difficult to read.
 
 The purpose of this module is to simplify the automated creation of binary
 targets by allowing their settings to be declared in a standardized JSON
-configuration file. The structure of this file is defined using a
-`JSON schema <https://json-schema.org/>`_. Various commands are provided to
-read and interpret this configuration file.
+configuration file. Thus, the `build specification <https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html#target-build-specification>`_ of a target and its `usage
+requirements <https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html#target-usage-requirements>`_ can be easily defined. The structure of this file is defined
+using a `JSON schema <https://json-schema.org/>`_. Various commands are
+provided to read and interpret this configuration file.
 
 The configuration file must be named ``CMakeTargets.json`` and can reside
 anywhere in the project's directory.

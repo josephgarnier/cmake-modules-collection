@@ -202,6 +202,21 @@ print various information about the CMake environment.
     variable_watch(CMAKE_CXX_STANDARD)
 
   Check `the documentation <https://cmake.org/cmake/help/latest/command/variable_watch.html>`__ for more informations.
+
+* Debugging facility to print the origin of the contents of properties which
+  may be determined by dependencies:
+
+  .. code-block:: cmake
+
+    set(CMAKE_DEBUG_TARGET_PROPERTIES
+      INCLUDE_DIRECTORIES
+      COMPILE_DEFINITIONS
+      POSITION_INDEPENDENT_CODE
+      CONTAINER_SIZE_REQUIRED
+      LIB_VERSION
+    )
+
+  Check `the documentation <https://cmake.org/cmake/help/latest/variable/CMAKE_DEBUG_TARGET_PROPERTIES.html>`__ for more informations.
 #]=======================================================================]
 
 include_guard()
