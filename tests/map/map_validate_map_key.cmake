@@ -67,4 +67,45 @@ function(${CMAKETEST_TEST})
     ct_assert_equal(entry_is_valid "off")
     ct_assert_prints("Skipping malformed entry ':' (empty key)")
   endfunction()
+
+  # Errors checking
+  ct_add_section(NAME "throws_if_all_args_are_missing" EXPECTFAIL)
+  function(${CMAKETEST_SECTION})
+    _validate_map_key()
+  endfunction()
+
+  ct_add_section(NAME "throws_if_too_many_args_are_passed" EXPECTFAIL)
+  function(${CMAKETEST_SECTION})
+    _validate_map_key("entry 1:apple" entry_key entry_is_valid "too" "many" "args")
+  endfunction()
+
+  ct_add_section(NAME "throws_if_arg_output_key_var_is_missing_1" EXPECTFAIL)
+  function(${CMAKETEST_SECTION})
+    _validate_map_key("entry 1:apple" entry_is_valid)
+  endfunction()
+
+  ct_add_section(NAME "throws_if_arg_output_key_var_is_missing_2" EXPECTFAIL)
+  function(${CMAKETEST_SECTION})
+    _validate_map_key("entry 1:apple" "" entry_is_valid)
+  endfunction()
+
+  ct_add_section(NAME "throws_if_arg_output_key_var_is_missing_3" EXPECTFAIL)
+  function(${CMAKETEST_SECTION})
+    _validate_map_key("entry 1:apple" "entry_key" entry_is_valid)
+  endfunction()
+
+  ct_add_section(NAME "throws_if_arg_output_is_valid_var_is_missing_1" EXPECTFAIL)
+  function(${CMAKETEST_SECTION})
+    _validate_map_key("entry 1:apple" entry_key)
+  endfunction()
+
+  ct_add_section(NAME "throws_if_arg_output_is_valid_var_is_missing_2" EXPECTFAIL)
+  function(${CMAKETEST_SECTION})
+    _validate_map_key("entry 1:apple" entry_key "")
+  endfunction()
+
+  ct_add_section(NAME "throws_if_arg_output_is_valid_var_is_missing_3" EXPECTFAIL)
+  function(${CMAKETEST_SECTION})
+    _validate_map_key("entry 1:apple" entry_key "entry_is_valid")
+  endfunction()
 endfunction()

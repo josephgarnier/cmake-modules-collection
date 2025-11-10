@@ -657,8 +657,18 @@ macro(_map_remove)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 function(_validate_map_key entry output_key_var output_is_valid_var)
+  if(NOT ${ARGC} EQUAL 3)
+    message(FATAL_ERROR "_validate_map_key() requires exactly 3 arguments, got ${ARGC}!")
+  endif()
+  if("${output_key_var}" STREQUAL "")
+    message(FATAL_ERROR "output_key_var argument is empty!")
+  endif()
+  if("${output_is_valid_var}" STREQUAL "")
+    message(FATAL_ERROR "output_is_valid_var argument is empty!")
+  endif()
+
   set(entry_key "")
   string(FIND "${entry}" ":" colon_pos)
   if(${colon_pos} EQUAL -1)

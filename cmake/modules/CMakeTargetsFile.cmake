@@ -944,8 +944,11 @@ macro(_cmake_targets_file_load)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 function(_has_json_property output_var json_block json_path_list)
+  if(NOT ${ARGC} EQUAL 3)
+    message(FATAL_ERROR "_has_json_property() requires exactly 3 arguments, got ${ARGC}!")
+  endif()
   if("${output_var}" STREQUAL "")
     message(FATAL_ERROR "output_var argument is empty!")
   endif()
@@ -962,8 +965,11 @@ function(_has_json_property output_var json_block json_path_list)
 endfunction()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 function(_get_json_value output_var json_block json_path_list json_type is_required)
+  if(NOT ${ARGC} EQUAL 5)
+    message(FATAL_ERROR "_get_json_value() requires exactly 5 arguments, got ${ARGC}!")
+  endif()
   if("${output_var}" STREQUAL "")
     message(FATAL_ERROR "output_var argument is empty!")
   endif()
@@ -996,8 +1002,11 @@ function(_get_json_value output_var json_block json_path_list json_type is_requi
 endfunction()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 function(_get_json_array output_list_var json_block json_path_list is_required)
+  if(NOT ${ARGC} EQUAL 4)
+    message(FATAL_ERROR "_get_json_array() requires exactly 4 arguments, got ${ARGC}!")
+  endif()
   if("${output_list_var}" STREQUAL "")
     message(FATAL_ERROR "output_list_var argument is empty!")
   endif()
@@ -1029,8 +1038,11 @@ function(_get_json_array output_list_var json_block json_path_list is_required)
 endfunction()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 function(_json_array_to_list output_list_var json_array)
+  if(NOT ${ARGC} EQUAL 2)
+    message(FATAL_ERROR "_json_array_to_list() requires exactly 2 arguments, got ${ARGC}!")
+  endif()
   if("${output_list_var}" STREQUAL "")
     message(FATAL_ERROR "output_list_var argument is empty!")
   endif()
@@ -1055,8 +1067,11 @@ function(_json_array_to_list output_list_var json_array)
 endfunction()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 function(_get_json_object output_map_var json_block json_path_list is_required)
+  if(NOT ${ARGC} EQUAL 4)
+    message(FATAL_ERROR "_get_json_object() requires exactly 4 arguments, got ${ARGC}!")
+  endif()
   if("${output_map_var}" STREQUAL "")
     message(FATAL_ERROR "output_map_var argument is empty!")
   endif()
@@ -1088,8 +1103,11 @@ function(_get_json_object output_map_var json_block json_path_list is_required)
 endfunction()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 function(_json_object_to_map output_map_var json_object)
+  if(NOT ${ARGC} EQUAL 2)
+    message(FATAL_ERROR "_json_object_to_map() requires exactly 2 arguments, got ${ARGC}!")
+  endif()
   if("${output_map_var}" STREQUAL "")
     message(FATAL_ERROR "output_map_var argument is empty!")
   endif()
@@ -1115,8 +1133,11 @@ function(_json_object_to_map output_map_var json_object)
 endfunction()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 function(_serialize_list output_var input_list)
+  if(NOT ${ARGC} EQUAL 2)
+    message(FATAL_ERROR "_serialize_list() requires exactly 2 arguments, got ${ARGC}!")
+  endif()
   if("${output_var}" STREQUAL "")
     message(FATAL_ERROR "output_var argument is empty!")
   endif()
@@ -1127,8 +1148,11 @@ function(_serialize_list output_var input_list)
 endfunction()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 function(_deserialize_list output_list_var encoded_string)
+  if(NOT ${ARGC} EQUAL 2)
+    message(FATAL_ERROR "_deserialize_list() requires exactly 2 arguments, got ${ARGC}!")
+  endif()
   if("${output_list_var}" STREQUAL "")
     message(FATAL_ERROR "output_list_var argument is empty!")
   endif()
@@ -1140,8 +1164,11 @@ function(_deserialize_list output_list_var encoded_string)
 endfunction()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 function(_is_serialized_list output_var input_string)
+  if(NOT ${ARGC} EQUAL 2)
+    message(FATAL_ERROR "_is_serialized_list() requires exactly 2 arguments, got ${ARGC}!")
+  endif()
   if("${output_var}" STREQUAL "")
     message(FATAL_ERROR "output_var argument is empty!")
   endif()
