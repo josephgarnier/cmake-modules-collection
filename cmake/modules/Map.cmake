@@ -281,7 +281,7 @@ function(map)
 endfunction()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 macro(_map_size)
   list(LENGTH MAP_SIZE nb_args)
   if(NOT ${nb_args} EQUAL 2)
@@ -306,7 +306,7 @@ macro(_map_size)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 macro(_map_get)
   list(LENGTH MAP_GET nb_args)
   if(NOT ${nb_args} EQUAL 3)
@@ -322,7 +322,7 @@ macro(_map_get)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 macro(_map_keys)
   list(LENGTH MAP_KEYS nb_args)
   if(NOT ${nb_args} EQUAL 2)
@@ -347,7 +347,7 @@ macro(_map_keys)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 macro(_map_values)
   list(LENGTH MAP_VALUES nb_args)
   if(NOT ${nb_args} EQUAL 2)
@@ -376,7 +376,7 @@ macro(_map_values)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 macro(_map_find)
   list(LENGTH MAP_FIND nb_args)
   if(NOT ${nb_args} EQUAL 3)
@@ -414,7 +414,7 @@ macro(_map_find)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 macro(_map_search)
   list(LENGTH MAP_ARGV nb_args) # MAP_SEARCH must not be used here, because it can't contain empty arguments due to `cmake_parse_arguments` working
   if(NOT ${nb_args} EQUAL 3)
@@ -454,7 +454,7 @@ macro(_map_search)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 macro(_map_has_key)
   list(LENGTH MAP_ARGV nb_args) # MAP_HAS_KEY must not be used here, because it can't contain empty arguments due to `cmake_parse_arguments` working
   if(NOT ${nb_args} EQUAL 3)
@@ -490,7 +490,7 @@ macro(_map_has_key)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 macro(_map_has_value)
   list(LENGTH MAP_ARGV nb_args) # MAP_HAS_VALUE must not be used here, because it can't contain empty arguments due to `cmake_parse_arguments` working
   if(NOT ${nb_args} EQUAL 3)
@@ -529,7 +529,7 @@ macro(_map_has_value)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 macro(_map_set)
   list(LENGTH MAP_ARGV nb_args) # MAP_SET must not be used here, because it can't contain empty arguments due to `cmake_parse_arguments` working
   if(NOT ${nb_args} EQUAL 3)
@@ -577,7 +577,7 @@ macro(_map_set)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 macro(_map_add)
   list(LENGTH MAP_ARGV nb_args) # MAP_ADD must not be used here, because it can't contain empty arguments due to `cmake_parse_arguments` working
   if(NOT ${nb_args} EQUAL 3)
@@ -617,7 +617,7 @@ macro(_map_add)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 macro(_map_remove)
   list(LENGTH MAP_ARGV nb_args) # MAP_REMOVE must not be used here, because it can't contain empty arguments due to `cmake_parse_arguments` working
   if(NOT ${nb_args} EQUAL 2)

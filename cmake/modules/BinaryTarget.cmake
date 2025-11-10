@@ -368,7 +368,7 @@ function(binary_target)
 endfunction()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 macro(_binary_target_create)
   if(NOT DEFINED BBT_CREATE)
     message(FATAL_ERROR "CREATE argument is missing or need a value!")
@@ -407,7 +407,7 @@ macro(_binary_target_create)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 macro(_binary_target_config_settings)
   if(NOT DEFINED BBT_CONFIGURE_SETTINGS)
     message(FATAL_ERROR "CONFIGURE_SETTINGS argument is missing or need a value!")
@@ -485,7 +485,7 @@ macro(_binary_target_config_settings)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 macro(_binary_target_add_sources)
   if(NOT DEFINED BBT_ADD_SOURCES)
     message(FATAL_ERROR "ADD_SOURCES argument is missing or need a value!")
@@ -526,7 +526,7 @@ macro(_binary_target_add_sources)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 macro(_binary_target_add_pre_header)
   if(NOT DEFINED BBT_ADD_PRECOMPILE_HEADER)
     message(FATAL_ERROR "ADD_PRECOMPILE_HEADER argument is missing or need a value!")
@@ -548,7 +548,7 @@ macro(_binary_target_add_pre_header)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 macro(_binary_target_add_include_dirs)
   if(NOT DEFINED BBT_ADD_INCLUDE_DIRECTORIES)
     message(FATAL_ERROR "ADD_INCLUDE_DIRECTORIES argument is missing or need a value!")
@@ -582,7 +582,7 @@ macro(_binary_target_add_include_dirs)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 macro(_binary_target_add_dependencies)
   if(NOT DEFINED BBT_ADD_DEPENDENCIES)
     message(FATAL_ERROR "ADD_DEPENDENCIES argument is missing or need a value!")
@@ -604,7 +604,7 @@ macro(_binary_target_add_dependencies)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 macro(_binary_target_create_fully)
   if(NOT DEFINED BBT_CREATE_FULLY)
     message(FATAL_ERROR "CREATE_FULLY argument is missing or need a value!")

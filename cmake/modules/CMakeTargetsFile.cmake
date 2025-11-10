@@ -750,7 +750,7 @@ function(cmake_targets_file)
 endfunction()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 macro(_cmake_targets_file_load)
   if(NOT DEFINED CTF_LOAD)
     message(FATAL_ERROR "LOAD argument is missing or need a value!")
@@ -1183,7 +1183,8 @@ function(_is_serialized_list output_var input_string)
 endfunction()
 
 #------------------------------------------------------------------------------
-# Internal usage. This function validates a JSON string property.
+# [Internal use only]
+# Validates a JSON string property.
 #
 # Signature:
 #   _validate_json_string(PROP_PATH [<prop-key>...]
@@ -1193,19 +1194,20 @@ endfunction()
 #                         [PATTERN <regex>])
 #
 # Parameters:
-#   PROP_PATH: The path (as list of keys) to the property to validate.
-#   PROP_VALUE: The string coming from the property to validate. The value must
-#               be a string of text.
-#   MIN_LENGTH: The minimum length of the string for the PROP_VALUE. The value
-#               MUST be a non-negative integer. To be valid, the length of
-#               PROP_VALUE must be greater than, or equal to, MIN_LENGTH.
-#   MAX_LENGTH: The maximum length of the string for the PROP_VALUE. The value
-#               MUST be a non-negative integer. To be valid, the length of
-#               PROP_VALUE must be less than, or equal to, MAX_LENGTH.
-#   PATTERN: The regular expression that the PROP_VALUE must match. The value
-#            MUST be a string. This string SHOULD be a valid regular expression,
-#            according to the CMake regular expression dialect. The be valid,
-#            PROP_VALUE must match the regular expression matches successfully.
+#   PROP_PATH   : The path (as list of keys) to the property to validate.
+#   PROP_VALUE  : The string coming from the property to validate. The value 
+#                 must be a string of text.
+#   MIN_LENGTH  : The minimum length of the string for the PROP_VALUE. The
+#                 value MUST be a non-negative integer. To be valid, the length
+#                 of PROP_VALUE must be greater than, or equal to, MIN_LENGTH.
+#   MAX_LENGTH  : The maximum length of the string for the PROP_VALUE. The
+#                 value MUST be a non-negative integer. To be valid, the length
+#                 of PROP_VALUE must be less than, or equal to, MAX_LENGTH.
+#   PATTERN     : The regular expression that the PROP_VALUE must match. The
+#                 value MUST be a string. This string SHOULD be a valid regular
+#                 expression, according to the CMake regular expression dialect.
+#                 To be valid, PROP_VALUE must match the regular expression
+#                 matches successfully.
 #
 # Returns:
 #   None
@@ -1285,16 +1287,17 @@ function(_validate_json_string)
 endfunction()
 
 #------------------------------------------------------------------------------
-# Internal usage. This function validates a JSON boolean property.
+# [Internal use only]
+# Validates a JSON boolean property.
 #
 # Signature:
 #   _validate_json_boolean(PROP_PATH [<prop-key>...]
 #                          PROP_VALUE <number>)
 #
 # Parameters:
-#   PROP_PATH: The path (as list of keys) to the property to validate.
-#   PROP_VALUE: The boolean coming from the property to validate. The value must
-#               be 'ON' or 'OFF'.
+#   PROP_PATH   : The path (as list of keys) to the property to validate.
+#   PROP_VALUE  : The boolean coming from the property to validate. The value
+#                 must be 'ON' or 'OFF'.
 #
 # Returns:
 #   None
@@ -1327,7 +1330,8 @@ function(_validate_json_boolean)
 endfunction()
 
 #------------------------------------------------------------------------------
-# Internal usage. This function validates a JSON number property.
+# [Internal use only]
+# This function validates a JSON number property.
 #
 # Signature:
 #   _validate_json_number(PROP_PATH [<prop-key>...]
@@ -1339,23 +1343,23 @@ endfunction()
 #                         [EXCLU_MAX <number>])
 #
 # Parameters:
-#   PROP_PATH: The path (as list of keys) to the property to validate.
-#   PROP_VALUE: The number coming from the property to validate. Can be an
-#               integer (e.g. 1) or floating-point (e.g. 1.0) value.
-#   MULTIPLE_OF: The multiple of which the PROP_VALUE must be a multiple. The
-#                value MUST be an integer, strictly greater than 0.
-#   MIN: The minimum value allowed for the PROP_VALUE. The value MUST be a
-#        number, representing an inclusive lower limit. To be valid, PROP_VALUE
-#        >= MIN must be true.
-#   EXCLU_MIN: The minimum exclusive value allowed for the PROP_VALUE. The value
-#              MUST be a number, representing an exclusive lower limit. To be
-#              valid, PROP_VALUE > EXCLU_MIN must be true.
-#   MAX: The maximum value allowed for the PROP_VALUE. The value MUST be a
-#        number, representing an inclusive upper limit. To be valid, PROP_VALUE
-#        <= MAX must be true.
-#   EXCLU_MAX: The maximum exclusive value allowed for the PROP_VALUE. The value
-#              MUST be a number, representing an exclusive upper limit. To be
-#              valid, PROP_VALUE < EXCLU_MAX must be true.
+#   PROP_PATH    : The path (as list of keys) to the property to validate.
+#   PROP_VALUE   : The number coming from the property to validate. Can be an
+#                  integer (e.g. 1) or floating-point (e.g. 1.0) value.
+#   MULTIPLE_OF  : The multiple of which the PROP_VALUE must be a multiple. The
+#                  value MUST be an integer, strictly greater than 0.
+#   MIN          : The minimum value allowed for the PROP_VALUE. The value MUST
+#                  be a number, representing an inclusive lower limit. To be
+#                  valid, PROP_VALUE >= MIN must be true.
+#   EXCLU_MIN    : The minimum exclusive value allowed for the PROP_VALUE. The
+#                  value MUST be a number, representing an exclusive lower
+#                  limit. To be valid, PROP_VALUE > EXCLU_MIN must be true.
+#   MAX          : The maximum value allowed for the PROP_VALUE. The value MUST
+#                  be a number, representing an inclusive upper limit. To be
+#                  valid, PROP_VALUE <= MAX must be true.
+#   EXCLU_MAX    : The maximum exclusive value allowed for the PROP_VALUE. The
+#                  value MUST be a number, representing an exclusive upper
+#                  limit. To be valid, PROP_VALUE < EXCLU_MAX must be true.
 #
 # Returns:
 #   None
@@ -1481,7 +1485,7 @@ function(_validate_json_number)
 endfunction()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 macro(_cmake_targets_file_is_loaded)
   if(NOT DEFINED CTF_IS_LOADED)
     message(FATAL_ERROR "IS_LOADED argument is missing or need a value!")
@@ -1496,7 +1500,7 @@ macro(_cmake_targets_file_is_loaded)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 macro(_cmake_targets_file_get_loaded_file)
   if(NOT DEFINED CTF_GET_LOADED_FILE)
     message(FATAL_ERROR "GET_LOADED_FILE argument is missing or need a value!")
@@ -1513,7 +1517,7 @@ macro(_cmake_targets_file_get_loaded_file)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 macro(_cmake_targets_file_has_config)
   if(NOT DEFINED CTF_HAS_CONFIG)
     message(FATAL_ERROR "HAS_CONFIG argument is missing or need a value!")
@@ -1532,7 +1536,7 @@ macro(_cmake_targets_file_has_config)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 macro(_cmake_targets_file_get_value)
   if(NOT DEFINED CTF_GET_VALUE)
     message(FATAL_ERROR "GET_VALUE argument is missing or need a value!")
@@ -1566,7 +1570,7 @@ macro(_cmake_targets_file_get_value)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 macro(_cmake_targets_file_try_get_value)
   if(NOT DEFINED CTF_TRY_GET_VALUE)
     message(FATAL_ERROR "TRY_GET_VALUE argument is missing or need a value!")
@@ -1595,7 +1599,7 @@ macro(_cmake_targets_file_try_get_value)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 macro(_cmake_targets_file_get_settings)
   if(NOT DEFINED CTF_GET_SETTINGS)
     message(FATAL_ERROR "GET_SETTINGS argument is missing or need a value!")
@@ -1611,7 +1615,7 @@ macro(_cmake_targets_file_get_settings)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 macro(_cmake_targets_file_has_setting)
   if(NOT DEFINED CTF_HAS_SETTING)
     message(FATAL_ERROR "HAS_SETTING argument is missing or need a value!")
@@ -1635,7 +1639,7 @@ macro(_cmake_targets_file_has_setting)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 macro(_cmake_targets_file_get_keys)
   if(NOT DEFINED CTF_GET_KEYS)
     message(FATAL_ERROR "GET_KEYS argument is missing or need a value!")
@@ -1652,7 +1656,7 @@ macro(_cmake_targets_file_get_keys)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 macro(_cmake_targets_file_print_configs)
   if(NOT ${CTF_PRINT_CONFIGS})
     message(FATAL_ERROR "PRINT_CONFIGS arguments is missing!")
@@ -1667,7 +1671,7 @@ macro(_cmake_targets_file_print_configs)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 macro(_cmake_targets_file_print_target_config)
   if(NOT DEFINED CTF_PRINT_TARGET_CONFIG)
     message(FATAL_ERROR "PRINT_TARGET_CONFIG argument is missing or need a value!")
@@ -1705,8 +1709,11 @@ macro(_cmake_targets_file_print_target_config)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 function(_assert_config_file_loaded)
+  if(NOT ${ARGC} EQUAL 0)
+    message(FATAL_ERROR "_assert_config_file_loaded() requires exactly 0 arguments, got ${ARGC}!")
+  endif()
   get_property(is_file_loaded GLOBAL PROPERTY "TARGETS_CONFIG_LOADED")
   if(NOT "${is_file_loaded}" STREQUAL "on")
     message(FATAL_ERROR "Targets configuration not loaded. Call cmake_targets_file(LOAD) first!")
@@ -1714,8 +1721,11 @@ function(_assert_config_file_loaded)
 endfunction()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 function(_assert_target_config_exists target_dir_path)
+  if(NOT ${ARGC} EQUAL 1)
+    message(FATAL_ERROR "_assert_target_config_exists() requires exactly 1 arguments, got ${ARGC}!")
+  endif()
   if("${target_dir_path}" STREQUAL "")
     message(FATAL_ERROR "target_dir_path argument is empty!")
   endif()

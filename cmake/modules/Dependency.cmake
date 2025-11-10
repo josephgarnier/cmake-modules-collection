@@ -627,7 +627,7 @@ function(dependency)
 endfunction()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 macro(_dependency_import)
   if(NOT DEFINED DEP_IMPORT)
     message(FATAL_ERROR "IMPORT argument is missing or need a value!")
@@ -719,7 +719,7 @@ macro(_dependency_import)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 macro(_dependency_add_include_directories)
   if(NOT DEFINED DEP_ADD_INCLUDE_DIRECTORIES)
     message(FATAL_ERROR "ADD_INCLUDE_DIRECTORIES argument is missing or need a value!")
@@ -773,7 +773,7 @@ macro(_dependency_add_include_directories)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 macro(_dependency_set_imported_location)
   if(NOT DEFINED DEP_SET_IMPORTED_LOCATION)
     message(FATAL_ERROR "SET_IMPORTED_LOCATION argument is missing or need a value!")

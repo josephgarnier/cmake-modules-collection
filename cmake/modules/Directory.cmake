@@ -336,7 +336,7 @@ function(directory)
 endfunction()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 macro(_directory_scan)
   if(NOT DEFINED DIR_SCAN)
     message(FATAL_ERROR "SCAN arguments is missing!")
@@ -380,7 +380,7 @@ macro(_directory_scan)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 macro(_directory_scan_dirs)
   if(NOT DEFINED DIR_SCAN_DIRS)
     message(FATAL_ERROR "SCAN_DIRS arguments is missing!")
@@ -436,7 +436,7 @@ macro(_directory_scan_dirs)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 macro(_directory_find_lib)
   if(NOT DEFINED DIR_FIND_LIB)
     message(FATAL_ERROR "FIND_LIB arguments is missing or need a value!")
@@ -538,7 +538,7 @@ macro(_directory_find_lib)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 macro(_directory_collect_sources_by_location)
   if((NOT DEFINED DIR_SRC_DIR) AND (NOT DEFINED DIR_INCLUDE_DIR))
     message(FATAL_ERROR "At least one of SRC_DIR|INCLUDE_DIR argument is needed!")
@@ -611,7 +611,7 @@ macro(_directory_collect_sources_by_location)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 macro(_directory_collect_sources_by_policy)
   if(NOT DEFINED DIR_PRIVATE_SOURCE_DIR)
     message(FATAL_ERROR "PRIVATE_SOURCE_DIR arguments is missing or need a value!")

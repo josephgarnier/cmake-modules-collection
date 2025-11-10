@@ -8,7 +8,7 @@
 # -------------
 # See README file in the root directory of this source tree.
 
-cmake_minimum_required (VERSION 4.0.1 FATAL_ERROR)
+cmake_minimum_required(VERSION 4.0.1 FATAL_ERROR)
 
 ####################### Declare project metadata ##############################
 set(PROJECT_NAME                    "cmake-modules-collection")

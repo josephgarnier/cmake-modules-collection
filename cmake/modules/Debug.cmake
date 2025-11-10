@@ -250,7 +250,7 @@ function(debug)
 endfunction()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 macro(_debug_dump_targets)
   if(NOT DEFINED DB_DUMP_TARGETS)
     message(FATAL_ERROR "DUMP_TARGETS arguments is missing!")
@@ -279,7 +279,7 @@ macro(_debug_dump_targets)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 macro(_debug_dump_variables)
   if(NOT ${DB_DUMP_VARIABLES})
     message(FATAL_ERROR "DUMP_VARIABLES arguments is missing!")
@@ -308,7 +308,7 @@ macro(_debug_dump_variables)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 macro(_debug_dump_properties)
   if(NOT ${DB_DUMP_PROPERTIES})
     message(FATAL_ERROR "DUMP_PROPERTIES arguments is missing!")
@@ -328,7 +328,7 @@ macro(_debug_dump_properties)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 macro(_debug_dump_target_properties)
   if(NOT DEFINED DB_DUMP_TARGET_PROPERTIES)
     message(FATAL_ERROR "DUMP_TARGET_PROPERTIES arguments is missing!")
