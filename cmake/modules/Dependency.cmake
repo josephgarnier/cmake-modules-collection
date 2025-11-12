@@ -488,11 +488,12 @@ Usage
     )
 
 .. signature::
-  dependency(EXPORT <lib-target-name>... <BUILD_TREE|INSTALL_TREE> [APPEND] OUTPUT_FILE <file-name>)
+  dependency(EXPORT <lib-target-name>... <BUILD_TREE|INSTALL_TREE> [APPEND] OUTPUT_FILE_NAME <file-name>)
 
-  Creates a file ``<file-name>`` that may be included by outside projects to
-  import targets in ``<lib-target-name>`` list from the current project's
-  build-tree or install-tree. This command is functionally similar to using
+  Creates a file ``<file-name>`` in :cmake:variable:`CMAKE_CURRENT_BINARY_DIR <cmake:variable:CMAKE_CURRENT_BINARY_DIR>`
+  that may be included by outside projects to import targets in
+  ``<lib-target-name>`` list from the current project's build-tree or install
+  -tree. This command is functionally similar to using
   :cmake:command:`export(TARGETS) <cmake:command:export(targets)>` in a ``BUILD_TREE`` context and :cmake:command:`install(EXPORT) <cmake:command:install(export)>`
   in an ``INSTALL_TREE`` context, but is designed specifically to export
   imported targets with :command:`dependency(IMPORT)` instead of build targets.
@@ -519,7 +520,7 @@ Usage
     projects to include the file from a package configuration file.
 
   Note that no install rules are created for the actual binary files of the
-  imported targets; only the export script ``OUTPUT_FILE`` itself is installed.
+  imported targets; only the export script ``OUTPUT_FILE_NAME`` itself is installed.
 
   If the ``APPEND`` keyword is specified, the generated code is appended to the
   existing file instead of overwriting it. This is useful for exporting
@@ -563,7 +564,7 @@ Usage
     # Export from Build-Tree
     dependency(EXPORT "my_shared_lib" "my_static_lib"
       BUILD_TREE
-      OUTPUT_FILE "InternalDependencyTargets.cmake"
+      OUTPUT_FILE_NAME "InternalDependencyTargets.cmake"
     )
     # Is more or less equivalent to:
     export(TARGETS "my_shared_lib" "my_static_lib"
@@ -575,7 +576,7 @@ Usage
     set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/install")
     dependency(EXPORT "my_shared_lib" "my_static_lib"
       INSTALL_TREE
-      OUTPUT_FILE "InternalDependencyTargets.cmake"
+      OUTPUT_FILE_NAME "InternalDependencyTargets.cmake"
     )
     # Is more or less equivalent to:
     install(TARGETS "my_shared_lib" "my_static_lib"
@@ -597,7 +598,7 @@ Usage
 
 include_guard()
 
-cmake_minimum_required (VERSION 3.20 FATAL_ERROR)
+cmake_minimum_required(VERSION 4.0.1 FATAL_ERROR)
 include(Directory)
 include(StringManip)
 
@@ -605,7 +606,7 @@ include(StringManip)
 # Public function of this module
 function(dependency)
   set(options SHARED STATIC BUILD_TREE INSTALL_TREE SET APPEND)
-  set(one_value_args IMPORT RELEASE_NAME DEBUG_NAME ROOT_DIR INCLUDE_DIR OUTPUT_FILE ADD_INCLUDE_DIRECTORIES SET_IMPORTED_LOCATION CONFIGURATION)
+  set(one_value_args IMPORT RELEASE_NAME DEBUG_NAME ROOT_DIR INCLUDE_DIR OUTPUT_FILE_NAME ADD_INCLUDE_DIRECTORIES SET_IMPORTED_LOCATION CONFIGURATION)
   set(multi_value_args EXPORT PUBLIC)
   cmake_parse_arguments(DEP "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
   
@@ -819,7 +820,7 @@ macro(_dependency_set_imported_location)
 endmacro()
 
 #------------------------------------------------------------------------------
-# Internal usage
+# [Internal use only]
 macro(_dependency_export)
   if(NOT DEFINED DEP_EXPORT)
     message(FATAL_ERROR "EXPORT arguments is missing or need a value!")
@@ -850,11 +851,11 @@ macro(_dependency_export)
   if(${DEP_BUILD_TREE})
     cmake_path(APPEND export_file_template "ImportBuildTreeLibTargets.cmake.in")
   elseif(${DEP_INSTALL_TREE})
-    cmake_path(APPEND export_dir "cmake" "export")
+    cmake_path(APPEND export_file_template "ImportInstallTreeLibTargets.cmake.in")
+    cmake_path(APPEND export_dir "cmake" "export") # This is where the export file to copy during install will be generated
     if(NOT EXISTS "${export_dir}")
       file(MAKE_DIRECTORY "${export_dir}")
     endif()
-    cmake_path(APPEND export_file_template "ImportInstallTreeLibTargets.cmake.in")
   endif()
   set(export_file "${export_dir}/${DEP_OUTPUT_FILE}")
 
@@ -871,7 +872,8 @@ macro(_dependency_export)
   # Throw an error if export command already specified for the file and 'APPEND' keyword is not used
   list(LENGTH existing_export_parts nb_parts)
   if((NOT ${nb_parts} EQUAL 0) AND (NOT ${DEP_APPEND}))
-    message(FATAL_ERROR "Export command already specified for the file \"${DEP_OUTPUT_FILE}\". Did you miss 'APPEND' keyword?")
+    message(FATAL_ERROR
+      "Export command already specified for the file \"${DEP_OUTPUT_FILE}\". Did you miss 'APPEND' keyword?")
   endif()
   
   # List of intermediate files to concatenate later
@@ -884,7 +886,8 @@ macro(_dependency_export)
     elseif("${lib_target_type}" STREQUAL "SHARED_LIBRARY")
       set(lib_target_type "SHARED")
     else()
-      message(FATAL_ERROR "Target type \"${lib_target_type}\" for target \"${lib_target_name}\" is unsupported by export command!")
+      message(FATAL_ERROR
+        "Target type \"${lib_target_type}\" for target \"${lib_target_name}\" is unsupported by export command!")
     endif()
   
     # Substitute variable values referenced as @VAR@
@@ -898,6 +901,7 @@ macro(_dependency_export)
         TARGET "${lib_target_name}"
       )
       set_source_files_properties("${new_part_file}" PROPERTIES GENERATED TRUE)
+
       # Add generated files to the `clean` target
       set_property(DIRECTORY
         APPEND
@@ -917,36 +921,29 @@ macro(_dependency_export)
   # Only define the output generation rule once
   set(unique_target_name "GenerateImportTargetFile_${sanitized_export_file}")
 
-  # Build `add_custom_command()` for exporting
-  set(output_part "")
+  # Build a command to merge the intermediate files and a unique target to
+  # trigger this command
+  set(merge_command_args "")
   if(NOT TARGET ${unique_target_name})
-    set(output_part "OUTPUT" "${export_file}")
+    list(APPEND merge_command_args
+      "OUTPUT" "${export_file}")
   else()
-    set(output_part "OUTPUT" "${export_file}" "APPEND")
+    list(APPEND merge_command_args
+      "OUTPUT" "${export_file}" "APPEND")
   endif()
-
-  set(comment_part "")
-  set(command_part "")
   if(${DEP_APPEND})
-    list(APPEND command_part
-      "COMMAND" "${CMAKE_COMMAND}" "-E" "touch" "${export_file}")
-    list(APPEND command_part
-      "COMMAND" "${CMAKE_COMMAND}" "-E" "cat" ${new_export_parts} ">>" "${export_file}")
-    set(comment_part
+    list(APPEND merge_command_args
+      "COMMAND" "${CMAKE_COMMAND}" "-E" "touch" "${export_file}"
+      "COMMAND" "${CMAKE_COMMAND}" "-E" "cat" ${new_export_parts} ">>" "${export_file}"
+      "DEPENDS" "${new_export_parts}"
       "COMMENT" "Update the import file \"${export_file}\"")
   else()
-    list(APPEND command_part
-      "COMMAND" "${CMAKE_COMMAND}" "-E" "cat" ${new_export_parts} ">" "${export_file}")
-    set(comment_part
+    list(APPEND merge_command_args
+      "COMMAND" "${CMAKE_COMMAND}" "-E" "cat" ${new_export_parts} ">" "${export_file}"
+      "DEPENDS" "${new_export_parts}"
       "COMMENT" "Overwrite the import file \"${export_file}\"")
   endif()
-
-  add_custom_command(
-    ${output_part}
-    ${command_part}
-    DEPENDS "${new_export_parts}"
-    ${comment_part}
-  )
+  add_custom_command(${merge_command_args})
 
   # Only true during the first invocation
   if(NOT TARGET "${unique_target_name}")
@@ -958,7 +955,7 @@ macro(_dependency_export)
   endif()
   if(${DEP_INSTALL_TREE})
     install(FILES "${export_file}"
-      DESTINATION "cmake/export"
+      DESTINATION "cmake/export" # Path is relative to CMAKE_INSTALL_PREFIX
     )
   endif()
 endmacro()
