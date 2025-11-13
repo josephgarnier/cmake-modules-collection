@@ -25,22 +25,13 @@
 ct_add_test(NAME "test_binary_target_create_fully_operation")
 function(${CMAKETEST_TEST})
   include(BinaryTarget)
+  include(${TESTS_DATA_DIR}/cmake/Common.cmake)
 
   # Create mock binary targets for tests
-  macro(_create_mock_bins)
-    add_library("dep_static_mock_lib_1" STATIC)
-    target_sources("dep_static_mock_lib_1" PRIVATE "${TESTS_DATA_DIR}/src/main.cpp") # A target needs at least one source to avoid an error
-    add_library("dep_static_mock_lib_2" STATIC)
-    target_sources("dep_static_mock_lib_2" PRIVATE "${TESTS_DATA_DIR}/src/main.cpp")
-
-    add_library("dep_shared_mock_lib_1" SHARED)
-    target_sources("dep_shared_mock_lib_1" PRIVATE "${TESTS_DATA_DIR}/src/main.cpp") # A target needs at least one source to avoid an error
-    add_library("dep_shared_mock_lib_2" SHARED)
-    target_sources("dep_shared_mock_lib_2" PRIVATE "${TESTS_DATA_DIR}/src/main.cpp")
-  endmacro()
-  if(NOT TARGET "dep_static_mock_lib_1" OR NOT TARGET "dep_shared_mock_lib_1")
-    _create_mock_bins()
-  endif()
+  add_mock_lib("dep_static_mock_lib_1" STATIC SKIP_IF_EXISTS)
+  add_mock_lib("dep_static_mock_lib_2" STATIC SKIP_IF_EXISTS)
+  add_mock_lib("dep_shared_mock_lib_1" SHARED SKIP_IF_EXISTS)
+  add_mock_lib("dep_shared_mock_lib_2" SHARED SKIP_IF_EXISTS)
 
   # Set global test variables
   set(CMAKE_SOURCE_DIR "${TESTS_DATA_DIR}") # Required to call `source_group()`. CMakeTest change this value while it should be the same as the root of the sources.

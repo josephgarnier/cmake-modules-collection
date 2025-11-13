@@ -17,80 +17,21 @@
 ct_add_test(NAME "test_dependency_export_operation")
 function(${CMAKETEST_TEST})
   include(Dependency)
+  include(${TESTS_DATA_DIR}/cmake/Common.cmake)
 
   set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install")
-  # Simulate a call to `dependency(IMPORT)`, then `dependency(ADD_INCLUDE_DIRECTORIES)`, then `dependency(IMPORTED_LOCATION)`
-  macro(_import_mock_libs)
-    include(Directory)
-    string(TOUPPER "${CMAKE_BUILD_TYPE}" cmake_build_type_upper)
 
-    # Import static lib
-    add_library("imp_static_mock_lib" STATIC IMPORTED)
-    set(lib_base_filename "static_mock_lib")
-    if("${cmake_build_type_upper}" STREQUAL "DEBUG")
-      set(lib_base_filename "static_mock_libd")
-    endif()
-    set_target_properties("imp_static_mock_lib" PROPERTIES
-      INTERFACE_INCLUDE_DIRECTORIES "${TESTS_DATA_DIR}/include"
-      INTERFACE_INCLUDE_DIRECTORIES_BUILD "${TESTS_DATA_DIR}/include"
-      INTERFACE_INCLUDE_DIRECTORIES_INSTALL "include"
-    )
-    directory(FIND_LIB lib_file_path
-      FIND_IMPLIB implib_file_path
-      NAME "${lib_base_filename}"
-      STATIC
-      RELATIVE off
-      ROOT_DIR "${TESTS_DATA_DIR}/bin"
-    )
-    if(NOT implib_file_path)
-      set(implib_file_path "")
-    endif()
-
-    cmake_path(GET lib_file_path FILENAME lib_file_name)
-    set_target_properties("imp_static_mock_lib" PROPERTIES
-      IMPORTED_LOCATION_${cmake_build_type_upper} "${lib_file_path}"
-      IMPORTED_LOCATION_BUILD_${cmake_build_type_upper} "${lib_file_path}"
-      IMPORTED_LOCATION_INSTALL_${cmake_build_type_upper} "lib/${lib_file_name}"
-      IMPORTED_IMPLIB_${cmake_build_type_upper} "${implib_file_path}"
-      IMPORTED_SONAME_${cmake_build_type_upper} "${lib_file_name}"
-    )
-    set_property(TARGET "imp_static_mock_lib"
-      APPEND PROPERTY IMPORTED_CONFIGURATIONS "${CMAKE_BUILD_TYPE}"
-    )
-
-    # Import shared lib
-    add_library("imp_shared_mock_lib" SHARED IMPORTED)
-    set(lib_base_filename "shared_mock_lib")
-    if("${CMAKE_BUILD_TYPE}" STREQUAL "DEBUG")
-      set(lib_base_filename "shared_mock_libd")
-    endif()
-    set_target_properties("imp_shared_mock_lib" PROPERTIES
-      INTERFACE_INCLUDE_DIRECTORIES "${TESTS_DATA_DIR}/include"
-      INTERFACE_INCLUDE_DIRECTORIES_BUILD "${TESTS_DATA_DIR}/include"
-      INTERFACE_INCLUDE_DIRECTORIES_INSTALL "include"
-    )
-    directory(FIND_LIB lib_file_path
-      FIND_IMPLIB implib_file_path
-      NAME "${lib_base_filename}"
-      SHARED
-      RELATIVE off
-      ROOT_DIR "${TESTS_DATA_DIR}/bin"
-    )
-    cmake_path(GET lib_file_path FILENAME lib_file_name)
-    set_target_properties("imp_shared_mock_lib" PROPERTIES
-      IMPORTED_LOCATION_${cmake_build_type_upper} "${lib_file_path}"
-      IMPORTED_LOCATION_BUILD_${cmake_build_type_upper} "${lib_file_path}"
-      IMPORTED_LOCATION_INSTALL_${cmake_build_type_upper} "lib/${lib_file_name}"
-      IMPORTED_IMPLIB_${cmake_build_type_upper} "${implib_file_path}"
-      IMPORTED_SONAME_${cmake_build_type_upper} "${lib_file_name}"
-    )
-    set_property(TARGET "imp_shared_mock_lib"
-      APPEND PROPERTY IMPORTED_CONFIGURATIONS "${CMAKE_BUILD_TYPE}"
-    )
-  endmacro()
-  if(NOT TARGET "imp_static_mock_lib" OR NOT TARGET "imp_shared_mock_lib")
-    _import_mock_libs()
+  # Simulate a call to `dependency(IMPORT)`, `dependency(ADD_INCLUDE_DIRECTORIES)`,
+  # and `dependency(IMPORTED_LOCATION)`
+  string(TOUPPER "${CMAKE_BUILD_TYPE}" cmake_build_type_upper)
+  set(build_type_suffix "")
+  if("${cmake_build_type_upper}" STREQUAL "DEBUG")
+    set(build_type_suffix "d")
   endif()
+  import_full_mock_lib("imp_static_mock_lib" "static_mock_lib${build_type_suffix}"
+    STATIC SKIP_IF_EXISTS)
+  import_full_mock_lib("imp_shared_mock_lib" "shared_mock_lib${build_type_suffix}"
+    SHARED SKIP_IF_EXISTS)
 
   # Functionalities checking
   # Since dependency() generates the “part” files created during the generation phase and the final file during the build phase from the “part” files created during the generation phase, it is not possible to test the results of several calls to dependency() during the test phase. Therefore, tests on result are commented.

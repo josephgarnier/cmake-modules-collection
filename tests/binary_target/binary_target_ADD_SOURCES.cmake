@@ -17,15 +17,11 @@
 ct_add_test(NAME "test_binary_target_add_sources_operation")
 function(${CMAKETEST_TEST})
   include(BinaryTarget)
+  include(${TESTS_DATA_DIR}/cmake/Common.cmake)
 
   # Create mock binary targets for tests
-  macro(_create_mock_bins)
-    add_library("new_static_mock_lib" STATIC)
-    add_library("new_shared_mock_lib" SHARED)
-  endmacro()
-  if(NOT TARGET "new_static_mock_lib" OR NOT TARGET "new_shared_mock_lib")
-    _create_mock_bins()
-  endif()
+  add_mock_lib("new_static_mock_lib" STATIC SKIP_IF_EXISTS)
+  add_mock_lib("new_shared_mock_lib" SHARED SKIP_IF_EXISTS)
 
   # To call before each test
   macro(_set_up_test)

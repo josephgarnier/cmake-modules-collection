@@ -14,27 +14,16 @@
 ct_add_test(NAME "test_binary_target_add_dependencies_operation")
 function(${CMAKETEST_TEST})
   include(BinaryTarget)
+  include(${TESTS_DATA_DIR}/cmake/Common.cmake)
 
   # Create mock binary targets for tests
-  macro(_create_mock_bins)
-    add_library("new_static_mock_lib" STATIC)
-    target_sources("new_static_mock_lib" PRIVATE "${TESTS_DATA_DIR}/src/main.cpp") # A target needs at least one source to avoid an error
-    add_library("dep_static_mock_lib_1" STATIC)
-    target_sources("dep_static_mock_lib_1" PRIVATE "${TESTS_DATA_DIR}/src/main.cpp")
-    add_library("dep_static_mock_lib_2" STATIC)
-    target_sources("dep_static_mock_lib_2" PRIVATE "${TESTS_DATA_DIR}/src/main.cpp")
-
-    add_library("new_shared_mock_lib" SHARED)
-    target_sources("new_shared_mock_lib" PRIVATE "${TESTS_DATA_DIR}/src/main.cpp") # A target needs at least one source to avoid an error
-    add_library("dep_shared_mock_lib_1" SHARED)
-    target_sources("dep_shared_mock_lib_1" PRIVATE "${TESTS_DATA_DIR}/src/main.cpp")
-    add_library("dep_shared_mock_lib_2" SHARED)
-    target_sources("dep_shared_mock_lib_2" PRIVATE "${TESTS_DATA_DIR}/src/main.cpp")
-  endmacro()
-  if(NOT TARGET "new_static_mock_lib" OR NOT TARGET "new_shared_mock_lib")
-    _create_mock_bins()
-  endif()
-
+  add_mock_lib("new_static_mock_lib" STATIC SKIP_IF_EXISTS)
+  add_mock_lib("dep_static_mock_lib_1" STATIC SKIP_IF_EXISTS)
+  add_mock_lib("dep_static_mock_lib_2" STATIC SKIP_IF_EXISTS)
+  add_mock_lib("new_shared_mock_lib" SHARED SKIP_IF_EXISTS)
+  add_mock_lib("dep_shared_mock_lib_1" SHARED SKIP_IF_EXISTS)
+  add_mock_lib("dep_shared_mock_lib_2" SHARED SKIP_IF_EXISTS)
+  
   # To call before each test
   macro(_set_up_test)
     # Reset properties used by `binary_target(ADD_DEPENDENCIES)`
