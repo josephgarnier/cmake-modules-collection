@@ -37,13 +37,13 @@ Usage
               <STATIC|SHARED>
               [RELEASE_NAME <raw-filename>]
               [DEBUG_NAME <raw-filename>]
-              ROOT_DIR <dir-path>
+              FIND_ROOT_DIR <dir-path>
               INCLUDE_DIR <dir-path>)
 
   Create an imported library target named ``<lib-target-name>`` by locating its
-  binary files in ``ROOT_DIR`` and setting the necessary target properties. The
-  value of ``<lib-target-name>`` should represent the base name of the library
-  (without prefix or suffix).
+  binary files in ``FIND_ROOT_DIR`` and setting the necessary target
+  properties. The value of ``<lib-target-name>`` should represent the base name
+  of the library (without prefix or suffix).
 
   This command combines calls to :command:`directory(FIND_LIB)`,
   :cmake:command:`add_library(IMPORTED) <cmake:command:add_library(imported)>` and
@@ -68,7 +68,7 @@ Usage
   * Platform-specific suffixes (e.g. ``.so``, ``.dll``, ``.dll.a``, ``.a``, ``.lib``).
 
   The file will be resolved by scanning recursively all files in the given
-  ``ROOT_DIR`` and attempting to match against expected filename patterns
+  ``FIND_ROOT_DIR`` and attempting to match against expected filename patterns
   constructed using the relevant ``CMAKE_<CONFIG>_LIBRARY_PREFIX`` and
   ``CMAKE_<CONFIG>_LIBRARY_SUFFIX``, accounting for platform conventions
   and possible version-number noise in filenames. More specifically, it tries
@@ -163,7 +163,7 @@ Usage
       SHARED
       RELEASE_NAME "mylib_1.11.0"
       DEBUG_NAME "mylibd_1.11.0"
-      ROOT_DIR "${CMAKE_SOURCE_DIR}/lib"
+      FIND_ROOT_DIR "${CMAKE_SOURCE_DIR}/lib"
       INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/mylib"
     )
     # Is equivalent to:
@@ -215,7 +215,7 @@ Usage
       STATIC
       RELEASE_NAME "mylib_1.11.0"
       DEBUG_NAME "mylibd_1.11.0"
-      ROOT_DIR "${CMAKE_SOURCE_DIR}/lib"
+      FIND_ROOT_DIR "${CMAKE_SOURCE_DIR}/lib"
       INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/mylib"
     )
     # Is equivalent to:
@@ -345,14 +345,14 @@ Usage
       SHARED
       RELEASE_NAME "mylib_1.11.0"
       DEBUG_NAME "mylibd_1.11.0"
-      ROOT_DIR "${CMAKE_SOURCE_DIR}/lib"
+      FIND_ROOT_DIR "${CMAKE_SOURCE_DIR}/lib"
       INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/mylib"
     )
     dependency(IMPORT "my_static_lib"
       STATIC
       RELEASE_NAME "mylib_1.11.0"
       DEBUG_NAME "mylibd_1.11.0"
-      ROOT_DIR "${CMAKE_SOURCE_DIR}/lib"
+      FIND_ROOT_DIR "${CMAKE_SOURCE_DIR}/lib"
       INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/mylib"
     )
 
@@ -448,14 +448,14 @@ Usage
       SHARED
       RELEASE_NAME "mylib_1.11.0"
       DEBUG_NAME "mylibd_1.11.0"
-      ROOT_DIR "${CMAKE_SOURCE_DIR}/lib"
+      FIND_ROOT_DIR "${CMAKE_SOURCE_DIR}/lib"
       INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/mylib"
     )
     dependency(IMPORT "my_static_lib"
       STATIC
       RELEASE_NAME "mylib_1.11.0"
       DEBUG_NAME "mylibd_1.11.0"
-      ROOT_DIR "${CMAKE_SOURCE_DIR}/lib"
+      FIND_ROOT_DIR "${CMAKE_SOURCE_DIR}/lib"
       INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/mylib"
     )
 
@@ -540,7 +540,7 @@ Usage
       SHARED
       RELEASE_NAME "mylib_1.11.0"
       DEBUG_NAME "mylibd_1.11.0"
-      ROOT_DIR "${CMAKE_SOURCE_DIR}/lib"
+      FIND_ROOT_DIR "${CMAKE_SOURCE_DIR}/lib"
       INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/mylib"
     )
     dependency(ADD_INCLUDE_DIRECTORIES "my_shared_lib" SET
@@ -552,7 +552,7 @@ Usage
       STATIC
       RELEASE_NAME "mylib_1.11.0"
       DEBUG_NAME "mylibd_1.11.0"
-      ROOT_DIR "${CMAKE_SOURCE_DIR}/lib"
+      FIND_ROOT_DIR "${CMAKE_SOURCE_DIR}/lib"
       INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/mylib"
     )
     dependency(ADD_INCLUDE_DIRECTORIES "my_static_lib" SET
@@ -606,7 +606,7 @@ include(StringManip)
 # Public function of this module
 function(dependency)
   set(options SHARED STATIC BUILD_TREE INSTALL_TREE SET APPEND)
-  set(one_value_args IMPORT RELEASE_NAME DEBUG_NAME ROOT_DIR INCLUDE_DIR OUTPUT_FILE_NAME ADD_INCLUDE_DIRECTORIES SET_IMPORTED_LOCATION CONFIGURATION)
+  set(one_value_args IMPORT RELEASE_NAME DEBUG_NAME FIND_ROOT_DIR INCLUDE_DIR OUTPUT_FILE_NAME ADD_INCLUDE_DIRECTORIES SET_IMPORTED_LOCATION CONFIGURATION)
   set(multi_value_args EXPORT PUBLIC)
   cmake_parse_arguments(DEP "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
   
@@ -653,8 +653,8 @@ macro(_dependency_import)
   if("DEBUG_NAME" IN_LIST DEP_KEYWORDS_MISSING_VALUES)
     message(FATAL_ERROR "DEBUG_NAME need a value!")
   endif()
-  if(NOT DEFINED DEP_ROOT_DIR)
-    message(FATAL_ERROR "ROOT_DIR argument is missing or need a value!")
+  if(NOT DEFINED DEP_FIND_ROOT_DIR)
+    message(FATAL_ERROR "FIND_ROOT_DIR argument is missing or need a value!")
   endif()
   if(NOT DEFINED DEP_INCLUDE_DIR)
     message(FATAL_ERROR "INCLUDE_DIR argument is missing or need a value!")
@@ -688,7 +688,7 @@ macro(_dependency_import)
       NAME "${DEP_${build_type}_NAME}"
       "${lib_type}"
       RELATIVE off
-      ROOT_DIR "${DEP_ROOT_DIR}"
+      ROOT_DIR "${DEP_FIND_ROOT_DIR}"
     )
     if(NOT lib)
       message(FATAL_ERROR "The ${build_type} library \"${DEP_${build_type}_NAME}\" was not found!")

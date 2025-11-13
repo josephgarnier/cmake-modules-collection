@@ -14,7 +14,7 @@
 #              <STATIC|SHARED>
 #              [RELEASE_NAME <raw-filename>]
 #              [DEBUG_NAME <raw-filename>]
-#              ROOT_DIR <dir-path>
+#              FIND_ROOT_DIR <dir-path>
 #              INCLUDE_DIR <dir-path>)
 ct_add_test(NAME "test_dependency_import_operation")
 function(${CMAKETEST_TEST})
@@ -48,7 +48,7 @@ function(${CMAKETEST_TEST})
     dependency(IMPORT "${lib_target_name}"
       STATIC
       ${build_type_arg}
-      ROOT_DIR "${TESTS_DATA_DIR}"
+      FIND_ROOT_DIR "${TESTS_DATA_DIR}"
       INCLUDE_DIR "${TESTS_DATA_DIR}/include"
     )
     ct_assert_target_exists("${lib_target_name}")
@@ -120,7 +120,7 @@ function(${CMAKETEST_TEST})
     dependency(IMPORT "${lib_target_name}"
       SHARED
       ${build_type_arg}
-      ROOT_DIR "${TESTS_DATA_DIR}"
+      FIND_ROOT_DIR "${TESTS_DATA_DIR}"
       INCLUDE_DIR "${TESTS_DATA_DIR}/include"
     )
     ct_assert_target_exists("${lib_target_name}")
@@ -187,7 +187,7 @@ function(${CMAKETEST_TEST})
     dependency(IMPORT "${lib_target_name}"
       SHARED
       ${build_type_arg}
-      ROOT_DIR "${TESTS_DATA_DIR}"
+      FIND_ROOT_DIR "${TESTS_DATA_DIR}"
       INCLUDE_DIR "fake/directory"
     )
     ct_assert_target_exists("${lib_target_name}")
@@ -244,7 +244,7 @@ function(${CMAKETEST_TEST})
     dependency(IMPORT
       SHARED
       ${build_type_arg}
-      ROOT_DIR "${TESTS_DATA_DIR}"
+      FIND_ROOT_DIR "${TESTS_DATA_DIR}"
       INCLUDE_DIR "${TESTS_DATA_DIR}/include"
     )
   endfunction()
@@ -254,7 +254,7 @@ function(${CMAKETEST_TEST})
     dependency(IMPORT ""
       SHARED
       ${build_type_arg}
-      ROOT_DIR "${TESTS_DATA_DIR}"
+      FIND_ROOT_DIR "${TESTS_DATA_DIR}"
       INCLUDE_DIR "${TESTS_DATA_DIR}/include"
     )
   endfunction()
@@ -264,7 +264,7 @@ function(${CMAKETEST_TEST})
     dependency(IMPORT "imp_shared_mock_lib-1"
       SHARED
       ${build_type_arg}
-      ROOT_DIR "${TESTS_DATA_DIR}"
+      FIND_ROOT_DIR "${TESTS_DATA_DIR}"
       INCLUDE_DIR "${TESTS_DATA_DIR}/include"
     )
   endfunction()
@@ -273,7 +273,7 @@ function(${CMAKETEST_TEST})
   function(${CMAKETEST_SECTION})
     dependency(IMPORT "${lib_target_name}"
       ${build_type_arg}
-      ROOT_DIR "${TESTS_DATA_DIR}"
+      FIND_ROOT_DIR "${TESTS_DATA_DIR}"
       INCLUDE_DIR "${TESTS_DATA_DIR}/include"
     )
   endfunction()
@@ -283,7 +283,7 @@ function(${CMAKETEST_TEST})
     dependency(IMPORT "${lib_target_name}"
       SHARED STATIC
       ${build_type_arg}
-      ROOT_DIR "${TESTS_DATA_DIR}"
+      FIND_ROOT_DIR "${TESTS_DATA_DIR}"
       INCLUDE_DIR "${TESTS_DATA_DIR}/include"
     )
   endfunction()
@@ -292,7 +292,7 @@ function(${CMAKETEST_TEST})
   function(${CMAKETEST_SECTION})
     dependency(IMPORT "${lib_target_name}"
       SHARED
-      ROOT_DIR "${TESTS_DATA_DIR}"
+      FIND_ROOT_DIR "${TESTS_DATA_DIR}"
       INCLUDE_DIR "${TESTS_DATA_DIR}/include"
     )
   endfunction()
@@ -308,7 +308,7 @@ function(${CMAKETEST_TEST})
     dependency(IMPORT "${lib_target_name}"
       SHARED
       ${build_type_arg}
-      ROOT_DIR "${TESTS_DATA_DIR}"
+      FIND_ROOT_DIR "${TESTS_DATA_DIR}"
       INCLUDE_DIR "${TESTS_DATA_DIR}/include"
     )
   endfunction()
@@ -324,7 +324,7 @@ function(${CMAKETEST_TEST})
     dependency(IMPORT "${lib_target_name}"
       SHARED
       ${build_type_arg}
-      ROOT_DIR "${TESTS_DATA_DIR}"
+      FIND_ROOT_DIR "${TESTS_DATA_DIR}"
       INCLUDE_DIR "${TESTS_DATA_DIR}/include"
     )
   endfunction()
@@ -341,12 +341,12 @@ function(${CMAKETEST_TEST})
     dependency(IMPORT "${lib_target_name}"
       SHARED
       ${build_type_arg}
-      ROOT_DIR "${TESTS_DATA_DIR}"
+      FIND_ROOT_DIR "${TESTS_DATA_DIR}"
       INCLUDE_DIR "${TESTS_DATA_DIR}/include"
     )
   endfunction()
 
-  ct_add_section(NAME "throws_if_arg_root_dir_is_missing_1" EXPECTFAIL)
+  ct_add_section(NAME "throws_if_arg_find_root_dir_is_missing_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     dependency(IMPORT "${lib_target_name}"
       SHARED
@@ -355,42 +355,42 @@ function(${CMAKETEST_TEST})
     )
   endfunction()
 
-  ct_add_section(NAME "throws_if_arg_root_dir_is_missing_2" EXPECTFAIL)
+  ct_add_section(NAME "throws_if_arg_find_root_dir_is_missing_2" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     dependency(IMPORT "${lib_target_name}"
       SHARED
       ${build_type_arg}
-      ROOT_DIR
+      FIND_ROOT_DIR
       INCLUDE_DIR "${TESTS_DATA_DIR}/include"
     )
   endfunction()
 
-  ct_add_section(NAME "throws_if_arg_root_dir_is_missing_3" EXPECTFAIL)
+  ct_add_section(NAME "throws_if_arg_find_root_dir_is_missing_3" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     dependency(IMPORT "${lib_target_name}"
       SHARED
       ${build_type_arg}
-      ROOT_DIR ""
+      FIND_ROOT_DIR ""
       INCLUDE_DIR "${TESTS_DATA_DIR}/include"
     )
   endfunction()
 
-  ct_add_section(NAME "throws_if_arg_root_dir_does_not_exist" EXPECTFAIL)
+  ct_add_section(NAME "throws_if_arg_find_root_dir_does_not_exist" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     dependency(IMPORT "${lib_target_name}"
       SHARED
       ${build_type_arg}
-      ROOT_DIR "fake/directory"
+      FIND_ROOT_DIR "fake/directory"
       INCLUDE_DIR "${TESTS_DATA_DIR}/include"
     )
   endfunction()
 
-  ct_add_section(NAME "throws_if_arg_root_dir_is_not_a_diretory" EXPECTFAIL)
+  ct_add_section(NAME "throws_if_arg_find_root_dir_is_not_a_diretory" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     dependency(IMPORT "${lib_target_name}"
       SHARED
       ${build_type_arg}
-      ROOT_DIR "${TESTS_DATA_DIR}/src/source_1.cpp"
+      FIND_ROOT_DIR "${TESTS_DATA_DIR}/src/source_1.cpp"
       INCLUDE_DIR "${TESTS_DATA_DIR}/include"
     )
   endfunction()
@@ -400,7 +400,7 @@ function(${CMAKETEST_TEST})
     dependency(IMPORT "${lib_target_name}"
       SHARED
       ${build_type_arg}
-      ROOT_DIR "${TESTS_DATA_DIR}"
+      FIND_ROOT_DIR "${TESTS_DATA_DIR}"
     )
   endfunction()
 
@@ -409,7 +409,7 @@ function(${CMAKETEST_TEST})
     dependency(IMPORT "${lib_target_name}"
       SHARED
       ${build_type_arg}
-      ROOT_DIR "${TESTS_DATA_DIR}"
+      FIND_ROOT_DIR "${TESTS_DATA_DIR}"
       INCLUDE_DIR
     )
   endfunction()
@@ -419,7 +419,7 @@ function(${CMAKETEST_TEST})
     dependency(IMPORT "${lib_target_name}"
       SHARED
       ${build_type_arg}
-      ROOT_DIR "${TESTS_DATA_DIR}"
+      FIND_ROOT_DIR "${TESTS_DATA_DIR}"
       INCLUDE_DIR ""
     )
   endfunction()
