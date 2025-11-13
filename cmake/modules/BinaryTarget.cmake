@@ -166,8 +166,8 @@ Usage
 .. signature::
   binary_target(ADD_PRECOMPILE_HEADER <target-name> HEADER_FILE <file-path>)
 
-  Add a precompile header file (PCH) ``<file_path>`` to an existing binary
-  target ``<target_name>`` with ``PRIVATE`` visibility. The file is added to
+  Add a precompile header file (PCH) ``<file-path>`` to an existing binary
+  target ``<target-name>`` with ``PRIVATE`` visibility. The file is added to
   the target with :cmake:command:`target_precompile_headers() <cmake:command:target_precompile_headers>` to populate the
   :cmake:prop_tgt:`PRECOMPILE_HEADERS <cmake:prop_tgt:PRECOMPILE_HEADERS>` target property.
 
@@ -186,7 +186,7 @@ Usage
 .. signature::
   binary_target(ADD_INCLUDE_DIRECTORIES <target-name> INCLUDE_DIRECTORIES [<dir-path>...|<gen-expr>...])
 
-  Add include directories to an existing binary target ``<target_name>`` with
+  Add include directories to an existing binary target ``<target-name>`` with
   ``PRIVATE`` visibility. The file is added to the target with
   :cmake:command:`target_include_directories() <cmake:command:target_include_directories>` to populate the
   :cmake:prop_tgt:`INCLUDE_DIRECTORIES <cmake:prop_tgt:INCLUDE_DIRECTORIES>` target property. Arguments may use generator expressions with the
