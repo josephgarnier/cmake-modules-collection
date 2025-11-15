@@ -19,7 +19,7 @@ Synopsis
 
   dependency(`BUILD`_ <lib-target-name> [...])
   dependency(`IMPORT`_ <lib-target-name> [...])
-  dependency(`ADD_INCLUDE_DIRECTORIES`_ <lib-target-name> <SET|APPEND> PUBLIC <gen-expr>...)
+  dependency(`ADD_INCLUDE_DIRECTORIES`_ <lib-target-name> <SET|APPEND> INTERFACE <gen-expr>...)
   dependency(`SET_IMPORTED_LOCATION`_ <lib-target-name> [CONFIGURATION <config-type>] PUBLIC <gen-expr>...)
   dependency(`EXPORT`_ <lib-target-name>... <BUILD_TREE|INSTALL_TREE> [APPEND] OUTPUT_FILE <file-name>)
 
@@ -263,9 +263,9 @@ Usage
     )
 
 .. signature::
-  dependency(ADD_INCLUDE_DIRECTORIES <lib-target-name> <SET|APPEND> PUBLIC <gen-expr>...)
+  dependency(ADD_INCLUDE_DIRECTORIES <lib-target-name> <SET|APPEND> INTERFACE <gen-expr>...)
 
-  Set or append public include directories required by the imported target
+  Set or append interface include directories required by the imported target
   ``<lib-target-name>`` to expose its headers to consumers. It populates its
   :cmake:prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES <cmake:prop_tgt:INTERFACE_INCLUDE_DIRECTORIES>`
   property and its derivatives to allow the target to be imported from the
@@ -288,11 +288,11 @@ Usage
   include paths separately using generator expressions (see 
   `how write build specification with generator expressions <https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html#include-directories-and-usage-requirements>`__).
 
-  The ``PUBLIC`` keyword indicates that the specified directories apply to the
-  usage requirements of the target (i.e., will be propagated to consumers of
-  the target). The directories following it **must use generator expressions** like
-  ``$<BUILD_INTERFACE:...>`` and ``$<INSTALL_INTERFACE:...>`` to distinguish
-  between build and install phases.
+  The ``INTERFACE`` visibility keyword indicates how the specified directories
+  apply to the usage requirements of the target: they will not be used by the
+  imported target but propagated to its consumers. The directories following it
+  **must use generator expressions** like ``$<BUILD_INTERFACE:...>`` and
+  ``$<INSTALL_INTERFACE:...>`` to distinguish between build and install phases.
 
   The command accepts the following mutually exclusive modifiers:
 
@@ -358,26 +358,26 @@ Usage
 
     # Set include directories for shared lib
     dependency(ADD_INCLUDE_DIRECTORIES "my_shared_lib" SET
-      PUBLIC
+      INTERFACE
         "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include/mylib>"
         "$<INSTALL_INTERFACE:include/mylib>"
     )
     # Is more or less equivalent to:
     target_include_directories(my_shared_lib
-      PUBLIC
+      INTERFACE
           "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include/mylib>"
           "$<INSTALL_INTERFACE:include/mylib>"
     )
 
     # Set include directories for static lib
     dependency(ADD_INCLUDE_DIRECTORIES "my_static_lib" SET
-      PUBLIC
+      INTERFACE
         "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include/mylib>"
         "$<INSTALL_INTERFACE:include/mylib>"
     )
     # Is more or less equivalent to:
     target_include_directories(my_static_lib
-      PUBLIC
+      INTERFACE
           "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include/mylib>"
           "$<INSTALL_INTERFACE:include/mylib>"
     )
@@ -544,7 +544,7 @@ Usage
       INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/mylib"
     )
     dependency(ADD_INCLUDE_DIRECTORIES "my_shared_lib" SET
-      PUBLIC
+      INTERFACE
         "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include/mylib>"
         "$<INSTALL_INTERFACE:include/mylib>"
     )
@@ -556,7 +556,7 @@ Usage
       INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/mylib"
     )
     dependency(ADD_INCLUDE_DIRECTORIES "my_static_lib" SET
-      PUBLIC
+      INTERFACE
         "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include/mylib>"
         "$<INSTALL_INTERFACE:include/mylib>"
     )
@@ -607,7 +607,7 @@ include(StringManip)
 function(dependency)
   set(options SHARED STATIC BUILD_TREE INSTALL_TREE SET APPEND)
   set(one_value_args IMPORT RELEASE_NAME DEBUG_NAME FIND_ROOT_DIR INCLUDE_DIR OUTPUT_FILE_NAME ADD_INCLUDE_DIRECTORIES SET_IMPORTED_LOCATION CONFIGURATION)
-  set(multi_value_args EXPORT PUBLIC)
+  set(multi_value_args EXPORT INTERFACE PUBLIC)
   cmake_parse_arguments(DEP "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
   
   if(DEFINED DEP_UNPARSED_ARGUMENTS)
@@ -732,19 +732,19 @@ macro(_dependency_add_include_directories)
   if(${DEP_SET} AND ${DEP_APPEND})
     message(FATAL_ERROR "SET|APPEND cannot be used together!")
   endif()
-  if(NOT DEFINED DEP_PUBLIC)
-    message(FATAL_ERROR "PUBLIC argument is missing or need a value!")
+  if(NOT DEFINED DEP_INTERFACE)
+    message(FATAL_ERROR "INTERFACE argument is missing or need a value!")
   endif()
 
   if(NOT TARGET "${DEP_ADD_INCLUDE_DIRECTORIES}")
     message(FATAL_ERROR "The target \"${DEP_ADD_INCLUDE_DIRECTORIES}\" does not exists!")
   endif()
 
-  string_manip(EXTRACT_INTERFACE DEP_PUBLIC
+  string_manip(EXTRACT_INTERFACE DEP_INTERFACE
     BUILD
     OUTPUT_VARIABLE include_dirs_build_interface
   )
-  string_manip(EXTRACT_INTERFACE DEP_PUBLIC
+  string_manip(EXTRACT_INTERFACE DEP_INTERFACE
     INSTALL
     OUTPUT_VARIABLE include_dirs_install_interface
   )
