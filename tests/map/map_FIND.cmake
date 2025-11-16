@@ -48,7 +48,7 @@ function(${CMAKETEST_TEST})
     ct_assert_equal(value "")
   endfunction()
 
-  ct_add_section(NAME "find_from_inexisting_key")
+  ct_add_section(NAME "find_from_nonexistent_key")
   function(${CMAKETEST_SECTION})
     map(FIND input_map "entry 11" value)
     ct_assert_string(value)

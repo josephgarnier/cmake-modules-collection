@@ -639,10 +639,10 @@ Querying
     # output is:
     #   setting_value (dependencies): AppleLib;BananaLib;CarrotLib;OrangeLib;
     #   PineappleLib
-    cmake_targets_file(TRY_GET_VALUE setting_value TARGET "src" KEY "inexisting.setting")
-    message("setting_value (inexisting.setting): ${setting_value}")
+    cmake_targets_file(TRY_GET_VALUE setting_value TARGET "src" KEY "nonexistent.setting")
+    message("setting_value (nonexistent.setting): ${setting_value}")
     # output is:
-    #   setting_value (inexisting.setting): inexisting.setting-NOTFOUND
+    #   setting_value (nonexistent.setting): nonexistent.setting-NOTFOUND
 
 Debugging
 ^^^^^^^^^

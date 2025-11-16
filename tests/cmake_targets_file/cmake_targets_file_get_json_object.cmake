@@ -167,7 +167,7 @@ function(${CMAKETEST_TEST})
       ct_assert_list(output)
       ct_assert_equal(output "${expected_output}")
 
-      # Get inexisting property
+      # Get nonexistent property
       string(JSON json_block_type TYPE "${input_json_object}")
       ct_assert_equal(json_block_type "OBJECT")
       _get_json_object(output "${input_json_object}" "tropical mix;invalid" off)

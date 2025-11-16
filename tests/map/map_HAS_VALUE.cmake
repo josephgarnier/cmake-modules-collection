@@ -57,7 +57,7 @@ function(${CMAKETEST_TEST})
     ct_assert_true(map_has_value)
   endfunction()
 
-  ct_add_section(NAME "has_inexisting_value")
+  ct_add_section(NAME "has_nonexistent_value")
   function(${CMAKETEST_SECTION})
     map(HAS_VALUE input_map "cat" map_has_value)
     ct_assert_equal(map_has_value "off")

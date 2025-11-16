@@ -57,7 +57,7 @@ function(${CMAKETEST_TEST})
     ct_assert_equal(map_keys "entry 9")
   endfunction()
 
-  ct_add_section(NAME "search_inexisting_value")
+  ct_add_section(NAME "search_nonexistent_value")
   function(${CMAKETEST_SECTION})
     map(SEARCH input_map "cat" map_keys)
     ct_assert_equal(map_keys "")

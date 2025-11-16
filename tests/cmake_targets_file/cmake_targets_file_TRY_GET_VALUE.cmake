@@ -134,7 +134,7 @@ function(${CMAKETEST_TEST})
     ct_assert_equal(output "-s")
   endfunction()
 
-  ct_add_section(NAME "get_from_inexisting_key")
+  ct_add_section(NAME "get_from_nonexistent_key")
   function(${CMAKETEST_SECTION})
     _set_up_test()
     set_property(GLOBAL PROPERTY TARGETS_CONFIG_LOADED "on")

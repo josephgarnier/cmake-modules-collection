@@ -91,7 +91,7 @@ function(${CMAKETEST_TEST})
     ct_assert_equal(copy_of_input_map "${expected_result}")
   endfunction()
 
-  ct_add_section(NAME "remove_with_inexisting_key")
+  ct_add_section(NAME "remove_with_nonexistent_key")
   function(${CMAKETEST_SECTION})
     set(copy_of_input_map "${input_map}")
     set(expected_result
