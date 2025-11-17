@@ -37,6 +37,19 @@ Usage
   CMake project, according to the specified binary type: ``STATIC``, ``SHARED``
   , ``HEADER``, ``EXEC``.
 
+  A ``STATIC`` library forces ``BUILD_SHARED_LIBS`` to ``off``.
+
+  A ``SHARED`` library sets visibility and export-related variables before
+  creating the target:
+
+    * ``BUILD_SHARED_LIBS`` is set to ``on``.
+    * ``CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS`` is set to ``off`` to disable
+      automatic symbol exports on Windows.
+    * ``CMAKE_CXX_VISIBILITY_PRESET`` is set to ``hidden`` to hide symbols
+      by default.
+    * ``CMAKE_VISIBILITY_INLINES_HIDDEN`` is set to ``on`` so that inline
+      symbols follow the same visibility rules.
+
   Example usage:
 
   .. code-block:: cmake
@@ -387,14 +400,17 @@ macro(_binary_target_create)
   endif()
 
   if(${BBT_STATIC})
+    # All libraries will be built static unless the library was explicitly
+    # added as a shared library
+    set(BUILD_SHARED_LIBS off)
     add_library("${BBT_CREATE}" STATIC)
   elseif(${BBT_SHARED})
     # All libraries will be built shared unless the library was explicitly
     # added as a static library
-    set(BUILD_SHARED_LIBS                           on)
-    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS            off)
-    set(CMAKE_CXX_VISIBILITY_PRESET                 "hidden")
-    set(CMAKE_VISIBILITY_INLINES_HIDDEN             on)
+    set(BUILD_SHARED_LIBS                  on)
+    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS   off)
+    set(CMAKE_CXX_VISIBILITY_PRESET        "hidden")
+    set(CMAKE_VISIBILITY_INLINES_HIDDEN    on)
     message(VERBOSE "Symbol visibility is configured as: no automatic exports, hidden by default, inline hidden")
     add_library("${BBT_CREATE}" SHARED)
   elseif(${BBT_HEADER})
