@@ -34,16 +34,15 @@ Usage
   .. code-block:: cmake
 
     dependency(IMPORT <lib-target-name>
-              <STATIC|SHARED>
-              [RELEASE_NAME <raw-filename>]
-              [DEBUG_NAME <raw-filename>]
-              FIND_ROOT_DIR <dir-path>
-              INCLUDE_DIR <dir-path>)
+               TYPE <STATIC|SHARED>
+               FIND_ROOT_DIR <dir-path>
+               [FIND_RELEASE_FILE <lib-filestem>]
+               [FIND_DEBUG_FILE <lib-filestem>])
 
   Create an imported library target named ``<lib-target-name>`` by locating its
   binary files in ``FIND_ROOT_DIR`` and setting the necessary target
-  properties. The value of ``<lib-target-name>`` should represent the base name
-  of the library (without prefix or suffix).
+  properties. By convention, the value of ``<lib-target-name>`` should represent
+  the base name of the library (without prefix or suffix).
 
   This command combines calls to :command:`directory(FIND_LIB)`,
   :cmake:command:`add_library(IMPORTED) <cmake:command:add_library(imported)>` and
@@ -53,14 +52,14 @@ Usage
   :cmake:command:`export(TARGETS) <cmake:command:export(targets)>`) or
   the install-tree (with :cmake:command:`install(EXPORT) <cmake:command:install(export)>`).
 
-  The command requires either the ``STATIC`` or ``SHARED`` keyword to specify
-  the type of library. Only one may be used. At least one of
-  ``RELEASE_NAME <raw-filename>`` or ``DEBUG_NAME <raw-filename>`` must be
-  provided. Both can be used. These arguments determine which configurations
-  of the library will be available, typically matching values in the
+  The command requires a ``TYPE`` value to specify the type of library (
+  ``STATIC`` or ``SHARED``). At least one of ``FIND_RELEASE_FILE <lib-filestem>``
+  or ``FIND_DEBUG_FILE <lib-filestem>`` must be provided. Both can be used.
+  These arguments determine which configurations of the library will be
+  available, typically matching values in the
   :cmake:variable:`CMAKE_CONFIGURATION_TYPES <cmake:variable:CMAKE_CONFIGURATION_TYPES>` variable.
 
-  The value of ``<raw-filename>`` should be the core name of the library file,
+  The value of ``<lib-filestem>`` should be the core name of the library file,
   stripped of:
 
   * Any version numbers.
@@ -72,44 +71,35 @@ Usage
   constructed using the relevant ``CMAKE_<CONFIG>_LIBRARY_PREFIX`` and
   ``CMAKE_<CONFIG>_LIBRARY_SUFFIX``, accounting for platform conventions
   and possible version-number noise in filenames. More specifically, it tries
-  to do a matching between the ``<raw-filename>`` in format
-  ``<CMAKE_STATIC_LIBRARY_PREFIX|CMAKE_SHARED_LIBRARY_PREFIX><raw-filename>
+  to do a matching between the ``<lib-filestem>`` in format
+  ``<CMAKE_STATIC_LIBRARY_PREFIX|CMAKE_SHARED_LIBRARY_PREFIX><lib-filestem>
   <verions-numbers><CMAKE_STATIC_LIBRARY_SUFFIX|CMAKE_SHARED_LIBRARY_SUFFIX>``
   and each filename found striped from their numeric and special character
   version and their suffix and their prefix based on the plateform and the
   kind of library ``STATIC`` or ``SHARED``. See the command module
-  :command:`directory(SCAN)`, that is used internally, for full details.
+  :command:`directory(FIND_LIB)`, that is used internally, for full details.
 
-  If more than one file matches or no file is found, an error is raised.
+  An error is raised if more than one file matches or no file is found.
 
   Once located, an imported target is created using :cmake:command:`add_library(IMPORTED) <cmake:command:add_library(imported)>` and
   appropriate properties for each available configuration (``RELEASE`` and/or
   ``DEBUG``) are set, including paths to the binary and import libraries (if
   applicable), as well as the soname.
 
-  The ``INCLUDE_DIR`` keyword defines a public include directory required by
-  the imported target. This directory populates the target's
-  :cmake:prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES <cmake:prop_tgt:INTERFACE_INCLUDE_DIRECTORIES>`
-  property, which specifies the list of directories published as usage
-  requirements to consumers, and which are added to the compiler's header
-  search path when another target links against it. In practice, this ensures
-  that any consumer of the imported library automatically receives the correct
-  include paths needed to compile against its headers.
-
   The following target properties are configured:
 
     ``INTERFACE_INCLUDE_DIRECTORIES``
-      Set to the directory given by ``INCLUDE_DIR``. This property defines
-      the include directories as a usage requirement to consumers of the
-      imported target, so that it is automatically added to their header
-      search paths when they link against it.
+      Set to an empty value. This property defines the include directories as
+      a usage requirement to consumers of the imported target, so that it is
+      automatically added to their header search paths when they link against
+      it.
 
       In this context, the value is intended for source-tree usage, meaning
       that the directory path refers to headers available directly in the
       project source (rather than in an installed or exported package). See the
       `CMake doc <https://cmake.org/cmake/help/latest/prop_tgt/INTERFACE_INCLUDE_DIRECTORIES.html>`__
-      for full details. The value of this property can be overridden using
-      :command:`dependency(ADD_INCLUDE_DIRECTORIES)`.
+      for full details. Use :command:`dependency(ADD_INCLUDE_DIRECTORIES)`.to
+      populate this property.
 
     ``INTERFACE_INCLUDE_DIRECTORIES_BUILD``
       Set to an empty value. This is a *custom property*, not used by CMake
@@ -160,16 +150,15 @@ Usage
 
     # Import shared lib
     dependency(IMPORT "my_shared_lib"
-      SHARED
-      RELEASE_NAME "mylib_1.11.0"
-      DEBUG_NAME "mylibd_1.11.0"
+      TYPE SHARED
       FIND_ROOT_DIR "${CMAKE_SOURCE_DIR}/lib"
-      INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/mylib"
+      FIND_RELEASE_FILE "mylib_1.11.0"
+      FIND_DEBUG_FILE "mylibd_1.11.0"
     )
     # Is equivalent to:
     add_library("my_shared_lib" SHARED IMPORTED)
     set_target_properties("my_shared_lib" PROPERTIES
-      INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_SOURCE_DIR}/include/mylib"
+      INTERFACE_INCLUDE_DIRECTORIES ""
       INTERFACE_INCLUDE_DIRECTORIES_BUILD ""
       INTERFACE_INCLUDE_DIRECTORIES_INSTALL ""
     )
@@ -212,16 +201,15 @@ Usage
 
     # Import static lib
     dependency(IMPORT "my_static_lib"
-      STATIC
-      RELEASE_NAME "mylib_1.11.0"
-      DEBUG_NAME "mylibd_1.11.0"
+      TYPE STATIC
       FIND_ROOT_DIR "${CMAKE_SOURCE_DIR}/lib"
-      INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/mylib"
+      FIND_RELEASE_FILE "mylib_1.11.0"
+      FIND_DEBUG_FILE "mylibd_1.11.0"
     )
     # Is equivalent to:
     add_library("my_static_lib" SHARED IMPORTED)
     set_target_properties("my_static_lib" PROPERTIES
-      INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_SOURCE_DIR}/include/mylib"
+      INTERFACE_INCLUDE_DIRECTORIES ""
       INTERFACE_INCLUDE_DIRECTORIES_BUILD ""
       INTERFACE_INCLUDE_DIRECTORIES_INSTALL ""
     )
@@ -266,13 +254,19 @@ Usage
   dependency(ADD_INCLUDE_DIRECTORIES <lib-target-name> <SET|APPEND> INTERFACE <gen-expr>...)
 
   Set or append interface include directories required by the imported target
-  ``<lib-target-name>`` to expose its headers to consumers. It populates its
-  :cmake:prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES <cmake:prop_tgt:INTERFACE_INCLUDE_DIRECTORIES>`
-  property and its derivatives to allow the target to be imported from the
-  three contexts source-tree, build-tree, and install-tree.
+  ``<lib-target-name>`` to expose its headers to consumers. It specifies the
+  list of directories published as usage requirements to consumers, and which
+  are added to the compiler's header search path when another target links
+  against it. In practice, this ensures that any consumer of the imported
+  library automatically receives the correct include paths needed to compile
+  against its headers.
 
-  The name should represent the base name of the library (without prefix or
-  suffix). This command copies the behavior of
+  This command populate the target's :cmake:prop_tgt:`INTERFACE_INCLUDE_DIRECTORIES <cmake:prop_tgt:INTERFACE_INCLUDE_DIRECTORIES>`
+  property and its derivatives to allow the target to be imported from the
+  three contexts: source-tree, build-tree, and install-tree.
+
+  The name ``<lib-target-name>`` should represent the stem name of the library
+  (without prefix or  suffix). This command copies the behavior of
   :cmake:command:`target_include_directories() <cmake:command:target_include_directories>`
   in CMake, but introduces a separation between build-time and install-time
   contexts for imported dependencies.
@@ -342,18 +336,16 @@ Usage
 
     # Import libs
     dependency(IMPORT "my_shared_lib"
-      SHARED
-      RELEASE_NAME "mylib_1.11.0"
-      DEBUG_NAME "mylibd_1.11.0"
+      TYPE SHARED
       FIND_ROOT_DIR "${CMAKE_SOURCE_DIR}/lib"
-      INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/mylib"
+      FIND_RELEASE_FILE "mylib_1.11.0"
+      FIND_DEBUG_FILE "mylibd_1.11.0"
     )
     dependency(IMPORT "my_static_lib"
-      STATIC
-      RELEASE_NAME "mylib_1.11.0"
-      DEBUG_NAME "mylibd_1.11.0"
+      TYPE STATIC
       FIND_ROOT_DIR "${CMAKE_SOURCE_DIR}/lib"
-      INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/mylib"
+      FIND_RELEASE_FILE "mylib_1.11.0"
+      FIND_DEBUG_FILE "mylibd_1.11.0"
     )
 
     # Set include directories for shared lib
@@ -445,18 +437,16 @@ Usage
 
     # Import libs
     dependency(IMPORT "my_shared_lib"
-      SHARED
-      RELEASE_NAME "mylib_1.11.0"
-      DEBUG_NAME "mylibd_1.11.0"
+      TYPE SHARED
       FIND_ROOT_DIR "${CMAKE_SOURCE_DIR}/lib"
-      INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/mylib"
+      FIND_RELEASE_FILE "mylib_1.11.0"
+      FIND_DEBUG_FILE "mylibd_1.11.0"
     )
     dependency(IMPORT "my_static_lib"
-      STATIC
-      RELEASE_NAME "mylib_1.11.0"
-      DEBUG_NAME "mylibd_1.11.0"
+      TYPE STATIC
       FIND_ROOT_DIR "${CMAKE_SOURCE_DIR}/lib"
-      INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/mylib"
+      FIND_RELEASE_FILE "mylib_1.11.0"
+      FIND_DEBUG_FILE "mylibd_1.11.0"
     )
 
     # Set imported location for shared lib
@@ -537,11 +527,10 @@ Usage
 
     # Import libs before exporting
     dependency(IMPORT "my_shared_lib"
-      SHARED
-      RELEASE_NAME "mylib_1.11.0"
-      DEBUG_NAME "mylibd_1.11.0"
+      TYPE SHARED
       FIND_ROOT_DIR "${CMAKE_SOURCE_DIR}/lib"
-      INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/mylib"
+      FIND_RELEASE_FILE "mylib_1.11.0"
+      FIND_DEBUG_FILE "mylibd_1.11.0"
     )
     dependency(ADD_INCLUDE_DIRECTORIES "my_shared_lib" SET
       INTERFACE
@@ -549,11 +538,10 @@ Usage
         "$<INSTALL_INTERFACE:include/mylib>"
     )
     dependency(IMPORT "my_static_lib"
-      STATIC
-      RELEASE_NAME "mylib_1.11.0"
-      DEBUG_NAME "mylibd_1.11.0"
+      TYPE STATIC
       FIND_ROOT_DIR "${CMAKE_SOURCE_DIR}/lib"
-      INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/mylib"
+      FIND_RELEASE_FILE "mylib_1.11.0"
+      FIND_DEBUG_FILE "mylibd_1.11.0"
     )
     dependency(ADD_INCLUDE_DIRECTORIES "my_static_lib" SET
       INTERFACE
@@ -605,8 +593,8 @@ include(StringManip)
 #------------------------------------------------------------------------------
 # Public function of this module
 function(dependency)
-  set(options SHARED STATIC BUILD_TREE INSTALL_TREE SET APPEND)
-  set(one_value_args IMPORT RELEASE_NAME DEBUG_NAME FIND_ROOT_DIR INCLUDE_DIR OUTPUT_FILE_NAME ADD_INCLUDE_DIRECTORIES SET_IMPORTED_LOCATION CONFIGURATION)
+  set(options BUILD_TREE INSTALL_TREE SET APPEND)
+  set(one_value_args IMPORT TYPE FIND_ROOT_DIR FIND_RELEASE_FILE FIND_DEBUG_FILE OUTPUT_FILE_NAME ADD_INCLUDE_DIRECTORIES SET_IMPORTED_LOCATION CONFIGURATION)
   set(multi_value_args EXPORT INTERFACE PUBLIC)
   cmake_parse_arguments(DEP "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
   
@@ -636,65 +624,52 @@ macro(_dependency_import)
   if(TARGET "${DEP_IMPORT}")
     message(FATAL_ERROR "The target \"${DEP_IMPORT}\" already exists!")
   endif()
-  if((NOT ${DEP_SHARED})
-    AND (NOT ${DEP_STATIC}))
-    message(FATAL_ERROR "SHARED|STATIC argument is missing!")
-  endif()
-  if(${DEP_SHARED} AND ${DEP_STATIC})
-    message(FATAL_ERROR "SHARED|STATIC cannot be used together!")
-  endif()
-  if((NOT DEFINED DEP_RELEASE_NAME)
-    AND (NOT DEFINED DEP_DEBUG_NAME))
-    message(FATAL_ERROR "RELEASE_NAME|DEBUG_NAME argument is missing!")
-  endif()
-  if("RELEASE_NAME" IN_LIST DEP_KEYWORDS_MISSING_VALUES)
-    message(FATAL_ERROR "RELEASE_NAME need a value!")
-  endif()
-  if("DEBUG_NAME" IN_LIST DEP_KEYWORDS_MISSING_VALUES)
-    message(FATAL_ERROR "DEBUG_NAME need a value!")
+  if((NOT DEFINED DEP_TYPE)
+      OR (NOT "${DEP_TYPE}" MATCHES "^(SHARED|STATIC)$"))
+    message(FATAL_ERROR "TYPE argument arguments is wrong!")
   endif()
   if(NOT DEFINED DEP_FIND_ROOT_DIR)
     message(FATAL_ERROR "FIND_ROOT_DIR argument is missing or need a value!")
   endif()
-  if(NOT DEFINED DEP_INCLUDE_DIR)
-    message(FATAL_ERROR "INCLUDE_DIR argument is missing or need a value!")
+  if((NOT DEFINED DEP_FIND_RELEASE_FILE)
+    AND (NOT DEFINED DEP_FIND_DEBUG_FILE))
+    message(FATAL_ERROR "FIND_RELEASE_FILE|FIND_DEBUG_FILE argument is missing!")
   endif()
-  
-  if(${DEP_SHARED})
-    set(lib_type "SHARED")
-  elseif(${DEP_STATIC})
-    set(lib_type "STATIC")
-  else()
-    message(FATAL_ERROR "Wrong library type!")
+  if("FIND_RELEASE_FILE" IN_LIST DEP_KEYWORDS_MISSING_VALUES)
+    message(FATAL_ERROR "FIND_RELEASE_FILE need a value!")
+  endif()
+  if("FIND_DEBUG_FILE" IN_LIST DEP_KEYWORDS_MISSING_VALUES)
+    message(FATAL_ERROR "FIND_DEBUG_FILE need a value!")
   endif()
 
   # Create target
-  add_library("${DEP_IMPORT}" "${lib_type}" IMPORTED)
+  add_library("${DEP_IMPORT}" "${DEP_TYPE}" IMPORTED)
   set_target_properties("${DEP_IMPORT}" PROPERTIES
-    INTERFACE_INCLUDE_DIRECTORIES "${DEP_INCLUDE_DIR}" # For usage from source-tree.
+    INTERFACE_INCLUDE_DIRECTORIES "" # For usage from source-tree.
     INTERFACE_INCLUDE_DIRECTORIES_BUILD "" # Custom property for usage from build-tree.
     INTERFACE_INCLUDE_DIRECTORIES_INSTALL "" # Custom property for usage from install-tree.
   )
 
   # Get the library file for release and debug
   foreach(build_type IN ITEMS "RELEASE" "DEBUG")
-    if(NOT DEFINED DEP_${build_type}_NAME)
+    if(NOT DEFINED DEP_FIND_${build_type}_FILE)
       continue()
     endif()
-  
+    set(lib_filestem "${DEP_FIND_${build_type}_FILE}")
+
     # Find library and import library
     directory(FIND_LIB lib
       FIND_IMPLIB implib
-      NAME "${DEP_${build_type}_NAME}"
-      "${lib_type}"
+      NAME "${lib_filestem}"
+      "${DEP_TYPE}"
       RELATIVE off
       ROOT_DIR "${DEP_FIND_ROOT_DIR}"
     )
     if(NOT lib)
-      message(FATAL_ERROR "The ${build_type} library \"${DEP_${build_type}_NAME}\" was not found!")
+      message(FATAL_ERROR "The ${build_type} library \"${lib_filestem}\" was not found!")
     endif()
-    if(WIN32 AND ("${lib_type}" STREQUAL "SHARED") AND NOT implib)
-      message(FATAL_ERROR "The ${build_type} import library \"${DEP_${build_type}_NAME}\" was not found!")
+    if(WIN32 AND ("${DEP_TYPE}" STREQUAL "SHARED") AND NOT implib)
+      message(FATAL_ERROR "The ${build_type} import library \"${lib_filestem}\" was not found!")
     endif()
 
     # Only shared libraries use import libraries, so make sure implib

@@ -45,6 +45,40 @@ function(${CMAKETEST_TEST})
   endmacro()
 
   # Functionalities checking
+  ct_add_section(NAME "set_nonexistent_dirs")
+  function(${CMAKETEST_SECTION})
+    _set_up_test()
+    dependency(ADD_INCLUDE_DIRECTORIES "imp_static_mock_lib" SET
+      INTERFACE
+        "$<BUILD_INTERFACE:fake/directory>"
+        "$<INSTALL_INTERFACE:fake>"
+    )
+    get_target_property(output_lib_property "imp_static_mock_lib"
+      INTERFACE_INCLUDE_DIRECTORIES)
+    ct_assert_equal(output_lib_property "fake/directory")
+    get_target_property(output_lib_property "imp_static_mock_lib"
+      INTERFACE_INCLUDE_DIRECTORIES_BUILD)
+    ct_assert_equal(output_lib_property "fake/directory")
+    get_target_property(output_lib_property "imp_static_mock_lib"
+      INTERFACE_INCLUDE_DIRECTORIES_INSTALL)
+    ct_assert_equal(output_lib_property "fake")
+
+    dependency(ADD_INCLUDE_DIRECTORIES "imp_shared_mock_lib" SET
+      INTERFACE
+        "$<BUILD_INTERFACE:fake/directory>"
+        "$<INSTALL_INTERFACE:fake>"
+    )
+    get_target_property(output_lib_property "imp_shared_mock_lib"
+      INTERFACE_INCLUDE_DIRECTORIES)
+    ct_assert_equal(output_lib_property "fake/directory")
+    get_target_property(output_lib_property "imp_shared_mock_lib"
+      INTERFACE_INCLUDE_DIRECTORIES_BUILD)
+    ct_assert_equal(output_lib_property "fake/directory")
+    get_target_property(output_lib_property "imp_shared_mock_lib"
+      INTERFACE_INCLUDE_DIRECTORIES_INSTALL)
+    ct_assert_equal(output_lib_property "fake")
+  endfunction()
+
   ct_add_section(NAME "overwrite_all_interfaces")
   function(${CMAKETEST_SECTION})
     _set_up_test()
@@ -300,7 +334,7 @@ function(${CMAKETEST_TEST})
     ct_assert_list(output_lib_property)
     ct_assert_equal(output_lib_property "include-1;include-2")
   endfunction()
-  
+
   # Errors checking
   ct_add_section(NAME "throws_if_arg_target_is_missing_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
