@@ -40,9 +40,10 @@ Usage
                [FIND_DEBUG_FILE <lib-filestem>])
 
   Create an imported library target named ``<lib-target-name>`` by locating its
-  binary files in ``FIND_ROOT_DIR`` and setting the necessary target
+  binary files in ``FIND_ROOT_DIR`` and set the necessary target
   properties. By convention, the value of ``<lib-target-name>`` should represent
-  the base name of the library (without prefix or suffix).
+  the base name of the library (without prefix or suffix). An aliased target is
+  also created with the name ``<lib-target-name>::<lib-target-name>``.
 
   This command combines calls to :command:`directory(FIND_LIB)`,
   :cmake:command:`add_library(IMPORTED) <cmake:command:add_library(imported)>` and
@@ -644,6 +645,7 @@ macro(_dependency_import)
 
   # Create target
   add_library("${DEP_IMPORT}" "${DEP_TYPE}" IMPORTED)
+  add_library("${DEP_IMPORT}::${DEP_IMPORT}" ALIAS "${DEP_IMPORT}")
   set_target_properties("${DEP_IMPORT}" PROPERTIES
     INTERFACE_INCLUDE_DIRECTORIES "" # For usage from source-tree.
     INTERFACE_INCLUDE_DIRECTORIES_BUILD "" # Custom property for usage from build-tree.

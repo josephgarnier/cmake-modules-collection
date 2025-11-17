@@ -50,6 +50,7 @@ function(${CMAKETEST_TEST})
       ${build_type_arg}
     )
     ct_assert_target_exists("${lib_target_name}")
+    ct_assert_target_exists("${lib_target_name}::${lib_target_name}")
     ct_assert_target_does_not_have_property("${lib_target_name}"
       INTERFACE_INCLUDE_DIRECTORIES)
     get_property(output_lib_property TARGET "${lib_target_name}"
@@ -123,6 +124,7 @@ function(${CMAKETEST_TEST})
       ${build_type_arg}
     )
     ct_assert_target_exists("${lib_target_name}")
+    ct_assert_target_exists("${lib_target_name}::${lib_target_name}")
     ct_assert_target_does_not_have_property("${lib_target_name}"
       INTERFACE_INCLUDE_DIRECTORIES)
     get_property(output_lib_property TARGET "${lib_target_name}"
