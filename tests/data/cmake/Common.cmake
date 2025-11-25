@@ -47,7 +47,7 @@ function(import_mock_lib imp_lib_name base_lib_name)
 
   add_library("${imp_lib_name}" ${lib_build_type} IMPORTED)
   set_target_properties("${imp_lib_name}" PROPERTIES
-    INTERFACE_INCLUDE_DIRECTORIES "${TESTS_DATA_DIR}/include"
+    INTERFACE_INCLUDE_DIRECTORIES ""
     INTERFACE_INCLUDE_DIRECTORIES_BUILD ""
     INTERFACE_INCLUDE_DIRECTORIES_INSTALL ""
   )

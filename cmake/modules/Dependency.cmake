@@ -36,14 +36,13 @@ Usage
     dependency(IMPORT <lib-target-name>
                TYPE <STATIC|SHARED>
                FIND_ROOT_DIR <dir-path>
-               [FIND_RELEASE_FILE <lib-filestem>]
-               [FIND_DEBUG_FILE <lib-filestem>])
+               [FIND_RELEASE_FILE <lib-file-basename>]
+               [FIND_DEBUG_FILE <lib-file-basename>])
 
   Create an imported library target named ``<lib-target-name>`` by locating its
-  binary files in ``FIND_ROOT_DIR`` and set the necessary target
-  properties. By convention, the value of ``<lib-target-name>`` should represent
-  the base name of the library (without prefix or suffix). An aliased target is
-  also created with the name ``<lib-target-name>::<lib-target-name>``.
+  binary files in ``FIND_ROOT_DIR`` for ``RELEASE`` and/or ``DEBUG``, and set
+  the necessary target properties. An aliased target is also created with the
+  name ``<lib-target-name>::<lib-target-name>``.
 
   This command combines calls to :command:`directory(FIND_LIB)`,
   :cmake:command:`add_library(IMPORTED) <cmake:command:add_library(imported)>` and
@@ -54,13 +53,13 @@ Usage
   the install-tree (with :cmake:command:`install(EXPORT) <cmake:command:install(export)>`).
 
   The command requires a ``TYPE`` value to specify the type of library (
-  ``STATIC`` or ``SHARED``). At least one of ``FIND_RELEASE_FILE <lib-filestem>``
-  or ``FIND_DEBUG_FILE <lib-filestem>`` must be provided. Both can be used.
+  ``STATIC`` or ``SHARED``). At least one of ``FIND_RELEASE_FILE <lib-file-basename>``
+  or ``FIND_DEBUG_FILE <lib-file-basename>`` must be provided. Both can be used.
   These arguments determine which configurations of the library will be
   available, typically matching values in the
   :cmake:variable:`CMAKE_CONFIGURATION_TYPES <cmake:variable:CMAKE_CONFIGURATION_TYPES>` variable.
 
-  The value of ``<lib-filestem>`` should be the core name of the library file,
+  The value of ``<lib-file-basename>`` should be the core name of the library file,
   stripped of:
 
   * Any version numbers.
@@ -72,8 +71,8 @@ Usage
   constructed using the relevant ``CMAKE_<CONFIG>_LIBRARY_PREFIX`` and
   ``CMAKE_<CONFIG>_LIBRARY_SUFFIX``, accounting for platform conventions
   and possible version-number noise in filenames. More specifically, it tries
-  to do a matching between the ``<lib-filestem>`` in format
-  ``<CMAKE_STATIC_LIBRARY_PREFIX|CMAKE_SHARED_LIBRARY_PREFIX><lib-filestem>
+  to do a matching between the ``<lib-file-basename>`` in format
+  ``<CMAKE_STATIC_LIBRARY_PREFIX|CMAKE_SHARED_LIBRARY_PREFIX><lib-file-basename>
   <verions-numbers><CMAKE_STATIC_LIBRARY_SUFFIX|CMAKE_SHARED_LIBRARY_SUFFIX>``
   and each filename found striped from their numeric and special character
   version and their suffix and their prefix based on the plateform and the
@@ -144,6 +143,90 @@ Usage
       Appended with each configuration for which a library was found and
       configured (e.g. ``RELEASE``, ``DEBUG``). See the `CMake doc <https://cmake.org/cmake/help/latest/prop_tgt/IMPORTED_CONFIGURATIONS.html>`__ for full
       details.
+
+  To provide maximum flexibility when importing a library with this command, it
+  mirrors CMake's official requirements for ``FindXxx.cmake`` modules by
+  initializing the
+  :cmake:ref:`variables standards requises <cmake developer standard variable names>`.
+  It also supports use in  multiples :cmake:ref:`Build Configurations` contexts
+  by replicating the behavior of the
+  :cmake:module:`SelectLibraryConfigurations <cmake:module:SelectLibraryConfigurations>` 
+  module.
+
+  This command then returns the following result variables:
+
+    ``<lib-target-name>_LIBRARY_RELEASE``
+      The full absolute path to the ``Release`` build of the library. If no
+      file found, its value is set to
+      ``<lib-target-name>_LIBRARY_RELEASE-NOTFOUND``. The variable is undefined
+      when the ``FIND_RELEASE_FILE`` argument is not provided.
+
+    ``<lib-target-name>_LIBRARY_DEBUG``
+      The full absolute path to the ``Debug`` build of the library. If no
+      file found, its value is set to
+      ``<lib-target-name>_LIBRARY_DEBUG-NOTFOUND``. The variable is undefined
+      when the ``FIND_DEBUG_FILE`` argument is not provided.
+
+    ``<lib-target-name>_IMP_LIBRARY_RELEASE``
+      The full absolute path to the ``Release`` import build of the library. If
+      no file found, its value is set to
+      ``<lib-target-name>_IMP_LIBRARY_RELEASE-NOTFOUND``. The variable is
+      undefined when the ``FIND_RELEASE_FILE`` argument is not provided.
+
+    ``<lib-target-name>_IMP_LIBRARY_DEBUG``
+      The full absolute path to the ``Debug`` import build of the library. If
+      no file found, its value is set to
+      ``<lib-target-name>_IMP_LIBRARY_DEBUG-NOTFOUND``. The variable is
+      undefined when the ``FIND_DEBUG_FILE`` argument is not provided.
+
+    ``<lib-target-name>_FOUND_RELEASE``
+      Set to true if the ``Release`` library and import library has been found
+      successfully, otherwise set to false. To be true, both
+      ``<lib-target-name>_LIBRARY_RELEASE`` and
+      ``<lib-target-name>_IMP_LIBRARY_RELEASE`` must not be set to
+      ``-NOTFOUND``. The variable is undefined when the ``FIND_RELEASE_FILE``
+      argument is not provided.
+
+    ``<lib-target-name>_FOUND_DEBUG``
+      Set to true if the ``Debug`` library and import library has been found
+      successfully, otherwise set to false. To be true, both
+      ``<lib-target-name>_LIBRARY_DEBUG`` and
+      ``<lib-target-name>_IMP_LIBRARY_DEBUG`` must not be set to
+      ``-NOTFOUND``. The variable is undefined when the ``FIND_DEBUG_FILE``
+      argument is not provided.
+
+    ``<lib-target-name>_FOUND``
+      Set to false if ``<lib-target-name>_FOUND_RELEASE`` or
+      ``<lib-target-name>_FOUND_DEBUG`` are defined and set to false. Otherwise,
+      set to true.
+
+    ``<lib-target-name>_LIBRARY``
+      The value of ``<lib-target-name>_LIBRARY_RELEASE`` variable if found,
+      otherwise it is set to the value of ``<lib-target-name>_LIBRARY_DEBUG``
+      variable if found. If both are found, the release library value takes
+      precedence. If both are not found, because
+      ``<lib-target-name>_FOUND_RELEASE`` and ``<lib-target-name>_FOUND_DEBUG``
+      are set to false, it is set to value ``<lib-target-name>_LIBRARY-NOTFOUND``.
+
+      If the :cmake:manual:`CMake Generator <cmake:manual:cmake-generators(7)>`
+      in use supports build configurations, then this variable will be a list
+      of found libraries each prepended with the ``optimized`` or ``debug``
+      keywords specifying which library should be linked for the given
+      configuration.  These keywords are used by the
+      :cmake:command:`target_link_libraries() <cmake:command:target_link_libraries>`
+      command. If a build configuration has not been set or the generator in
+      use does not support build configurations, then this variable value will
+      not contain these keywords.
+
+    ``<lib-target-name>_LIBRARIES``
+      The same value as the ``<lib-target-name>_LIBRARY`` variable.
+
+    ``<lib-target-name>_ROOT_DIR``
+      The base directory absolute path where to look for the
+      ``<lib-target-name>`` files. The value is set to the ``FIND_ROOT_DIR``
+      argument.
+
+  No library is added if ``<lib-target-name>_FOUND`` is set to false.
 
   Example usage:
 
@@ -432,6 +515,12 @@ Usage
       :command:`dependency(EXPORT)` to complete the definition of an imported
       target for external reuse.
 
+  .. note::
+
+    The ``dependency(SET_IMPORTED_LOCATION)`` command should be called after
+    importing the target with :command:`dependency(IMPORT)` to ensure that
+    the target properties and result variables are set correctly.
+
   Example usage:
 
   .. code-block:: cmake
@@ -521,6 +610,12 @@ Usage
   imported targets can be used as if they were defined locally. The properties
   are identical to those set by the :command:`dependency(IMPORT)` command; see
   its documentation for additional details.
+
+  .. note::
+
+    The ``dependency(EXPORT)`` command should be called after importing the
+    target with :command:`dependency(IMPORT)` to ensure that the target
+    properties and result variables are set correctly.
 
   Example usage:
 
@@ -633,7 +728,7 @@ macro(_dependency_import)
     message(FATAL_ERROR "FIND_ROOT_DIR argument is missing or need a value!")
   endif()
   if((NOT DEFINED DEP_FIND_RELEASE_FILE)
-    AND (NOT DEFINED DEP_FIND_DEBUG_FILE))
+      AND (NOT DEFINED DEP_FIND_DEBUG_FILE))
     message(FATAL_ERROR "FIND_RELEASE_FILE|FIND_DEBUG_FILE argument is missing!")
   endif()
   if("FIND_RELEASE_FILE" IN_LIST DEP_KEYWORDS_MISSING_VALUES)
@@ -643,57 +738,122 @@ macro(_dependency_import)
     message(FATAL_ERROR "FIND_DEBUG_FILE need a value!")
   endif()
 
-  # Create target
-  add_library("${DEP_IMPORT}" "${DEP_TYPE}" IMPORTED)
-  add_library("${DEP_IMPORT}::${DEP_IMPORT}" ALIAS "${DEP_IMPORT}")
-  set_target_properties("${DEP_IMPORT}" PROPERTIES
-    INTERFACE_INCLUDE_DIRECTORIES "" # For usage from source-tree.
-    INTERFACE_INCLUDE_DIRECTORIES_BUILD "" # Custom property for usage from build-tree.
-    INTERFACE_INCLUDE_DIRECTORIES_INSTALL "" # Custom property for usage from install-tree.
+  set(return_vars
+    "${DEP_IMPORT}_LIBRARY_RELEASE"
+    "${DEP_IMPORT}_LIBRARY_DEBUG"
+    "${DEP_IMPORT}_IMP_LIBRARY_RELEASE"
+    "${DEP_IMPORT}_IMP_LIBRARY_DEBUG"
+    "${DEP_IMPORT}_LIBRARY"
+    "${DEP_IMPORT}_LIBRARIES"
+    "${DEP_IMPORT}_ROOT_DIR"
+    "${DEP_IMPORT}_FOUND"
+    "${DEP_IMPORT}_FOUND_RELEASE"
+    "${DEP_IMPORT}_FOUND_DEBUG"
   )
 
-  # Get the library file for release and debug
+  # Find and get library and import library each build type (RELEASE or DEBUG)
   foreach(build_type IN ITEMS "RELEASE" "DEBUG")
+    # Skip the loop if lib for this config is not requested
     if(NOT DEFINED DEP_FIND_${build_type}_FILE)
       continue()
     endif()
-    set(lib_filestem "${DEP_FIND_${build_type}_FILE}")
 
-    # Find library and import library
-    directory(FIND_LIB lib
-      FIND_IMPLIB implib
-      NAME "${lib_filestem}"
+    set(${DEP_IMPORT}_FOUND_${build_type} false)
+    directory(FIND_LIB ${DEP_IMPORT}_LIBRARY_${build_type}
+      FIND_IMPLIB ${DEP_IMPORT}_IMP_LIBRARY_${build_type}
+      NAME "${DEP_FIND_${build_type}_FILE}"
       "${DEP_TYPE}"
       RELATIVE off
       ROOT_DIR "${DEP_FIND_ROOT_DIR}"
     )
-    if(NOT lib)
-      message(FATAL_ERROR "The ${build_type} library \"${lib_filestem}\" was not found!")
-    endif()
-    if(WIN32 AND ("${DEP_TYPE}" STREQUAL "SHARED") AND NOT implib)
-      message(FATAL_ERROR "The ${build_type} import library \"${lib_filestem}\" was not found!")
-    endif()
-
-    # Only shared libraries use import libraries, so make sure implib
-    # is set to empty when it is equals to `implib-NOTFOUND` (especially
-    # for static libraries)
-    if("${implib}" MATCHES "-NOTFOUND$")
-      set(implib "")
+    # Because only shared libraries on Windows platform use import libraries,
+    # implib is always equals to `implib-NOTFOUND` for other cases, so the value is
+    # replaced to empty only for these other cases.
+    if(NOT (WIN32 AND ("${DEP_TYPE}" STREQUAL "SHARED")))
+      if(NOT ${DEP_IMPORT}_IMP_LIBRARY_${build_type})
+        set(${DEP_IMPORT}_IMP_LIBRARY_${build_type} "")
+      endif()
     endif()
 
-    # Add library properties for release
-    cmake_path(GET lib FILENAME lib_name)
+    if((NOT "${${DEP_IMPORT}_LIBRARY_${build_type}}" MATCHES "-NOTFOUND$")
+        AND (NOT "${${DEP_IMPORT}_IMP_LIBRARY_${build_type}}" MATCHES "-NOTFOUND$"))
+      set(${DEP_IMPORT}_FOUND_${build_type} true)
+    endif()
+  endforeach()
+
+  # Sets and adjusts library variables based on debug and release build
+  # configurations. This code copies the behavior of the CMake module
+  # `SelectLibraryConfigurations`.)
+  get_property(is_multi_config GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
+  if(${DEP_IMPORT}_FOUND_RELEASE AND ${DEP_IMPORT}_FOUND_DEBUG
+      AND (NOT "${${DEP_IMPORT}_LIBRARY_RELEASE}" STREQUAL "${${DEP_IMPORT}_LIBRARY_DEBUG}")
+      AND (is_multi_config OR CMAKE_BUILD_TYPE))
+    # If the generator is multi-config or if CMAKE_BUILD_TYPE is set for
+    # single-config generators, set optimized and debug libraries
+    set(${DEP_IMPORT}_LIBRARY "")
+    list(APPEND ${DEP_IMPORT}_LIBRARY optimized "${${DEP_IMPORT}_LIBRARY_RELEASE}")
+    list(APPEND ${DEP_IMPORT}_LIBRARY debug "${${DEP_IMPORT}_LIBRARY_DEBUG}")
+  elseif(${DEP_IMPORT}_FOUND_RELEASE)
+    set(${DEP_IMPORT}_LIBRARY "${${DEP_IMPORT}_LIBRARY_RELEASE}")
+  elseif(${DEP_IMPORT}_FOUND_DEBUG)
+    set(${DEP_IMPORT}_LIBRARY "${${DEP_IMPORT}_LIBRARY_DEBUG}")
+  else()
+    set(${DEP_IMPORT}_LIBRARY "${DEP_IMPORT}_LIBRARY-NOTFOUND")
+  endif()
+
+  set(${DEP_IMPORT}_ROOT_DIR "${DEP_FIND_ROOT_DIR}")
+  set(${DEP_IMPORT}_LIBRARY "${${DEP_IMPORT}_LIBRARY}")
+  set(${DEP_IMPORT}_LIBRARIES "${${DEP_IMPORT}_LIBRARY}")
+  if(DEFINED ${DEP_IMPORT}_FOUND_RELEASE AND NOT ${${DEP_IMPORT}_FOUND_RELEASE}
+      OR DEFINED ${DEP_IMPORT}_FOUND_DEBUG AND NOT ${${DEP_IMPORT}_FOUND_DEBUG})
+    set(${DEP_IMPORT}_FOUND false)
+  else()
+    set(${DEP_IMPORT}_FOUND true)
+  endif()
+
+  # Exit the function if no lib or implib has been found for one or both build
+  # types
+  if(NOT ${DEP_IMPORT}_FOUND)
+    return(PROPAGATE ${return_vars})
+  endif()
+
+  # Create target
+  add_library("${DEP_IMPORT}" "${DEP_TYPE}" IMPORTED)
+  add_library("${DEP_IMPORT}::${DEP_IMPORT}" ALIAS "${DEP_IMPORT}")
+  set_target_properties("${DEP_IMPORT}" PROPERTIES
+    # For usage from source-tree
+    INTERFACE_INCLUDE_DIRECTORIES ""
+    # Custom property for usage from build-tree
+    INTERFACE_INCLUDE_DIRECTORIES_BUILD ""
+    # Custom property for usage from install-tree
+    INTERFACE_INCLUDE_DIRECTORIES_INSTALL ""
+  )
+
+  # Add library properties for each build type (RELEASE or DEBUG)
+  foreach(build_type IN ITEMS "RELEASE" "DEBUG")
+    # Skip the loop if lib or implib is not found or build type is not set
+    if(NOT ${DEP_IMPORT}_FOUND_${build_type})
+      continue()
+    endif()
+
+    cmake_path(GET ${DEP_IMPORT}_LIBRARY_${build_type} FILENAME lib_name)
     set_target_properties("${DEP_IMPORT}" PROPERTIES
-      IMPORTED_LOCATION_${build_type} "${lib}" # Only for '.so|.dll|.a|.lib'. For usage from source-tree
-      IMPORTED_LOCATION_BUILD_${build_type} "" # Custom property for usage from build-tree
-      IMPORTED_LOCATION_INSTALL_${build_type} "" # Custom property for usage from install-tree
-      IMPORTED_IMPLIB_${build_type} "${implib}" # Only for '.dll.a|.a|.lib' on DLL platforms
+      # Only for '.so|.dll|.a|.lib'. For usage from source-tree
+      IMPORTED_LOCATION_${build_type} "${${DEP_IMPORT}_LIBRARY_${build_type}}"
+      # Custom property for usage from build-tree
+      IMPORTED_LOCATION_BUILD_${build_type} ""
+      # Custom property for usage from install-tree
+      IMPORTED_LOCATION_INSTALL_${build_type} ""
+      # Only for '.dll.a|.a|.lib' on DLL platforms
+      IMPORTED_IMPLIB_${build_type} "${${DEP_IMPORT}_IMP_LIBRARY_${build_type}}"
       IMPORTED_SONAME_${build_type} "${lib_name}"
     )
     set_property(TARGET "${DEP_IMPORT}"
       APPEND PROPERTY IMPORTED_CONFIGURATIONS "${build_type}"
     )
   endforeach()
+
+  return(PROPAGATE ${return_vars})
 endmacro()
 
 #------------------------------------------------------------------------------
