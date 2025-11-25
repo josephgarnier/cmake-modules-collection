@@ -322,7 +322,7 @@ function(${CMAKETEST_TEST})
   # # Errors checking
   ct_add_section(NAME "throws_if_lib_is_duplicated" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    file(COPY "${TESTS_DATA_DIR}/bin" DESTINATION "${TESTS_DATA_DIR}/bin_temp_copy")	
+    file(COPY "${TESTS_DATA_DIR}/bin/" DESTINATION "${TESTS_DATA_DIR}/bin_throws_if_lib_is_duplicated")
     set(lib_name "shared_mock_lib")
     directory(FIND_LIB output_lib
       FIND_IMPLIB output_implib
@@ -331,7 +331,7 @@ function(${CMAKETEST_TEST})
       RELATIVE off
       ROOT_DIR "${TESTS_DATA_DIR}"
     )
-    file(REMOVE_RECURSE "${TESTS_DATA_DIR}/bin_temp_copy")
+    file(REMOVE_RECURSE "${TESTS_DATA_DIR}/bin_throws_if_lib_is_duplicated")
   endfunction()
   
   ct_add_section(NAME "throws_if_arg_output_lib_var_is_missing_1" EXPECTFAIL)
