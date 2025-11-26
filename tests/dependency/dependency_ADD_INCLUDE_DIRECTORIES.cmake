@@ -29,25 +29,23 @@ function(${CMAKETEST_TEST})
     SHARED SKIP_IF_EXISTS)
 
   # To call before each test
-  macro(_set_up_test)
+  macro(_set_up_test imported_target)
     # Set to empty the properties changed by `dependency(ADD_INCLUDE_DIRECTORIES)`
-    set_target_properties("imp_static_mock_lib" PROPERTIES
-      INTERFACE_INCLUDE_DIRECTORIES ""
-      INTERFACE_INCLUDE_DIRECTORIES_BUILD ""
-      INTERFACE_INCLUDE_DIRECTORIES_INSTALL ""
-    )
-    set_target_properties("imp_shared_mock_lib" PROPERTIES
+    set_target_properties("${imported_target}" PROPERTIES
       INTERFACE_INCLUDE_DIRECTORIES ""
       INTERFACE_INCLUDE_DIRECTORIES_BUILD ""
       INTERFACE_INCLUDE_DIRECTORIES_INSTALL ""
     )
 
+    # Unset the result vars returned by `dependency(ADD_INCLUDE_DIRECTORIES)`
+    unset("${imported_target}_INCLUDE_DIR")
+    unset("${imported_target}_INCLUDE_DIRS")
   endmacro()
 
   # Functionalities checking
-  ct_add_section(NAME "set_nonexistent_dirs")
+  ct_add_section(NAME "set_not_existing_dirs")
   function(${CMAKETEST_SECTION})
-    _set_up_test()
+    _set_up_test("imp_static_mock_lib")
     dependency(ADD_INCLUDE_DIRECTORIES "imp_static_mock_lib" SET
       INTERFACE
         "$<BUILD_INTERFACE:fake/directory>"
@@ -62,7 +60,10 @@ function(${CMAKETEST_TEST})
     get_target_property(output_lib_property "imp_static_mock_lib"
       INTERFACE_INCLUDE_DIRECTORIES_INSTALL)
     ct_assert_equal(output_lib_property "fake")
+    ct_assert_equal("imp_static_mock_lib_INCLUDE_DIR" "fake/directory")
+    ct_assert_equal("imp_static_mock_lib_INCLUDE_DIRS" "fake/directory")
 
+    _set_up_test("imp_shared_mock_lib")
     dependency(ADD_INCLUDE_DIRECTORIES "imp_shared_mock_lib" SET
       INTERFACE
         "$<BUILD_INTERFACE:fake/directory>"
@@ -77,11 +78,13 @@ function(${CMAKETEST_TEST})
     get_target_property(output_lib_property "imp_shared_mock_lib"
       INTERFACE_INCLUDE_DIRECTORIES_INSTALL)
     ct_assert_equal(output_lib_property "fake")
+    ct_assert_equal("imp_shared_mock_lib_INCLUDE_DIR" "fake/directory")
+    ct_assert_equal("imp_shared_mock_lib_INCLUDE_DIRS" "fake/directory")
   endfunction()
 
-  ct_add_section(NAME "overwrite_all_interfaces")
+  ct_add_section(NAME "set_all_interfaces")
   function(${CMAKETEST_SECTION})
-    _set_up_test()
+    _set_up_test("imp_static_mock_lib")
     dependency(ADD_INCLUDE_DIRECTORIES "imp_static_mock_lib" SET
       INTERFACE
         "$<BUILD_INTERFACE:${TESTS_DATA_DIR}/include>"
@@ -96,7 +99,10 @@ function(${CMAKETEST_TEST})
     get_target_property(output_lib_property "imp_static_mock_lib"
       INTERFACE_INCLUDE_DIRECTORIES_INSTALL)
     ct_assert_equal(output_lib_property "include")
+    ct_assert_equal("imp_static_mock_lib_INCLUDE_DIR" "${TESTS_DATA_DIR}/include")
+    ct_assert_equal("imp_static_mock_lib_INCLUDE_DIRS" "${TESTS_DATA_DIR}/include")
 
+    _set_up_test("imp_shared_mock_lib")
     dependency(ADD_INCLUDE_DIRECTORIES "imp_shared_mock_lib" SET
       INTERFACE
         "$<BUILD_INTERFACE:${TESTS_DATA_DIR}/include>"
@@ -111,11 +117,13 @@ function(${CMAKETEST_TEST})
     get_target_property(output_lib_property "imp_shared_mock_lib"
       INTERFACE_INCLUDE_DIRECTORIES_INSTALL)
     ct_assert_equal(output_lib_property "include")
+    ct_assert_equal("imp_shared_mock_lib_INCLUDE_DIR" "${TESTS_DATA_DIR}/include")
+    ct_assert_equal("imp_shared_mock_lib_INCLUDE_DIRS" "${TESTS_DATA_DIR}/include")
   endfunction()
 
-  ct_add_section(NAME "overwrite_build_interfaces")
+  ct_add_section(NAME "set_build_interfaces")
   function(${CMAKETEST_SECTION})
-    _set_up_test()
+    _set_up_test("imp_static_mock_lib")
     dependency(ADD_INCLUDE_DIRECTORIES "imp_static_mock_lib" SET
       INTERFACE
         "$<BUILD_INTERFACE:${TESTS_DATA_DIR}/include>"
@@ -131,7 +139,10 @@ function(${CMAKETEST_TEST})
     get_property(output_lib_property TARGET "imp_static_mock_lib"
       PROPERTY INTERFACE_INCLUDE_DIRECTORIES_INSTALL SET)
     ct_assert_true(output_lib_property)
+    ct_assert_equal("imp_static_mock_lib_INCLUDE_DIR" "${TESTS_DATA_DIR}/include")
+    ct_assert_equal("imp_static_mock_lib_INCLUDE_DIRS" "${TESTS_DATA_DIR}/include")
 
+    _set_up_test("imp_shared_mock_lib")
     dependency(ADD_INCLUDE_DIRECTORIES "imp_shared_mock_lib" SET
       INTERFACE
         "$<BUILD_INTERFACE:${TESTS_DATA_DIR}/include>"
@@ -147,11 +158,13 @@ function(${CMAKETEST_TEST})
     get_property(output_lib_property TARGET "imp_shared_mock_lib"
       PROPERTY INTERFACE_INCLUDE_DIRECTORIES_INSTALL SET)
     ct_assert_true(output_lib_property)
+    ct_assert_equal("imp_shared_mock_lib_INCLUDE_DIR" "${TESTS_DATA_DIR}/include")
+    ct_assert_equal("imp_shared_mock_lib_INCLUDE_DIRS" "${TESTS_DATA_DIR}/include")
   endfunction()
 
-  ct_add_section(NAME "overwrite_install_interfaces")
+  ct_add_section(NAME "set_install_interfaces")
   function(${CMAKETEST_SECTION})
-    _set_up_test()
+    _set_up_test("imp_static_mock_lib")
     dependency(ADD_INCLUDE_DIRECTORIES "imp_static_mock_lib" SET
       INTERFACE
         "$<INSTALL_INTERFACE:include>"
@@ -169,7 +182,10 @@ function(${CMAKETEST_TEST})
     get_target_property(output_lib_property "imp_static_mock_lib"
       INTERFACE_INCLUDE_DIRECTORIES_INSTALL)
     ct_assert_equal(output_lib_property "include")
+    ct_assert_equal("imp_static_mock_lib_INCLUDE_DIR" "")
+    ct_assert_equal("imp_static_mock_lib_INCLUDE_DIRS" "")
 
+    _set_up_test("imp_shared_mock_lib")
     dependency(ADD_INCLUDE_DIRECTORIES "imp_shared_mock_lib" SET
       INTERFACE
         "$<INSTALL_INTERFACE:include>"
@@ -187,16 +203,20 @@ function(${CMAKETEST_TEST})
     get_target_property(output_lib_property "imp_shared_mock_lib"
       INTERFACE_INCLUDE_DIRECTORIES_INSTALL)
     ct_assert_equal(output_lib_property "include")
+    ct_assert_equal("imp_shared_mock_lib_INCLUDE_DIR" "")
+    ct_assert_equal("imp_shared_mock_lib_INCLUDE_DIRS" "")
   endfunction()
   
   ct_add_section(NAME "append_all_interfaces")
   function(${CMAKETEST_SECTION})
-    _set_up_test()
+    _set_up_test("imp_static_mock_lib")
     dependency(ADD_INCLUDE_DIRECTORIES "imp_static_mock_lib" SET
       INTERFACE
         "$<BUILD_INTERFACE:${TESTS_DATA_DIR}/include-1>"
         "$<INSTALL_INTERFACE:include-1>"
     )
+    ct_assert_equal("imp_static_mock_lib_INCLUDE_DIR" "${TESTS_DATA_DIR}/include-1")
+    ct_assert_equal("imp_static_mock_lib_INCLUDE_DIRS" "${TESTS_DATA_DIR}/include-1")
     dependency(ADD_INCLUDE_DIRECTORIES "imp_static_mock_lib" APPEND
       INTERFACE
         "$<BUILD_INTERFACE:${TESTS_DATA_DIR}/include-2>"
@@ -214,12 +234,17 @@ function(${CMAKETEST_TEST})
       INTERFACE_INCLUDE_DIRECTORIES_INSTALL)
     ct_assert_list(output_lib_property)
     ct_assert_equal(output_lib_property "include-1;include-2")
+    ct_assert_equal("imp_static_mock_lib_INCLUDE_DIR" "${TESTS_DATA_DIR}/include-2")
+    ct_assert_equal("imp_static_mock_lib_INCLUDE_DIRS" "${TESTS_DATA_DIR}/include-1;${TESTS_DATA_DIR}/include-2")
 
+    _set_up_test("imp_shared_mock_lib")
     dependency(ADD_INCLUDE_DIRECTORIES "imp_shared_mock_lib" SET
       INTERFACE
         "$<BUILD_INTERFACE:${TESTS_DATA_DIR}/include-1>"
         "$<INSTALL_INTERFACE:include-1>"
     )
+    ct_assert_equal("imp_shared_mock_lib_INCLUDE_DIR" "${TESTS_DATA_DIR}/include-1")
+    ct_assert_equal("imp_shared_mock_lib_INCLUDE_DIRS" "${TESTS_DATA_DIR}/include-1")
     dependency(ADD_INCLUDE_DIRECTORIES "imp_shared_mock_lib" APPEND
       INTERFACE
         "$<BUILD_INTERFACE:${TESTS_DATA_DIR}/include-2>"
@@ -237,16 +262,20 @@ function(${CMAKETEST_TEST})
       INTERFACE_INCLUDE_DIRECTORIES_INSTALL)
     ct_assert_list(output_lib_property)
     ct_assert_equal(output_lib_property "include-1;include-2")
+    ct_assert_equal("imp_shared_mock_lib_INCLUDE_DIR" "${TESTS_DATA_DIR}/include-2")
+    ct_assert_equal("imp_shared_mock_lib_INCLUDE_DIRS" "${TESTS_DATA_DIR}/include-1;${TESTS_DATA_DIR}/include-2")
   endfunction()
 
   ct_add_section(NAME "append_build_interfaces")
   function(${CMAKETEST_SECTION})
-    _set_up_test()
+    _set_up_test("imp_static_mock_lib")
     dependency(ADD_INCLUDE_DIRECTORIES "imp_static_mock_lib" SET
       INTERFACE
         "$<BUILD_INTERFACE:${TESTS_DATA_DIR}/include-1>"
         "$<INSTALL_INTERFACE:include-1>"
     )
+    ct_assert_equal("imp_static_mock_lib_INCLUDE_DIR" "${TESTS_DATA_DIR}/include-1")
+    ct_assert_equal("imp_static_mock_lib_INCLUDE_DIRS" "${TESTS_DATA_DIR}/include-1")
     dependency(ADD_INCLUDE_DIRECTORIES "imp_static_mock_lib" APPEND
       INTERFACE
         "$<BUILD_INTERFACE:${TESTS_DATA_DIR}/include-2>"
@@ -263,12 +292,17 @@ function(${CMAKETEST_TEST})
       INTERFACE_INCLUDE_DIRECTORIES_INSTALL)
     ct_assert_not_list(output_lib_property)
     ct_assert_equal(output_lib_property "include-1")
+    ct_assert_equal("imp_static_mock_lib_INCLUDE_DIR" "${TESTS_DATA_DIR}/include-2")
+    ct_assert_equal("imp_static_mock_lib_INCLUDE_DIRS" "${TESTS_DATA_DIR}/include-1;${TESTS_DATA_DIR}/include-2")
 
+    _set_up_test("imp_shared_mock_lib")
     dependency(ADD_INCLUDE_DIRECTORIES "imp_shared_mock_lib" SET
       INTERFACE
         "$<BUILD_INTERFACE:${TESTS_DATA_DIR}/include-1>"
         "$<INSTALL_INTERFACE:include-1>"
     )
+    ct_assert_equal("imp_shared_mock_lib_INCLUDE_DIR" "${TESTS_DATA_DIR}/include-1")
+    ct_assert_equal("imp_shared_mock_lib_INCLUDE_DIRS" "${TESTS_DATA_DIR}/include-1")
     dependency(ADD_INCLUDE_DIRECTORIES "imp_shared_mock_lib" APPEND
       INTERFACE
         "$<BUILD_INTERFACE:${TESTS_DATA_DIR}/include-2>"
@@ -285,16 +319,20 @@ function(${CMAKETEST_TEST})
       INTERFACE_INCLUDE_DIRECTORIES_INSTALL)
     ct_assert_not_list(output_lib_property)
     ct_assert_equal(output_lib_property "include-1")
+    ct_assert_equal("imp_shared_mock_lib_INCLUDE_DIR" "${TESTS_DATA_DIR}/include-2")
+    ct_assert_equal("imp_shared_mock_lib_INCLUDE_DIRS" "${TESTS_DATA_DIR}/include-1;${TESTS_DATA_DIR}/include-2")
   endfunction()
 
   ct_add_section(NAME "append_install_interfaces")
   function(${CMAKETEST_SECTION})
-    _set_up_test()
+    _set_up_test("imp_static_mock_lib")
     dependency(ADD_INCLUDE_DIRECTORIES "imp_static_mock_lib" SET
       INTERFACE
         "$<BUILD_INTERFACE:${TESTS_DATA_DIR}/include-1>"
         "$<INSTALL_INTERFACE:include-1>"
     )
+    ct_assert_equal("imp_static_mock_lib_INCLUDE_DIR" "${TESTS_DATA_DIR}/include-1")
+    ct_assert_equal("imp_static_mock_lib_INCLUDE_DIRS" "${TESTS_DATA_DIR}/include-1")
     dependency(ADD_INCLUDE_DIRECTORIES "imp_static_mock_lib" APPEND
       INTERFACE
         "$<INSTALL_INTERFACE:include-2>"
@@ -311,12 +349,17 @@ function(${CMAKETEST_TEST})
       INTERFACE_INCLUDE_DIRECTORIES_INSTALL)
     ct_assert_list(output_lib_property)
     ct_assert_equal(output_lib_property "include-1;include-2")
+    ct_assert_equal("imp_static_mock_lib_INCLUDE_DIR" "")
+    ct_assert_equal("imp_static_mock_lib_INCLUDE_DIRS" "${TESTS_DATA_DIR}/include-1")
 
+    _set_up_test("imp_shared_mock_lib")
     dependency(ADD_INCLUDE_DIRECTORIES "imp_shared_mock_lib" SET
       INTERFACE
         "$<BUILD_INTERFACE:${TESTS_DATA_DIR}/include-1>"
         "$<INSTALL_INTERFACE:include-1>"
     )
+    ct_assert_equal("imp_shared_mock_lib_INCLUDE_DIR" "${TESTS_DATA_DIR}/include-1")
+    ct_assert_equal("imp_shared_mock_lib_INCLUDE_DIRS" "${TESTS_DATA_DIR}/include-1")
     dependency(ADD_INCLUDE_DIRECTORIES "imp_shared_mock_lib" APPEND
       INTERFACE
         "$<INSTALL_INTERFACE:include-2>"
@@ -333,6 +376,8 @@ function(${CMAKETEST_TEST})
       INTERFACE_INCLUDE_DIRECTORIES_INSTALL)
     ct_assert_list(output_lib_property)
     ct_assert_equal(output_lib_property "include-1;include-2")
+    ct_assert_equal("imp_shared_mock_lib_INCLUDE_DIR" "")
+    ct_assert_equal("imp_shared_mock_lib_INCLUDE_DIRS" "${TESTS_DATA_DIR}/include-1")
   endfunction()
 
   # Errors checking
@@ -393,7 +438,7 @@ function(${CMAKETEST_TEST})
       INTERFACE
     )
   endfunction()
-  
+
   ct_add_section(NAME "throws_if_arg_interface_is_missing_3" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     dependency(ADD_INCLUDE_DIRECTORIES "imp_shared_mock_lib" SET
