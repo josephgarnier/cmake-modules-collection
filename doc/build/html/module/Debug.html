@@ -62,7 +62,7 @@
             
   <section id="debug">
 <span id="module:Debug"></span><h1>Debug<a class="headerlink" href="#debug" title="Link to this heading">¶</a></h1>
-<p>Operations for helping with debug. It requires CMake 3.20 or newer.</p>
+<p>Operations for helping with debug, inspired by <span class="target" id="index-0-module:cmake:module:CMakePrintHelpers"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/module/CMakePrintHelpers.html#module:CMakePrintHelpers" title="(in CMake v4.2.0)"><code class="xref cmake cmake-module docutils literal notranslate"><span class="pre">CMakePrintHelpers</span></code></a> module. It requires CMake 3.20 or newer.</p>
 <section id="synopsis">
 <h2>Synopsis<a class="headerlink" href="#synopsis" title="Link to this heading">¶</a></h2>
 <pre class="literal-block">debug(<a class="reference internal" href="#dump-targets">DUMP_TARGETS</a> &lt;root-dir&gt;)
@@ -82,13 +82,15 @@ prefixed by its relative directory path from
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">debug(</span><span class="no">DUMP_TARGETS</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}&quot;</span><span class="nf">)</span>
 <span class="c"># output is:</span>
-<span class="c">#   -- [][Buildsystem] Experimental</span>
-<span class="c">#   -- [][Buildsystem] Nightly</span>
+<span class="c">#   -- </span>
+<span class="c">#    Targets in the project:</span>
+<span class="c">#      [][Buildsystem] Experimental</span>
+<span class="c">#      [][Buildsystem] Nightly</span>
 <span class="c">#   ...</span>
-<span class="c">#   -- [tests/data][Buildsystem] static_mock_lib</span>
-<span class="c">#   -- [tests/data][Buildsystem] shared_mock_lib</span>
-<span class="c">#   -- [doc][Buildsystem] doc</span>
-<span class="c">#   -- [src][Imported   ] Qt6::Platform</span>
+<span class="c">#      [tests/data][Buildsystem] static_mock_lib</span>
+<span class="c">#      [tests/data][Buildsystem] shared_mock_lib</span>
+<span class="c">#      [doc][Buildsystem] doc</span>
+<span class="c">#      [src][Imported   ] Qt6::Platform</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -105,23 +107,29 @@ whose names match the given expression are omitted from the output.</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">debug(</span><span class="no">DUMP_VARIABLES</span><span class="nf">)</span>
 <span class="c"># output is:</span>
-<span class="c">#   BUILD_SHARED_LIBS=ON</span>
-<span class="c">#   CMAKE_CURRENT_SOURCE_DIR=/home/user/project/src</span>
-<span class="c">#   CMAKE_VERSION=3.28.3</span>
-<span class="c">#   PROJECT_NAME=MyProject</span>
+<span class="c">#   -- </span>
+<span class="c">#    Variables of CMake:</span>
+<span class="c">#      BUILD_SHARED_LIBS = &quot;ON&quot;</span>
+<span class="c">#      CMAKE_CURRENT_SOURCE_DIR = &quot;/home/user/project/src&quot;</span>
+<span class="c">#      CMAKE_VERSION = &quot;3.28.3&quot;</span>
+<span class="c">#      PROJECT_NAME = &quot;MyProject&quot;</span>
 <span class="c">#   ...</span>
 
 <span class="nf">debug(</span><span class="no">DUMP_VARIABLES</span><span class="w"> </span><span class="no">INCLUDE_REGEX</span><span class="w"> </span><span class="s">&quot;^PROJECT_&quot;</span><span class="nf">)</span>
 <span class="c"># output is:</span>
+<span class="c">#   -- </span>
+<span class="c">#    Variables of CMake:</span>
 <span class="c">#   ...</span>
-<span class="c">#   PROJECT_IS_TOP_LEVEL=ON</span>
-<span class="c">#   PROJECT_NAME=MyProject</span>
+<span class="c">#      PROJECT_IS_TOP_LEVEL = &quot;ON&quot;</span>
+<span class="c">#      PROJECT_NAME = &quot;MyProject&quot;</span>
 <span class="c">#   ...</span>
 
 <span class="nf">debug(</span><span class="no">DUMP_VARIABLES</span><span class="w"> </span><span class="no">EXCLUDE_REGEX</span><span class="w"> </span><span class="s">&quot;^CMAKE_&quot;</span><span class="nf">)</span>
 <span class="c"># output is:</span>
-<span class="c">#   BUILD_SHARED_LIBS=ON</span>
-<span class="c">#   PROJECT_NAME=MyProject</span>
+<span class="c">#   -- </span>
+<span class="c">#    Variables of CMake:</span>
+<span class="c">#      BUILD_SHARED_LIBS = &quot;ON&quot;</span>
+<span class="c">#      PROJECT_NAME = &quot;MyProject&quot;</span>
 <span class="c">#   ...</span>
 </pre></div>
 </div>
@@ -142,11 +150,13 @@ all recognized property names in the CMake environment.</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">debug(</span><span class="no">DUMP_PROPERTIES</span><span class="nf">)</span>
 <span class="c"># output is:</span>
-<span class="c">#   ADDITIONAL_CLEAN_FILES</span>
-<span class="c">#   ALIAS_GLOBAL</span>
-<span class="c">#   ANDROID_API</span>
-<span class="c">#   ARCHIVE_OUTPUT_DIRECTORY</span>
-<span class="c">#   AUTOMOC</span>
+<span class="c">#   -- </span>
+<span class="c">#    Properties of CMake:</span>
+<span class="c">#      ADDITIONAL_CLEAN_FILES</span>
+<span class="c">#      ALIAS_GLOBAL</span>
+<span class="c">#      ANDROID_API</span>
+<span class="c">#      ARCHIVE_OUTPUT_DIRECTORY</span>
+<span class="c">#      AUTOMOC</span>
 <span class="c">#   ...</span>
 </pre></div>
 </div>
@@ -167,11 +177,12 @@ known to trigger errors on access are excluded from the output.</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">debug(</span><span class="no">DUMP_TARGET_PROPERTIES</span><span class="w"> </span><span class="nb">my_library</span><span class="nf">)</span>
 <span class="c"># output is:</span>
-<span class="c">#   -- Properties for TARGET my_library:</span>
-<span class="c">#   --   my_library.TYPE = &quot;STATIC_LIBRARY&quot;</span>
-<span class="c">#   --   my_library.SOURCES = &quot;src/a.cpp;src/b.cpp&quot;</span>
-<span class="c">#   --   my_library.INTERFACE_INCLUDE_DIRECTORIES = &quot;include&quot;</span>
-<span class="c">#     ...</span>
+<span class="c">#   -- </span>
+<span class="c">#    Properties for TARGET my_library:</span>
+<span class="c">#      my_library.TYPE = &quot;STATIC_LIBRARY&quot;</span>
+<span class="c">#      my_library.SOURCES = &quot;src/a.cpp;src/b.cpp&quot;</span>
+<span class="c">#      my_library.INTERFACE_INCLUDE_DIRECTORIES = &quot;include&quot;</span>
+<span class="c">#      ...</span>
 </pre></div>
 </div>
 </dd></dl>

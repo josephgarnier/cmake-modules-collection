@@ -178,22 +178,22 @@ root (<a class="reference download internal" download="" href="../_downloads/38d
 <span class="w">          </span><span class="p">}</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">      </span><span class="p">},</span>
-<span class="w">      </span><span class="nt">&quot;intDependencies&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;prebuiltDependencies&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="nt">&quot;StrawberryLib&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">          </span><span class="nt">&quot;rulesFile&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;generic&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;packageLocation&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;windows&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;C:/Program Files/libs/apple/1.15.0&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;unix&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/opt/apple/1.15.0&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;macos&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/opt/apple/1.15.0&quot;</span>
+<span class="w">          </span><span class="nt">&quot;importInfo&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;rootDir&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;lib/strawberry&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;shared&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">              </span><span class="nt">&quot;releaseStem&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;strawberry_shared_1.15.0&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;debugStem&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;strawberryd_shared_1.15.0&quot;</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">            </span><span class="nt">&quot;static&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">              </span><span class="nt">&quot;releaseStem&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;strawberry_static_1.15.0&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;debugStem&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;strawberryd_static_1.15.0&quot;</span>
+<span class="w">            </span><span class="p">}</span>
 <span class="w">          </span><span class="p">},</span>
-<span class="w">          </span><span class="nt">&quot;minVersion&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1.15.0&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;optional&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;configuration&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;compileFeatures&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;cxx_std_20&quot;</span><span class="p">],</span>
-<span class="w">            </span><span class="nt">&quot;compileDefinitions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;DEFINE_ONE=1&quot;</span><span class="p">],</span>
-<span class="w">            </span><span class="nt">&quot;compileOptions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;-Wall&quot;</span><span class="p">],</span>
-<span class="w">            </span><span class="nt">&quot;linkOptions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;-s&quot;</span><span class="p">]</span>
-<span class="w">          </span><span class="p">}</span>
+<span class="w">          </span><span class="nt">&quot;includeDir&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;lib/strawberry/include&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;optional&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
 <span class="w">        </span><span class="p">},</span>
 <span class="w">        </span><span class="nt">&quot;GrapeLib&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">          </span><span class="nt">&quot;rulesFile&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;RulesGrapeLib.cmake&quot;</span><span class="p">,</span>
@@ -769,10 +769,10 @@ exist in the loaded configuration file.</p>
 <span class="c"># output is:</span>
 <span class="c">#   setting_value (dependencies): AppleLib;BananaLib;CarrotLib;OrangeLib;</span>
 <span class="c">#   PineappleLib</span>
-<span class="nf">cmake_targets_file(</span><span class="no">TRY_GET_VALUE</span><span class="w"> </span><span class="nb">setting_value</span><span class="w"> </span><span class="no">TARGET</span><span class="w"> </span><span class="s">&quot;src&quot;</span><span class="w"> </span><span class="no">KEY</span><span class="w"> </span><span class="s">&quot;inexisting.setting&quot;</span><span class="nf">)</span>
-<span class="nf">message(</span><span class="s">&quot;setting_value (inexisting.setting): ${setting_value}&quot;</span><span class="nf">)</span>
+<span class="nf">cmake_targets_file(</span><span class="no">TRY_GET_VALUE</span><span class="w"> </span><span class="nb">setting_value</span><span class="w"> </span><span class="no">TARGET</span><span class="w"> </span><span class="s">&quot;src&quot;</span><span class="w"> </span><span class="no">KEY</span><span class="w"> </span><span class="s">&quot;nonexistent.setting&quot;</span><span class="nf">)</span>
+<span class="nf">message(</span><span class="s">&quot;setting_value (nonexistent.setting): ${setting_value}&quot;</span><span class="nf">)</span>
 <span class="c"># output is:</span>
-<span class="c">#   setting_value (inexisting.setting): inexisting.setting-NOTFOUND</span>
+<span class="c">#   setting_value (nonexistent.setting): nonexistent.setting-NOTFOUND</span>
 </pre></div>
 </div>
 </dd></dl>

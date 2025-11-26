@@ -76,22 +76,22 @@
           }
         }
       },
-      "intDependencies": {
+      "prebuiltDependencies": {
         "StrawberryLib": {
           "rulesFile": "generic",
-          "packageLocation": {
-            "windows": "C:/Program Files/libs/apple/1.15.0",
-            "unix": "/opt/apple/1.15.0",
-            "macos": "/opt/apple/1.15.0"
+          "importInfo": {
+            "rootDir": "lib/strawberry",
+            "shared": {
+              "releaseStem": "strawberry_shared_1.15.0",
+              "debugStem": "strawberryd_shared_1.15.0"
+            },
+            "static": {
+              "releaseStem": "strawberry_static_1.15.0",
+              "debugStem": "strawberryd_static_1.15.0"
+            }
           },
-          "minVersion": "1.15.0",
-          "optional": false,
-          "configuration": {
-            "compileFeatures": ["cxx_std_20"],
-            "compileDefinitions": ["DEFINE_ONE=1"],
-            "compileOptions": ["-Wall"],
-            "linkOptions": ["-s"]
-          }
+          "includeDir": "lib/strawberry/include",
+          "optional": false
         },
         "GrapeLib": {
           "rulesFile": "RulesGrapeLib.cmake",

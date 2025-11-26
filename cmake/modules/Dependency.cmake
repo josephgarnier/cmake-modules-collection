@@ -9,7 +9,8 @@ Dependency
 ----------
 
 Operations to manipule dependencies. They mainly encapsulate the numerous
-function calls required to `import and export dependencies <https://cmake.org/cmake/help/latest/guide/importing-exporting/index.html>`__.
+function calls required to
+:cmake:guide:`import and export dependencies <guide:Importing and Exporting Guide>`.
 It requires CMake 3.20 or newer.
 
 Synopsis
@@ -98,7 +99,7 @@ Usage
       that the directory path refers to headers available directly in the
       project source (rather than in an installed or exported package). See the
       `CMake doc <https://cmake.org/cmake/help/latest/prop_tgt/INTERFACE_INCLUDE_DIRECTORIES.html>`__
-      for full details. Use :command:`dependency(ADD_INCLUDE_DIRECTORIES)`.to
+      for full details. Use :command:`dependency(ADD_INCLUDE_DIRECTORIES)` to
       populate this property.
 
     ``INTERFACE_INCLUDE_DIRECTORIES_BUILD``
@@ -147,8 +148,8 @@ Usage
   To provide maximum flexibility when importing a library with this command, it
   mirrors CMake's official requirements for ``FindXxx.cmake`` modules by
   initializing the
-  :cmake:ref:`variables standards requises <cmake developer standard variable names>`.
-  It also supports use in  multiples :cmake:ref:`Build Configurations` contexts
+  :cmake:ref:`requires standard variables <cmake developer standard variable names>`.
+  It also supports use in multiples :cmake:ref:`build configurations` contexts
   by replicating the behavior of the
   :cmake:module:`SelectLibraryConfigurations <cmake:module:SelectLibraryConfigurations>` 
   module.
@@ -349,8 +350,7 @@ Usage
   property and its derivatives to allow the target to be imported from the
   three contexts: source-tree, build-tree, and install-tree.
 
-  The name ``<lib-target-name>`` should represent the stem name of the library
-  (without prefix or  suffix). This command copies the behavior of
+  This command copies the behavior of
   :cmake:command:`target_include_directories() <cmake:command:target_include_directories>`
   in CMake, but introduces a separation between build-time and install-time
   contexts for imported dependencies.
@@ -364,7 +364,7 @@ Usage
 
   The behavior differs from standard CMake in that it stores build and install
   include paths separately using generator expressions (see 
-  `how write build specification with generator expressions <https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html#include-directories-and-usage-requirements>`__).
+  :cmake:ref:`how to write build specification with generator expressions <include directories and usage requirements>`).
 
   The ``INTERFACE`` visibility keyword indicates how the specified directories
   apply to the usage requirements of the target: they will not be used by the
@@ -391,8 +391,8 @@ Usage
       imported library during a build, it automatically receives the correct
       include paths for compilation.
 
-      For more details, see the official `CMake documentation
-      <https://cmake.org/cmake/help/latest/prop_tgt/INTERFACE_INCLUDE_DIRECTORIES.html>`__.
+      See the `CMake doc
+      <https://cmake.org/cmake/help/latest/prop_tgt/INTERFACE_INCLUDE_DIRECTORIES.html>`__ for full details.
 
     ``INTERFACE_INCLUDE_DIRECTORIES_BUILD``
       A *custom property* defined by this module to track the include
