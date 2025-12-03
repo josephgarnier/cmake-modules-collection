@@ -170,7 +170,7 @@ function(${CMAKETEST_TEST})
 
   endfunction()
 
-  ct_add_section(NAME "find_not_existing_static_lib")
+  ct_add_section(NAME "find_non_existing_static_lib")
   function(${CMAKETEST_SECTION})
   
     ct_add_section(NAME "get_absolute_path")
@@ -242,7 +242,7 @@ function(${CMAKETEST_TEST})
     endfunction()
   endfunction()
 
-  ct_add_section(NAME "find_not_existing_shared_lib")
+  ct_add_section(NAME "find_non_existing_shared_lib")
   function(${CMAKETEST_SECTION})
     ct_add_section(NAME "get_absolute_path")
     function(${CMAKETEST_SECTION})

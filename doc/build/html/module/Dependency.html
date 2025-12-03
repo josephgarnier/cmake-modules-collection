@@ -68,11 +68,42 @@ function calls required to
 It requires CMake 3.20 or newer.</p>
 <section id="synopsis">
 <h2>Synopsis<a class="headerlink" href="#synopsis" title="Link to this heading">¶</a></h2>
-<pre class="literal-block">dependency(<a href="#id1"><span class="problematic" id="id2">`BUILD`_</span></a> &lt;lib-target-name&gt; [...])
-dependency(<a class="reference internal" href="#import">IMPORT</a> &lt;lib-target-name&gt; [...])
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">dependency(</span><span class="err">`</span><span class="no">BUILD</span><span class="err">`</span><span class="nb">_</span><span class="w"> </span><span class="nv">&lt;lib-target-name&gt;</span><span class="w"> </span><span class="p">[...]</span><span class="nf">)</span>
+<span class="nf">dependency(</span><span class="no">BUILD</span><span class="w"> </span><span class="nv">&lt;lib-target-name&gt;</span>
+<span class="w">  </span><span class="no">DEP_ROOT_DIR</span><span class="w"> </span><span class="nv">&lt;dir-path&gt;</span>
+<span class="w">  </span><span class="no">SOURCE_FILES</span><span class="w"> </span><span class="p">[</span><span class="nv">&lt;file-path&gt;...</span><span class="p">]</span><span class="w"> </span><span class="no">TODO</span><span class="w"> </span><span class="nb">mettre</span><span class="w"> </span><span class="no">HEADER</span><span class="w"> </span><span class="nb">avec</span><span class="w"> </span><span class="nb">ou</span><span class="w"> </span><span class="nb">séparé</span><span class="w"> </span><span class="err">???</span>
+<span class="w">  </span><span class="no">HEADER_FILES</span><span class="w"> </span><span class="p">[</span><span class="nv">&lt;file-path&gt;...</span><span class="p">]</span>
+<span class="w">  </span><span class="no">INCLUDE_DIRS</span><span class="w"> </span><span class="p">[</span><span class="nv">&lt;dir-path&gt;...</span><span class="p">|</span><span class="nv">&lt;gen-expr&gt;...</span><span class="p">]</span><span class="w"> </span><span class="no">TODO</span><span class="w"> </span><span class="nb">mettre</span><span class="w"> </span><span class="nb">une</span><span class="w"> </span><span class="nb">option</span><span class="w"> </span><span class="nb">de</span><span class="w"> </span><span class="nb">globbing</span>
+<span class="w">  </span><span class="no">LINK_LIBRARIES</span><span class="w"> </span><span class="p">[</span><span class="nv">&lt;target-name&gt;...</span><span class="p">|</span><span class="nv">&lt;gen-expr&gt;...</span><span class="p">]</span>
+<span class="nf">)</span>
+
+<span class="c">#    DIRECTORY &lt;dir&gt;</span>
+</pre></div>
+</div>
+<p>#        the library source directory &lt;dir&gt; is either a subdirectory of
+#        3rdparty/ or an absolute directory.
+#    INCLUDE_DIRS &lt;dir&gt; [&lt;dir&gt; ...]
+#        include headers are in the subdirectories &lt;dir&gt;. Trailing slashes
+#        have the same meaning as with install(DIRECTORY). &lt;dir&gt; must be
+#        relative to the library source directory.
+#        If your include is &quot;#include &lt;x.hpp&gt;&quot; and the path of the file is
+#        &quot;path/to/libx/x.hpp&quot; then you need to pass &quot;path/to/libx/&quot;
+#        with the trailing &quot;/&quot;. If you have &quot;#include &lt;libx/x.hpp&gt;&quot; then you
+#        need to pass &quot;path/to/libx&quot;.
+#    SOURCES &lt;src&gt; [&lt;src&gt; ...]
+#        the library sources. Can be omitted for header-only libraries.
+#        All sources must be relative to the library source directory.
+#    LIBS &lt;target&gt; [&lt;target&gt; ...]
+#        extra link dependencies
+#    HEADER
+#        the library headers belong to the public interface, but the library
+#        itself is linked privately</p>
+<blockquote>
+<div><p>dependency(<a class="reference internal" href="#import">IMPORT</a> &lt;lib-target-name&gt; [...])
 dependency(<a class="reference internal" href="#add-include-directories">ADD_INCLUDE_DIRECTORIES</a> &lt;lib-target-name&gt; &lt;SET|APPEND&gt; INTERFACE &lt;gen-expr&gt;...)
 dependency(<a class="reference internal" href="#set-imported-location">SET_IMPORTED_LOCATION</a> &lt;lib-target-name&gt; [CONFIGURATION &lt;config-type&gt;] PUBLIC &lt;gen-expr&gt;...)
-dependency(<a class="reference internal" href="#export">EXPORT</a> &lt;lib-target-name&gt;... &lt;BUILD_TREE|INSTALL_TREE&gt; [APPEND] OUTPUT_FILE &lt;file-name&gt;)</pre>
+dependency(<a class="reference internal" href="#export">EXPORT</a> &lt;lib-target-name&gt;... &lt;BUILD_TREE|INSTALL_TREE&gt; [APPEND] OUTPUT_FILE &lt;file-name&gt;)</p>
+</div></blockquote>
 </section>
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h2>
@@ -104,12 +135,12 @@ or <code class="docutils literal notranslate"><span class="pre">FIND_DEBUG_FILE<
 These arguments determine which configurations of the library will be
 available, typically matching values in the
 <span class="target" id="index-0-variable:cmake:variable:CMAKE_CONFIGURATION_TYPES"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/variable/CMAKE_CONFIGURATION_TYPES.html#variable:CMAKE_CONFIGURATION_TYPES" title="(in CMake v4.2.0)"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">CMAKE_CONFIGURATION_TYPES</span></code></a> variable.</p>
-<p>The value of <code class="docutils literal notranslate"><span class="pre">&lt;lib-file-basename&gt;</span></code> should be the core name of the library file,
-stripped of:</p>
+<p>The value of <code class="docutils literal notranslate"><span class="pre">&lt;lib-file-basename&gt;</span></code> should have no extension or prefixes; it
+should be the core name of the library file, stripped of:</p>
 <ul class="simple">
-<li><p>Any version numbers.</p></li>
 <li><p>Platform-specific prefixes (e.g. <code class="docutils literal notranslate"><span class="pre">lib</span></code>).</p></li>
-<li><p>Platform-specific suffixes (e.g. <code class="docutils literal notranslate"><span class="pre">.so</span></code>, <code class="docutils literal notranslate"><span class="pre">.dll</span></code>, <code class="docutils literal notranslate"><span class="pre">.dll.a</span></code>, <code class="docutils literal notranslate"><span class="pre">.a</span></code>, <code class="docutils literal notranslate"><span class="pre">.lib</span></code>).</p></li>
+<li><p>Platform-specific extension suffixes (e.g. <code class="docutils literal notranslate"><span class="pre">.so</span></code>, <code class="docutils literal notranslate"><span class="pre">.dll</span></code>, <code class="docutils literal notranslate"><span class="pre">.dll.a</span></code>,
+<code class="docutils literal notranslate"><span class="pre">.a</span></code>, <code class="docutils literal notranslate"><span class="pre">.lib</span></code>).</p></li>
 </ul>
 <p>The file will be resolved by scanning recursively all files in the given
 <code class="docutils literal notranslate"><span class="pre">FIND_ROOT_DIR</span></code> and attempting to match against expected filename patterns

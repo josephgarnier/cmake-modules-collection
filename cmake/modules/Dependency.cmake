@@ -60,12 +60,12 @@ Usage
   available, typically matching values in the
   :cmake:variable:`CMAKE_CONFIGURATION_TYPES <cmake:variable:CMAKE_CONFIGURATION_TYPES>` variable.
 
-  The value of ``<lib-file-basename>`` should be the core name of the library file,
-  stripped of:
+  The value of ``<lib-file-basename>`` should have no extension or prefixes; it
+  should be the core name of the library file, stripped of:
 
-  * Any version numbers.
   * Platform-specific prefixes (e.g. ``lib``).
-  * Platform-specific suffixes (e.g. ``.so``, ``.dll``, ``.dll.a``, ``.a``, ``.lib``).
+  * Platform-specific extension suffixes (e.g. ``.so``, ``.dll``, ``.dll.a``,
+    ``.a``, ``.lib``).
 
   The file will be resolved by scanning recursively all files in the given
   ``FIND_ROOT_DIR`` and attempting to match against expected filename patterns
@@ -463,8 +463,8 @@ Usage
     # Is more or less equivalent to:
     target_include_directories(my_shared_lib
       INTERFACE
-          "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include/mylib>"
-          "$<INSTALL_INTERFACE:include/mylib>"
+        "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include/mylib>"
+        "$<INSTALL_INTERFACE:include/mylib>"
     )
 
     # Set include directories for static lib

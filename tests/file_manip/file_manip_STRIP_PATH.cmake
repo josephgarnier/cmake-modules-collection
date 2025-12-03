@@ -11,8 +11,8 @@
 #-------------------------------------------------------------------------------
 # Test of [FileManip module::STRIP_PATH operation]:
 #    file_manip(STRIP_PATH <file-list-var>
-#              BASE_DIR <dir-path>
-#              [OUTPUT_VARIABLE <output-list-var>])
+#               BASE_DIR <dir-path>
+#               [OUTPUT_VARIABLE <output-list-var>])
 ct_add_test(NAME "test_file_manip_strip_path_operation")
 function(${CMAKETEST_TEST})
   include(FileManip)
@@ -95,7 +95,7 @@ function(${CMAKETEST_TEST})
     endfunction()
   endfunction()
 
-  ct_add_section(NAME "path_to_not_existing_input_file")
+  ct_add_section(NAME "path_to_non_existing_input_file")
   function(${CMAKETEST_SECTION})
   
     ct_add_section(NAME "inplace_version")
@@ -116,7 +116,7 @@ function(${CMAKETEST_TEST})
     endfunction()
   endfunction()
 
-  ct_add_section(NAME "path_to_not_existing_base_dir")
+  ct_add_section(NAME "path_to_non_existing_base_dir")
   function(${CMAKETEST_SECTION})
 
     ct_add_section(NAME "inplace_version")

@@ -70,8 +70,12 @@ Usage
   ``<file-list-var>``. The result is stored either in-place in
   ``<file-list-var>``, or in the variable specified by
   ``<output-list-var>``, if the ``OUTPUT_VARIABLE`` option is provided. Unlike
-  to :command:`file_manip(RELATIVE_PATH)`, it performs no checks on the existence
-  of files. Paths are processed like any string.
+  to :command:`file_manip(RELATIVE_PATH)`, no checks on the existence of files
+  are performed. Like with :cmake:command:`cmake_path() <cmake:command:cmake_path>`,
+  only syntactic aspects of paths are handled, there is no interaction of any
+  kind with any underlying file system. The path may represent a non-existing
+  path or even one that is not allowed to exist on the current file system or
+  platform.
 
   Example usage:
 
@@ -90,7 +94,11 @@ Usage
 
   Extracts a specific component from each path in the given ``<file-path>``
   list and stores the result in the variable specified by ``OUTPUT_VARIABLE``
-  option.
+  option. Like with :cmake:command:`cmake_path() <cmake:command:cmake_path>`,
+  only syntactic aspects of paths are handled, there is no interaction of any
+  kind with any underlying file system. The path may represent a non-existing
+  path or even one that is not allowed to exist on the current file system or
+  platform.
 
   The ``MODE`` argument determines which component to extract and must be one of:
 
@@ -108,6 +116,9 @@ Usage
     file_manip(GET_COMPONENT "${files}" MODE DIRECTORY OUTPUT_VARIABLE dirs)
     # output is:
     #   /project/src;/project/include
+    file_manip(GET_COMPONENT "${files}" MODE NAME OUTPUT_VARIABLE names)
+    # output is:
+    #   main.cpp;lib.hpp
 #]=======================================================================]
 
 include_guard()

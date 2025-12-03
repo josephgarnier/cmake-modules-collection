@@ -37,10 +37,9 @@ Usage
   CMake project, according to the specified binary type: ``STATIC``, ``SHARED``
   , ``HEADER``, ``EXEC``.
 
-  A ``STATIC`` library forces ``BUILD_SHARED_LIBS`` to ``off``.
-
-  A ``SHARED`` library sets visibility and export-related variables before
-  creating the target:
+  A ``STATIC`` library forces ``BUILD_SHARED_LIBS`` to ``off`` and a ``SHARED``
+  library sets visibility and export-related variables before creating the
+  target:
 
     * ``BUILD_SHARED_LIBS`` is set to ``on``.
     * ``CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS`` is set to ``off`` to disable
@@ -250,7 +249,7 @@ Usage
 .. signature::
   binary_target(CREATE_FULLY <target-name> [...])
 
-  Create a fully configured binary target.
+  Create a fully configured binary target:
 
   .. code-block:: cmake
 

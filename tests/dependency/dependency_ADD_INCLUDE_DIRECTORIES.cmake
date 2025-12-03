@@ -43,7 +43,7 @@ function(${CMAKETEST_TEST})
   endmacro()
 
   # Functionalities checking
-  ct_add_section(NAME "set_not_existing_dirs")
+  ct_add_section(NAME "set_non_existing_dirs")
   function(${CMAKETEST_SECTION})
     _set_up_test("imp_static_mock_lib")
     dependency(ADD_INCLUDE_DIRECTORIES "imp_static_mock_lib" SET
