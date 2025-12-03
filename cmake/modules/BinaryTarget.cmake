@@ -24,7 +24,7 @@ Synopsis
   binary_target(`ADD_SOURCES`_ <target-name> [...])
   binary_target(`ADD_PRECOMPILE_HEADER`_ <target-name> HEADER_FILE <file-path>)
   binary_target(`ADD_INCLUDE_DIRECTORIES`_ <target-name> INCLUDE_DIRECTORIES [<dir-path>...|<gen-expr>...])
-  binary_target(`ADD_DEPENDENCIES`_ <target-name> DEPENDENCIES [<target-name>...|<gen-expr>...])
+  binary_target(`ADD_LINK_LIBRARIES`_ <target-name> PUBLIC [<target-name>...|<gen-expr>...])
   binary_target(`CREATE_FULLY`_ <target-name> [...])
 
 Usage
@@ -219,14 +219,17 @@ Usage
     )
 
 .. signature::
-  binary_target(ADD_DEPENDENCIES <target-name> DEPENDENCIES [<target-name>...|<gen-expr>...])
+  binary_target(ADD_LINK_LIBRARIES <target-name> PUBLIC [<target-name>...|<gen-expr>...])
 
-  Add dependencies to use when linking a given target ``<target-name>``.
-
-  The ``DEPENDENCIES`` keyword lists the names of other targets or generator
-  expressions to link to ``<target-name>``.
+  Add libraries to use when linking an existing binary target ``<target-name>``
+  with ``PUBLIC`` visibility. The ``PUBLIC`` keyword lists the name of other
+  targets or to link to ``<target-name>``. Arguments may use generator
+  expressions with the syntax ``$<...>``.
 
   The behavior is equivalent to calling :cmake:command:`target_link_libraries() <cmake:command:target_link_libraries>`.
+
+  This command is intended for targets that have been previously created using
+  :command:`binary_target(CREATE)`.
 
   Example usage:
   
@@ -234,14 +237,14 @@ Usage
 
     # With target name
     binary_target(CREATE "my_static_lib" STATIC)
-    binary_target(ADD_DEPENDENCIES "my_static_lib"
-      DEPENDENCIES "dep_1" "dep_2"
+    binary_target(ADD_LINK_LIBRARIES "my_static_lib"
+      PUBLIC "dep_1" "dep_2"
     )
 
     # With generator expression
     binary_target(CREATE "my_static_lib" STATIC)
-    binary_target(ADD_DEPENDENCIES "my_static_lib"
-      DEPENDENCIES
+    binary_target(ADD_LINK_LIBRARIES "my_static_lib"
+      PUBLIC
         "$<BUILD_INTERFACE:dep_1;dep_2>"
         "$<INSTALL_INTERFACE:dep_1;dep_2>"
     )
@@ -264,14 +267,14 @@ Usage
                   PUBLIC_HEADER_FILES [<file-path>...]
                   [PRECOMPILE_HEADER_FILE <file-path>]
                   INCLUDE_DIRECTORIES [<dir-path>...]
-                  [DEPENDENCIES [<target-name>...] ])
+                  [LINK_LIBRARIES [<target-name>...] ])
 
   Create a fully configured binary target named ``<target-name>`` and add it
   to the current project. This command acts as a high-level wrapper that
   combines the behavior of other module sub-commands, including
   :command:`binary_target(CREATE)`, :command:`binary_target(CONFIGURE_SETTINGS)`,
   :command:`binary_target(ADD_SOURCES)`, :command:`binary_target(ADD_PRECOMPILE_HEADER)`,
-  :command:`binary_target(ADD_INCLUDE_DIRECTORIES)`, and :command:`binary_target(ADD_DEPENDENCIES)`.
+  :command:`binary_target(ADD_INCLUDE_DIRECTORIES)`, and :command:`binary_target(ADD_LINK_LIBRARIES)`.
 
   The second argument must specify the type of binary target to create:
   ``STATIC``, ``SHARED``, ``HEADER``, or ``EXEC``. Only one type may be given.
@@ -305,7 +308,7 @@ Usage
       PUBLIC_HEADER_FILES "${public_headers}"
       PRECOMPILE_HEADER_FILE "src/header_pch.h"
       INCLUDE_DIRECTORIES "$<$<BOOL:${private_header_dir}>:${private_header_dir}>" "${public_header_dir}"
-      DEPENDENCIES "dep_1" "dep_2"
+      LINK_LIBRARIES "dep_1" "dep_2"
     )
 
 Full example
@@ -353,8 +356,8 @@ cmake_minimum_required (VERSION 3.20 FATAL_ERROR)
 # Public function of this module
 function(binary_target)
   set(options STATIC SHARED HEADER EXEC)
-  set(one_value_args CREATE CONFIGURE_SETTINGS ADD_SOURCES ADD_PRECOMPILE_HEADER HEADER_FILE ADD_INCLUDE_DIRECTORIES ADD_DEPENDENCIES CREATE_FULLY PRECOMPILE_HEADER_FILE)
-  set(multi_value_args COMPILE_FEATURES COMPILE_DEFINITIONS COMPILE_OPTIONS LINK_OPTIONS SOURCE_FILES PRIVATE_HEADER_FILES PUBLIC_HEADER_FILES INCLUDE_DIRECTORIES DEPENDENCIES)
+  set(one_value_args CREATE CONFIGURE_SETTINGS ADD_SOURCES ADD_PRECOMPILE_HEADER HEADER_FILE ADD_INCLUDE_DIRECTORIES ADD_LINK_LIBRARIES CREATE_FULLY PRECOMPILE_HEADER_FILE)
+  set(multi_value_args COMPILE_FEATURES COMPILE_DEFINITIONS COMPILE_OPTIONS LINK_OPTIONS SOURCE_FILES PRIVATE_HEADER_FILES PUBLIC_HEADER_FILES INCLUDE_DIRECTORIES PUBLIC LINK_LIBRARIES)
   cmake_parse_arguments(BBT "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
   
   if(DEFINED BBT_UNPARSED_ARGUMENTS)
@@ -372,8 +375,8 @@ function(binary_target)
     _binary_target_add_pre_header()
   elseif(DEFINED BBT_ADD_INCLUDE_DIRECTORIES)
     _binary_target_add_include_dirs()
-  elseif(DEFINED BBT_ADD_DEPENDENCIES)
-    _binary_target_add_dependencies()
+  elseif(DEFINED BBT_ADD_LINK_LIBRARIES)
+    _binary_target_add_link_libraries()
   else()
     message(FATAL_ERROR "The operation name or arguments are missing!")
   endif()
@@ -598,22 +601,22 @@ endmacro()
 
 #------------------------------------------------------------------------------
 # [Internal use only]
-macro(_binary_target_add_dependencies)
-  if(NOT DEFINED BBT_ADD_DEPENDENCIES)
-    message(FATAL_ERROR "ADD_DEPENDENCIES argument is missing or need a value!")
+macro(_binary_target_add_link_libraries)
+  if(NOT DEFINED BBT_ADD_LINK_LIBRARIES)
+    message(FATAL_ERROR "ADD_LINK_LIBRARIES argument is missing or need a value!")
   endif()
-  if(NOT TARGET "${BBT_ADD_DEPENDENCIES}")
-    message(FATAL_ERROR "The target \"${BBT_ADD_DEPENDENCIES}\" does not exists!")
+  if(NOT TARGET "${BBT_ADD_LINK_LIBRARIES}")
+    message(FATAL_ERROR "The target \"${BBT_ADD_LINK_LIBRARIES}\" does not exists!")
   endif()
-  if((NOT DEFINED BBT_DEPENDENCIES)
-      AND (NOT "DEPENDENCIES" IN_LIST BBT_KEYWORDS_MISSING_VALUES))
-    message(FATAL_ERROR "DEPENDENCIES argument is missing or need a value!")
+  if((NOT DEFINED BBT_PUBLIC)
+      AND (NOT "PUBLIC" IN_LIST BBT_KEYWORDS_MISSING_VALUES))
+    message(FATAL_ERROR "PUBLIC argument is missing or need a value!")
   endif()
 
-  if(DEFINED BBT_DEPENDENCIES)
-    target_link_libraries("${BBT_ADD_DEPENDENCIES}"
+  if(DEFINED BBT_PUBLIC)
+    target_link_libraries("${BBT_ADD_LINK_LIBRARIES}"
       PUBLIC
-        "${BBT_DEPENDENCIES}"
+        "${BBT_PUBLIC}"
     )
   endif()
 endmacro()
@@ -710,9 +713,10 @@ macro(_binary_target_create_fully)
   set(BBT_ADD_INCLUDE_DIRECTORIES "${BBT_CREATE_FULLY}")
   _binary_target_add_include_dirs()
 
-  # Call binary_target(ADD_DEPENDENCIES)
-  if(DEFINED BBT_DEPENDENCIES)
-    set(BBT_ADD_DEPENDENCIES "${BBT_CREATE_FULLY}")
-    _binary_target_add_dependencies()
+  # Call binary_target(ADD_LINK_LIBRARIES)
+  if(DEFINED BBT_LINK_LIBRARIES)
+    set(BBT_ADD_LINK_LIBRARIES "${BBT_CREATE_FULLY}")
+    set(BBT_PUBLIC "${BBT_LINK_LIBRARIES}")
+    _binary_target_add_link_libraries()
   endif()
 endmacro()

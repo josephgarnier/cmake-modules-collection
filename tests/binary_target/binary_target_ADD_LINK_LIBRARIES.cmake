@@ -9,9 +9,9 @@
 # See README file in the root directory of this source tree.
 
 #-------------------------------------------------------------------------------
-# Test of [BinaryTarget module::ADD_DEPENDENCIES operation]:
-#    binary_target(ADD_DEPENDENCIES <target-name> DEPENDENCIES [<target-name>...|<gen-expr>...])
-ct_add_test(NAME "test_binary_target_add_dependencies_operation")
+# Test of [BinaryTarget module::ADD_LINK_LIBRARIES operation]:
+#    binary_target(ADD_LINK_LIBRARIES <target-name> PUBLIC [<target-name>...|<gen-expr>...])
+ct_add_test(NAME "test_binary_target_add_link_libraries_operation")
 function(${CMAKETEST_TEST})
   include(BinaryTarget)
   include(${TESTS_DATA_DIR}/cmake/Common.cmake)
@@ -26,7 +26,7 @@ function(${CMAKETEST_TEST})
   
   # To call before each test
   macro(_set_up_test)
-    # Reset properties used by `binary_target(ADD_DEPENDENCIES)`
+    # Reset properties used by `binary_target(ADD_LINK_LIBRARIES)`
     set_property(TARGET "new_static_mock_lib" PROPERTY INTERFACE_LINK_LIBRARIES)
     set_property(TARGET "new_static_mock_lib" PROPERTY LINK_LIBRARIES)
 
@@ -38,13 +38,13 @@ function(${CMAKETEST_TEST})
   ct_add_section(NAME "add_no_deps")
   function(${CMAKETEST_SECTION})
     _set_up_test()
-    binary_target(ADD_DEPENDENCIES "new_static_mock_lib" DEPENDENCIES "")
+    binary_target(ADD_LINK_LIBRARIES "new_static_mock_lib" PUBLIC "")
     ct_assert_target_does_not_have_property("new_static_mock_lib"
       INTERFACE_LINK_LIBRARIES)
     ct_assert_target_does_not_have_property("new_static_mock_lib"
       LINK_LIBRARIES)
 
-    binary_target(ADD_DEPENDENCIES "new_shared_mock_lib" DEPENDENCIES "")
+    binary_target(ADD_LINK_LIBRARIES "new_shared_mock_lib" PUBLIC "")
     ct_assert_target_does_not_have_property("new_shared_mock_lib"
       INTERFACE_LINK_LIBRARIES)
     ct_assert_target_does_not_have_property("new_shared_mock_lib"
@@ -54,8 +54,8 @@ function(${CMAKETEST_TEST})
   ct_add_section(NAME "add_with_target_name")
   function(${CMAKETEST_SECTION})
     _set_up_test()
-    binary_target(ADD_DEPENDENCIES "new_static_mock_lib"
-      DEPENDENCIES "dep_static_mock_lib_1" "dep_static_mock_lib_2")
+    binary_target(ADD_LINK_LIBRARIES "new_static_mock_lib"
+      PUBLIC "dep_static_mock_lib_1" "dep_static_mock_lib_2")
     get_target_property(output_bin_property "new_static_mock_lib"
       INTERFACE_LINK_LIBRARIES)
     ct_assert_equal(output_bin_property "dep_static_mock_lib_1;dep_static_mock_lib_2")
@@ -63,8 +63,8 @@ function(${CMAKETEST_TEST})
       LINK_LIBRARIES)
     ct_assert_equal(output_bin_property "dep_static_mock_lib_1;dep_static_mock_lib_2")
 
-    binary_target(ADD_DEPENDENCIES "new_shared_mock_lib"
-      DEPENDENCIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2")
+    binary_target(ADD_LINK_LIBRARIES "new_shared_mock_lib"
+      PUBLIC "dep_shared_mock_lib_1" "dep_shared_mock_lib_2")
     get_target_property(output_bin_property "new_shared_mock_lib"
       INTERFACE_LINK_LIBRARIES)
     ct_assert_equal(output_bin_property "dep_shared_mock_lib_1;dep_shared_mock_lib_2")
@@ -79,8 +79,8 @@ function(${CMAKETEST_TEST})
     ct_add_section(NAME "add_all_interfaces")
     function(${CMAKETEST_SECTION})
       _set_up_test()
-      binary_target(ADD_DEPENDENCIES "new_static_mock_lib"
-        DEPENDENCIES
+      binary_target(ADD_LINK_LIBRARIES "new_static_mock_lib"
+        PUBLIC
           "$<BUILD_INTERFACE:dep_static_mock_lib_1;dep_static_mock_lib_2>"
           "$<INSTALL_INTERFACE:dep_static_mock_lib_1;dep_static_mock_lib_2>"
       )
@@ -95,8 +95,8 @@ function(${CMAKETEST_TEST})
         "$<BUILD_INTERFACE:dep_static_mock_lib_1;dep_static_mock_lib_2>;$<INSTALL_INTERFACE:dep_static_mock_lib_1;dep_static_mock_lib_2>"
       )
 
-      binary_target(ADD_DEPENDENCIES "new_shared_mock_lib"
-        DEPENDENCIES
+      binary_target(ADD_LINK_LIBRARIES "new_shared_mock_lib"
+        PUBLIC
           "$<BUILD_INTERFACE:dep_shared_mock_lib_1;dep_shared_mock_lib_2>"
           "$<INSTALL_INTERFACE:dep_shared_mock_lib_1;dep_shared_mock_lib_2>"
       )
@@ -115,8 +115,8 @@ function(${CMAKETEST_TEST})
     ct_add_section(NAME "add_build_interfaces")
     function(${CMAKETEST_SECTION})
       _set_up_test()
-      binary_target(ADD_DEPENDENCIES "new_static_mock_lib"
-        DEPENDENCIES
+      binary_target(ADD_LINK_LIBRARIES "new_static_mock_lib"
+        PUBLIC
           "$<BUILD_INTERFACE:dep_static_mock_lib_1;dep_static_mock_lib_2>"
       )
       get_target_property(output_bin_property "new_static_mock_lib"
@@ -130,8 +130,8 @@ function(${CMAKETEST_TEST})
         "$<BUILD_INTERFACE:dep_static_mock_lib_1;dep_static_mock_lib_2>"
       )
 
-      binary_target(ADD_DEPENDENCIES "new_shared_mock_lib"
-        DEPENDENCIES
+      binary_target(ADD_LINK_LIBRARIES "new_shared_mock_lib"
+        PUBLIC
           "$<BUILD_INTERFACE:dep_shared_mock_lib_1;dep_shared_mock_lib_2>"
       )
       get_target_property(output_bin_property "new_shared_mock_lib"
@@ -149,8 +149,8 @@ function(${CMAKETEST_TEST})
     ct_add_section(NAME "add_install_interfaces")
     function(${CMAKETEST_SECTION})
       _set_up_test()
-      binary_target(ADD_DEPENDENCIES "new_static_mock_lib"
-        DEPENDENCIES
+      binary_target(ADD_LINK_LIBRARIES "new_static_mock_lib"
+        PUBLIC
           "$<INSTALL_INTERFACE:dep_static_mock_lib_1;dep_static_mock_lib_2>"
       )
       get_target_property(output_bin_property "new_static_mock_lib"
@@ -164,8 +164,8 @@ function(${CMAKETEST_TEST})
         "$<INSTALL_INTERFACE:dep_static_mock_lib_1;dep_static_mock_lib_2>"
       )
 
-      binary_target(ADD_DEPENDENCIES "new_shared_mock_lib"
-        DEPENDENCIES
+      binary_target(ADD_LINK_LIBRARIES "new_shared_mock_lib"
+        PUBLIC
           "$<INSTALL_INTERFACE:dep_shared_mock_lib_1;dep_shared_mock_lib_2>"
       )
       get_target_property(output_bin_property "new_shared_mock_lib"
@@ -184,30 +184,30 @@ function(${CMAKETEST_TEST})
   # Errors checking
   ct_add_section(NAME "throws_if_arg_target_is_missing_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    binary_target(ADD_DEPENDENCIES
-      DEPENDENCIES "dep_shared_mock_lib_1")
+    binary_target(ADD_LINK_LIBRARIES
+      PUBLIC "dep_shared_mock_lib_1")
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_target_is_missing_2" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    binary_target(ADD_DEPENDENCIES ""
-      DEPENDENCIES "dep_shared_mock_lib_1")
+    binary_target(ADD_LINK_LIBRARIES ""
+      PUBLIC "dep_shared_mock_lib_1")
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_target_is_unknown" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    binary_target(ADD_DEPENDENCIES "unknown_target"
-      DEPENDENCIES "dep_shared_mock_lib_1")
+    binary_target(ADD_LINK_LIBRARIES "unknown_target"
+      PUBLIC "dep_shared_mock_lib_1")
   endfunction()
 
-  ct_add_section(NAME "throws_if_arg_dependencies_is_missing_1" EXPECTFAIL)
+  ct_add_section(NAME "throws_if_arg_public_is_missing_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    binary_target(ADD_DEPENDENCIES "new_shared_mock_lib")
+    binary_target(ADD_LINK_LIBRARIES "new_shared_mock_lib")
   endfunction()
 
-  ct_add_section(NAME "throws_if_arg_dependencies_is_missing_2" EXPECTFAIL)
+  ct_add_section(NAME "throws_if_arg_public_is_missing_2" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    binary_target(ADD_DEPENDENCIES "new_shared_mock_lib"
-      DEPENDENCIES)
+    binary_target(ADD_LINK_LIBRARIES "new_shared_mock_lib"
+      PUBLIC)
   endfunction()
 endfunction()

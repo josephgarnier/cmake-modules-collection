@@ -11,17 +11,17 @@
 #-------------------------------------------------------------------------------
 # Test of [BinaryTarget module::CREATE_FULLY operation]:
 #    binary_target(CREATE_FULLY <target-name>
-#                 <STATIC|SHARED|HEADER|EXEC>
-#                 [COMPILE_FEATURES <feature>...]
-#                 [COMPILE_DEFINITIONS <definition>...]
-#                 [COMPILE_OPTIONS <option>...]
-#                 [LINK_OPTIONS <option>...]
-#                 SOURCE_FILES [<file-path>...]
-#                 PRIVATE_HEADER_FILES [<file-path>...]
-#                 PUBLIC_HEADER_FILES [<file-path>...]
-#                 [PRECOMPILE_HEADER_FILE <file-path>]
-#                 INCLUDE_DIRECTORIES [<dir-path>...]
-#                 [DEPENDENCIES [<target-name>...]])
+#                  <STATIC|SHARED|HEADER|EXEC>
+#                  [COMPILE_FEATURES <feature>...]
+#                  [COMPILE_DEFINITIONS <definition>...]
+#                  [COMPILE_OPTIONS <option>...]
+#                  [LINK_OPTIONS <option>...]
+#                  SOURCE_FILES [<file-path>...]
+#                  PRIVATE_HEADER_FILES [<file-path>...]
+#                  PUBLIC_HEADER_FILES [<file-path>...]
+#                  [PRECOMPILE_HEADER_FILE <file-path>]
+#                  INCLUDE_DIRECTORIES [<dir-path>...]
+#                  [LINK_LIBRARIES [<target-name>...] ])
 ct_add_test(NAME "test_binary_target_create_fully_operation")
 function(${CMAKETEST_TEST})
   include(BinaryTarget)
@@ -72,7 +72,7 @@ function(${CMAKETEST_TEST})
       PUBLIC_HEADER_FILES "${input_public_headers}"
       PRECOMPILE_HEADER_FILE "${input_pch_header}"
       INCLUDE_DIRECTORIES "${input_public_header_dir}"
-      DEPENDENCIES "dep_static_mock_lib_1" "dep_static_mock_lib_2"
+      LINK_LIBRARIES "dep_static_mock_lib_1" "dep_static_mock_lib_2"
     )
 
     binary_target(CREATE_FULLY "new_shared_mock_lib" SHARED
@@ -85,7 +85,7 @@ function(${CMAKETEST_TEST})
       PUBLIC_HEADER_FILES "${input_public_headers}"
       PRECOMPILE_HEADER_FILE "${input_pch_header}"
       INCLUDE_DIRECTORIES "${input_public_header_dir}"
-      DEPENDENCIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
+      LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
 
@@ -96,7 +96,7 @@ function(${CMAKETEST_TEST})
       PRIVATE_HEADER_FILES ""
       PUBLIC_HEADER_FILES ""
       INCLUDE_DIRECTORIES ""
-      DEPENDENCIES ""
+      LINK_LIBRARIES ""
     )
     target_sources("new_static_mock_lib_2" PRIVATE "${TESTS_DATA_DIR}/src/main.cpp") # A target needs at least one source to avoid an error
 
@@ -105,7 +105,7 @@ function(${CMAKETEST_TEST})
       PRIVATE_HEADER_FILES ""
       PUBLIC_HEADER_FILES ""
       INCLUDE_DIRECTORIES ""
-      DEPENDENCIES ""
+      LINK_LIBRARIES ""
     )
     target_sources("new_shared_mock_lib_2" PRIVATE "${TESTS_DATA_DIR}/src/main.cpp") # A target needs at least one source to avoid an error
   endfunction()
@@ -140,7 +140,7 @@ function(${CMAKETEST_TEST})
       PUBLIC_HEADER_FILES "${input_public_headers}"
       PRECOMPILE_HEADER_FILE "${input_pch_header}"
       INCLUDE_DIRECTORIES "${input_public_header_dir}"
-      DEPENDENCIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
+      LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
 
@@ -156,7 +156,7 @@ function(${CMAKETEST_TEST})
       PUBLIC_HEADER_FILES "${input_public_headers}"
       PRECOMPILE_HEADER_FILE "${input_pch_header}"
       INCLUDE_DIRECTORIES "${input_public_header_dir}"
-      DEPENDENCIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
+      LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
 
@@ -172,7 +172,7 @@ function(${CMAKETEST_TEST})
       PUBLIC_HEADER_FILES "${input_public_headers}"
       PRECOMPILE_HEADER_FILE "${input_pch_header}"
       INCLUDE_DIRECTORIES "${input_public_header_dir}"
-      DEPENDENCIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
+      LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
 
@@ -188,7 +188,7 @@ function(${CMAKETEST_TEST})
       PUBLIC_HEADER_FILES "${input_public_headers}"
       PRECOMPILE_HEADER_FILE "${input_pch_header}"
       INCLUDE_DIRECTORIES "${input_public_header_dir}"
-      DEPENDENCIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
+      LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
 
@@ -204,7 +204,7 @@ function(${CMAKETEST_TEST})
       PUBLIC_HEADER_FILES "${input_public_headers}"
       PRECOMPILE_HEADER_FILE "${input_pch_header}"
       INCLUDE_DIRECTORIES "${input_public_header_dir}"
-      DEPENDENCIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
+      LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
 
@@ -220,7 +220,7 @@ function(${CMAKETEST_TEST})
       PUBLIC_HEADER_FILES "${input_public_headers}"
       PRECOMPILE_HEADER_FILE "${input_pch_header}"
       INCLUDE_DIRECTORIES "${input_public_header_dir}"
-      DEPENDENCIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
+      LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
 
@@ -236,7 +236,7 @@ function(${CMAKETEST_TEST})
       PUBLIC_HEADER_FILES "${input_public_headers}"
       PRECOMPILE_HEADER_FILE "${input_pch_header}"
       INCLUDE_DIRECTORIES "${input_public_header_dir}"
-      DEPENDENCIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
+      LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
 
@@ -252,7 +252,7 @@ function(${CMAKETEST_TEST})
       PUBLIC_HEADER_FILES "${input_public_headers}"
       PRECOMPILE_HEADER_FILE "${input_pch_header}"
       INCLUDE_DIRECTORIES "${input_public_header_dir}"
-      DEPENDENCIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
+      LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
 
@@ -268,7 +268,7 @@ function(${CMAKETEST_TEST})
       PUBLIC_HEADER_FILES "${input_public_headers}"
       PRECOMPILE_HEADER_FILE "${input_pch_header}"
       INCLUDE_DIRECTORIES "${input_public_header_dir}"
-      DEPENDENCIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
+      LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
 
@@ -284,7 +284,7 @@ function(${CMAKETEST_TEST})
       PUBLIC_HEADER_FILES "${input_public_headers}"
       PRECOMPILE_HEADER_FILE "${input_pch_header}"
       INCLUDE_DIRECTORIES "${input_public_header_dir}"
-      DEPENDENCIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
+      LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
 
@@ -300,7 +300,7 @@ function(${CMAKETEST_TEST})
       PUBLIC_HEADER_FILES "${input_public_headers}"
       PRECOMPILE_HEADER_FILE "${input_pch_header}"
       INCLUDE_DIRECTORIES "${input_public_header_dir}"
-      DEPENDENCIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
+      LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
 
@@ -316,7 +316,7 @@ function(${CMAKETEST_TEST})
       PUBLIC_HEADER_FILES "${input_public_headers}"
       PRECOMPILE_HEADER_FILE "${input_pch_header}"
       INCLUDE_DIRECTORIES "${input_public_header_dir}"
-      DEPENDENCIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
+      LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
 
@@ -332,7 +332,7 @@ function(${CMAKETEST_TEST})
       PUBLIC_HEADER_FILES "${input_public_headers}"
       PRECOMPILE_HEADER_FILE "${input_pch_header}"
       INCLUDE_DIRECTORIES "${input_public_header_dir}"
-      DEPENDENCIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
+      LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
 
@@ -348,7 +348,7 @@ function(${CMAKETEST_TEST})
       PUBLIC_HEADER_FILES "${input_public_headers}"
       PRECOMPILE_HEADER_FILE "${input_pch_header}"
       INCLUDE_DIRECTORIES "${input_public_header_dir}"
-      DEPENDENCIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
+      LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
 
@@ -365,7 +365,7 @@ function(${CMAKETEST_TEST})
       PUBLIC_HEADER_FILES "${input_public_headers}"
       PRECOMPILE_HEADER_FILE "${input_pch_header}"
       INCLUDE_DIRECTORIES "${input_public_header_dir}"
-      DEPENDENCIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
+      LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
 
@@ -382,7 +382,7 @@ function(${CMAKETEST_TEST})
       PUBLIC_HEADER_FILES "${input_public_headers}"
       PRECOMPILE_HEADER_FILE "${input_pch_header}"
       INCLUDE_DIRECTORIES "${input_public_header_dir}"
-      DEPENDENCIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
+      LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
 
@@ -397,7 +397,7 @@ function(${CMAKETEST_TEST})
       PUBLIC_HEADER_FILES "${input_public_headers}"
       PRECOMPILE_HEADER_FILE "${input_pch_header}"
       INCLUDE_DIRECTORIES "${input_public_header_dir}"
-      DEPENDENCIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
+      LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
 
@@ -413,7 +413,7 @@ function(${CMAKETEST_TEST})
       PUBLIC_HEADER_FILES "${input_public_headers}"
       PRECOMPILE_HEADER_FILE "${input_pch_header}"
       INCLUDE_DIRECTORIES "${input_public_header_dir}"
-      DEPENDENCIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
+      LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
 
@@ -428,7 +428,7 @@ function(${CMAKETEST_TEST})
       PUBLIC_HEADER_FILES "${input_public_headers}"
       PRECOMPILE_HEADER_FILE "${input_pch_header}"
       INCLUDE_DIRECTORIES "${input_public_header_dir}"
-      DEPENDENCIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
+      LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
 
@@ -444,7 +444,7 @@ function(${CMAKETEST_TEST})
       PUBLIC_HEADER_FILES "${input_public_headers}"
       PRECOMPILE_HEADER_FILE "${input_pch_header}"
       INCLUDE_DIRECTORIES "${input_public_header_dir}"
-      DEPENDENCIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
+      LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
 
@@ -459,7 +459,7 @@ function(${CMAKETEST_TEST})
       PRIVATE_HEADER_FILES "${input_private_headers}"
       PRECOMPILE_HEADER_FILE "${input_pch_header}"
       INCLUDE_DIRECTORIES "${input_public_header_dir}"
-      DEPENDENCIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
+      LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
 
@@ -475,7 +475,7 @@ function(${CMAKETEST_TEST})
       PUBLIC_HEADER_FILES
       PRECOMPILE_HEADER_FILE "${input_pch_header}"
       INCLUDE_DIRECTORIES "${input_public_header_dir}"
-      DEPENDENCIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
+      LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
 
@@ -491,7 +491,7 @@ function(${CMAKETEST_TEST})
       PUBLIC_HEADER_FILES "${input_public_headers}"
       PRECOMPILE_HEADER_FILE
       INCLUDE_DIRECTORIES "${input_public_header_dir}"
-      DEPENDENCIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
+      LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
 
@@ -507,7 +507,7 @@ function(${CMAKETEST_TEST})
       PUBLIC_HEADER_FILES "${input_public_headers}"
       PRECOMPILE_HEADER_FILE ""
       INCLUDE_DIRECTORIES "${input_public_header_dir}"
-      DEPENDENCIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
+      LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
 
@@ -523,7 +523,7 @@ function(${CMAKETEST_TEST})
       PUBLIC_HEADER_FILES "${input_public_headers}"
       PRECOMPILE_HEADER_FILE "data/src/not-exists.h"
       INCLUDE_DIRECTORIES "${input_public_header_dir}"
-      DEPENDENCIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
+      LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
 
@@ -538,7 +538,7 @@ function(${CMAKETEST_TEST})
       PRIVATE_HEADER_FILES "${input_private_headers}"
       PUBLIC_HEADER_FILES "${input_public_headers}"
       PRECOMPILE_HEADER_FILE "${input_pch_header}"
-      DEPENDENCIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
+      LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
 
@@ -554,11 +554,11 @@ function(${CMAKETEST_TEST})
       PUBLIC_HEADER_FILES "${input_public_headers}"
       PRECOMPILE_HEADER_FILE "${input_pch_header}"
       INCLUDE_DIRECTORIES
-      DEPENDENCIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
+      LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
 
-  ct_add_section(NAME "throws_if_arg_dependencies_is_missing" EXPECTFAIL)
+  ct_add_section(NAME "throws_if_arg_link_libraries_is_missing" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     binary_target(CREATE_FULLY "new_shared_mock_lib_26" SHARED
       COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
@@ -570,7 +570,7 @@ function(${CMAKETEST_TEST})
       PUBLIC_HEADER_FILES "${input_public_headers}"
       PRECOMPILE_HEADER_FILE "${input_pch_header}"
       INCLUDE_DIRECTORIES "${input_public_header_dir}"
-      DEPENDENCIES
+      LINK_LIBRARIES
     )
   endfunction()
 endfunction()
