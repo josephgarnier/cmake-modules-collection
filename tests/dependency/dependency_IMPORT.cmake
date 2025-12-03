@@ -131,7 +131,7 @@ function(${CMAKETEST_TEST})
     ct_assert_equal("${lib_target_name}_FOUND" true)
   endfunction()
 
-  ct_add_section(NAME "import_not_existing_static_lib_and_implib")
+  ct_add_section(NAME "import_non_existing_static_lib_and_implib")
   function(${CMAKETEST_SECTION})
     set(lib_target_name "imp_static_mock_lib-2")
     _set_up_test("${lib_target_name}")
@@ -183,7 +183,7 @@ function(${CMAKETEST_TEST})
     ct_assert_equal("${lib_target_name}_FOUND" false)
   endfunction()
 
-  ct_add_section(NAME "import_not_existing_static_lib")
+  ct_add_section(NAME "import_non_existing_static_lib")
   function(${CMAKETEST_SECTION})
     set(lib_target_name "imp_static_mock_lib-3")
     _set_up_test("${lib_target_name}")
@@ -198,23 +198,23 @@ function(${CMAKETEST_TEST})
     endif()
 
     file(COPY "${TESTS_DATA_DIR}/bin/"
-      DESTINATION "${TESTS_DATA_DIR}/bin_import_not_existing_static_lib")
+      DESTINATION "${TESTS_DATA_DIR}/bin_import_non_existing_static_lib")
     set(lib_file_name
       "${CMAKE_STATIC_LIBRARY_PREFIX}${lib_file_basename}${CMAKE_STATIC_LIBRARY_SUFFIX}")
-    file(REMOVE "${TESTS_DATA_DIR}/bin_import_not_existing_static_lib/${lib_file_name}")
+    file(REMOVE "${TESTS_DATA_DIR}/bin_import_non_existing_static_lib/${lib_file_name}")
 
     directory(FIND_LIB expected_lib_file_path
       FIND_IMPLIB expected_implib_file_path
       NAME "${lib_file_basename}"
       STATIC
       RELATIVE off
-      ROOT_DIR "${TESTS_DATA_DIR}/bin_import_not_existing_static_lib"
+      ROOT_DIR "${TESTS_DATA_DIR}/bin_import_non_existing_static_lib"
     )
 
     ct_assert_target_does_not_exist("${lib_target_name}")
     dependency(IMPORT "${lib_target_name}"
       TYPE STATIC
-      FIND_ROOT_DIR "${TESTS_DATA_DIR}/bin_import_not_existing_static_lib"
+      FIND_ROOT_DIR "${TESTS_DATA_DIR}/bin_import_non_existing_static_lib"
       ${dep_import_find_args}
     )
     ct_assert_target_does_not_exist("${lib_target_name}")
@@ -237,9 +237,9 @@ function(${CMAKETEST_TEST})
     endif()
     ct_assert_equal("${lib_target_name}_LIBRARY" "${lib_target_name}_LIBRARY-NOTFOUND")
     ct_assert_equal("${lib_target_name}_LIBRARIES" "${lib_target_name}_LIBRARY-NOTFOUND")
-    ct_assert_equal("${lib_target_name}_ROOT_DIR" "${TESTS_DATA_DIR}/bin_import_not_existing_static_lib")
+    ct_assert_equal("${lib_target_name}_ROOT_DIR" "${TESTS_DATA_DIR}/bin_import_non_existing_static_lib")
     ct_assert_equal("${lib_target_name}_FOUND" false)
-    file(REMOVE_RECURSE "${TESTS_DATA_DIR}/bin_import_not_existing_static_lib")
+    file(REMOVE_RECURSE "${TESTS_DATA_DIR}/bin_import_non_existing_static_lib")
   endfunction()
 
   ct_add_section(NAME "import_shared_lib")
@@ -332,7 +332,7 @@ function(${CMAKETEST_TEST})
     ct_assert_equal("${lib_target_name}_FOUND" true)
   endfunction()
 
-  ct_add_section(NAME "import_not_existing_shared_lib_and_implib")
+  ct_add_section(NAME "import_non_existing_shared_lib_and_implib")
   function(${CMAKETEST_SECTION})
     set(lib_target_name "imp_shared_mock_lib-2")
     _set_up_test("${lib_target_name}")
@@ -384,7 +384,7 @@ function(${CMAKETEST_TEST})
     ct_assert_equal("${lib_target_name}_FOUND" false)
   endfunction()
 
-  ct_add_section(NAME "import_not_existing_shared_lib")
+  ct_add_section(NAME "import_non_existing_shared_lib")
   function(${CMAKETEST_SECTION})
     set(lib_target_name "imp_shared_mock_lib-3")
     _set_up_test("${lib_target_name}")
@@ -399,23 +399,23 @@ function(${CMAKETEST_TEST})
     endif()
 
     file(COPY "${TESTS_DATA_DIR}/bin/"
-      DESTINATION "${TESTS_DATA_DIR}/bin_import_not_existing_shared_lib")
+      DESTINATION "${TESTS_DATA_DIR}/bin_import_non_existing_shared_lib")
     set(lib_file_name
       "${CMAKE_SHARED_LIBRARY_PREFIX}${lib_file_basename}${CMAKE_SHARED_LIBRARY_SUFFIX}")
-    file(REMOVE "${TESTS_DATA_DIR}/bin_import_not_existing_shared_lib/${lib_file_name}")
+    file(REMOVE "${TESTS_DATA_DIR}/bin_import_non_existing_shared_lib/${lib_file_name}")
 
     directory(FIND_LIB expected_lib_file_path
       FIND_IMPLIB expected_implib_file_path
       NAME "${lib_file_basename}"
       SHARED
       RELATIVE off
-      ROOT_DIR "${TESTS_DATA_DIR}/bin_import_not_existing_shared_lib"
+      ROOT_DIR "${TESTS_DATA_DIR}/bin_import_non_existing_shared_lib"
     )
 
     ct_assert_target_does_not_exist("${lib_target_name}")
     dependency(IMPORT "${lib_target_name}"
       TYPE SHARED
-      FIND_ROOT_DIR "${TESTS_DATA_DIR}/bin_import_not_existing_shared_lib"
+      FIND_ROOT_DIR "${TESTS_DATA_DIR}/bin_import_non_existing_shared_lib"
       ${dep_import_find_args}
     )
     ct_assert_target_does_not_exist("${lib_target_name}")
@@ -438,12 +438,12 @@ function(${CMAKETEST_TEST})
     endif()
     ct_assert_equal("${lib_target_name}_LIBRARY" "${lib_target_name}_LIBRARY-NOTFOUND")
     ct_assert_equal("${lib_target_name}_LIBRARIES" "${lib_target_name}_LIBRARY-NOTFOUND")
-    ct_assert_equal("${lib_target_name}_ROOT_DIR" "${TESTS_DATA_DIR}/bin_import_not_existing_shared_lib")
+    ct_assert_equal("${lib_target_name}_ROOT_DIR" "${TESTS_DATA_DIR}/bin_import_non_existing_shared_lib")
     ct_assert_equal("${lib_target_name}_FOUND" false)
-    file(REMOVE_RECURSE "${TESTS_DATA_DIR}/bin_import_not_existing_shared_lib")
+    file(REMOVE_RECURSE "${TESTS_DATA_DIR}/bin_import_non_existing_shared_lib")
   endfunction()
 
-  ct_add_section(NAME "import_not_existing_shared_implib")
+  ct_add_section(NAME "import_non_existing_shared_implib")
   function(${CMAKETEST_SECTION})
     set(lib_target_name "imp_shared_mock_lib-4")
     _set_up_test("${lib_target_name}")
@@ -458,12 +458,12 @@ function(${CMAKETEST_TEST})
     endif()
 
     file(COPY "${TESTS_DATA_DIR}/bin/"
-      DESTINATION "${TESTS_DATA_DIR}/bin_import_not_existing_shared_implib"
+      DESTINATION "${TESTS_DATA_DIR}/bin_import_non_existing_shared_implib"
     )
     # Will find `${CMAKE_FIND_LIBRARY_PREFIXES}${lib_file_basename}${CMAKE_FIND_LIBRARY_SUFFIXES}`
     find_library(implib_file_path
       NAMES "${lib_file_basename}"
-      PATHS "${TESTS_DATA_DIR}/bin_import_not_existing_shared_implib"
+      PATHS "${TESTS_DATA_DIR}/bin_import_non_existing_shared_implib"
       REQUIRED NO_DEFAULT_PATH
     )
     file(REMOVE "${implib_file_path}")
@@ -473,13 +473,13 @@ function(${CMAKETEST_TEST})
       NAME "${lib_file_basename}"
       SHARED
       RELATIVE off
-      ROOT_DIR "${TESTS_DATA_DIR}/bin_import_not_existing_shared_implib"
+      ROOT_DIR "${TESTS_DATA_DIR}/bin_import_non_existing_shared_implib"
     )
 
     ct_assert_target_does_not_exist("${lib_target_name}")
     dependency(IMPORT "${lib_target_name}"
       TYPE SHARED
-      FIND_ROOT_DIR "${TESTS_DATA_DIR}/bin_import_not_existing_shared_implib"
+      FIND_ROOT_DIR "${TESTS_DATA_DIR}/bin_import_non_existing_shared_implib"
       ${dep_import_find_args}
     )
     ct_assert_target_does_not_exist("${lib_target_name}")
@@ -502,9 +502,9 @@ function(${CMAKETEST_TEST})
     endif()
     ct_assert_equal("${lib_target_name}_LIBRARY" "${lib_target_name}_LIBRARY-NOTFOUND")
     ct_assert_equal("${lib_target_name}_LIBRARIES" "${lib_target_name}_LIBRARY-NOTFOUND")
-    ct_assert_equal("${lib_target_name}_ROOT_DIR" "${TESTS_DATA_DIR}/bin_import_not_existing_shared_implib")
+    ct_assert_equal("${lib_target_name}_ROOT_DIR" "${TESTS_DATA_DIR}/bin_import_non_existing_shared_implib")
     ct_assert_equal("${lib_target_name}_FOUND" false)
-    file(REMOVE_RECURSE "${TESTS_DATA_DIR}/bin_import_not_existing_shared_implib")
+    file(REMOVE_RECURSE "${TESTS_DATA_DIR}/bin_import_non_existing_shared_implib")
   endfunction()
 
   # Errors checking
