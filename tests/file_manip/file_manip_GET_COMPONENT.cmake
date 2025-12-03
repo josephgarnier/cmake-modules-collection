@@ -11,91 +11,169 @@
 #-------------------------------------------------------------------------------
 # Test of [FileManip module::GET_COMPONENT operation]:
 #    file_manip(GET_COMPONENT <file-path>...
-#              MODE <mode>
-#              OUTPUT_VARIABLE <output-list-var>)
+#               MODE <mode>
+#               OUTPUT_VARIABLE <output-list-var>)
 ct_add_test(NAME "test_file_manip_get_component_operation")
 function(${CMAKETEST_TEST})
   include(FileManip)
 
   # Functionalities checking
-  ct_add_section(NAME "directory_mode")
+  ct_add_section(NAME "path_to_existing_files")
   function(${CMAKETEST_SECTION})
-    set(input "")
-    file_manip(GET_COMPONENT "${input}" MODE DIRECTORY OUTPUT_VARIABLE output)
-    ct_assert_string(output)
-    ct_assert_equal(output "")
 
-    set(input "${TESTS_DATA_DIR}/src/main.cpp")
-    file_manip(GET_COMPONENT "${input}" MODE DIRECTORY OUTPUT_VARIABLE output)
-    ct_assert_string(output)
-    ct_assert_equal(output "${TESTS_DATA_DIR}/src")
+    ct_add_section(NAME "directory_mode")
+    function(${CMAKETEST_SECTION})
+      set(input "${TESTS_DATA_DIR}/src/main.cpp")
+      file_manip(GET_COMPONENT "${input}" MODE DIRECTORY OUTPUT_VARIABLE output)
+      ct_assert_string(output)
+      ct_assert_equal(output "${TESTS_DATA_DIR}/src")
 
-    set(input "data/src/main.cpp")
-    file_manip(GET_COMPONENT "${input}" MODE DIRECTORY OUTPUT_VARIABLE output)
-    ct_assert_string(output)
-    ct_assert_equal(output "data/src")
-    
-    set(input
-      "${TESTS_DATA_DIR}/src/main.cpp"
-      "${TESTS_DATA_DIR}/src/source_1.cpp"
-      "${TESTS_DATA_DIR}/src/source_2.cpp"
-      "${TESTS_DATA_DIR}/src/source_3.cpp"
-      "${TESTS_DATA_DIR}/src/source_4.cpp"
-      "${TESTS_DATA_DIR}/src/source_5.cpp"
-      "${TESTS_DATA_DIR}/src/sub_1/source_sub_1.cpp"
-      "${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp")
-    set(expected_output
-      "${TESTS_DATA_DIR}/src"
-      "${TESTS_DATA_DIR}/src"
-      "${TESTS_DATA_DIR}/src"
-      "${TESTS_DATA_DIR}/src"
-      "${TESTS_DATA_DIR}/src"
-      "${TESTS_DATA_DIR}/src"
-      "${TESTS_DATA_DIR}/src/sub_1"
-      "${TESTS_DATA_DIR}/src/sub_2")
-    file_manip(GET_COMPONENT "${input}" MODE DIRECTORY OUTPUT_VARIABLE output)
-    ct_assert_list(output)
-    ct_assert_equal(output "${expected_output}")
+      set(input "data/src/main.cpp")
+      file_manip(GET_COMPONENT "${input}" MODE DIRECTORY OUTPUT_VARIABLE output)
+      ct_assert_string(output)
+      ct_assert_equal(output "data/src")
+      
+      set(input
+        "${TESTS_DATA_DIR}/src/main.cpp"
+        "${TESTS_DATA_DIR}/src/source_1.cpp"
+        "${TESTS_DATA_DIR}/src/source_2.cpp"
+        "${TESTS_DATA_DIR}/src/source_3.cpp"
+        "${TESTS_DATA_DIR}/src/source_4.cpp"
+        "${TESTS_DATA_DIR}/src/source_5.cpp"
+        "${TESTS_DATA_DIR}/src/sub_1/source_sub_1.cpp"
+        "${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp")
+      set(expected_output
+        "${TESTS_DATA_DIR}/src"
+        "${TESTS_DATA_DIR}/src"
+        "${TESTS_DATA_DIR}/src"
+        "${TESTS_DATA_DIR}/src"
+        "${TESTS_DATA_DIR}/src"
+        "${TESTS_DATA_DIR}/src"
+        "${TESTS_DATA_DIR}/src/sub_1"
+        "${TESTS_DATA_DIR}/src/sub_2")
+      file_manip(GET_COMPONENT "${input}" MODE DIRECTORY OUTPUT_VARIABLE output)
+      ct_assert_list(output)
+      ct_assert_equal(output "${expected_output}")
+    endfunction()
+
+    ct_add_section(NAME "name_mode")
+    function(${CMAKETEST_SECTION})
+      set(input "${TESTS_DATA_DIR}/src/main.cpp")
+      file_manip(GET_COMPONENT "${input}" MODE NAME OUTPUT_VARIABLE output)
+      ct_assert_string(output)
+      ct_assert_equal(output "main.cpp")
+
+      set(input "data/src/main.cpp")
+      file_manip(GET_COMPONENT "${input}" MODE NAME OUTPUT_VARIABLE output)
+      ct_assert_string(output)
+      ct_assert_equal(output "main.cpp")
+      
+      set(input
+        "${TESTS_DATA_DIR}/src/main.cpp"
+        "${TESTS_DATA_DIR}/src/source_1.cpp"
+        "${TESTS_DATA_DIR}/src/source_2.cpp"
+        "${TESTS_DATA_DIR}/src/source_3.cpp"
+        "${TESTS_DATA_DIR}/src/source_4.cpp"
+        "${TESTS_DATA_DIR}/src/source_5.cpp"
+        "${TESTS_DATA_DIR}/src/sub_1/source_sub_1.cpp"
+        "${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp")
+      set(expected_output
+        "main.cpp"
+        "source_1.cpp"
+        "source_2.cpp"
+        "source_3.cpp"
+        "source_4.cpp"
+        "source_5.cpp"
+        "source_sub_1.cpp"
+        "source_sub_2.cpp")
+      file_manip(GET_COMPONENT "${input}" MODE NAME OUTPUT_VARIABLE output)
+      ct_assert_list(output)
+      ct_assert_equal(output "${expected_output}")
+    endfunction()
   endfunction()
 
-  ct_add_section(NAME "name_mode")
+  ct_add_section(NAME "path_to_non_existing_files")
   function(${CMAKETEST_SECTION})
-    set(input "")
-    file_manip(GET_COMPONENT "${input}" MODE NAME OUTPUT_VARIABLE output)
-    ct_assert_string(output)
-    ct_assert_equal(output "")
 
-    set(input "${TESTS_DATA_DIR}/src/main.cpp")
-    file_manip(GET_COMPONENT "${input}" MODE NAME OUTPUT_VARIABLE output)
-    ct_assert_string(output)
-    ct_assert_equal(output "main.cpp")
+    ct_add_section(NAME "directory_mode")
+    function(${CMAKETEST_SECTION})
+      set(input "")
+      file_manip(GET_COMPONENT "${input}" MODE DIRECTORY OUTPUT_VARIABLE output)
+      ct_assert_string(output)
+      ct_assert_equal(output "")
 
-    set(input "data/src/main.cpp")
-    file_manip(GET_COMPONENT "${input}" MODE NAME OUTPUT_VARIABLE output)
-    ct_assert_string(output)
-    ct_assert_equal(output "main.cpp")
-    
-    set(input
-      "${TESTS_DATA_DIR}/src/main.cpp"
-      "${TESTS_DATA_DIR}/src/source_1.cpp"
-      "${TESTS_DATA_DIR}/src/source_2.cpp"
-      "${TESTS_DATA_DIR}/src/source_3.cpp"
-      "${TESTS_DATA_DIR}/src/source_4.cpp"
-      "${TESTS_DATA_DIR}/src/source_5.cpp"
-      "${TESTS_DATA_DIR}/src/sub_1/source_sub_1.cpp"
-      "${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp")
-    set(expected_output
-      "main.cpp"
-      "source_1.cpp"
-      "source_2.cpp"
-      "source_3.cpp"
-      "source_4.cpp"
-      "source_5.cpp"
-      "source_sub_1.cpp"
-      "source_sub_2.cpp")
-    file_manip(GET_COMPONENT "${input}" MODE NAME OUTPUT_VARIABLE output)
-    ct_assert_list(output)
-    ct_assert_equal(output "${expected_output}")
+      set(input "${TESTS_DATA_DIR}/fake/src/fake.cpp")
+      file_manip(GET_COMPONENT "${input}" MODE DIRECTORY OUTPUT_VARIABLE output)
+      ct_assert_string(output)
+      ct_assert_equal(output "${TESTS_DATA_DIR}/fake/src")
+
+      set(input "data/fake/src/fake.cpp")
+      file_manip(GET_COMPONENT "${input}" MODE DIRECTORY OUTPUT_VARIABLE output)
+      ct_assert_string(output)
+      ct_assert_equal(output "data/fake/src")
+
+      set(input
+        "${TESTS_DATA_DIR}/fake/src/fake.cpp"
+        "${TESTS_DATA_DIR}/fake/src/fake_1.cpp"
+        "${TESTS_DATA_DIR}/fake/src/fake_2.cpp"
+        "${TESTS_DATA_DIR}/fake/src/fake_3.cpp"
+        "${TESTS_DATA_DIR}/fake/src/fake_4.cpp"
+        "${TESTS_DATA_DIR}/fake/src/fake_5.cpp"
+        "${TESTS_DATA_DIR}/fake/src/sub_1/fake_sub_1.cpp"
+        "${TESTS_DATA_DIR}/fake/src/sub_1/fake_sub_2.cpp")
+      set(expected_output
+        "${TESTS_DATA_DIR}/fake/src"
+        "${TESTS_DATA_DIR}/fake/src"
+        "${TESTS_DATA_DIR}/fake/src"
+        "${TESTS_DATA_DIR}/fake/src"
+        "${TESTS_DATA_DIR}/fake/src"
+        "${TESTS_DATA_DIR}/fake/src"
+        "${TESTS_DATA_DIR}/fake/src/sub_1"
+        "${TESTS_DATA_DIR}/fake/src/sub_1")
+      file_manip(GET_COMPONENT "${input}" MODE DIRECTORY OUTPUT_VARIABLE output)
+      ct_assert_list(output)
+      ct_assert_equal(output "${expected_output}")
+    endfunction()
+
+    ct_add_section(NAME "name_mode")
+    function(${CMAKETEST_SECTION})
+      set(input "")
+      file_manip(GET_COMPONENT "${input}" MODE NAME OUTPUT_VARIABLE output)
+      ct_assert_string(output)
+      ct_assert_equal(output "")
+
+      set(input "${TESTS_DATA_DIR}/fake/src/fake.cpp")
+      file_manip(GET_COMPONENT "${input}" MODE NAME OUTPUT_VARIABLE output)
+      ct_assert_string(output)
+      ct_assert_equal(output "fake.cpp")
+
+      set(input "data/fake/src/fake.cpp")
+      file_manip(GET_COMPONENT "${input}" MODE NAME OUTPUT_VARIABLE output)
+      ct_assert_string(output)
+      ct_assert_equal(output "fake.cpp")
+
+      set(input
+        "${TESTS_DATA_DIR}/fake/src/fake.cpp"
+        "${TESTS_DATA_DIR}/fake/src/fake_1.cpp"
+        "${TESTS_DATA_DIR}/fake/src/fake_2.cpp"
+        "${TESTS_DATA_DIR}/fake/src/fake_3.cpp"
+        "${TESTS_DATA_DIR}/fake/src/fake_4.cpp"
+        "${TESTS_DATA_DIR}/fake/src/fake_5.cpp"
+        "${TESTS_DATA_DIR}/fake/src/sub_1/fake_sub_1.cpp"
+        "${TESTS_DATA_DIR}/fake/src/sub_1/fake_sub_2.cpp")
+      set(expected_output
+        "fake.cpp"
+        "fake_1.cpp"
+        "fake_2.cpp"
+        "fake_3.cpp"
+        "fake_4.cpp"
+        "fake_5.cpp"
+        "fake_sub_1.cpp"
+        "fake_sub_2.cpp")
+      file_manip(GET_COMPONENT "${input}" MODE NAME OUTPUT_VARIABLE output)
+      ct_assert_list(output)
+      ct_assert_equal(output "${expected_output}")
+    endfunction()
   endfunction()
 
   # Errors checking
