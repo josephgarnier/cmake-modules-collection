@@ -360,6 +360,7 @@ The use of commands and scripts is described below, in the order of execution of
 General links:
 
 - [*CMakeTest*, the unit-testing framework used in this project](https://github.com/CMakePP/CMakeTest).
+- *Professional CMake: A Practical Guide*, Craig Scott.
 
 CMake documentation:
 
