@@ -11,8 +11,8 @@
 #-------------------------------------------------------------------------------
 # Test of [Dependency module::IMPORTED_LOCATION operation]:
 #    dependency(SET_IMPORTED_LOCATION <lib-target-name>
-#              [CONFIGURATION <config_type>]
-#              PUBLIC <gen-expr>...)
+#               [CONFIGURATION <config_type>]
+#               INTERFACE <gen-expr>...)
 ct_add_test(NAME "test_dependency_set_imported_location_operation")
 function(${CMAKETEST_TEST})
   include(Dependency)
@@ -70,7 +70,7 @@ function(${CMAKETEST_TEST})
       set_target_properties("imp_static_mock_lib" PROPERTIES
         IMPORTED_CONFIGURATIONS "")
       dependency(SET_IMPORTED_LOCATION "imp_static_mock_lib"
-        PUBLIC
+        INTERFACE
           "$<BUILD_INTERFACE:${static_lib_file_path}>"
           "$<INSTALL_INTERFACE:lib/${static_lib_file_name}>"
       )
@@ -108,7 +108,7 @@ function(${CMAKETEST_TEST})
       set_target_properties("imp_shared_mock_lib" PROPERTIES
         IMPORTED_CONFIGURATIONS "")
       dependency(SET_IMPORTED_LOCATION "imp_shared_mock_lib"
-        PUBLIC
+        INTERFACE
           "$<BUILD_INTERFACE:${shared_lib_file_path}>"
           "$<INSTALL_INTERFACE:lib/${shared_lib_file_name}>"
       )
@@ -150,7 +150,7 @@ function(${CMAKETEST_TEST})
       set_target_properties("imp_static_mock_lib" PROPERTIES
         IMPORTED_CONFIGURATIONS "RELEASE;DEBUG")
       dependency(SET_IMPORTED_LOCATION "imp_static_mock_lib"
-        PUBLIC
+        INTERFACE
           "$<BUILD_INTERFACE:${static_lib_file_path}>"
           "$<INSTALL_INTERFACE:lib/${static_lib_file_name}>"
       )
@@ -176,7 +176,7 @@ function(${CMAKETEST_TEST})
       set_target_properties("imp_shared_mock_lib" PROPERTIES
         IMPORTED_CONFIGURATIONS "RELEASE;DEBUG")
       dependency(SET_IMPORTED_LOCATION "imp_shared_mock_lib"
-        PUBLIC
+        INTERFACE
           "$<BUILD_INTERFACE:${shared_lib_file_path}>"
           "$<INSTALL_INTERFACE:lib/${shared_lib_file_name}>"
       )
@@ -211,7 +211,7 @@ function(${CMAKETEST_TEST})
         IMPORTED_CONFIGURATIONS "RELEASE;DEBUG")
       dependency(SET_IMPORTED_LOCATION "imp_static_mock_lib"
         CONFIGURATION "RELEASE"
-        PUBLIC
+        INTERFACE
           "$<BUILD_INTERFACE:${static_lib_file_path}>"
           "$<INSTALL_INTERFACE:lib/${static_lib_file_name}>"
       )
@@ -244,7 +244,7 @@ function(${CMAKETEST_TEST})
         IMPORTED_CONFIGURATIONS "RELEASE;DEBUG")
       dependency(SET_IMPORTED_LOCATION "imp_shared_mock_lib"
         CONFIGURATION "RELEASE"
-        PUBLIC
+        INTERFACE
           "$<BUILD_INTERFACE:${shared_lib_file_path}>"
           "$<INSTALL_INTERFACE:lib/${shared_lib_file_name}>"
       )
@@ -281,7 +281,7 @@ function(${CMAKETEST_TEST})
         IMPORTED_CONFIGURATIONS "RELEASE;DEBUG")
       dependency(SET_IMPORTED_LOCATION "imp_static_mock_lib"
         CONFIGURATION "RELEASE"
-        PUBLIC
+        INTERFACE
           "$<BUILD_INTERFACE:${static_lib_file_path}>"
       )
       get_target_property(output_lib_property "imp_static_mock_lib"
@@ -315,7 +315,7 @@ function(${CMAKETEST_TEST})
         IMPORTED_CONFIGURATIONS "RELEASE;DEBUG")
       dependency(SET_IMPORTED_LOCATION "imp_shared_mock_lib"
         CONFIGURATION "RELEASE"
-        PUBLIC
+        INTERFACE
           "$<BUILD_INTERFACE:${shared_lib_file_path}>"
       )
       get_target_property(output_lib_property "imp_shared_mock_lib"
@@ -353,7 +353,7 @@ function(${CMAKETEST_TEST})
         IMPORTED_CONFIGURATIONS "RELEASE;DEBUG")
       dependency(SET_IMPORTED_LOCATION "imp_static_mock_lib"
         CONFIGURATION "RELEASE"
-        PUBLIC
+        INTERFACE
           "$<INSTALL_INTERFACE:lib/${static_lib_file_name}>"
       )
       ct_assert_target_does_not_have_property("imp_static_mock_lib"
@@ -389,7 +389,7 @@ function(${CMAKETEST_TEST})
         IMPORTED_CONFIGURATIONS "RELEASE;DEBUG")
       dependency(SET_IMPORTED_LOCATION "imp_shared_mock_lib"
         CONFIGURATION "RELEASE"
-        PUBLIC
+        INTERFACE
           "$<INSTALL_INTERFACE:lib/${shared_lib_file_name}>"
       )
       ct_assert_target_does_not_have_property("imp_shared_mock_lib"
@@ -428,7 +428,7 @@ function(${CMAKETEST_TEST})
   function(${CMAKETEST_SECTION})
     dependency(SET_IMPORTED_LOCATION
       CONFIGURATION "RELEASE"
-      PUBLIC
+      INTERFACE
         "$<BUILD_INTERFACE:${shared_lib_file_path}>"
         "$<INSTALL_INTERFACE:lib/${shared_lib_file_name}>"
     )
@@ -438,7 +438,7 @@ function(${CMAKETEST_TEST})
   function(${CMAKETEST_SECTION})
     dependency(SET_IMPORTED_LOCATION ""
       CONFIGURATION "RELEASE"
-      PUBLIC
+      INTERFACE
         "$<BUILD_INTERFACE:${shared_lib_file_path}>"
         "$<INSTALL_INTERFACE:lib/${shared_lib_file_name}>"
     )
@@ -448,7 +448,7 @@ function(${CMAKETEST_TEST})
   function(${CMAKETEST_SECTION})
     dependency(SET_IMPORTED_LOCATION "unknown_target"
       CONFIGURATION "RELEASE"
-      PUBLIC
+      INTERFACE
         "$<BUILD_INTERFACE:${shared_lib_file_path}>"
         "$<INSTALL_INTERFACE:lib/${shared_lib_file_name}>"
     )
@@ -460,7 +460,7 @@ function(${CMAKETEST_TEST})
         IMPORTED_CONFIGURATIONS "DEBUG")
     dependency(SET_IMPORTED_LOCATION "imp_shared_mock_lib"
       CONFIGURATION "RELEASE"
-      PUBLIC
+      INTERFACE
         "$<BUILD_INTERFACE:${shared_lib_file_path}>"
         "$<INSTALL_INTERFACE:lib/${shared_lib_file_name}>"
     )
@@ -470,7 +470,7 @@ function(${CMAKETEST_TEST})
   function(${CMAKETEST_SECTION})
     dependency(SET_IMPORTED_LOCATION "imp_shared_mock_lib"
       CONFIGURATION
-      PUBLIC
+      INTERFACE
         "$<BUILD_INTERFACE:${shared_lib_file_path}>"
         "$<INSTALL_INTERFACE:lib/${shared_lib_file_name}>"
     )
@@ -480,32 +480,32 @@ function(${CMAKETEST_TEST})
   function(${CMAKETEST_SECTION})
     dependency(SET_IMPORTED_LOCATION "imp_shared_mock_lib"
       CONFIGURATION ""
-      PUBLIC
+      INTERFACE
         "$<BUILD_INTERFACE:${shared_lib_file_path}>"
         "$<INSTALL_INTERFACE:lib/${shared_lib_file_name}>"
     )
   endfunction()
 
-  ct_add_section(NAME "throws_if_arg_public_is_missing_1" EXPECTFAIL)
+  ct_add_section(NAME "throws_if_arg_interface_is_missing_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     dependency(SET_IMPORTED_LOCATION "imp_shared_mock_lib"
       CONFIGURATION "RELEASE"
     )
   endfunction()
 
-  ct_add_section(NAME "throws_if_arg_public_is_missing_2" EXPECTFAIL)
+  ct_add_section(NAME "throws_if_arg_interface_is_missing_2" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     dependency(SET_IMPORTED_LOCATION "imp_shared_mock_lib"
       CONFIGURATION "RELEASE"
-      PUBLIC
+      INTERFACE
     )
   endfunction()
 
-  ct_add_section(NAME "throws_if_arg_public_is_missing_3" EXPECTFAIL)
+  ct_add_section(NAME "throws_if_arg_interface_is_missing_3" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     dependency(SET_IMPORTED_LOCATION "imp_shared_mock_lib"
       CONFIGURATION "RELEASE"
-      PUBLIC ""
+      INTERFACE ""
     )
   endfunction()
 endfunction()

@@ -21,7 +21,7 @@ Synopsis
   dependency(`BUILD`_ <lib-target-name> [...])
   dependency(`IMPORT`_ <lib-target-name> [...])
   dependency(`ADD_INCLUDE_DIRECTORIES`_ <lib-target-name> <SET|APPEND> INTERFACE <gen-expr>...)
-  dependency(`SET_IMPORTED_LOCATION`_ <lib-target-name> [CONFIGURATION <config-type>] PUBLIC <gen-expr>...)
+  dependency(`SET_IMPORTED_LOCATION`_ <lib-target-name> [CONFIGURATION <config-type>] INTERFACE <gen-expr>...)
   dependency(`EXPORT`_ <lib-target-name>... <BUILD_TREE|INSTALL_TREE> [APPEND] OUTPUT_FILE <file-name>)
 
 Usage
@@ -487,7 +487,7 @@ Usage
     ``<CMAKE_INSTALL_PREFIX>`` is resolved when imported via :command:`dependency(EXPORT)`).
 
 .. signature::
-  dependency(SET_IMPORTED_LOCATION <lib-target-name> [CONFIGURATION <config-type>] PUBLIC <gen-expr>...)
+  dependency(SET_IMPORTED_LOCATION <lib-target-name> [CONFIGURATION <config-type>] INTERFACE <gen-expr>...)
 
   Set the :cmake:prop_tgt:`IMPORTED_LOCATION_<CONFIG> <cmake:prop_tgt:IMPORTED_LOCATION_<CONFIG>>` property of the imported
   target ``<lib-target-name>`` using generator expressions to provide the
@@ -503,14 +503,14 @@ Usage
   are used when generating the export script. Therefore, there is no benefit
   in calling it if the target is not intended to be exported.
 
-  If ``CONFIGURATION`` is given, the property is only set for that
-  configuration. Otherwise, the property is set for all configurations
-  supported by the target. Configuration types must match one of the
-  values listed in the target's :cmake:prop_tgt:`IMPORTED_CONFIGURATIONS <cmake:prop_tgt:IMPORTED_CONFIGURATIONS>` property.
+  If ``CONFIGURATION`` is given (``DEBUG``, ``RELEASE``, etc.), the property is
+  only set for that configuration. Otherwise, the property is set for all
+  configurations supported by the target. Configuration types must match one of
+  the values listed in the target's :cmake:prop_tgt:`IMPORTED_CONFIGURATIONS <cmake:prop_tgt:IMPORTED_CONFIGURATIONS>` property.
 
-  The ``PUBLIC`` keyword must be followed by one or more generator expressions
-  that define the path to the library file during build and install phases.
-  The paths following it **must use generator expressions** like
+  The ``INTERFACE`` keyword must be followed by one or more generator
+  expressions that define the path to the library file during build and install
+  phases. The paths following it **must use generator expressions** like
   ``$<BUILD_INTERFACE:...>`` and ``$<INSTALL_INTERFACE:...>`` to distinguish
   between build and install phases. (see 
   `how write build specification with generator expressions <https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html#build-specification-with-generator-expressions>`__).
@@ -564,13 +564,13 @@ Usage
     # Set imported location for shared lib
     dependency(SET_IMPORTED_LOCATION "my_shared_lib"
       CONFIGURATION RELEASE
-      PUBLIC
+      INTERFACE
         "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/mylib_1.11.0.dll>"
         "$<INSTALL_INTERFACE:lib/mylib_1.11.0.dll>"
     )
     dependency(SET_IMPORTED_LOCATION "my_shared_lib"
       CONFIGURATION DEBUG
-      PUBLIC
+      INTERFACE
         "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/mylibd_1.11.0.dll>"
         "$<INSTALL_INTERFACE:lib/mylibd_1.11.0.dll>"
     )
@@ -578,13 +578,13 @@ Usage
     # Set include directories for static lib
     dependency(SET_IMPORTED_LOCATION "my_static_lib"
       CONFIGURATION RELEASE
-      PUBLIC
+      INTERFACE
         "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/mylib_1.11.0.lib>"
         "$<INSTALL_INTERFACE:lib/mylib_1.11.0.lib>"
     )
     dependency(SET_IMPORTED_LOCATION "my_static_lib"
       CONFIGURATION DEBUG
-      PUBLIC
+      INTERFACE
         "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/mylibd_1.11.0.lib>"
         "$<INSTALL_INTERFACE:lib/mylibd_1.11.0.lib>"
     )
@@ -713,7 +713,7 @@ include(StringManip)
 function(dependency)
   set(options BUILD_TREE INSTALL_TREE SET APPEND)
   set(one_value_args IMPORT TYPE FIND_ROOT_DIR FIND_RELEASE_FILE FIND_DEBUG_FILE OUTPUT_FILE_NAME ADD_INCLUDE_DIRECTORIES SET_IMPORTED_LOCATION CONFIGURATION)
-  set(multi_value_args EXPORT INTERFACE PUBLIC)
+  set(multi_value_args EXPORT INTERFACE)
   cmake_parse_arguments(DEP "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
   
   if(DEFINED DEP_UNPARSED_ARGUMENTS)
@@ -948,19 +948,19 @@ macro(_dependency_set_imported_location)
   if("CONFIGURATION" IN_LIST DEP_KEYWORDS_MISSING_VALUES)
     message(FATAL_ERROR "CONFIGURATION argument is missing or need a value!")
   endif()
-  if(NOT DEFINED DEP_PUBLIC)
-    message(FATAL_ERROR "PUBLIC argument is missing or need a value!")
+  if(NOT DEFINED DEP_INTERFACE)
+    message(FATAL_ERROR "INTERFACE argument is missing or need a value!")
   endif()
   if(NOT TARGET "${DEP_SET_IMPORTED_LOCATION}")
     message(FATAL_ERROR "The target \"${DEP_SET_IMPORTED_LOCATION}\" does not exists!")
   endif()
 
   get_target_property(supported_config_types "${DEP_SET_IMPORTED_LOCATION}" IMPORTED_CONFIGURATIONS)
-  string_manip(EXTRACT_INTERFACE DEP_PUBLIC
+  string_manip(EXTRACT_INTERFACE DEP_INTERFACE
     BUILD
     OUTPUT_VARIABLE imp_loc_build_interface
   )
-  string_manip(EXTRACT_INTERFACE DEP_PUBLIC
+  string_manip(EXTRACT_INTERFACE DEP_INTERFACE
     INSTALL
     OUTPUT_VARIABLE imp_loc_install_interface
   )
