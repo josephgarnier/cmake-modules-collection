@@ -78,7 +78,6 @@ function(import_mock_lib lib_target_name lib_file_basename)
   endif()
 
   set(${lib_target_name}_ROOT_DIR "${TESTS_DATA_DIR}/bin")
-  set(${lib_target_name}_LIBRARY "${${lib_target_name}_LIBRARY}")
   set(${lib_target_name}_LIBRARIES "${${lib_target_name}_LIBRARY}")
   if(DEFINED ${lib_target_name}_FOUND_RELEASE AND NOT ${${lib_target_name}_FOUND_RELEASE}
       OR DEFINED ${lib_target_name}_FOUND_DEBUG AND NOT ${${lib_target_name}_FOUND_DEBUG})
@@ -135,50 +134,8 @@ function(import_full_mock_lib lib_target_name lib_file_basename)
     return()
   endif()
 
-  if(${arg_STATIC})
-    set(lib_type "STATIC")
-  elseif(${arg_SHARED})
-    set(lib_type "SHARED")
-  endif()
-
+  import_mock_lib("${lib_target_name}" "${lib_file_basename}" ${ARGN})
   string(TOUPPER "${CMAKE_BUILD_TYPE}" build_type)
-  directory(FIND_LIB ${lib_target_name}_LIBRARY_${build_type}
-    FIND_IMPLIB ${lib_target_name}_IMP_LIBRARY_${build_type}
-    NAME "${lib_file_basename}"
-    ${lib_type}
-    RELATIVE off
-    ROOT_DIR "${TESTS_DATA_DIR}/bin"
-  )
-  if("${${lib_target_name}_IMP_LIBRARY_${build_type}}" MATCHES "-NOTFOUND$")
-    set(${lib_target_name}_IMP_LIBRARY_${build_type} "")
-  endif()
-
-  if((NOT "${${lib_target_name}_LIBRARY_${build_type}}" MATCHES "-NOTFOUND$")
-      AND (NOT "${${lib_target_name}_IMP_LIBRARY_${build_type}}" MATCHES "-NOTFOUND$"))
-    set(${lib_target_name}_FOUND_${build_type} true)
-  endif()
-
-  get_property(is_multi_config GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
-  if(${lib_target_name}_FOUND_RELEASE AND ${lib_target_name}_FOUND_DEBUG
-      AND (NOT "${${lib_target_name}_LIBRARY_RELEASE}" STREQUAL "${${lib_target_name}_LIBRARY_DEBUG}")
-      AND (is_multi_config OR CMAKE_BUILD_TYPE))
-    set(${lib_target_name}_LIBRARY "")
-    list(APPEND ${lib_target_name}_LIBRARY optimized "${${lib_target_name}_LIBRARY_RELEASE}")
-    list(APPEND ${lib_target_name}_LIBRARY debug "${${lib_target_name}_LIBRARY_DEBUG}")
-  elseif(${lib_target_name}_FOUND_RELEASE)
-    set(${lib_target_name}_LIBRARY "${${lib_target_name}_LIBRARY_RELEASE}")
-  elseif(${lib_target_name}_FOUND_DEBUG)
-    set(${lib_target_name}_LIBRARY "${${lib_target_name}_LIBRARY_DEBUG}")
-  else()
-    set(${lib_target_name}_LIBRARY "${lib_target_name}_LIBRARY-NOTFOUND")
-  endif()
-
-  if(NOT ${lib_target_name}_FOUND)
-    message(FATAL_ERROR "Error when importing mock library '${lib_target_name}'!")
-  endif()
-
-  add_library("${lib_target_name}" ${lib_type} IMPORTED)
-  add_library("${lib_target_name}::${lib_target_name}" ALIAS "${lib_target_name}")
   set_target_properties("${lib_target_name}" PROPERTIES
     INTERFACE_INCLUDE_DIRECTORIES "${TESTS_DATA_DIR}/include"
     INTERFACE_INCLUDE_DIRECTORIES_BUILD "${TESTS_DATA_DIR}/include"
