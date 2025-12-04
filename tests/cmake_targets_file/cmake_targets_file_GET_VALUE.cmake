@@ -27,40 +27,40 @@ function(${CMAKETEST_TEST})
     "build.linkOptions:-s|-z"
     "headerPolicy.mode:split"
     "headerPolicy.includeDir:include"
-    "dependencies:AppleLib|BananaLib|CarrotLib|OrangeLib|PineappleLib"
-    "dependencies.AppleLib.rulesFile:generic"
-    "dependencies.AppleLib.minVersion:1.15.0"
-    "dependencies.AppleLib.optional:OFF"
-    "dependencies.AppleLib.packageLocation.windows:C:/Program Files/libs/apple/1.15.0"
-    "dependencies.AppleLib.packageLocation.unix:/opt/apple/1.15.0"
-    "dependencies.AppleLib.packageLocation.macos:/opt/apple/1.15.0"
-    "dependencies.AppleLib.fetchInfo.autodownload:ON"
-    "dependencies.AppleLib.fetchInfo.kind:git"
-    "dependencies.AppleLib.fetchInfo.repository:https://github.com/lib/apple.git"
-    "dependencies.AppleLib.fetchInfo.tag:1234567"
-    "dependencies.AppleLib.build.compileFeatures:cxx_std_20"
-    "dependencies.AppleLib.build.compileDefinitions:DEFINE_ONE=1"
-    "dependencies.AppleLib.build.compileOptions:-Wall"
-    "dependencies.AppleLib.build.linkOptions:-s"
-    "dependencies.BananaLib.rulesFile:RulesBananaLib.cmake"
-    "dependencies.BananaLib.minVersion:4"
-    "dependencies.BananaLib.optional:ON"
-    "dependencies.BananaLib.fetchInfo.autodownload:OFF"
-    "dependencies.CarrotLib.rulesFile:RulesCarrotLib.cmake"
-    "dependencies.CarrotLib.fetchInfo.autodownload:ON"
-    "dependencies.CarrotLib.fetchInfo.kind:svn"
-    "dependencies.CarrotLib.fetchInfo.repository:svn://svn.carrot.lib.org/links/trunk"
-    "dependencies.CarrotLib.fetchInfo.revision:1234567"
-    "dependencies.OrangeLib.rulesFile:RulesOrangeLib.cmake"
-    "dependencies.OrangeLib.fetchInfo.autodownload:ON"
-    "dependencies.OrangeLib.fetchInfo.kind:mercurial"
-    "dependencies.OrangeLib.fetchInfo.repository:https://hg.example.com/RulesOrangeLib"
-    "dependencies.OrangeLib.fetchInfo.tag:1234567"
-    "dependencies.PineappleLib.rulesFile:RulesPineappleLib.cmake"
-    "dependencies.PineappleLib.fetchInfo.autodownload:ON"
-    "dependencies.PineappleLib.fetchInfo.kind:url"
-    "dependencies.PineappleLib.fetchInfo.repository:https://example.com/PineappleLib.zip"
-    "dependencies.PineappleLib.fetchInfo.hash:1234567"
+    "extDependencies:AppleLib|BananaLib|CarrotLib|OrangeLib|PineappleLib"
+    "extDependencies.AppleLib.rulesFile:generic"
+    "extDependencies.AppleLib.minVersion:1.15.0"
+    "extDependencies.AppleLib.optional:OFF"
+    "extDependencies.AppleLib.packageLocation.windows:C:/Program Files/libs/apple/1.15.0"
+    "extDependencies.AppleLib.packageLocation.unix:/opt/apple/1.15.0"
+    "extDependencies.AppleLib.packageLocation.macos:/opt/apple/1.15.0"
+    "extDependencies.AppleLib.fetchInfo.autodownload:ON"
+    "extDependencies.AppleLib.fetchInfo.kind:git"
+    "extDependencies.AppleLib.fetchInfo.repository:https://github.com/lib/apple.git"
+    "extDependencies.AppleLib.fetchInfo.tag:1234567"
+    "extDependencies.AppleLib.build.compileFeatures:cxx_std_20"
+    "extDependencies.AppleLib.build.compileDefinitions:DEFINE_ONE=1"
+    "extDependencies.AppleLib.build.compileOptions:-Wall"
+    "extDependencies.AppleLib.build.linkOptions:-s"
+    "extDependencies.BananaLib.rulesFile:RulesBananaLib.cmake"
+    "extDependencies.BananaLib.minVersion:4"
+    "extDependencies.BananaLib.optional:ON"
+    "extDependencies.BananaLib.fetchInfo.autodownload:OFF"
+    "extDependencies.CarrotLib.rulesFile:RulesCarrotLib.cmake"
+    "extDependencies.CarrotLib.fetchInfo.autodownload:ON"
+    "extDependencies.CarrotLib.fetchInfo.kind:svn"
+    "extDependencies.CarrotLib.fetchInfo.repository:svn://svn.carrot.lib.org/links/trunk"
+    "extDependencies.CarrotLib.fetchInfo.revision:1234567"
+    "extDependencies.OrangeLib.rulesFile:RulesOrangeLib.cmake"
+    "extDependencies.OrangeLib.fetchInfo.autodownload:ON"
+    "extDependencies.OrangeLib.fetchInfo.kind:mercurial"
+    "extDependencies.OrangeLib.fetchInfo.repository:https://hg.example.com/RulesOrangeLib"
+    "extDependencies.OrangeLib.fetchInfo.tag:1234567"
+    "extDependencies.PineappleLib.rulesFile:RulesPineappleLib.cmake"
+    "extDependencies.PineappleLib.fetchInfo.autodownload:ON"
+    "extDependencies.PineappleLib.fetchInfo.kind:url"
+    "extDependencies.PineappleLib.fetchInfo.repository:https://example.com/PineappleLib.zip"
+    "extDependencies.PineappleLib.fetchInfo.hash:1234567"
     "invalid"
     ":invalid"
   )
@@ -86,14 +86,14 @@ function(${CMAKETEST_TEST})
     ct_assert_equal(output "executable")
     cmake_targets_file(GET_VALUE output TARGET "src" KEY "headerPolicy.includeDir")
     ct_assert_equal(output "include")
-    cmake_targets_file(GET_VALUE output TARGET "src" KEY "dependencies.AppleLib.minVersion")
+    cmake_targets_file(GET_VALUE output TARGET "src" KEY "extDependencies.AppleLib.minVersion")
     ct_assert_equal(output "1.15.0")
     
     # Get boolean values
-    cmake_targets_file(GET_VALUE output TARGET "src" KEY "dependencies.AppleLib.fetchInfo.autodownload")
+    cmake_targets_file(GET_VALUE output TARGET "src" KEY "extDependencies.AppleLib.fetchInfo.autodownload")
     ct_assert_true(output)
     ct_assert_equal(output "ON")
-    cmake_targets_file(GET_VALUE output TARGET "src" KEY "dependencies.AppleLib.optional")
+    cmake_targets_file(GET_VALUE output TARGET "src" KEY "extDependencies.AppleLib.optional")
     ct_assert_false(output)
     ct_assert_equal(output "OFF")
   endfunction()
@@ -118,19 +118,19 @@ function(${CMAKETEST_TEST})
     ct_assert_list(output)
     ct_assert_equal(output "-s;-z")
 
-    # Get arrays in 'dependencies' object properties
-    cmake_targets_file(GET_VALUE output TARGET "src" KEY "dependencies")
+    # Get arrays in 'extDependencies' object properties
+    cmake_targets_file(GET_VALUE output TARGET "src" KEY "extDependencies")
     ct_assert_list(output)
     ct_assert_equal(output "AppleLib;BananaLib;CarrotLib;OrangeLib;PineappleLib")
 
-    # Get arrays in 'dependencies.AppleLib.build' object properties
-    cmake_targets_file(GET_VALUE output TARGET "src" KEY "dependencies.AppleLib.build.compileFeatures")
+    # Get arrays in 'extDependencies.AppleLib.build' object properties
+    cmake_targets_file(GET_VALUE output TARGET "src" KEY "extDependencies.AppleLib.build.compileFeatures")
     ct_assert_equal(output "cxx_std_20")
-    cmake_targets_file(GET_VALUE output TARGET "src" KEY "dependencies.AppleLib.build.compileDefinitions")
+    cmake_targets_file(GET_VALUE output TARGET "src" KEY "extDependencies.AppleLib.build.compileDefinitions")
     ct_assert_equal(output "DEFINE_ONE=1")
-    cmake_targets_file(GET_VALUE output TARGET "src" KEY "dependencies.AppleLib.build.compileOptions")
+    cmake_targets_file(GET_VALUE output TARGET "src" KEY "extDependencies.AppleLib.build.compileOptions")
     ct_assert_equal(output "-Wall")
-    cmake_targets_file(GET_VALUE output TARGET "src" KEY "dependencies.AppleLib.build.linkOptions")
+    cmake_targets_file(GET_VALUE output TARGET "src" KEY "extDependencies.AppleLib.build.linkOptions")
     ct_assert_equal(output "-s")
   endfunction()
 

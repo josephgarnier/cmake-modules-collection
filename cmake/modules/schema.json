@@ -125,12 +125,12 @@
               },
               "additionalProperties": false
             },
-            "dependencies": {
+            "extDependencies": {
               "description": "The external packages or modules this target depends on",
               "type": "object",
               "patternProperties": {
                 "^[^\\s]+$": {
-                  "description": "The name of the dependency (also called 'PackageName' in CMake)",
+                  "description": "The name of the dependency (also called 'PackageName' in CMake) used to find the file 'Find<PackageName>.cmake' with find_package(). It must be compatible with CMake's PackageName requirements.",
                   "type": "object",
                   "properties": {
                     "rulesFile": {
@@ -363,7 +363,7 @@
             "build",
             "mainFile",
             "headerPolicy",
-            "dependencies"
+            "extDependencies"
           ],
           "additionalProperties": false
         }

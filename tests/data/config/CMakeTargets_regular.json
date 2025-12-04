@@ -17,7 +17,7 @@
         "mode": "split",
         "includeDir": "include"
       },
-      "dependencies": {
+      "extDependencies": {
         "AppleLib": {
           "rulesFile": "generic",
           "packageLocation": {
@@ -90,7 +90,7 @@
       "headerPolicy": {
         "mode": "merged"
       },
-      "dependencies": {}
+      "extDependencies": {}
     },
     "src/banana": {
       "name": "banana",
@@ -105,7 +105,7 @@
       "headerPolicy": {
         "mode": "merged"
       },
-      "dependencies": {}
+      "extDependencies": {}
     }
   }
 }

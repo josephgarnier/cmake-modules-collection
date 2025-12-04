@@ -51,7 +51,7 @@ function(${CMAKETEST_TEST})
         "mode": "split",
         "includeDir": "include"
       },
-      "dependencies": {
+      "extDependencies": {
         "AppleLib": {
           "rulesFile": "generic",
           "packageLocation": {
@@ -75,7 +75,7 @@ function(${CMAKETEST_TEST})
           }
         },
         "BananaLib": {
-          "rulesFile": "RulesBananaLib.cmake",
+          "rulesFile": "cmake/rules/RulesBananaLib.cmake",
           "minVersion": "4",
           "fetchInfo": {
             "autodownload": false
@@ -83,7 +83,7 @@ function(${CMAKETEST_TEST})
           "optional": true
         },
         "CarrotLib": {
-          "rulesFile": "RulesCarrotLib.cmake",
+          "rulesFile": "cmake/rules/RulesCarrotLib.cmake",
           "fetchInfo": {
             "autodownload": true,
             "kind": "svn",
@@ -92,7 +92,7 @@ function(${CMAKETEST_TEST})
           }
         },
         "OrangeLib": {
-          "rulesFile": "RulesOrangeLib.cmake",
+          "rulesFile": "cmake/rules/RulesOrangeLib.cmake",
           "fetchInfo": {
             "autodownload": true,
             "kind": "mercurial",
@@ -101,7 +101,7 @@ function(${CMAKETEST_TEST})
           }
         },
         "PineappleLib": {
-          "rulesFile": "RulesPineappleLib.cmake",
+          "rulesFile": "cmake/rules/RulesPineappleLib.cmake",
           "fetchInfo": {
             "autodownload": true,
             "kind": "url",
@@ -124,7 +124,7 @@ function(${CMAKETEST_TEST})
       "headerPolicy": {
         "mode": "merged"
       },
-      "dependencies": {}
+      "extDependencies": {}
     },
     "src/banana": {
       "name": "banana",
@@ -139,7 +139,7 @@ function(${CMAKETEST_TEST})
       "headerPolicy": {
         "mode": "merged"
       },
-      "dependencies": {}
+      "extDependencies": {}
     }
   }
 }]=]
@@ -155,40 +155,40 @@ function(${CMAKETEST_TEST})
       "build.linkOptions:-s|-z"
       "headerPolicy.mode:split"
       "headerPolicy.includeDir:include"
-      "dependencies:AppleLib|BananaLib|CarrotLib|OrangeLib|PineappleLib"
-      "dependencies.AppleLib.rulesFile:generic"
-      "dependencies.AppleLib.minVersion:1.15.0"
-      "dependencies.AppleLib.optional:OFF"
-      "dependencies.AppleLib.packageLocation.windows:C:/Program Files/libs/apple/1.15.0"
-      "dependencies.AppleLib.packageLocation.unix:/opt/apple/1.15.0"
-      "dependencies.AppleLib.packageLocation.macos:/opt/apple/1.15.0"
-      "dependencies.AppleLib.fetchInfo.autodownload:ON"
-      "dependencies.AppleLib.fetchInfo.kind:git"
-      "dependencies.AppleLib.fetchInfo.repository:https://github.com/lib/apple.git"
-      "dependencies.AppleLib.fetchInfo.tag:1234567"
-      "dependencies.AppleLib.build.compileFeatures:cxx_std_20"
-      "dependencies.AppleLib.build.compileDefinitions:DEFINE_ONE=1"
-      "dependencies.AppleLib.build.compileOptions:-Wall"
-      "dependencies.AppleLib.build.linkOptions:-s"
-      "dependencies.BananaLib.rulesFile:RulesBananaLib.cmake"
-      "dependencies.BananaLib.minVersion:4"
-      "dependencies.BananaLib.optional:ON"
-      "dependencies.BananaLib.fetchInfo.autodownload:OFF"
-      "dependencies.CarrotLib.rulesFile:RulesCarrotLib.cmake"
-      "dependencies.CarrotLib.fetchInfo.autodownload:ON"
-      "dependencies.CarrotLib.fetchInfo.kind:svn"
-      "dependencies.CarrotLib.fetchInfo.repository:svn://svn.carrot.lib.org/links/trunk"
-      "dependencies.CarrotLib.fetchInfo.revision:1234567"
-      "dependencies.OrangeLib.rulesFile:RulesOrangeLib.cmake"
-      "dependencies.OrangeLib.fetchInfo.autodownload:ON"
-      "dependencies.OrangeLib.fetchInfo.kind:mercurial"
-      "dependencies.OrangeLib.fetchInfo.repository:https://hg.example.com/RulesOrangeLib"
-      "dependencies.OrangeLib.fetchInfo.tag:1234567"
-      "dependencies.PineappleLib.rulesFile:RulesPineappleLib.cmake"
-      "dependencies.PineappleLib.fetchInfo.autodownload:ON"
-      "dependencies.PineappleLib.fetchInfo.kind:url"
-      "dependencies.PineappleLib.fetchInfo.repository:https://example.com/PineappleLib.zip"
-      "dependencies.PineappleLib.fetchInfo.hash:1234567"
+      "extDependencies:AppleLib|BananaLib|CarrotLib|OrangeLib|PineappleLib"
+      "extDependencies.AppleLib.rulesFile:generic"
+      "extDependencies.AppleLib.minVersion:1.15.0"
+      "extDependencies.AppleLib.optional:OFF"
+      "extDependencies.AppleLib.packageLocation.windows:C:/Program Files/libs/apple/1.15.0"
+      "extDependencies.AppleLib.packageLocation.unix:/opt/apple/1.15.0"
+      "extDependencies.AppleLib.packageLocation.macos:/opt/apple/1.15.0"
+      "extDependencies.AppleLib.fetchInfo.autodownload:ON"
+      "extDependencies.AppleLib.fetchInfo.kind:git"
+      "extDependencies.AppleLib.fetchInfo.repository:https://github.com/lib/apple.git"
+      "extDependencies.AppleLib.fetchInfo.tag:1234567"
+      "extDependencies.AppleLib.build.compileFeatures:cxx_std_20"
+      "extDependencies.AppleLib.build.compileDefinitions:DEFINE_ONE=1"
+      "extDependencies.AppleLib.build.compileOptions:-Wall"
+      "extDependencies.AppleLib.build.linkOptions:-s"
+      "extDependencies.BananaLib.rulesFile:RulesBananaLib.cmake"
+      "extDependencies.BananaLib.minVersion:4"
+      "extDependencies.BananaLib.optional:ON"
+      "extDependencies.BananaLib.fetchInfo.autodownload:OFF"
+      "extDependencies.CarrotLib.rulesFile:RulesCarrotLib.cmake"
+      "extDependencies.CarrotLib.fetchInfo.autodownload:ON"
+      "extDependencies.CarrotLib.fetchInfo.kind:svn"
+      "extDependencies.CarrotLib.fetchInfo.repository:svn://svn.carrot.lib.org/links/trunk"
+      "extDependencies.CarrotLib.fetchInfo.revision:1234567"
+      "extDependencies.OrangeLib.rulesFile:RulesOrangeLib.cmake"
+      "extDependencies.OrangeLib.fetchInfo.autodownload:ON"
+      "extDependencies.OrangeLib.fetchInfo.kind:mercurial"
+      "extDependencies.OrangeLib.fetchInfo.repository:https://hg.example.com/RulesOrangeLib"
+      "extDependencies.OrangeLib.fetchInfo.tag:1234567"
+      "extDependencies.PineappleLib.rulesFile:RulesPineappleLib.cmake"
+      "extDependencies.PineappleLib.fetchInfo.autodownload:ON"
+      "extDependencies.PineappleLib.fetchInfo.kind:url"
+      "extDependencies.PineappleLib.fetchInfo.repository:https://example.com/PineappleLib.zip"
+      "extDependencies.PineappleLib.fetchInfo.hash:1234567"
     )
     set(expected_src_apple_config_output
       "name:apple"
@@ -199,7 +199,7 @@ function(${CMAKETEST_TEST})
       "build.compileOptions:"
       "build.linkOptions:"
       "headerPolicy.mode:merged"
-      "dependencies:"
+      "extDependencies:"
     )
     set(expected_src_banana_config_output
       "name:banana"
@@ -210,7 +210,7 @@ function(${CMAKETEST_TEST})
       "build.compileOptions:"
       "build.linkOptions:"
       "headerPolicy.mode:merged"
-      "dependencies:"
+      "extDependencies:"
     )
 
     cmake_targets_file(LOAD "${TESTS_DATA_DIR}/config/CMakeTargets_regular.json")
@@ -265,7 +265,7 @@ function(${CMAKETEST_TEST})
         "mode": "split",
         "includeDir": "include"
       },
-      "dependencies": {
+      "extDependencies": {
         "AppleLib": {
           "rulesFile": "generic",
           "packageLocation": {
@@ -290,7 +290,7 @@ function(${CMAKETEST_TEST})
           "extraDepKey": "extraValue"
         },
         "BananaLib": {
-          "rulesFile": "RulesBananaLib.cmake",
+          "rulesFile": "cmake/rules/RulesBananaLib.cmake",
           "minVersion": "4",
           "fetchInfo": {
             "autodownload": false
@@ -299,7 +299,7 @@ function(${CMAKETEST_TEST})
           "extraDepKey": "extraValue"
         },
         "CarrotLib": {
-          "rulesFile": "RulesCarrotLib.cmake",
+          "rulesFile": "cmake/rules/RulesCarrotLib.cmake",
           "fetchInfo": {
             "autodownload": true,
             "kind": "svn",
@@ -308,7 +308,7 @@ function(${CMAKETEST_TEST})
           }
         },
         "OrangeLib": {
-          "rulesFile": "RulesOrangeLib.cmake",
+          "rulesFile": "cmake/rules/RulesOrangeLib.cmake",
           "fetchInfo": {
             "autodownload": true,
             "kind": "mercurial",
@@ -317,7 +317,7 @@ function(${CMAKETEST_TEST})
           }
         },
         "PineappleLib": {
-          "rulesFile": "RulesPineappleLib.cmake",
+          "rulesFile": "cmake/rules/RulesPineappleLib.cmake",
           "fetchInfo": {
             "autodownload": true,
             "kind": "url",
@@ -341,7 +341,7 @@ function(${CMAKETEST_TEST})
       "headerPolicy": {
         "mode": "merged"
       },
-      "dependencies": {}
+      "extDependencies": {}
     },
     "src/banana": {
       "name": "banana",
@@ -356,7 +356,7 @@ function(${CMAKETEST_TEST})
       "headerPolicy": {
         "mode": "merged"
       },
-      "dependencies": {}
+      "extDependencies": {}
     }
   }
 }]=]
@@ -372,40 +372,40 @@ function(${CMAKETEST_TEST})
       "build.linkOptions:-s|-z"
       "headerPolicy.mode:split"
       "headerPolicy.includeDir:include"
-      "dependencies:AppleLib|BananaLib|CarrotLib|OrangeLib|PineappleLib"
-      "dependencies.AppleLib.rulesFile:generic"
-      "dependencies.AppleLib.minVersion:1.15.0"
-      "dependencies.AppleLib.optional:OFF"
-      "dependencies.AppleLib.packageLocation.windows:C:/Program Files/libs/apple/1.15.0"
-      "dependencies.AppleLib.packageLocation.unix:/opt/apple/1.15.0"
-      "dependencies.AppleLib.packageLocation.macos:/opt/apple/1.15.0"
-      "dependencies.AppleLib.fetchInfo.autodownload:ON"
-      "dependencies.AppleLib.fetchInfo.kind:git"
-      "dependencies.AppleLib.fetchInfo.repository:https://github.com/lib/apple.git"
-      "dependencies.AppleLib.fetchInfo.tag:1234567"
-      "dependencies.AppleLib.build.compileFeatures:cxx_std_20"
-      "dependencies.AppleLib.build.compileDefinitions:DEFINE_ONE=1"
-      "dependencies.AppleLib.build.compileOptions:-Wall"
-      "dependencies.AppleLib.build.linkOptions:-s"
-      "dependencies.BananaLib.rulesFile:RulesBananaLib.cmake"
-      "dependencies.BananaLib.minVersion:4"
-      "dependencies.BananaLib.optional:ON"
-      "dependencies.BananaLib.fetchInfo.autodownload:OFF"
-      "dependencies.CarrotLib.rulesFile:RulesCarrotLib.cmake"
-      "dependencies.CarrotLib.fetchInfo.autodownload:ON"
-      "dependencies.CarrotLib.fetchInfo.kind:svn"
-      "dependencies.CarrotLib.fetchInfo.repository:svn://svn.carrot.lib.org/links/trunk"
-      "dependencies.CarrotLib.fetchInfo.revision:1234567"
-      "dependencies.OrangeLib.rulesFile:RulesOrangeLib.cmake"
-      "dependencies.OrangeLib.fetchInfo.autodownload:ON"
-      "dependencies.OrangeLib.fetchInfo.kind:mercurial"
-      "dependencies.OrangeLib.fetchInfo.repository:https://hg.example.com/RulesOrangeLib"
-      "dependencies.OrangeLib.fetchInfo.tag:1234567"
-      "dependencies.PineappleLib.rulesFile:RulesPineappleLib.cmake"
-      "dependencies.PineappleLib.fetchInfo.autodownload:ON"
-      "dependencies.PineappleLib.fetchInfo.kind:url"
-      "dependencies.PineappleLib.fetchInfo.repository:https://example.com/PineappleLib.zip"
-      "dependencies.PineappleLib.fetchInfo.hash:1234567"
+      "extDependencies:AppleLib|BananaLib|CarrotLib|OrangeLib|PineappleLib"
+      "extDependencies.AppleLib.rulesFile:generic"
+      "extDependencies.AppleLib.minVersion:1.15.0"
+      "extDependencies.AppleLib.optional:OFF"
+      "extDependencies.AppleLib.packageLocation.windows:C:/Program Files/libs/apple/1.15.0"
+      "extDependencies.AppleLib.packageLocation.unix:/opt/apple/1.15.0"
+      "extDependencies.AppleLib.packageLocation.macos:/opt/apple/1.15.0"
+      "extDependencies.AppleLib.fetchInfo.autodownload:ON"
+      "extDependencies.AppleLib.fetchInfo.kind:git"
+      "extDependencies.AppleLib.fetchInfo.repository:https://github.com/lib/apple.git"
+      "extDependencies.AppleLib.fetchInfo.tag:1234567"
+      "extDependencies.AppleLib.build.compileFeatures:cxx_std_20"
+      "extDependencies.AppleLib.build.compileDefinitions:DEFINE_ONE=1"
+      "extDependencies.AppleLib.build.compileOptions:-Wall"
+      "extDependencies.AppleLib.build.linkOptions:-s"
+      "extDependencies.BananaLib.rulesFile:RulesBananaLib.cmake"
+      "extDependencies.BananaLib.minVersion:4"
+      "extDependencies.BananaLib.optional:ON"
+      "extDependencies.BananaLib.fetchInfo.autodownload:OFF"
+      "extDependencies.CarrotLib.rulesFile:RulesCarrotLib.cmake"
+      "extDependencies.CarrotLib.fetchInfo.autodownload:ON"
+      "extDependencies.CarrotLib.fetchInfo.kind:svn"
+      "extDependencies.CarrotLib.fetchInfo.repository:svn://svn.carrot.lib.org/links/trunk"
+      "extDependencies.CarrotLib.fetchInfo.revision:1234567"
+      "extDependencies.OrangeLib.rulesFile:RulesOrangeLib.cmake"
+      "extDependencies.OrangeLib.fetchInfo.autodownload:ON"
+      "extDependencies.OrangeLib.fetchInfo.kind:mercurial"
+      "extDependencies.OrangeLib.fetchInfo.repository:https://hg.example.com/RulesOrangeLib"
+      "extDependencies.OrangeLib.fetchInfo.tag:1234567"
+      "extDependencies.PineappleLib.rulesFile:RulesPineappleLib.cmake"
+      "extDependencies.PineappleLib.fetchInfo.autodownload:ON"
+      "extDependencies.PineappleLib.fetchInfo.kind:url"
+      "extDependencies.PineappleLib.fetchInfo.repository:https://example.com/PineappleLib.zip"
+      "extDependencies.PineappleLib.fetchInfo.hash:1234567"
     )
     set(expected_src_apple_config_output
       "name:apple"
@@ -416,7 +416,7 @@ function(${CMAKETEST_TEST})
       "build.compileOptions:"
       "build.linkOptions:"
       "headerPolicy.mode:merged"
-      "dependencies:"
+      "extDependencies:"
     )
     set(expected_src_banana_config_output
       "name:banana"
@@ -427,7 +427,7 @@ function(${CMAKETEST_TEST})
       "build.compileOptions:"
       "build.linkOptions:"
       "headerPolicy.mode:merged"
-      "dependencies:"
+      "extDependencies:"
     )
 
     cmake_targets_file(LOAD "${TESTS_DATA_DIR}/config/CMakeTargets_extra.json")
