@@ -281,8 +281,8 @@
                       "description": "Indicates whether the dependency is optional (true) or required (false) (only required if rulesFile is 'generic')",
                       "type": "boolean"
                     },
-                    "configuration": {
-                      "description": "Additional dependency settings (only required if rulesFile is 'generic')",
+                    "build": {
+                      "description": "Additional dependency settings for building (only required if rulesFile is 'generic')",
                       "type": "object",
                       "properties": {
                         "compileFeatures": {

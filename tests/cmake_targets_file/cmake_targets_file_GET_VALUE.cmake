@@ -38,10 +38,10 @@ function(${CMAKETEST_TEST})
     "dependencies.AppleLib.fetchInfo.kind:git"
     "dependencies.AppleLib.fetchInfo.repository:https://github.com/lib/apple.git"
     "dependencies.AppleLib.fetchInfo.tag:1234567"
-    "dependencies.AppleLib.configuration.compileFeatures:cxx_std_20"
-    "dependencies.AppleLib.configuration.compileDefinitions:DEFINE_ONE=1"
-    "dependencies.AppleLib.configuration.compileOptions:-Wall"
-    "dependencies.AppleLib.configuration.linkOptions:-s"
+    "dependencies.AppleLib.build.compileFeatures:cxx_std_20"
+    "dependencies.AppleLib.build.compileDefinitions:DEFINE_ONE=1"
+    "dependencies.AppleLib.build.compileOptions:-Wall"
+    "dependencies.AppleLib.build.linkOptions:-s"
     "dependencies.BananaLib.rulesFile:RulesBananaLib.cmake"
     "dependencies.BananaLib.minVersion:4"
     "dependencies.BananaLib.optional:ON"
@@ -123,14 +123,14 @@ function(${CMAKETEST_TEST})
     ct_assert_list(output)
     ct_assert_equal(output "AppleLib;BananaLib;CarrotLib;OrangeLib;PineappleLib")
 
-    # Get arrays in 'dependencies.AppleLib.configuration' object properties
-    cmake_targets_file(GET_VALUE output TARGET "src" KEY "dependencies.AppleLib.configuration.compileFeatures")
+    # Get arrays in 'dependencies.AppleLib.build' object properties
+    cmake_targets_file(GET_VALUE output TARGET "src" KEY "dependencies.AppleLib.build.compileFeatures")
     ct_assert_equal(output "cxx_std_20")
-    cmake_targets_file(GET_VALUE output TARGET "src" KEY "dependencies.AppleLib.configuration.compileDefinitions")
+    cmake_targets_file(GET_VALUE output TARGET "src" KEY "dependencies.AppleLib.build.compileDefinitions")
     ct_assert_equal(output "DEFINE_ONE=1")
-    cmake_targets_file(GET_VALUE output TARGET "src" KEY "dependencies.AppleLib.configuration.compileOptions")
+    cmake_targets_file(GET_VALUE output TARGET "src" KEY "dependencies.AppleLib.build.compileOptions")
     ct_assert_equal(output "-Wall")
-    cmake_targets_file(GET_VALUE output TARGET "src" KEY "dependencies.AppleLib.configuration.linkOptions")
+    cmake_targets_file(GET_VALUE output TARGET "src" KEY "dependencies.AppleLib.build.linkOptions")
     ct_assert_equal(output "-s")
   endfunction()
 

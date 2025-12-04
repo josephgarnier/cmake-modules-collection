@@ -33,7 +33,7 @@
             "tag": "1234567"
           },
           "optional": false,
-          "configuration": {
+          "build": {
             "compileFeatures": ["cxx_std_20"],
             "compileDefinitions": ["DEFINE_ONE=1"],
             "compileOptions": ["-Wall"],

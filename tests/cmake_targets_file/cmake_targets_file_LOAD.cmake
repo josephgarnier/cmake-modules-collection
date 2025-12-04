@@ -67,7 +67,7 @@ function(${CMAKETEST_TEST})
             "tag": "1234567"
           },
           "optional": false,
-          "configuration": {
+          "build": {
             "compileFeatures": ["cxx_std_20"],
             "compileDefinitions": ["DEFINE_ONE=1"],
             "compileOptions": ["-Wall"],
@@ -166,10 +166,10 @@ function(${CMAKETEST_TEST})
       "dependencies.AppleLib.fetchInfo.kind:git"
       "dependencies.AppleLib.fetchInfo.repository:https://github.com/lib/apple.git"
       "dependencies.AppleLib.fetchInfo.tag:1234567"
-      "dependencies.AppleLib.configuration.compileFeatures:cxx_std_20"
-      "dependencies.AppleLib.configuration.compileDefinitions:DEFINE_ONE=1"
-      "dependencies.AppleLib.configuration.compileOptions:-Wall"
-      "dependencies.AppleLib.configuration.linkOptions:-s"
+      "dependencies.AppleLib.build.compileFeatures:cxx_std_20"
+      "dependencies.AppleLib.build.compileDefinitions:DEFINE_ONE=1"
+      "dependencies.AppleLib.build.compileOptions:-Wall"
+      "dependencies.AppleLib.build.linkOptions:-s"
       "dependencies.BananaLib.rulesFile:RulesBananaLib.cmake"
       "dependencies.BananaLib.minVersion:4"
       "dependencies.BananaLib.optional:ON"
@@ -281,7 +281,7 @@ function(${CMAKETEST_TEST})
             "tag": "1234567"
           },
           "optional": false,
-          "configuration": {
+          "build": {
             "compileFeatures": ["cxx_std_20"],
             "compileDefinitions": ["DEFINE_ONE=1"],
             "compileOptions": ["-Wall"],
@@ -383,10 +383,10 @@ function(${CMAKETEST_TEST})
       "dependencies.AppleLib.fetchInfo.kind:git"
       "dependencies.AppleLib.fetchInfo.repository:https://github.com/lib/apple.git"
       "dependencies.AppleLib.fetchInfo.tag:1234567"
-      "dependencies.AppleLib.configuration.compileFeatures:cxx_std_20"
-      "dependencies.AppleLib.configuration.compileDefinitions:DEFINE_ONE=1"
-      "dependencies.AppleLib.configuration.compileOptions:-Wall"
-      "dependencies.AppleLib.configuration.linkOptions:-s"
+      "dependencies.AppleLib.build.compileFeatures:cxx_std_20"
+      "dependencies.AppleLib.build.compileDefinitions:DEFINE_ONE=1"
+      "dependencies.AppleLib.build.compileOptions:-Wall"
+      "dependencies.AppleLib.build.linkOptions:-s"
       "dependencies.BananaLib.rulesFile:RulesBananaLib.cmake"
       "dependencies.BananaLib.minVersion:4"
       "dependencies.BananaLib.optional:ON"

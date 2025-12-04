@@ -269,10 +269,10 @@ The root object recognizes the following fields:
       indicating whether the dependency is optional (``true``) or required
       (``false``).
 
-    ``configuration``
+    ``build``
       A required object when ``rulesFile`` is ``generic``, otherwise optional,
-      specifying some additional settings applied to the dependency. It
-      contains the following array properties:
+      specifying some additional settings applied to the dependency during
+      building. It contains the following array properties:
 
         ``compileFeatures``
           A list of compile features that must be enabled or disabled when
@@ -919,14 +919,14 @@ macro(_cmake_targets_file_load)
         endif()
       endif()
 
-      # Extract nested 'configuration' object properties
-      _get_json_value(dep_config_json_block "${dep_json_block}" "configuration" "OBJECT" ${is_generic})
+      # Extract nested 'build' object properties
+      _get_json_value(dep_config_json_block "${dep_json_block}" "build" "OBJECT" ${is_generic})
       if(NOT "${dep_config_json_block}" MATCHES "-NOTFOUND$")
         foreach(prop_key "compileFeatures" "compileDefinitions" "compileOptions" "linkOptions")
           _get_json_array(dep_configs_list "${dep_config_json_block}" "${prop_key}" ${is_generic})
           if(NOT "${dep_configs_list}" MATCHES "-NOTFOUND$")
             _serialize_list(serialized_list "${dep_configs_list}")
-            map(ADD target_config_map "dependencies.${dep_name}.configuration.${prop_key}" "${serialized_list}")
+            map(ADD target_config_map "dependencies.${dep_name}.build.${prop_key}" "${serialized_list}")
           endif()
         endforeach()
       endif()
@@ -1698,7 +1698,7 @@ macro(_cmake_targets_file_print_target_config)
   _deserialize_list(dep_names "${dep_names}")
   foreach(dep_name IN ITEMS ${dep_names})
     message(STATUS "    ${dep_name}:")
-    foreach(dep_prop_key "rulesFile" "packageLocation.windows" "packageLocation.unix" "packageLocation.macos" "minVersion" "fetchInfo.autodownload" "fetchInfo.kind" "fetchInfo.repository" "fetchInfo.tag" "fetchInfo.hash" "fetchInfo.revision" "optional" "configuration.compileFeatures" "configuration.compileDefinitions" "configuration.compileOptions" "configuration.linkOptions")
+    foreach(dep_prop_key "rulesFile" "packageLocation.windows" "packageLocation.unix" "packageLocation.macos" "minVersion" "fetchInfo.autodownload" "fetchInfo.kind" "fetchInfo.repository" "fetchInfo.tag" "fetchInfo.hash" "fetchInfo.revision" "optional" "build.compileFeatures" "build.compileDefinitions" "build.compileOptions" "build.linkOptions")
       map(HAS_KEY target_config_map "dependencies.${dep_name}.${dep_prop_key}" has_setting_key)
       if(${has_setting_key})
         map(GET target_config_map "dependencies.${dep_name}.${dep_prop_key}" dep_prop_value)
