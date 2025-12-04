@@ -200,8 +200,8 @@ The root object recognizes the following fields:
       the build system. It can be either:
 
       * ``generic`` - use the predefined generic rules for integration.
-      * a path to a ``.cmake`` file - the file must exist and contain the
-        logic for handling the dependency.
+      * a relative path to a ``.cmake`` file - the file must exist and contain
+        the logic for handling the dependency.
 
     ``packageLocation``
       A required object when ``rulesFile`` is ``generic``, otherwise optional.

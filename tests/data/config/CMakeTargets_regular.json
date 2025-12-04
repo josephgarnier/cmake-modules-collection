@@ -41,7 +41,7 @@
           }
         },
         "BananaLib": {
-          "rulesFile": "RulesBananaLib.cmake",
+          "rulesFile": "cmake/rules/RulesBananaLib.cmake",
           "minVersion": "4",
           "fetchInfo": {
             "autodownload": false
@@ -49,7 +49,7 @@
           "optional": true
         },
         "CarrotLib": {
-          "rulesFile": "RulesCarrotLib.cmake",
+          "rulesFile": "cmake/rules/RulesCarrotLib.cmake",
           "fetchInfo": {
             "autodownload": true,
             "kind": "svn",
@@ -58,7 +58,7 @@
           }
         },
         "OrangeLib": {
-          "rulesFile": "RulesOrangeLib.cmake",
+          "rulesFile": "cmake/rules/RulesOrangeLib.cmake",
           "fetchInfo": {
             "autodownload": true,
             "kind": "mercurial",
@@ -67,7 +67,7 @@
           }
         },
         "PineappleLib": {
-          "rulesFile": "RulesPineappleLib.cmake",
+          "rulesFile": "cmake/rules/RulesPineappleLib.cmake",
           "fetchInfo": {
             "autodownload": true,
             "kind": "url",
