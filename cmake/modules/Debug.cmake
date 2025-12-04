@@ -338,17 +338,17 @@ macro(_debug_dump_properties)
 
   execute_process(COMMAND
     ${CMAKE_COMMAND} --help-property-list
-    OUTPUT_VARIABLE propertie_names
+    OUTPUT_VARIABLE property_names
   )
   # Convert command output into a CMake list.
-  string(REGEX REPLACE ";" "\\\\;" propertie_names "${propertie_names}")
-  string(REGEX REPLACE "\n" ";" propertie_names "${propertie_names}")
-  list(SORT propertie_names)
+  string(REGEX REPLACE ";" "\\\\;" property_names "${property_names}")
+  string(REGEX REPLACE "\n" ";" property_names "${property_names}")
+  list(SORT property_names)
   
   set(message "\n")
   string(APPEND message " Properties of CMake:\n")
-  foreach (propertie_name IN ITEMS ${propertie_names})
-    string(APPEND message "   ${propertie_name}\n")
+  foreach (property_name IN ITEMS ${property_names})
+    string(APPEND message "   ${property_name}\n")
   endforeach()
   message(STATUS "${message}")
 endmacro()
@@ -366,45 +366,68 @@ macro(_debug_dump_target_properties)
   # Get all propreties that cmake supports
   execute_process(COMMAND
     ${CMAKE_COMMAND} --help-property-list
-    OUTPUT_VARIABLE propertie_names
+    OUTPUT_VARIABLE property_names
   )
 
-  # Convert command output into a CMake list.
-  string(REGEX REPLACE ";" "\\\\;" propertie_names "${propertie_names}")
-  string(REGEX REPLACE "\n" ";" propertie_names "${propertie_names}")
+  # Convert command output into a CMake list
+  string(REGEX REPLACE ";" "\\\\;" property_names "${property_names}")
+  string(REGEX REPLACE "\n" ";" property_names "${property_names}")
   
-  # Add custom properties used in this project.
-  list(APPEND propertie_names
+  # Add custom properties used in this project
+  list(APPEND property_names
     "INTERFACE_INCLUDE_DIRECTORIES_BUILD"
     "INTERFACE_INCLUDE_DIRECTORIES_INSTALL"
     "IMPORTED_LOCATION_BUILD_<CONFIG>"
     "IMPORTED_LOCATION_INSTALL_<CONFIG>"
   )
   
-  # Substitute "_<CONFIG>"" for each variable by the real configuration types (RELEASE and DEBUG).
-  set(config_dependent_propertie_names ${propertie_names})
-  list(FILTER config_dependent_propertie_names INCLUDE REGEX "_<CONFIG>$")
-  list(FILTER propertie_names EXCLUDE REGEX "_<CONFIG>$")
-  foreach(propertie_name IN ITEMS ${config_dependent_propertie_names})
-    string(REPLACE "<CONFIG>" "DEBUG" propertie_name_debug ${propertie_name})
-    list(APPEND propertie_names "${propertie_name_debug}")
-    string(REPLACE "<CONFIG>" "RELEASE" propertie_name_release ${propertie_name})
-    list(APPEND propertie_names "${propertie_name_release}")
+  # Substitute "_<CONFIG>" for each variable by the real configuration types
+  # (RELEASE and DEBUG)
+  set(config_dependent_property_names ${property_names})
+  list(FILTER config_dependent_property_names INCLUDE REGEX "_<CONFIG>$")
+  list(FILTER property_names EXCLUDE REGEX "_<CONFIG>$")
+  foreach(property_name IN ITEMS ${config_dependent_property_names})
+    string(REPLACE "<CONFIG>" "DEBUG" property_name_debug ${property_name})
+    list(APPEND property_names "${property_name_debug}")
+    string(REPLACE "<CONFIG>" "RELEASE" property_name_release ${property_name})
+    list(APPEND property_names "${property_name_release}")
   endforeach()
 
+  # Substitue "_<NAME>" in "HEADER_SET_<NAME>" variables by the names in
+  # "HEADER_SETS" property
+  get_property(property_set TARGET "${DB_DUMP_TARGET_PROPERTIES}"
+      PROPERTY "HEADER_SETS" SET)
+  if(${property_set})
+    get_target_property(property_value "${DB_DUMP_TARGET_PROPERTIES}" "HEADER_SETS")
+    foreach(header_set_name IN ITEMS ${property_value})
+      list(APPEND property_names "HEADER_SET_${header_set_name}")
+    endforeach()
+  endif()
+
+  # Substitue "_<NAME>" in "HEADER_DIRS_<NAME>" variables by the names in
+  # "HEADER_DIRS" property
+  get_property(property_set TARGET "${DB_DUMP_TARGET_PROPERTIES}"
+      PROPERTY "HEADER_DIRS" SET)
+  if(${property_set})
+    get_target_property(property_value "${DB_DUMP_TARGET_PROPERTIES}" "HEADER_DIRS")
+    foreach(header_dir_name IN ITEMS ${property_value})
+      list(APPEND property_names "HEADER_DIRS_${header_dir_name}")
+    endforeach()
+  endif()
+
   # Fix https://stackoverflow.com/questions/32197663/how-can-i-remove-the-the-location-property-may-not-be-read-from-target-error-i
-  list(FILTER propertie_names EXCLUDE REGEX "^LOCATION$|^LOCATION_|_LOCATION$")
-  list(REMOVE_DUPLICATES propertie_names)
-  list(SORT propertie_names)
+  list(FILTER property_names EXCLUDE REGEX "^LOCATION$|^LOCATION_|_LOCATION$")
+  list(REMOVE_DUPLICATES property_names)
+  list(SORT property_names)
 
   set(message "\n")
   string(APPEND message " Properties for TARGET ${DB_DUMP_TARGET_PROPERTIES}:\n")
-  foreach(propertie_name IN ITEMS ${propertie_names})
-    get_property(propertie_set TARGET "${DB_DUMP_TARGET_PROPERTIES}"
-      PROPERTY "${propertie_name}" SET)
-    if(${propertie_set})
-      get_target_property(propertie_value "${DB_DUMP_TARGET_PROPERTIES}" "${propertie_name}")
-      string(APPEND message "   ${DB_DUMP_TARGET_PROPERTIES}.${propertie_name} = \"${propertie_value}\"\n")
+  foreach(property_name IN ITEMS ${property_names})
+    get_property(property_set TARGET "${DB_DUMP_TARGET_PROPERTIES}"
+      PROPERTY "${property_name}" SET)
+    if(${property_set})
+      get_target_property(property_value "${DB_DUMP_TARGET_PROPERTIES}" "${property_name}")
+      string(APPEND message "   ${DB_DUMP_TARGET_PROPERTIES}.${property_name} = \"${property_value}\"\n")
     endif()
   endforeach()
   message(STATUS "${message}")
