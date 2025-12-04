@@ -336,10 +336,10 @@
                           "minVersion",
                           "fetchInfo",
                           "optional",
-                          "configuration"
+                          "build"
                         ],
                         "properties": {
-                          "configuration": {
+                          "build": {
                             "required": [
                               "compileFeatures",
                               "compileDefinitions",
