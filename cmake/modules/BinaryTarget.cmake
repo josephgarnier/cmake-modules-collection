@@ -23,7 +23,7 @@ Synopsis
   binary_target(`CONFIGURE_SETTINGS`_ <target-name> [...])
   binary_target(`ADD_SOURCES`_ <target-name> [...])
   binary_target(`ADD_PRECOMPILE_HEADER`_ <target-name> HEADER_FILE <file-path>)
-  binary_target(`ADD_INCLUDE_DIRECTORIES`_ <target-name> INCLUDE_DIRECTORIES [<dir-path>...|<gen-expr>...])
+  binary_target(`ADD_INCLUDE_DIRECTORIES`_ <target-name> PRIVATE [<dir-path>...|<gen-expr>...])
   binary_target(`ADD_LINK_LIBRARIES`_ <target-name> PUBLIC [<target-name>...|<gen-expr>...])
   binary_target(`CREATE_FULLY`_ <target-name> [...])
 
@@ -196,10 +196,12 @@ Usage
     )
 
 .. signature::
-  binary_target(ADD_INCLUDE_DIRECTORIES <target-name> INCLUDE_DIRECTORIES [<dir-path>...|<gen-expr>...])
+  binary_target(ADD_INCLUDE_DIRECTORIES <target-name> PRIVATE [<dir-path>...|<gen-expr>...])
 
   Add include directories to an existing binary target ``<target-name>`` with
-  ``PRIVATE`` visibility. The file is added to the target with
+  ``PRIVATE`` visibility. The ``PRIVATE`` keyword lists the name of directories
+  to add to ``<target-name>``. Arguments may use generator expressions with the
+  syntax ``$<...>``. The directories are added to the target with
   :cmake:command:`target_include_directories() <cmake:command:target_include_directories>` to populate the
   :cmake:prop_tgt:`INCLUDE_DIRECTORIES <cmake:prop_tgt:INCLUDE_DIRECTORIES>` target property. Arguments may use generator expressions with the
   syntax ``$<...>``.
@@ -215,7 +217,7 @@ Usage
 
     binary_target(CREATE "my_static_lib" STATIC)
     binary_target(ADD_INCLUDE_DIRECTORIES "my_static_lib"
-      INCLUDE_DIRECTORIES "include"
+      PRIVATE "include"
     )
 
 .. signature::
@@ -344,7 +346,7 @@ binary.
     HEADER_FILE "src/header_pch.h"
   )
   binary_target(ADD_INCLUDE_DIRECTORIES "my_shared_lib"
-    INCLUDE_DIRECTORIES "$<$<BOOL:${private_header_dir}>:${private_header_dir}>" "${public_header_dir}"
+    PRIVATE "$<$<BOOL:${private_header_dir}>:${private_header_dir}>" "${public_header_dir}"
   )
 #]=======================================================================]
 
@@ -357,7 +359,7 @@ cmake_minimum_required (VERSION 3.20 FATAL_ERROR)
 function(binary_target)
   set(options STATIC SHARED HEADER EXEC)
   set(one_value_args CREATE CONFIGURE_SETTINGS ADD_SOURCES ADD_PRECOMPILE_HEADER HEADER_FILE ADD_INCLUDE_DIRECTORIES ADD_LINK_LIBRARIES CREATE_FULLY PRECOMPILE_HEADER_FILE)
-  set(multi_value_args COMPILE_FEATURES COMPILE_DEFINITIONS COMPILE_OPTIONS LINK_OPTIONS SOURCE_FILES PRIVATE_HEADER_FILES PUBLIC_HEADER_FILES INCLUDE_DIRECTORIES PUBLIC LINK_LIBRARIES)
+  set(multi_value_args COMPILE_FEATURES COMPILE_DEFINITIONS COMPILE_OPTIONS LINK_OPTIONS SOURCE_FILES PRIVATE_HEADER_FILES PUBLIC_HEADER_FILES PRIVATE INCLUDE_DIRECTORIES PUBLIC LINK_LIBRARIES)
   cmake_parse_arguments(BBT "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
   
   if(DEFINED BBT_UNPARSED_ARGUMENTS)
@@ -574,12 +576,12 @@ macro(_binary_target_add_include_dirs)
   if(NOT TARGET "${BBT_ADD_INCLUDE_DIRECTORIES}")
     message(FATAL_ERROR "The target \"${BBT_ADD_INCLUDE_DIRECTORIES}\" does not exists!")
   endif()
-  if((NOT DEFINED BBT_INCLUDE_DIRECTORIES)
-      AND (NOT "INCLUDE_DIRECTORIES" IN_LIST BBT_KEYWORDS_MISSING_VALUES))
-    message(FATAL_ERROR "INCLUDE_DIRECTORIES argument is missing or need a value!")
+  if((NOT DEFINED BBT_PRIVATE)
+      AND (NOT "PRIVATE" IN_LIST BBT_KEYWORDS_MISSING_VALUES))
+    message(FATAL_ERROR "PRIVATE argument is missing or need a value!")
   endif()
   
-  if(DEFINED BBT_INCLUDE_DIRECTORIES)
+  if(DEFINED BBT_PRIVATE)
     target_include_directories("${BBT_ADD_INCLUDE_DIRECTORIES}"
       # @see https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html#build-specification-and-usage-requirements
       # and https://stackoverflow.com/questions/26243169/cmake-target-include-directories-meaning-of-scope
@@ -594,7 +596,7 @@ macro(_binary_target_add_include_dirs)
       # When a target A depends on target B, then A is the consumer and B is the
       # provider.
       PRIVATE
-        "${BBT_INCLUDE_DIRECTORIES}"
+        "${BBT_PRIVATE}"
     )
   endif()
 endmacro()
@@ -711,6 +713,7 @@ macro(_binary_target_create_fully)
 
   # Call binary_target(ADD_INCLUDE_DIRECTORIES)
   set(BBT_ADD_INCLUDE_DIRECTORIES "${BBT_CREATE_FULLY}")
+  set(BBT_PRIVATE "${BBT_INCLUDE_DIRECTORIES}")
   _binary_target_add_include_dirs()
 
   # Call binary_target(ADD_LINK_LIBRARIES)
