@@ -28,6 +28,139 @@ Usage
 ^^^^^
 
 .. signature::
+  dependency(BUILD <target-name> [...])
+
+  Build a dependency from source:
+
+  .. code-block:: cmake
+
+    dependency(BUILD <target-name>
+               TYPE <STATIC|SHARED|HEADER|EXEC>
+               [COMPILE_FEATURES <feature>...]
+               [COMPILE_DEFINITIONS <definition>...]
+               [COMPILE_OPTIONS <option>...]
+               [LINK_OPTIONS <option>...]
+               DEP_DIR <dir-path>
+               SOURCE_FILES [<*>|<file-path>...]
+               HEADER_FILES [<*>|<file-path>...]
+               [INCLUDE_DIRS <dir-path>...|<gen-expr>...]
+               [LINK_LIBRARIES <target-name>...|<gen-expr>...]
+               [DEPENDENCIES <target-dependency-name>...]
+               [EXPORT_HEADERS <*>|<file-path>...]
+               [EXPORT_EXTRA_SOURCES <*>|<file-path>...])
+
+  Creates the binary target ``<target-name>`` of type ``STATIC``, ``SHARED``,
+  ``HEADER``, or ``EXEC``. The target is generated from the files listed under
+  ``SOURCE_FILES`` and ``HEADER_FILES`` located inside the directory specified
+  by ``DEP_DIR``. All file and directory paths must be relative to this
+  dependency root directory.
+
+  The options are:
+
+    ``<target-name>``: (required)
+      The *unique* name of the build target.
+
+    ``TYPE <STATIC|SHARED|HEADER|EXEC>``: (required)
+      The actual target type to build. The valid values are: ``STATIC``,
+      ``SHARED``, ``HEADER``, and ``EXEC``.
+
+    ``COMPILE_FEATURES <feature>...``: (optional)
+      A list of compile features to pass to the target. Example:
+      ``["cxx_std_20", "cxx_thread_local", "cxx_trailing_return_types"]``.
+
+    ``COMPILE_DEFINITIONS <definition>...``: (optional)
+      A list of preprocessor definitions applied when compiling the target.
+      Example: ``["DEFINE_ONE=1", "DEFINE_TWO=2", "OPTION_1"]``.
+
+    ``COMPILE_OPTIONS <option>...``: (optional)
+      A list of compiler options to pass when building the target. Example:
+      ``["-Wall", "-Wextra", "/W4"]``.
+
+    ``LINK_OPTIONS <option>...``: (optional)
+      A list of linker options to pass when building the target. Example:
+      ``["-s", "-z", "/INCREMENTAL:NO"]``.
+
+    ``DEP_DIR <dir-path>``: (required)
+      The path to the directory containing all dependency files. Any relative
+      path is treated as relative to the current source directory (i.e.
+      :cmake:variable:`CMAKE_CURRENT_SOURCE_DIR <cmake:variable:CMAKE_CURRENT_SOURCE_DIR>`).
+      This path will be used as base directory for all other paths of this
+      command.
+
+    ``SOURCE_FILES <*>|<file-path>...``: (required)
+      The list of source files (e.g., ``.cpp``, ``.c``) to use when building
+      the target. All paths must be relative to the dependency root directory
+      ``DEP_DIR``. The list can be empty, especially for header-only
+      dependencies. A wildcard ``*`` may be used to automatically collect all
+      ``.cpp``, ``.cc``, or ``.cxx`` files recursively from ``DEP_DIR``.
+
+    ``HEADER_FILES <*>|<file-path>...``: (required)
+      The list of header files (e.g., ``.h``) to use when building the target.
+      All paths must be relative to the dependency root directory
+      ``DEP_DIR``. The list can be empty, especially for header-only
+      dependencies. A wildcard ``*`` may be used to automatically collect all
+      ``.h``, ``.hpp``, ``.hxx``, ``.inl``, or ``.tpp`` files recursively from
+      ``DEP_DIR``.
+
+    ``INCLUDE_DIRS <dir-path>...|<gen-expr>...``: (optional)
+      Include directories added to the target with ``PRIVATE`` visibility.
+      Paths must be relative to ``DEP_DIR``. Generator expressions may be used
+      with the syntax ``$<...>``.
+
+    ``LINK_LIBRARIES <target-name>...|<gen-expr>...``: (optional)
+      The list of libraries that the target should be linked with. They can be
+      target names or generator expressions with the syntax ``$<...>``.
+
+    ``DEPENDENCIES <target-dependency-name>...``: (optional)
+      The list of targets on which ``<target-name>`` depends on and that must
+      be built before.
+
+    ``EXPORT_HEADERS <*>|<file-path>...``: (optional)
+      The set of header files copied at install time from the source-tree to
+      the install-tree. These headers become available for inclusion to the
+      source files in all targets that transitively depend on it. If ``*`` is
+      used, files with the extensions ``.h``, ``.hpp``, ``.hxx``, ``.inl``, or
+      ``.tpp`` are collected recursively from the directories listed in
+      ``INCLUDE_DIRS`` when present, otherwise from ``DEP_DIR``.
+
+      During installation, the directory structure is copied verbatim to the
+      standards-conforming location:
+      ``<CMAKE_INSTALL_PREFIX>/<CMAKE_INSTALL_INCLUDEDIR>/<PROJECT_NAME>/lib/<DEP_DIR_NAME>``
+
+    ``EXPORT_EXTRA_SOURCES <*>|<file-path>...``: (optional)
+      The set of additional source files copied at install time from the source
+      -tree to the install-tree. These files become available for inclusion to the
+      source files in all targets that transitively depend on it. If ``*`` is
+      used, files are collected recursively from the directories listed in
+      ``INCLUDE_DIRS`` when present, otherwise from ``DEP_DIR``. When both
+      ``EXPORT_HEADERS`` and ``EXPORT_EXTRA_SOURCES`` are used, any duplicated
+      paths found in ``EXPORT_EXTRA_SOURCES`` are removed. 
+
+      During installation, the directory structure is copied verbatim to the
+      standards-conforming location:
+      ``<CMAKE_INSTALL_PREFIX>/<CMAKE_INSTALL_INCLUDEDIR>/<PROJECT_NAME>/lib/<DEP_DIR_NAME>``
+
+  Example usage:
+
+  .. code-block:: cmake
+
+    # Build a shared lib dependency
+    dependency(BUILD "my_shared_lib"
+      TYPE SHARED
+      COMPILE_FEATURES "cxx_std_20" "cxx_thread_local" "cxx_trailing_return_types"
+      COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
+      COMPILE_OPTIONS "-Wall" "-Wextra"
+      LINK_OPTIONS "-s" "-z"
+      DEP_DIR "lib/my_shared_lib"
+      SOURCE_FILES "src/main.cpp" "src/util.cpp" "src/source_1.cpp"
+      HEADER_FILES "src/util.h" "src/source_1.h" "include/lib_1.h" "include/lib_2.h"
+      INCLUDE_DIRS "include"
+      LINK_LIBRARIES "dep_1" "dep_2"
+      DEPENDENCIES "dep_3"
+      EXPORT_HEADERS "*"
+      EXPORT_EXTRA_SOURCES "my_shared_lib.cpp")
+
+.. signature::
   dependency(IMPORT <lib-target-name> [...])
 
   Import a depedency:
