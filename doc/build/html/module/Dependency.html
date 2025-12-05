@@ -65,48 +65,134 @@
 <p>Operations to manipule dependencies. They mainly encapsulate the numerous
 function calls required to
 <span class="target" id="index-0-guide:guide:Importing and Exporting Guide"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/guide/importing-exporting/index.html#guide:Importing and Exporting Guide" title="(in CMake v4.2.0)"><code class="xref cmake cmake-guide docutils literal notranslate"><span class="pre">import</span> <span class="pre">and</span> <span class="pre">export</span> <span class="pre">dependencies</span></code></a>.
-It requires CMake 3.20 or newer.</p>
+It requires CMake 4.0.1 or newer.</p>
 <section id="synopsis">
 <h2>Synopsis<a class="headerlink" href="#synopsis" title="Link to this heading">¶</a></h2>
-<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">dependency(</span><span class="err">`</span><span class="no">BUILD</span><span class="err">`</span><span class="nb">_</span><span class="w"> </span><span class="nv">&lt;lib-target-name&gt;</span><span class="w"> </span><span class="p">[...]</span><span class="nf">)</span>
-<span class="nf">dependency(</span><span class="no">BUILD</span><span class="w"> </span><span class="nv">&lt;lib-target-name&gt;</span>
-<span class="w">  </span><span class="no">DEP_ROOT_DIR</span><span class="w"> </span><span class="nv">&lt;dir-path&gt;</span>
-<span class="w">  </span><span class="no">SOURCE_FILES</span><span class="w"> </span><span class="p">[</span><span class="nv">&lt;file-path&gt;...</span><span class="p">]</span><span class="w"> </span><span class="no">TODO</span><span class="w"> </span><span class="nb">mettre</span><span class="w"> </span><span class="no">HEADER</span><span class="w"> </span><span class="nb">avec</span><span class="w"> </span><span class="nb">ou</span><span class="w"> </span><span class="nb">séparé</span><span class="w"> </span><span class="err">???</span>
-<span class="w">  </span><span class="no">HEADER_FILES</span><span class="w"> </span><span class="p">[</span><span class="nv">&lt;file-path&gt;...</span><span class="p">]</span>
-<span class="w">  </span><span class="no">INCLUDE_DIRS</span><span class="w"> </span><span class="p">[</span><span class="nv">&lt;dir-path&gt;...</span><span class="p">|</span><span class="nv">&lt;gen-expr&gt;...</span><span class="p">]</span><span class="w"> </span><span class="no">TODO</span><span class="w"> </span><span class="nb">mettre</span><span class="w"> </span><span class="nb">une</span><span class="w"> </span><span class="nb">option</span><span class="w"> </span><span class="nb">de</span><span class="w"> </span><span class="nb">globbing</span>
-<span class="w">  </span><span class="no">LINK_LIBRARIES</span><span class="w"> </span><span class="p">[</span><span class="nv">&lt;target-name&gt;...</span><span class="p">|</span><span class="nv">&lt;gen-expr&gt;...</span><span class="p">]</span>
-<span class="nf">)</span>
-
-<span class="c">#    DIRECTORY &lt;dir&gt;</span>
-</pre></div>
-</div>
-<p>#        the library source directory &lt;dir&gt; is either a subdirectory of
-#        3rdparty/ or an absolute directory.
-#    INCLUDE_DIRS &lt;dir&gt; [&lt;dir&gt; ...]
-#        include headers are in the subdirectories &lt;dir&gt;. Trailing slashes
-#        have the same meaning as with install(DIRECTORY). &lt;dir&gt; must be
-#        relative to the library source directory.
-#        If your include is &quot;#include &lt;x.hpp&gt;&quot; and the path of the file is
-#        &quot;path/to/libx/x.hpp&quot; then you need to pass &quot;path/to/libx/&quot;
-#        with the trailing &quot;/&quot;. If you have &quot;#include &lt;libx/x.hpp&gt;&quot; then you
-#        need to pass &quot;path/to/libx&quot;.
-#    SOURCES &lt;src&gt; [&lt;src&gt; ...]
-#        the library sources. Can be omitted for header-only libraries.
-#        All sources must be relative to the library source directory.
-#    LIBS &lt;target&gt; [&lt;target&gt; ...]
-#        extra link dependencies
-#    HEADER
-#        the library headers belong to the public interface, but the library
-#        itself is linked privately</p>
-<blockquote>
-<div><p>dependency(<a class="reference internal" href="#import">IMPORT</a> &lt;lib-target-name&gt; [...])
+<pre class="literal-block">dependency(<a class="reference internal" href="#build">BUILD</a> &lt;target-name&gt; [...])
+dependency(<a class="reference internal" href="#import">IMPORT</a> &lt;lib-target-name&gt; [...])
 dependency(<a class="reference internal" href="#add-include-directories">ADD_INCLUDE_DIRECTORIES</a> &lt;lib-target-name&gt; &lt;SET|APPEND&gt; INTERFACE &lt;gen-expr&gt;...)
-dependency(<a class="reference internal" href="#set-imported-location">SET_IMPORTED_LOCATION</a> &lt;lib-target-name&gt; [CONFIGURATION &lt;config-type&gt;] PUBLIC &lt;gen-expr&gt;...)
-dependency(<a class="reference internal" href="#export">EXPORT</a> &lt;lib-target-name&gt;... &lt;BUILD_TREE|INSTALL_TREE&gt; [APPEND] OUTPUT_FILE &lt;file-name&gt;)</p>
-</div></blockquote>
+dependency(<a class="reference internal" href="#set-imported-location">SET_IMPORTED_LOCATION</a> &lt;lib-target-name&gt; [CONFIGURATION &lt;config-type&gt;] INTERFACE &lt;gen-expr&gt;...)
+dependency(<a class="reference internal" href="#export">EXPORT</a> &lt;lib-target-name&gt;... &lt;BUILD_TREE|INSTALL_TREE&gt; [APPEND] OUTPUT_FILE &lt;file-name&gt;)</pre>
 </section>
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h2>
+<dl class="cmake signature">
+<dt class="sig sig-object cmake" id="build">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">dependency(</span></span><span class="no"><span class="pre">BUILD</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;target-name&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">[...]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#build" title="Link to this definition">¶</a></dt>
+<dd><p>Build a dependency from source:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">dependency(</span><span class="no">BUILD</span><span class="w"> </span><span class="nv">&lt;target-name&gt;</span>
+<span class="w">           </span><span class="no">TYPE</span><span class="w"> </span><span class="o">&lt;</span><span class="no">STATIC</span><span class="p">|</span><span class="no">SHARED</span><span class="p">|</span><span class="no">HEADER</span><span class="p">|</span><span class="no">EXEC</span><span class="o">&gt;</span>
+<span class="w">           </span><span class="p">[</span><span class="no">COMPILE_FEATURES</span><span class="w"> </span><span class="nv">&lt;feature&gt;...</span><span class="p">]</span>
+<span class="w">           </span><span class="p">[</span><span class="no">COMPILE_DEFINITIONS</span><span class="w"> </span><span class="nv">&lt;definition&gt;...</span><span class="p">]</span>
+<span class="w">           </span><span class="p">[</span><span class="no">COMPILE_OPTIONS</span><span class="w"> </span><span class="nv">&lt;option&gt;...</span><span class="p">]</span>
+<span class="w">           </span><span class="p">[</span><span class="no">LINK_OPTIONS</span><span class="w"> </span><span class="nv">&lt;option&gt;...</span><span class="p">]</span>
+<span class="w">           </span><span class="no">DEP_DIR</span><span class="w"> </span><span class="nv">&lt;dir-path&gt;</span>
+<span class="w">           </span><span class="no">SOURCE_FILES</span><span class="w"> </span><span class="p">[</span><span class="nv">&lt;*&gt;</span><span class="p">|</span><span class="nv">&lt;file-path&gt;...</span><span class="p">]</span>
+<span class="w">           </span><span class="no">HEADER_FILES</span><span class="w"> </span><span class="p">[</span><span class="nv">&lt;*&gt;</span><span class="p">|</span><span class="nv">&lt;file-path&gt;...</span><span class="p">]</span>
+<span class="w">           </span><span class="p">[</span><span class="no">INCLUDE_DIRS</span><span class="w"> </span><span class="nv">&lt;dir-path&gt;...</span><span class="p">|</span><span class="nv">&lt;gen-expr&gt;...</span><span class="p">]</span>
+<span class="w">           </span><span class="p">[</span><span class="no">LINK_LIBRARIES</span><span class="w"> </span><span class="nv">&lt;target-name&gt;...</span><span class="p">|</span><span class="nv">&lt;gen-expr&gt;...</span><span class="p">]</span>
+<span class="w">           </span><span class="p">[</span><span class="no">DEPENDENCIES</span><span class="w"> </span><span class="nv">&lt;target-dependency-name&gt;...</span><span class="p">]</span>
+<span class="w">           </span><span class="p">[</span><span class="no">EXPORT_HEADERS</span><span class="w"> </span><span class="nv">&lt;*&gt;</span><span class="p">|</span><span class="nv">&lt;file-path&gt;...</span><span class="p">]</span>
+<span class="w">           </span><span class="p">[</span><span class="no">EXPORT_EXTRA_SOURCES</span><span class="w"> </span><span class="nv">&lt;*&gt;</span><span class="p">|</span><span class="nv">&lt;file-path&gt;...</span><span class="p">]</span><span class="nf">)</span>
+</pre></div>
+</div>
+<p>Creates the binary target <code class="docutils literal notranslate"><span class="pre">&lt;target-name&gt;</span></code> of type <code class="docutils literal notranslate"><span class="pre">STATIC</span></code>, <code class="docutils literal notranslate"><span class="pre">SHARED</span></code>,
+<code class="docutils literal notranslate"><span class="pre">HEADER</span></code>, or <code class="docutils literal notranslate"><span class="pre">EXEC</span></code>. The target is generated from the files listed under
+<code class="docutils literal notranslate"><span class="pre">SOURCE_FILES</span></code> and <code class="docutils literal notranslate"><span class="pre">HEADER_FILES</span></code> located inside the directory specified
+by <code class="docutils literal notranslate"><span class="pre">DEP_DIR</span></code>. All file and directory paths must be relative to this
+dependency root directory.</p>
+<p>The options are:</p>
+<blockquote>
+<div><dl>
+<dt><code class="docutils literal notranslate"><span class="pre">&lt;target-name&gt;</span></code>: (required)</dt><dd><p>The <em>unique</em> name of the build target.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">TYPE</span> <span class="pre">&lt;STATIC|SHARED|HEADER|EXEC&gt;</span></code>: (required)</dt><dd><p>The actual target type to build. The valid values are: <code class="docutils literal notranslate"><span class="pre">STATIC</span></code>,
+<code class="docutils literal notranslate"><span class="pre">SHARED</span></code>, <code class="docutils literal notranslate"><span class="pre">HEADER</span></code>, and <code class="docutils literal notranslate"><span class="pre">EXEC</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">COMPILE_FEATURES</span> <span class="pre">&lt;feature&gt;...</span></code>: (optional)</dt><dd><p>A list of compile features to pass to the target. Example:
+<code class="docutils literal notranslate"><span class="pre">[&quot;cxx_std_20&quot;,</span> <span class="pre">&quot;cxx_thread_local&quot;,</span> <span class="pre">&quot;cxx_trailing_return_types&quot;]</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">COMPILE_DEFINITIONS</span> <span class="pre">&lt;definition&gt;...</span></code>: (optional)</dt><dd><p>A list of preprocessor definitions applied when compiling the target.
+Example: <code class="docutils literal notranslate"><span class="pre">[&quot;DEFINE_ONE=1&quot;,</span> <span class="pre">&quot;DEFINE_TWO=2&quot;,</span> <span class="pre">&quot;OPTION_1&quot;]</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">COMPILE_OPTIONS</span> <span class="pre">&lt;option&gt;...</span></code>: (optional)</dt><dd><p>A list of compiler options to pass when building the target. Example:
+<code class="docutils literal notranslate"><span class="pre">[&quot;-Wall&quot;,</span> <span class="pre">&quot;-Wextra&quot;,</span> <span class="pre">&quot;/W4&quot;]</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">LINK_OPTIONS</span> <span class="pre">&lt;option&gt;...</span></code>: (optional)</dt><dd><p>A list of linker options to pass when building the target. Example:
+<code class="docutils literal notranslate"><span class="pre">[&quot;-s&quot;,</span> <span class="pre">&quot;-z&quot;,</span> <span class="pre">&quot;/INCREMENTAL:NO&quot;]</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">DEP_DIR</span> <span class="pre">&lt;dir-path&gt;</span></code>: (required)</dt><dd><p>The path to the directory containing all dependency files. Any relative
+path is treated as relative to the current source directory (i.e.
+<span class="target" id="index-0-variable:cmake:variable:CMAKE_CURRENT_SOURCE_DIR"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/variable/CMAKE_CURRENT_SOURCE_DIR.html#variable:CMAKE_CURRENT_SOURCE_DIR" title="(in CMake v4.2.0)"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">CMAKE_CURRENT_SOURCE_DIR</span></code></a>).
+This path will be used as base directory for all other paths of this
+command.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">SOURCE_FILES</span> <span class="pre">&lt;*&gt;|&lt;file-path&gt;...</span></code>: (required)</dt><dd><p>The list of source files (e.g., <code class="docutils literal notranslate"><span class="pre">.cpp</span></code>, <code class="docutils literal notranslate"><span class="pre">.c</span></code>) to use when building
+the target. All paths must be relative to the dependency root directory
+<code class="docutils literal notranslate"><span class="pre">DEP_DIR</span></code>. The list can be empty, especially for header-only
+dependencies. A wildcard <code class="docutils literal notranslate"><span class="pre">*</span></code> may be used to automatically collect all
+<code class="docutils literal notranslate"><span class="pre">.cpp</span></code>, <code class="docutils literal notranslate"><span class="pre">.cc</span></code>, or <code class="docutils literal notranslate"><span class="pre">.cxx</span></code> files recursively from <code class="docutils literal notranslate"><span class="pre">DEP_DIR</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">HEADER_FILES</span> <span class="pre">&lt;*&gt;|&lt;file-path&gt;...</span></code>: (required)</dt><dd><p>The list of header files (e.g., <code class="docutils literal notranslate"><span class="pre">.h</span></code>) to use when building the target.
+All paths must be relative to the dependency root directory
+<code class="docutils literal notranslate"><span class="pre">DEP_DIR</span></code>. The list can be empty, especially for header-only
+dependencies. A wildcard <code class="docutils literal notranslate"><span class="pre">*</span></code> may be used to automatically collect all
+<code class="docutils literal notranslate"><span class="pre">.h</span></code>, <code class="docutils literal notranslate"><span class="pre">.hpp</span></code>, <code class="docutils literal notranslate"><span class="pre">.hxx</span></code>, <code class="docutils literal notranslate"><span class="pre">.inl</span></code>, or <code class="docutils literal notranslate"><span class="pre">.tpp</span></code> files recursively from
+<code class="docutils literal notranslate"><span class="pre">DEP_DIR</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">INCLUDE_DIRS</span> <span class="pre">&lt;dir-path&gt;...|&lt;gen-expr&gt;...</span></code>: (optional)</dt><dd><p>Include directories added to the target with <code class="docutils literal notranslate"><span class="pre">PRIVATE</span></code> visibility.
+Paths must be relative to <code class="docutils literal notranslate"><span class="pre">DEP_DIR</span></code>. Generator expressions may be used
+with the syntax <code class="docutils literal notranslate"><span class="pre">$&lt;...&gt;</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">LINK_LIBRARIES</span> <span class="pre">&lt;target-name&gt;...|&lt;gen-expr&gt;...</span></code>: (optional)</dt><dd><p>The list of libraries that the target should be linked with. They can be
+target names or generator expressions with the syntax <code class="docutils literal notranslate"><span class="pre">$&lt;...&gt;</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">DEPENDENCIES</span> <span class="pre">&lt;target-dependency-name&gt;...</span></code>: (optional)</dt><dd><p>The list of targets on which <code class="docutils literal notranslate"><span class="pre">&lt;target-name&gt;</span></code> depends on and that must
+be built before.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">EXPORT_HEADERS</span> <span class="pre">&lt;*&gt;|&lt;file-path&gt;...</span></code>: (optional)</dt><dd><p>The set of header files copied at install time from the source-tree to
+the install-tree. These headers become available for inclusion to the
+source files in all targets that transitively depend on it. If <code class="docutils literal notranslate"><span class="pre">*</span></code> is
+used, files with the extensions <code class="docutils literal notranslate"><span class="pre">.h</span></code>, <code class="docutils literal notranslate"><span class="pre">.hpp</span></code>, <code class="docutils literal notranslate"><span class="pre">.hxx</span></code>, <code class="docutils literal notranslate"><span class="pre">.inl</span></code>, or
+<code class="docutils literal notranslate"><span class="pre">.tpp</span></code> are collected recursively from the directories listed in
+<code class="docutils literal notranslate"><span class="pre">INCLUDE_DIRS</span></code> when present, otherwise from <code class="docutils literal notranslate"><span class="pre">DEP_DIR</span></code>.</p>
+<p>During installation, the directory structure is copied verbatim to the
+standards-conforming location:
+<code class="docutils literal notranslate"><span class="pre">&lt;CMAKE_INSTALL_PREFIX&gt;/&lt;CMAKE_INSTALL_INCLUDEDIR&gt;/&lt;PROJECT_NAME&gt;/lib/&lt;DEP_DIR_NAME&gt;</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">EXPORT_EXTRA_SOURCES</span> <span class="pre">&lt;*&gt;|&lt;file-path&gt;...</span></code>: (optional)</dt><dd><p>The set of additional source files copied at install time from the source
+-tree to the install-tree. These files become available for inclusion to the
+source files in all targets that transitively depend on it. If <code class="docutils literal notranslate"><span class="pre">*</span></code> is
+used, files are collected recursively from the directories listed in
+<code class="docutils literal notranslate"><span class="pre">INCLUDE_DIRS</span></code> when present, otherwise from <code class="docutils literal notranslate"><span class="pre">DEP_DIR</span></code>. When both
+<code class="docutils literal notranslate"><span class="pre">EXPORT_HEADERS</span></code> and <code class="docutils literal notranslate"><span class="pre">EXPORT_EXTRA_SOURCES</span></code> are used, any duplicated
+paths found in <code class="docutils literal notranslate"><span class="pre">EXPORT_EXTRA_SOURCES</span></code> are removed.</p>
+<p>During installation, the directory structure is copied verbatim to the
+standards-conforming location:
+<code class="docutils literal notranslate"><span class="pre">&lt;CMAKE_INSTALL_PREFIX&gt;/&lt;CMAKE_INSTALL_INCLUDEDIR&gt;/&lt;PROJECT_NAME&gt;/lib/&lt;DEP_DIR_NAME&gt;</span></code></p>
+</dd>
+</dl>
+</div></blockquote>
+<p>Example usage:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="c"># Build a shared lib dependency</span>
+<span class="nf">dependency(</span><span class="no">BUILD</span><span class="w"> </span><span class="s">&quot;my_shared_lib&quot;</span>
+<span class="w">  </span><span class="no">TYPE</span><span class="w"> </span><span class="no">SHARED</span>
+<span class="w">  </span><span class="no">COMPILE_FEATURES</span><span class="w"> </span><span class="s">&quot;cxx_std_20&quot;</span><span class="w"> </span><span class="s">&quot;cxx_thread_local&quot;</span><span class="w"> </span><span class="s">&quot;cxx_trailing_return_types&quot;</span>
+<span class="w">  </span><span class="no">COMPILE_DEFINITIONS</span><span class="w"> </span><span class="s">&quot;DEFINE_ONE=1&quot;</span><span class="w"> </span><span class="s">&quot;DEFINE_TWO=2&quot;</span><span class="w"> </span><span class="s">&quot;OPTION_1&quot;</span>
+<span class="w">  </span><span class="no">COMPILE_OPTIONS</span><span class="w"> </span><span class="s">&quot;-Wall&quot;</span><span class="w"> </span><span class="s">&quot;-Wextra&quot;</span>
+<span class="w">  </span><span class="no">LINK_OPTIONS</span><span class="w"> </span><span class="s">&quot;-s&quot;</span><span class="w"> </span><span class="s">&quot;-z&quot;</span>
+<span class="w">  </span><span class="no">DEP_DIR</span><span class="w"> </span><span class="s">&quot;lib/my_shared_lib&quot;</span>
+<span class="w">  </span><span class="no">SOURCE_FILES</span><span class="w"> </span><span class="s">&quot;src/main.cpp&quot;</span><span class="w"> </span><span class="s">&quot;src/util.cpp&quot;</span><span class="w"> </span><span class="s">&quot;src/source_1.cpp&quot;</span>
+<span class="w">  </span><span class="no">HEADER_FILES</span><span class="w"> </span><span class="s">&quot;src/util.h&quot;</span><span class="w"> </span><span class="s">&quot;src/source_1.h&quot;</span><span class="w"> </span><span class="s">&quot;include/lib_1.h&quot;</span><span class="w"> </span><span class="s">&quot;include/lib_2.h&quot;</span>
+<span class="w">  </span><span class="no">INCLUDE_DIRS</span><span class="w"> </span><span class="s">&quot;include&quot;</span>
+<span class="w">  </span><span class="no">LINK_LIBRARIES</span><span class="w"> </span><span class="s">&quot;dep_1&quot;</span><span class="w"> </span><span class="s">&quot;dep_2&quot;</span>
+<span class="w">  </span><span class="no">DEPENDENCIES</span><span class="w"> </span><span class="s">&quot;dep_3&quot;</span>
+<span class="w">  </span><span class="no">EXPORT_HEADERS</span><span class="w"> </span><span class="s">&quot;*&quot;</span>
+<span class="w">  </span><span class="no">EXPORT_EXTRA_SOURCES</span><span class="w"> </span><span class="s">&quot;my_shared_lib.cpp&quot;</span><span class="nf">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
 <dl class="cmake signature">
 <dt class="sig sig-object cmake" id="import">
 <span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">dependency(</span></span><span class="no"><span class="pre">IMPORT</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;lib-target-name&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">[...]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#import" title="Link to this definition">¶</a></dt>
@@ -505,8 +591,8 @@ the target properties and result variables are set correctly.</p>
 <span class="c"># Is more or less equivalent to:</span>
 <span class="nf">target_include_directories(</span><span class="nb">my_shared_lib</span>
 <span class="w">  </span><span class="no">INTERFACE</span>
-<span class="w">      </span><span class="s">&quot;$&lt;BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include/mylib&gt;&quot;</span>
-<span class="w">      </span><span class="s">&quot;$&lt;INSTALL_INTERFACE:include/mylib&gt;&quot;</span>
+<span class="w">    </span><span class="s">&quot;$&lt;BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include/mylib&gt;&quot;</span>
+<span class="w">    </span><span class="s">&quot;$&lt;INSTALL_INTERFACE:include/mylib&gt;&quot;</span>
 <span class="nf">)</span>
 
 <span class="c"># Set include directories for static lib</span>
@@ -533,7 +619,7 @@ the target properties and result variables are set correctly.</p>
 
 <dl class="cmake signature">
 <dt class="sig sig-object cmake" id="set-imported-location">
-<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">dependency(</span></span><span class="no"><span class="pre">SET_IMPORTED_LOCATION</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;lib-target-name&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">[</span></span><span class="no"><span class="pre">CONFIGURATION</span></span><span class="nbsp"> </span><span class="nv"><span class="pre">&lt;config-type&gt;</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="no"><span class="pre">PUBLIC</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;gen-expr&gt;...</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#set-imported-location" title="Link to this definition">¶</a></dt>
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">dependency(</span></span><span class="no"><span class="pre">SET_IMPORTED_LOCATION</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;lib-target-name&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">[</span></span><span class="no"><span class="pre">CONFIGURATION</span></span><span class="nbsp"> </span><span class="nv"><span class="pre">&lt;config-type&gt;</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="no"><span class="pre">INTERFACE</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;gen-expr&gt;...</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#set-imported-location" title="Link to this definition">¶</a></dt>
 <dd><p>Set the <span class="target" id="index-0-prop_tgt:cmake:prop_tgt:IMPORTED_LOCATION_&lt;CONFIG&gt;"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/prop_tgt/IMPORTED_LOCATION_CONFIG.html#prop_tgt:IMPORTED_LOCATION_&lt;CONFIG&gt;" title="(in CMake v4.2.0)"><code class="xref cmake cmake-prop_tgt docutils literal notranslate"><span class="pre">IMPORTED_LOCATION_&lt;CONFIG&gt;</span></code></a> property of the imported
 target <code class="docutils literal notranslate"><span class="pre">&lt;lib-target-name&gt;</span></code> using generator expressions to provide the
 full path to the library file. The name should represent the base name of
@@ -546,13 +632,13 @@ location for each build configuration type, or for all configurations
 if no configuration is specified. It fills in target properties that
 are used when generating the export script. Therefore, there is no benefit
 in calling it if the target is not intended to be exported.</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">CONFIGURATION</span></code> is given, the property is only set for that
-configuration. Otherwise, the property is set for all configurations
-supported by the target. Configuration types must match one of the
-values listed in the target's <span class="target" id="index-0-prop_tgt:cmake:prop_tgt:IMPORTED_CONFIGURATIONS"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/prop_tgt/IMPORTED_CONFIGURATIONS.html#prop_tgt:IMPORTED_CONFIGURATIONS" title="(in CMake v4.2.0)"><code class="xref cmake cmake-prop_tgt docutils literal notranslate"><span class="pre">IMPORTED_CONFIGURATIONS</span></code></a> property.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">PUBLIC</span></code> keyword must be followed by one or more generator expressions
-that define the path to the library file during build and install phases.
-The paths following it <strong>must use generator expressions</strong> like
+<p>If <code class="docutils literal notranslate"><span class="pre">CONFIGURATION</span></code> is given (<code class="docutils literal notranslate"><span class="pre">DEBUG</span></code>, <code class="docutils literal notranslate"><span class="pre">RELEASE</span></code>, etc.), the property is
+only set for that configuration. Otherwise, the property is set for all
+configurations supported by the target. Configuration types must match one of
+the values listed in the target's <span class="target" id="index-0-prop_tgt:cmake:prop_tgt:IMPORTED_CONFIGURATIONS"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/prop_tgt/IMPORTED_CONFIGURATIONS.html#prop_tgt:IMPORTED_CONFIGURATIONS" title="(in CMake v4.2.0)"><code class="xref cmake cmake-prop_tgt docutils literal notranslate"><span class="pre">IMPORTED_CONFIGURATIONS</span></code></a> property.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">INTERFACE</span></code> keyword must be followed by one or more generator
+expressions that define the path to the library file during build and install
+phases. The paths following it <strong>must use generator expressions</strong> like
 <code class="docutils literal notranslate"><span class="pre">$&lt;BUILD_INTERFACE:...&gt;</span></code> and <code class="docutils literal notranslate"><span class="pre">$&lt;INSTALL_INTERFACE:...&gt;</span></code> to distinguish
 between build and install phases. (see 
 <a class="reference external" href="https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html#build-specification-with-generator-expressions">how write build specification with generator expressions</a>).</p>
@@ -602,13 +688,13 @@ the target properties and result variables are set correctly.</p>
 <span class="c"># Set imported location for shared lib</span>
 <span class="nf">dependency(</span><span class="no">SET_IMPORTED_LOCATION</span><span class="w"> </span><span class="s">&quot;my_shared_lib&quot;</span>
 <span class="w">  </span><span class="no">CONFIGURATION</span><span class="w"> </span><span class="no">RELEASE</span>
-<span class="w">  </span><span class="no">PUBLIC</span>
+<span class="w">  </span><span class="no">INTERFACE</span>
 <span class="w">    </span><span class="s">&quot;$&lt;BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/mylib_1.11.0.dll&gt;&quot;</span>
 <span class="w">    </span><span class="s">&quot;$&lt;INSTALL_INTERFACE:lib/mylib_1.11.0.dll&gt;&quot;</span>
 <span class="nf">)</span>
 <span class="nf">dependency(</span><span class="no">SET_IMPORTED_LOCATION</span><span class="w"> </span><span class="s">&quot;my_shared_lib&quot;</span>
 <span class="w">  </span><span class="no">CONFIGURATION</span><span class="w"> </span><span class="no">DEBUG</span>
-<span class="w">  </span><span class="no">PUBLIC</span>
+<span class="w">  </span><span class="no">INTERFACE</span>
 <span class="w">    </span><span class="s">&quot;$&lt;BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/mylibd_1.11.0.dll&gt;&quot;</span>
 <span class="w">    </span><span class="s">&quot;$&lt;INSTALL_INTERFACE:lib/mylibd_1.11.0.dll&gt;&quot;</span>
 <span class="nf">)</span>
@@ -616,13 +702,13 @@ the target properties and result variables are set correctly.</p>
 <span class="c"># Set include directories for static lib</span>
 <span class="nf">dependency(</span><span class="no">SET_IMPORTED_LOCATION</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span>
 <span class="w">  </span><span class="no">CONFIGURATION</span><span class="w"> </span><span class="no">RELEASE</span>
-<span class="w">  </span><span class="no">PUBLIC</span>
+<span class="w">  </span><span class="no">INTERFACE</span>
 <span class="w">    </span><span class="s">&quot;$&lt;BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/mylib_1.11.0.lib&gt;&quot;</span>
 <span class="w">    </span><span class="s">&quot;$&lt;INSTALL_INTERFACE:lib/mylib_1.11.0.lib&gt;&quot;</span>
 <span class="nf">)</span>
 <span class="nf">dependency(</span><span class="no">SET_IMPORTED_LOCATION</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span>
 <span class="w">  </span><span class="no">CONFIGURATION</span><span class="w"> </span><span class="no">DEBUG</span>
-<span class="w">  </span><span class="no">PUBLIC</span>
+<span class="w">  </span><span class="no">INTERFACE</span>
 <span class="w">    </span><span class="s">&quot;$&lt;BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/mylibd_1.11.0.lib&gt;&quot;</span>
 <span class="w">    </span><span class="s">&quot;$&lt;INSTALL_INTERFACE:lib/mylibd_1.11.0.lib&gt;&quot;</span>
 <span class="nf">)</span>

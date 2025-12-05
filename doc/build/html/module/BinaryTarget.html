@@ -73,8 +73,8 @@ complex cases, you will need to use CMake's native commands. It requires CMake
 binary_target(<a class="reference internal" href="#configure-settings">CONFIGURE_SETTINGS</a> &lt;target-name&gt; [...])
 binary_target(<a class="reference internal" href="#add-sources">ADD_SOURCES</a> &lt;target-name&gt; [...])
 binary_target(<a class="reference internal" href="#add-precompile-header">ADD_PRECOMPILE_HEADER</a> &lt;target-name&gt; HEADER_FILE &lt;file-path&gt;)
-binary_target(<a class="reference internal" href="#add-include-directories">ADD_INCLUDE_DIRECTORIES</a> &lt;target-name&gt; INCLUDE_DIRECTORIES [&lt;dir-path&gt;...|&lt;gen-expr&gt;...])
-binary_target(<a class="reference internal" href="#add-dependencies">ADD_DEPENDENCIES</a> &lt;target-name&gt; DEPENDENCIES [&lt;target-name&gt;...|&lt;gen-expr&gt;...])
+binary_target(<a class="reference internal" href="#add-include-directories">ADD_INCLUDE_DIRECTORIES</a> &lt;target-name&gt; PRIVATE [&lt;dir-path&gt;...|&lt;gen-expr&gt;...])
+binary_target(<a class="reference internal" href="#add-link-libraries">ADD_LINK_LIBRARIES</a> &lt;target-name&gt; PUBLIC [&lt;target-name&gt;...|&lt;gen-expr&gt;...])
 binary_target(<a class="reference internal" href="#create-fully">CREATE_FULLY</a> &lt;target-name&gt; [...])</pre>
 </section>
 <section id="usage">
@@ -85,9 +85,9 @@ binary_target(<a class="reference internal" href="#create-fully">CREATE_FULLY</a
 <dd><p>Create a binary target named <code class="docutils literal notranslate"><span class="pre">&lt;target-name&gt;</span></code> and add it to the current
 CMake project, according to the specified binary type: <code class="docutils literal notranslate"><span class="pre">STATIC</span></code>, <code class="docutils literal notranslate"><span class="pre">SHARED</span></code>
 , <code class="docutils literal notranslate"><span class="pre">HEADER</span></code>, <code class="docutils literal notranslate"><span class="pre">EXEC</span></code>.</p>
-<p>A <code class="docutils literal notranslate"><span class="pre">STATIC</span></code> library forces <code class="docutils literal notranslate"><span class="pre">BUILD_SHARED_LIBS</span></code> to <code class="docutils literal notranslate"><span class="pre">off</span></code>.</p>
-<p>A <code class="docutils literal notranslate"><span class="pre">SHARED</span></code> library sets visibility and export-related variables before
-creating the target:</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">STATIC</span></code> library forces <code class="docutils literal notranslate"><span class="pre">BUILD_SHARED_LIBS</span></code> to <code class="docutils literal notranslate"><span class="pre">off</span></code> and a <code class="docutils literal notranslate"><span class="pre">SHARED</span></code>
+library sets visibility and export-related variables before creating the
+target:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">BUILD_SHARED_LIBS</span></code> is set to <code class="docutils literal notranslate"><span class="pre">on</span></code>.</p></li>
@@ -236,9 +236,11 @@ using <span class="target" id="index-2-command:binary_target"></span><a class="r
 
 <dl class="cmake signature">
 <dt class="sig sig-object cmake" id="add-include-directories">
-<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">binary_target(</span></span><span class="no"><span class="pre">ADD_INCLUDE_DIRECTORIES</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;target-name&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">INCLUDE_DIRECTORIES</span></span><span class="w"> </span><span class="p"><span class="pre">[</span></span><span class="nv"><span class="pre">&lt;dir-path&gt;...</span></span><span class="p"><span class="pre">|</span></span><span class="nv"><span class="pre">&lt;gen-expr&gt;...</span></span><span class="p"><span class="pre">]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#add-include-directories" title="Link to this definition">¶</a></dt>
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">binary_target(</span></span><span class="no"><span class="pre">ADD_INCLUDE_DIRECTORIES</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;target-name&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">PRIVATE</span></span><span class="w"> </span><span class="p"><span class="pre">[</span></span><span class="nv"><span class="pre">&lt;dir-path&gt;...</span></span><span class="p"><span class="pre">|</span></span><span class="nv"><span class="pre">&lt;gen-expr&gt;...</span></span><span class="p"><span class="pre">]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#add-include-directories" title="Link to this definition">¶</a></dt>
 <dd><p>Add include directories to an existing binary target <code class="docutils literal notranslate"><span class="pre">&lt;target-name&gt;</span></code> with
-<code class="docutils literal notranslate"><span class="pre">PRIVATE</span></code> visibility. The file is added to the target with
+<code class="docutils literal notranslate"><span class="pre">PRIVATE</span></code> visibility. The <code class="docutils literal notranslate"><span class="pre">PRIVATE</span></code> keyword lists the name of directories
+to add to <code class="docutils literal notranslate"><span class="pre">&lt;target-name&gt;</span></code>. Arguments may use generator expressions with the
+syntax <code class="docutils literal notranslate"><span class="pre">$&lt;...&gt;</span></code>. The directories are added to the target with
 <span class="target" id="index-0-command:cmake:command:target_include_directories"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/target_include_directories.html#command:target_include_directories" title="(in CMake v4.2.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_include_directories()</span></code></a> to populate the
 <span class="target" id="index-0-prop_tgt:cmake:prop_tgt:INCLUDE_DIRECTORIES"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/prop_tgt/INCLUDE_DIRECTORIES.html#prop_tgt:INCLUDE_DIRECTORIES" title="(in CMake v4.2.0)"><code class="xref cmake cmake-prop_tgt docutils literal notranslate"><span class="pre">INCLUDE_DIRECTORIES</span></code></a> target property. Arguments may use generator expressions with the
 syntax <code class="docutils literal notranslate"><span class="pre">$&lt;...&gt;</span></code>.</p>
@@ -249,30 +251,33 @@ files.</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">binary_target(</span><span class="no">CREATE</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span><span class="w"> </span><span class="no">STATIC</span><span class="nf">)</span>
 <span class="nf">binary_target(</span><span class="no">ADD_INCLUDE_DIRECTORIES</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span>
-<span class="w">  </span><span class="no">INCLUDE_DIRECTORIES</span><span class="w"> </span><span class="s">&quot;include&quot;</span>
+<span class="w">  </span><span class="no">PRIVATE</span><span class="w"> </span><span class="s">&quot;include&quot;</span>
 <span class="nf">)</span>
 </pre></div>
 </div>
 </dd></dl>
 
 <dl class="cmake signature">
-<dt class="sig sig-object cmake" id="add-dependencies">
-<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">binary_target(</span></span><span class="no"><span class="pre">ADD_DEPENDENCIES</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;target-name&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">DEPENDENCIES</span></span><span class="w"> </span><span class="p"><span class="pre">[</span></span><span class="nv"><span class="pre">&lt;target-name&gt;...</span></span><span class="p"><span class="pre">|</span></span><span class="nv"><span class="pre">&lt;gen-expr&gt;...</span></span><span class="p"><span class="pre">]</span></span><span class="nf"><span class="pre">)</span></span><span class="w"> </span><span class="no"><span class="pre">TODO</span></span><span class="w"> </span><span class="nb"><span class="pre">renommer</span></span><span class="w"> </span><span class="nb"><span class="pre">en</span></span><span class="w"> </span><span class="no"><span class="pre">LINK_LIBRARIES</span></span></span><a class="headerlink" href="#add-dependencies" title="Link to this definition">¶</a></dt>
-<dd><p>Add dependencies to use when linking a given target <code class="docutils literal notranslate"><span class="pre">&lt;target-name&gt;</span></code>.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">DEPENDENCIES</span></code> keyword lists the names of other targets or generator
-expressions to link to <code class="docutils literal notranslate"><span class="pre">&lt;target-name&gt;</span></code>.</p>
+<dt class="sig sig-object cmake" id="add-link-libraries">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">binary_target(</span></span><span class="no"><span class="pre">ADD_LINK_LIBRARIES</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;target-name&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">PUBLIC</span></span><span class="w"> </span><span class="p"><span class="pre">[</span></span><span class="nv"><span class="pre">&lt;target-name&gt;...</span></span><span class="p"><span class="pre">|</span></span><span class="nv"><span class="pre">&lt;gen-expr&gt;...</span></span><span class="p"><span class="pre">]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#add-link-libraries" title="Link to this definition">¶</a></dt>
+<dd><p>Add libraries to use when linking an existing binary target <code class="docutils literal notranslate"><span class="pre">&lt;target-name&gt;</span></code>
+with <code class="docutils literal notranslate"><span class="pre">PUBLIC</span></code> visibility. The <code class="docutils literal notranslate"><span class="pre">PUBLIC</span></code> keyword lists the name of other
+targets or to link to <code class="docutils literal notranslate"><span class="pre">&lt;target-name&gt;</span></code>. Arguments may use generator
+expressions with the syntax <code class="docutils literal notranslate"><span class="pre">$&lt;...&gt;</span></code>.</p>
 <p>The behavior is equivalent to calling <span class="target" id="index-0-command:cmake:command:target_link_libraries"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/target_link_libraries.html#command:target_link_libraries" title="(in CMake v4.2.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">target_link_libraries()</span></code></a>.</p>
+<p>This command is intended for targets that have been previously created using
+<span class="target" id="index-4-command:binary_target"></span><a class="reference internal" href="#create" title="binary_target(create)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">binary_target(CREATE)</span></code></a>.</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="c"># With target name</span>
 <span class="nf">binary_target(</span><span class="no">CREATE</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span><span class="w"> </span><span class="no">STATIC</span><span class="nf">)</span>
-<span class="nf">binary_target(</span><span class="no">ADD_DEPENDENCIES</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span>
-<span class="w">  </span><span class="no">DEPENDENCIES</span><span class="w"> </span><span class="s">&quot;dep_1&quot;</span><span class="w"> </span><span class="s">&quot;dep_2&quot;</span>
+<span class="nf">binary_target(</span><span class="no">ADD_LINK_LIBRARIES</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span>
+<span class="w">  </span><span class="no">PUBLIC</span><span class="w"> </span><span class="s">&quot;dep_1&quot;</span><span class="w"> </span><span class="s">&quot;dep_2&quot;</span>
 <span class="nf">)</span>
 
 <span class="c"># With generator expression</span>
 <span class="nf">binary_target(</span><span class="no">CREATE</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span><span class="w"> </span><span class="no">STATIC</span><span class="nf">)</span>
-<span class="nf">binary_target(</span><span class="no">ADD_DEPENDENCIES</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span>
-<span class="w">  </span><span class="no">DEPENDENCIES</span>
+<span class="nf">binary_target(</span><span class="no">ADD_LINK_LIBRARIES</span><span class="w"> </span><span class="s">&quot;my_static_lib&quot;</span>
+<span class="w">  </span><span class="no">PUBLIC</span>
 <span class="w">    </span><span class="s">&quot;$&lt;BUILD_INTERFACE:dep_1;dep_2&gt;&quot;</span>
 <span class="w">    </span><span class="s">&quot;$&lt;INSTALL_INTERFACE:dep_1;dep_2&gt;&quot;</span>
 <span class="nf">)</span>
@@ -283,7 +288,7 @@ expressions to link to <code class="docutils literal notranslate"><span class="p
 <dl class="cmake signature">
 <dt class="sig sig-object cmake" id="create-fully">
 <span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">binary_target(</span></span><span class="no"><span class="pre">CREATE_FULLY</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;target-name&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">[...]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#create-fully" title="Link to this definition">¶</a></dt>
-<dd><p>Create a fully configured binary target.</p>
+<dd><p>Create a fully configured binary target:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">binary_target(</span><span class="no">CREATE_FULLY</span><span class="w"> </span><span class="nv">&lt;target-name&gt;</span>
 <span class="w">              </span><span class="o">&lt;</span><span class="no">STATIC</span><span class="p">|</span><span class="no">SHARED</span><span class="p">|</span><span class="no">HEADER</span><span class="p">|</span><span class="no">EXEC</span><span class="o">&gt;</span>
 <span class="w">              </span><span class="p">[</span><span class="no">COMPILE_FEATURES</span><span class="w"> </span><span class="nv">&lt;feature&gt;...</span><span class="p">]</span>
@@ -295,15 +300,15 @@ expressions to link to <code class="docutils literal notranslate"><span class="p
 <span class="w">              </span><span class="no">PUBLIC_HEADER_FILES</span><span class="w"> </span><span class="p">[</span><span class="nv">&lt;file-path&gt;...</span><span class="p">]</span>
 <span class="w">              </span><span class="p">[</span><span class="no">PRECOMPILE_HEADER_FILE</span><span class="w"> </span><span class="nv">&lt;file-path&gt;</span><span class="p">]</span>
 <span class="w">              </span><span class="no">INCLUDE_DIRECTORIES</span><span class="w"> </span><span class="p">[</span><span class="nv">&lt;dir-path&gt;...</span><span class="p">]</span>
-<span class="w">              </span><span class="p">[</span><span class="no">DEPENDENCIES</span><span class="w"> </span><span class="p">[</span><span class="nv">&lt;target-name&gt;...</span><span class="p">]</span><span class="w"> </span><span class="p">]</span><span class="nf">)</span>
+<span class="w">              </span><span class="p">[</span><span class="no">LINK_LIBRARIES</span><span class="w"> </span><span class="p">[</span><span class="nv">&lt;target-name&gt;...</span><span class="p">]</span><span class="w"> </span><span class="p">]</span><span class="nf">)</span>
 </pre></div>
 </div>
 <p>Create a fully configured binary target named <code class="docutils literal notranslate"><span class="pre">&lt;target-name&gt;</span></code> and add it
 to the current project. This command acts as a high-level wrapper that
 combines the behavior of other module sub-commands, including
-<span class="target" id="index-4-command:binary_target"></span><a class="reference internal" href="#create" title="binary_target(create)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">binary_target(CREATE)</span></code></a>, <span class="target" id="index-5-command:binary_target"></span><a class="reference internal" href="#configure-settings" title="binary_target(configure_settings)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">binary_target(CONFIGURE_SETTINGS)</span></code></a>,
-<span class="target" id="index-6-command:binary_target"></span><a class="reference internal" href="#add-sources" title="binary_target(add_sources)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">binary_target(ADD_SOURCES)</span></code></a>, <span class="target" id="index-7-command:binary_target"></span><a class="reference internal" href="#add-precompile-header" title="binary_target(add_precompile_header)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">binary_target(ADD_PRECOMPILE_HEADER)</span></code></a>,
-<span class="target" id="index-8-command:binary_target"></span><a class="reference internal" href="#add-include-directories" title="binary_target(add_include_directories)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">binary_target(ADD_INCLUDE_DIRECTORIES)</span></code></a>, and <span class="target" id="index-9-command:binary_target"></span><a class="reference internal" href="#add-dependencies" title="binary_target(add_dependencies)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">binary_target(ADD_DEPENDENCIES)</span></code></a>.</p>
+<span class="target" id="index-5-command:binary_target"></span><a class="reference internal" href="#create" title="binary_target(create)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">binary_target(CREATE)</span></code></a>, <span class="target" id="index-6-command:binary_target"></span><a class="reference internal" href="#configure-settings" title="binary_target(configure_settings)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">binary_target(CONFIGURE_SETTINGS)</span></code></a>,
+<span class="target" id="index-7-command:binary_target"></span><a class="reference internal" href="#add-sources" title="binary_target(add_sources)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">binary_target(ADD_SOURCES)</span></code></a>, <span class="target" id="index-8-command:binary_target"></span><a class="reference internal" href="#add-precompile-header" title="binary_target(add_precompile_header)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">binary_target(ADD_PRECOMPILE_HEADER)</span></code></a>,
+<span class="target" id="index-9-command:binary_target"></span><a class="reference internal" href="#add-include-directories" title="binary_target(add_include_directories)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">binary_target(ADD_INCLUDE_DIRECTORIES)</span></code></a>, and <span class="target" id="index-10-command:binary_target"></span><a class="reference internal" href="#add-link-libraries" title="binary_target(add_link_libraries)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">binary_target(ADD_LINK_LIBRARIES)</span></code></a>.</p>
 <p>The second argument must specify the type of binary target to create:
 <code class="docutils literal notranslate"><span class="pre">STATIC</span></code>, <code class="docutils literal notranslate"><span class="pre">SHARED</span></code>, <code class="docutils literal notranslate"><span class="pre">HEADER</span></code>, or <code class="docutils literal notranslate"><span class="pre">EXEC</span></code>. Only one type may be given.</p>
 <p>Additional parameters can be provided to configure compile options,
@@ -332,7 +337,7 @@ Example usage:</p>
 <span class="w">  </span><span class="no">PUBLIC_HEADER_FILES</span><span class="w"> </span><span class="s">&quot;${public_headers}&quot;</span>
 <span class="w">  </span><span class="no">PRECOMPILE_HEADER_FILE</span><span class="w"> </span><span class="s">&quot;src/header_pch.h&quot;</span>
 <span class="w">  </span><span class="no">INCLUDE_DIRECTORIES</span><span class="w"> </span><span class="s">&quot;$&lt;$&lt;BOOL:${private_header_dir}&gt;:${private_header_dir}&gt;&quot;</span><span class="w"> </span><span class="s">&quot;${public_header_dir}&quot;</span>
-<span class="w">  </span><span class="no">DEPENDENCIES</span><span class="w"> </span><span class="s">&quot;dep_1&quot;</span><span class="w"> </span><span class="s">&quot;dep_2&quot;</span>
+<span class="w">  </span><span class="no">LINK_LIBRARIES</span><span class="w"> </span><span class="s">&quot;dep_1&quot;</span><span class="w"> </span><span class="s">&quot;dep_2&quot;</span>
 <span class="nf">)</span>
 </pre></div>
 </div>
@@ -368,7 +373,7 @@ binary.</p>
 <span class="w">  </span><span class="no">HEADER_FILE</span><span class="w"> </span><span class="s">&quot;src/header_pch.h&quot;</span>
 <span class="nf">)</span>
 <span class="nf">binary_target(</span><span class="no">ADD_INCLUDE_DIRECTORIES</span><span class="w"> </span><span class="s">&quot;my_shared_lib&quot;</span>
-<span class="w">  </span><span class="no">INCLUDE_DIRECTORIES</span><span class="w"> </span><span class="s">&quot;$&lt;$&lt;BOOL:${private_header_dir}&gt;:${private_header_dir}&gt;&quot;</span><span class="w"> </span><span class="s">&quot;${public_header_dir}&quot;</span>
+<span class="w">  </span><span class="no">PRIVATE</span><span class="w"> </span><span class="s">&quot;$&lt;$&lt;BOOL:${private_header_dir}&gt;:${private_header_dir}&gt;&quot;</span><span class="w"> </span><span class="s">&quot;${public_header_dir}&quot;</span>
 <span class="nf">)</span>
 </pre></div>
 </div>

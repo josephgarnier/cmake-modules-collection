@@ -117,8 +117,12 @@ in-place in <code class="docutils literal notranslate"><span class="pre">&lt;fil
 <code class="docutils literal notranslate"><span class="pre">&lt;file-list-var&gt;</span></code>. The result is stored either in-place in
 <code class="docutils literal notranslate"><span class="pre">&lt;file-list-var&gt;</span></code>, or in the variable specified by
 <code class="docutils literal notranslate"><span class="pre">&lt;output-list-var&gt;</span></code>, if the <code class="docutils literal notranslate"><span class="pre">OUTPUT_VARIABLE</span></code> option is provided. Unlike
-to <span class="target" id="index-0-command:file_manip"></span><a class="reference internal" href="#relative-path" title="file_manip(relative_path)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">file_manip(RELATIVE_PATH)</span></code></a>, no checks on the existence
-of files are performed. Because <span class="target" id="index-0-command:cmake:command:cmake_path"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/cmake_path.html#command:cmake_path" title="(in CMake v4.2.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_path()</span></code></a> is used, only syntactic aspects of paths are handled, there is no interaction of any kind with any underlying file system. The path may represent a non-existing path or even one that is not allowed to exist on the current file system or platform.</p>
+to <span class="target" id="index-0-command:file_manip"></span><a class="reference internal" href="#relative-path" title="file_manip(relative_path)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">file_manip(RELATIVE_PATH)</span></code></a>, no checks on the existence of files
+are performed. Like with <span class="target" id="index-0-command:cmake:command:cmake_path"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/cmake_path.html#command:cmake_path" title="(in CMake v4.2.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_path()</span></code></a>,
+only syntactic aspects of paths are handled, there is no interaction of any
+kind with any underlying file system. The path may represent a non-existing
+path or even one that is not allowed to exist on the current file system or
+platform.</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">set(</span><span class="nb">files</span>
 <span class="w">  </span><span class="s">&quot;/project/src/main.cpp&quot;</span>
@@ -136,7 +140,11 @@ of files are performed. Because <span class="target" id="index-0-command:cmake:c
 <span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">file_manip(</span></span><span class="no"><span class="pre">GET_COMPONENT</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;file-path&gt;...</span></span><span class="w"> </span><span class="no"><span class="pre">MODE</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;mode&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">OUTPUT_VARIABLE</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;output-list-var&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#get-component" title="Link to this definition">¶</a></dt>
 <dd><p>Extracts a specific component from each path in the given <code class="docutils literal notranslate"><span class="pre">&lt;file-path&gt;</span></code>
 list and stores the result in the variable specified by <code class="docutils literal notranslate"><span class="pre">OUTPUT_VARIABLE</span></code>
-option.</p>
+option. Like with <span class="target" id="index-1-command:cmake:command:cmake_path"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/cmake_path.html#command:cmake_path" title="(in CMake v4.2.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_path()</span></code></a>,
+only syntactic aspects of paths are handled, there is no interaction of any
+kind with any underlying file system. The path may represent a non-existing
+path or even one that is not allowed to exist on the current file system or
+platform.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">MODE</span></code> argument determines which component to extract and must be one of:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">DIRECTORY</span></code> - Directory without file name.</p></li>
@@ -150,6 +158,9 @@ option.</p>
 <span class="nf">file_manip(</span><span class="no">GET_COMPONENT</span><span class="w"> </span><span class="s">&quot;${files}&quot;</span><span class="w"> </span><span class="no">MODE</span><span class="w"> </span><span class="no">DIRECTORY</span><span class="w"> </span><span class="no">OUTPUT_VARIABLE</span><span class="w"> </span><span class="nb">dirs</span><span class="nf">)</span>
 <span class="c"># output is:</span>
 <span class="c">#   /project/src;/project/include</span>
+<span class="nf">file_manip(</span><span class="no">GET_COMPONENT</span><span class="w"> </span><span class="s">&quot;${files}&quot;</span><span class="w"> </span><span class="no">MODE</span><span class="w"> </span><span class="no">NAME</span><span class="w"> </span><span class="no">OUTPUT_VARIABLE</span><span class="w"> </span><span class="nb">names</span><span class="nf">)</span>
+<span class="c"># output is:</span>
+<span class="c">#   main.cpp;lib.hpp</span>
 </pre></div>
 </div>
 </dd></dl>
