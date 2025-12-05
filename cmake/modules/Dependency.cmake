@@ -11,7 +11,7 @@ Dependency
 Operations to manipule dependencies. They mainly encapsulate the numerous
 function calls required to
 :cmake:guide:`import and export dependencies <guide:Importing and Exporting Guide>`.
-It requires CMake 3.20 or newer.
+It requires CMake 4.0.1 or newer.
 
 Synopsis
 ^^^^^^^^

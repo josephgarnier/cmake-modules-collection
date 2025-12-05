@@ -8,7 +8,7 @@
 Debug
 -----
 
-Operations for helping with debug, inspired by :cmake:module:`CMakePrintHelpers <cmake:module:CMakePrintHelpers>` module. It requires CMake 3.20 or newer.
+Operations for helping with debug, inspired by :cmake:module:`CMakePrintHelpers <cmake:module:CMakePrintHelpers>` module. It requires CMake 4.0.1 or newer.
 
 Synopsis
 ^^^^^^^^

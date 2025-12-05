@@ -217,7 +217,7 @@ Usage
 
 include_guard()
 
-cmake_minimum_required (VERSION 3.20 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.20 FATAL_ERROR)
 
 # Global variables
 set(PRINT_BASE_DIR "${CMAKE_SOURCE_DIR}")
