@@ -19,10 +19,10 @@ Synopsis
     print([<mode>] "message with formated text" <argument>...)
 
   `Print Path List`_
-    print([<mode>] PATHS <file-path>... [INDENT])
+    print([<mode>] PATHS [<file-path>...] [INDENT])
 
   `Print String List`_
-    print([<mode>] STRINGS <string>... [INDENT])
+    print([<mode>] STRINGS [<string>...] [INDENT])
 
 Module Variables
 ^^^^^^^^^^^^^^^^
@@ -47,41 +47,48 @@ Usage
   If specified, the optional ``<mode>`` keyword must be one of the standard
   message modes accepted by the :cmake:command:`message() <cmake:command:message>` command, such as ``STATUS``, ``WARNING``, ``ERROR``, etc.
 
-  The ``"text to print"`` may contain one or more custom conversion directives
-  enclosed in ``@`` characters. These directives will be replaced using the
-  provided arguments, in the order they are given. Text without directives
-  is equivalent to a call to :cmake:command:`message() <cmake:command:message>` command.
+  The ``"message with formated text"`` may contain one or more custom conversion
+  directives enclosed in ``@`` characters. These directives will be replaced
+  using the provided arguments, in the order they are given. Text without
+  directives is equivalent to a call to
+  :cmake:command:`message() <cmake:command:message>` command.
 
   Each directive takes the form ``@specifier@``, where ``specifier`` is one of
   the following:
 
     ``@ap@`` (for "absolute path")
       Converts the corresponding argument into an absolute path to an existing
-      file or directory.
+      file or directory. An error is raised when the argument is empty.
 
     ``@rp@`` (for "relative path")
       Converts the corresponding argument into a path relative to the value of
       the :variable:`PRINT_BASE_DIR` variable. The file or the directory must
-      exist on the disk.
+      exist on the disk. An error is raised when the argument is empty.
 
     ``@apl@`` (for "absolute path list")
       Converts all the corresponding arguments into a list of absolute paths
       to existing files or directories. Each item is separated by a comma:
-      ``item1, item2, ...``. This directive should be used last when the
-      message includes several directives.
+      ``item1, item2, ...``. When the provided list is empty, the directive is
+      replaced with an empty string. This directive should be used last when
+      the message includes several directives.
 
     ``@rpl@`` (for "relative path list")
       Converts all the corresponding argument into a list of path relative to
       the value of the :variable:`PRINT_BASE_DIR` variable. Each item is
       separated by a comma: ``item1, item2, ...``. The files or the directories
-      must exist on the disk. This directive should be used last when the
-      message includes several directives.
+      must exist on the disk. When the provided list is empty, the directive is
+      replaced with an empty string. This directive should be used last when
+      the message includes several directives.
 
     ``@sl@`` (for "string list")
       Converts all the corresponding argument into a list of strings where each
       item is separated by a comma: ``item1, item2, ...`` like with the
-      :command:`print(STRINGS)` command. This directive should be used last
-      when the message includes several directives.
+      :command:`print(STRINGS)` command. When the provided list is empty, the
+      directive is replaced with an empty string. This directive should be
+      used last when the message includes several directives.
+
+  An error is raised if a directive has no associated argument, or if a message
+  contains an unsupported directive.
 
   Example usage:
 
@@ -232,13 +239,15 @@ function(print)
   
   # Parse arguments. The macro `_print_formated_message()` can't use the result of
   # cmake_parse_arguments() because it has to parse each argument.
-  set(PRT_ARGV "")
-  set(PRT_ARGC ${ARGC})
-  set(PRT_ARGC_MAX_INDEX "")
-  math(EXPR PRT_ARGC_MAX_INDEX "${ARGC}-1") # Need this variable because the max index is included in range of foreach.
-  foreach(arg_index RANGE ${PRT_ARGC_MAX_INDEX})
-    set(PRT_ARGV${arg_index} "${ARGV${arg_index}}")
-    list(APPEND PRT_ARGV "${ARGV${arg_index}}")
+  # Parse arguments. The macro `_print_formated_message()` can't use the result
+  # of cmake_parse_arguments() because it has to parse each argument.
+  set(print_ARGV "")
+  set(print_ARGC ${ARGC})
+  set(print_ARGC_MAX_INDEX "")
+  math(EXPR print_ARGC_MAX_INDEX "${ARGC}-1") # Need this variable because the max index is included in range of foreach.
+  foreach(arg_index RANGE ${print_ARGC_MAX_INDEX})
+    set(print_ARGV${arg_index} "${ARGV${arg_index}}")
+    list(APPEND print_ARGV "${ARGV${arg_index}}")
   endforeach()
 
   if((DEFINED PRT_PATHS) OR ("PATHS" IN_LIST PRT_KEYWORDS_MISSING_VALUES))
@@ -253,47 +262,45 @@ endfunction()
 #------------------------------------------------------------------------------
 # [Internal use only]
 macro(_print_formated_message)
-  # Error when no arguments are given.
-  if(${PRT_ARGC} EQUAL 0)
-    message(FATAL_ERROR "Incorrect number of arguments!")
+  # Error when no arguments are given
+  if(${print_ARGC} EQUAL 0)
+    message(FATAL_ERROR "print() called with wrong number of arguments!")
   endif()
   
   # Warning: this macro doesn't have to loop on ARGV or ARGN because the message
   # to print can contain a semi column character ";", which will be interpreted as
-  # a new argument, as an item separator. So, it is necessary to use PRT_ARGV#, PRT_ARGC_MAX and PRT_ARGC.
+  # a new argument, as an item separator. So, it is necessary to use print_ARGV#,
+  # print_ARGC_MAX and print_ARGC.
   set(mode "")
   set(message "")
-  set(message_args_list "")
+  set(message_arg_list "") # Will be UNDEFINED if no message arg is found
   set(current_argv_index 0)
 
-  # If the first of PRT_ARGV (index 0) is a mode from "options", set the
-  # mode var and increment the current index of PRT_ARGV.
-  if("${PRT_ARGV${current_argv_index}}" IN_LIST options)
-    set(mode "${PRT_ARGV${current_argv_index}}")
+  # If the first of print_ARGV (index 0) is a mode from "options", set the
+  # mode var and increment the current index of print_ARGV
+  if("${print_ARGV${current_argv_index}}" IN_LIST options)
+    set(mode "${print_ARGV${current_argv_index}}")
     math(EXPR current_argv_index "${current_argv_index}+1")
   endif()
 
-  # Get the message.
-  if(${current_argv_index} LESS ${PRT_ARGC})
-    set(message "${PRT_ARGV${current_argv_index}}")
+  # Get the message
+  if(${current_argv_index} LESS ${print_ARGC})
+    set(message "${print_ARGV${current_argv_index}}")
     math(EXPR current_argv_index "${current_argv_index}+1")
   endif()
 
-  # Get the message arg list.
-  if(${current_argv_index} LESS ${PRT_ARGC})
-    foreach(argv_index RANGE ${current_argv_index} ${PRT_ARGC_MAX_INDEX})
-      list(APPEND message_args_list "${PRT_ARGV${current_argv_index}}")
+  # Get the message arg list
+  if(${current_argv_index} LESS ${print_ARGC})
+    foreach(argv_index RANGE ${current_argv_index} ${print_ARGC_MAX_INDEX})
+      list(APPEND message_arg_list "${print_ARGV${current_argv_index}}")
       math(EXPR current_argv_index "${current_argv_index}+1")
     endforeach()
+  else()
+    unset(message_arg_list)
   endif()
 
   # If arguments to the message are given, the directives are substituted
-  list(LENGTH message_args_list message_args_list_size)
-  if(${message_args_list_size} GREATER 0)
-    _substitute_directives()
-  else()
-    _remove_directives()
-  endif()
+  _substitute_directives()
 
   if(NOT mode STREQUAL "")
     message(${mode} "${message}")
@@ -332,52 +339,77 @@ macro(_substitute_directives)
 
     # Substitute the directive by its value
     set(directive_to_substitute "@${message_cursor}@")
-    list(POP_FRONT message_args_list message_arg)
-    if("${message_arg}" STREQUAL "")
-      message(FATAL_ERROR "Argument missing for directive ${directive_to_substitute}!")
+    if(NOT DEFINED message_arg_list)
+      message(FATAL_ERROR
+        "print() requires the directive ${directive_to_substitute} to have an associated argument!"
+      )
     endif()
 
     if("${directive_to_substitute}" STREQUAL "@ap@")
-      file(REAL_PATH "${message_arg}" absolute_path BASE_DIRECTORY "${PRINT_BASE_DIR}")
-      set(directive_to_substitute "${absolute_path}")
+      list(POP_FRONT message_arg_list message_arg)
+      if(NOT "${message_arg}" STREQUAL "")
+        file(REAL_PATH "${message_arg}" absolute_path BASE_DIRECTORY "${PRINT_BASE_DIR}")
+        set(directive_to_substitute "${absolute_path}")
+      else()
+        message(FATAL_ERROR
+          "print() requires the directive ${directive_to_substitute} to have a non-empty string argument!"
+        )
+      endif()
     elseif("${directive_to_substitute}" STREQUAL "@rp@")
-      file(RELATIVE_PATH relative_path "${PRINT_BASE_DIR}" "${message_arg}")
-      set(directive_to_substitute "${relative_path}")
+      list(POP_FRONT message_arg_list message_arg)
+      if(NOT "${message_arg}" STREQUAL "")
+        file(RELATIVE_PATH relative_path "${PRINT_BASE_DIR}" "${message_arg}")
+        set(directive_to_substitute "${relative_path}")
+      else()
+        message(FATAL_ERROR
+          "print() requires the directive ${directive_to_substitute} to have a non-empty string argument!"
+        )
+      endif()
     elseif("${directive_to_substitute}" STREQUAL "@apl@")
-      foreach(file IN ITEMS ${message_arg} ${message_args_list})
-        file(REAL_PATH "${file}" absolute_path BASE_DIRECTORY "${PRINT_BASE_DIR}")
-        list(APPEND absolute_path_list "${absolute_path}")
-      endforeach()
-      list(JOIN absolute_path_list ", " formated_path_list)
-      set(directive_to_substitute "${formated_path_list}")
-      set(message_args_list "")
+      list(LENGTH message_arg_list nb_message_args)
+      if(${nb_message_args} GREATER 0)
+        foreach(file IN ITEMS ${message_arg_list})
+          file(REAL_PATH "${file}" absolute_path BASE_DIRECTORY "${PRINT_BASE_DIR}")
+          list(APPEND absolute_path_list "${absolute_path}")
+        endforeach()
+        list(JOIN absolute_path_list ", " formated_path_list)
+        set(directive_to_substitute "${formated_path_list}")
+      else()
+        set(directive_to_substitute "")
+      endif()
+      unset(message_arg_list) # This directive consumes all the arguments
     elseif("${directive_to_substitute}" STREQUAL "@rpl@")
-      foreach(file IN ITEMS ${message_arg} ${message_args_list})
-        file(RELATIVE_PATH relative_path "${PRINT_BASE_DIR}" "${file}")
-        list(APPEND relative_path_list "${relative_path}")
-      endforeach()
-      list(JOIN relative_path_list ", " formated_path_list)
-      set(directive_to_substitute "${formated_path_list}")
-      set(message_args_list "")
+      list(LENGTH message_arg_list nb_message_args)
+      if(${nb_message_args} GREATER 0)
+        foreach(file IN ITEMS ${message_arg_list})
+          file(RELATIVE_PATH relative_path "${PRINT_BASE_DIR}" "${file}")
+          list(APPEND relative_path_list "${relative_path}")
+        endforeach()
+        list(JOIN relative_path_list ", " formated_path_list)
+        set(directive_to_substitute "${formated_path_list}")
+      else()
+        set(directive_to_substitute "")
+      endif()
+      unset(message_arg_list) # This directive consumes all the arguments
     elseif("${directive_to_substitute}" STREQUAL "@sl@")
-      list(PREPEND message_args_list "${message_arg}")
-      list(JOIN message_args_list ", " formated_string_list)
-      set(directive_to_substitute "${formated_string_list}")
-      set(message_args_list "")
+      list(LENGTH message_arg_list nb_message_args)
+      if(${nb_message_args} GREATER 0)
+        list(JOIN message_arg_list ", " formated_string_list)
+        set(directive_to_substitute "${formated_string_list}")
+      else()
+        set(directive_to_substitute "")
+      endif()
+      unset(message_arg_list) # This directive consumes all the arguments
     else()
-      message(FATAL_ERROR "Directive ${directive_to_substitute} is unsupported!")
+      message(FATAL_ERROR
+        "print() does not support the directive ${directive_to_substitute}!"
+      )
     endif()
     set(message_cursor "${directive_to_substitute}")
 
     string(APPEND message_head "${message_cursor}")
     set(message "${message_head}${message_tail}")
   endwhile()
-endmacro()
-
-#------------------------------------------------------------------------------
-# [Internal use only]
-macro(_remove_directives)
-  string(REGEX REPLACE "@(ap|rp|apl|rpl|sl)@" "" message "${message}")
 endmacro()
 
 #------------------------------------------------------------------------------
