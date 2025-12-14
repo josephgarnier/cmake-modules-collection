@@ -8,7 +8,7 @@
 Print
 -----
 
-Log a message by wrapping the CMake :cmake:command:`message() <cmake:command:message>` command to extend its functionalities .It requires CMake 3.20 or newer.
+Log a message by wrapping the CMake :cmake:command:`message() <cmake:command:message>` command to extend its functionalities .It requires CMake 4.0.1 or newer.
 
 Synopsis
 ^^^^^^^^
@@ -108,6 +108,11 @@ Usage
     # output is:
     #   -- Absolute: /full/path/to/src/main.cpp, Relative: src/main.cpp
 
+    # Message with apl directive and empty argument
+    print(STATUS "Absolute paths: @apl@" "")
+    # output is:
+    #   -- Absolute paths: 
+
     # Message with apl directive
     set(PRINT_BASE_DIR "${CMAKE_SOURCE_DIR}")
     set(path_list
@@ -119,7 +124,7 @@ Usage
       "src/source_5.cpp"
       "src/sub_1/source_sub_1.cpp"
       "src/sub_2/source_sub_2.cpp")
-    print(STATUS "Absolute path list: @apl@." "${path_list}")
+    print(STATUS "Absolute path list: @apl@." ${path_list})
     # output is:
     #   -- Absolute path list: /full/path/to/src/main.cpp, /full/path/to/src/source_1.cpp, /full/path/to/src/source_2.cpp, /full/path/to/src/source_3.cpp, /full/path/to/src/source_4.cpp, /full/path/to/src/source_5.cpp, /full/path/to/src/sub_1/source_sub_1.cpp, /full/path/to/src/sub_2/source_sub_2.cpp.
 
@@ -134,7 +139,7 @@ Usage
       "${CMAKE_SOURCE_DIR}/src/source_5.cpp"
       "${CMAKE_SOURCE_DIR}/src/sub_1/source_sub_1.cpp"
       "${CMAKE_SOURCE_DIR}/src/sub_2/source_sub_2.cpp")
-    print(STATUS "Relative path list: @rpl@." "${path_list}")
+    print(STATUS "Relative path list: @rpl@." ${path_list})
     # output is:
     #   -- Relative path list: src/main.cpp, src/source_1.cpp, src/source_2.cpp, src/source_3.cpp, src/source_4.cpp, src/source_5.cpp, src/sub_1/source_sub_1.cpp, src/sub_2/source_sub_2.cpp.
 
@@ -150,14 +155,14 @@ Usage
       "grape"
       "lemon"
       "watermelon")
-    print(STATUS "String list: @sl@." "${string_list}")
+    print(STATUS "String list: @sl@." ${string_list})
     # output is:
     #   -- String list: apple, banana, orange, pineapple, carrot, strawberry, pineapple, grape, lemon, watermelon.
 
 .. _`Print Path List`:
 
 .. signature::
-  print([<mode>] PATHS <file-path>... [INDENT])
+  print([<mode>] PATHS [<file-path>...] [INDENT])
   :target: PATHS
 
   Record in the log each file from the specified ``<file-path>`` list after
@@ -178,6 +183,22 @@ Usage
 
   .. code-block:: cmake
 
+    # Print empty list
+    print(STATUS PATHS)
+    # output is:
+    #   -- 
+
+    # Print empty list with indentation
+    print(STATUS PATHS INDENT)
+    # output is:
+    #   --   
+
+    # Print empty list with quote
+    print(STATUS PATHS "")
+    # output is:
+    #   -- 
+
+    # Print list of paths with indentation
     set(PRINT_BASE_DIR "${CMAKE_SOURCE_DIR}")
     set(path_list
       "${CMAKE_SOURCE_DIR}/src/main.cpp"
@@ -190,12 +211,12 @@ Usage
       "${CMAKE_SOURCE_DIR}/src/sub_2/source_sub_2.cpp")
     print(STATUS PATHS ${path_list} INDENT)
     # output is:
-    #   -- src/main.cpp, src/source_2.cpp, src/source_3.cpp, src/source_4.cpp, src/source_5.cpp, src/sub_1/source_sub_1.cpp, src/sub_2/source_sub_2.cpp
+    #   --   src/main.cpp, src/source_2.cpp, src/source_3.cpp, src/source_4.cpp, src/source_5.cpp, src/sub_1/source_sub_1.cpp, src/sub_2/source_sub_2.cpp
 
 .. _`Print String List`:
 
 .. signature::
-  print([<mode>] STRINGS <string>... [INDENT])
+  print([<mode>] STRINGS [<string>...] [INDENT])
   :target: STRINGS
 
   Record in the log each string from the given ``<string>`` list. Each item is
@@ -213,18 +234,34 @@ Usage
 
   .. code-block:: cmake
 
+    # Print empty list
+    print(STATUS STRINGS)
+    # output is:
+    #   -- 
+
+    # Print empty list with indentation
+    print(STATUS STRINGS INDENT)
+    # output is:
+    #   --   
+
+    # Print empty list with quote
+    print(STATUS STRINGS "")
+    # output is:
+    #   -- 
+
+    # Print list of strings with indentation
     set(string_list
         "apple" "banana" "orange"
         "carrot" "strawberry" "pineapple"
         "grape" "lemon" "watermelon")
     print(STATUS STRINGS ${string_list} INDENT)
     # output is:
-    #   -- apple, banana, orange, carrot, strawberry, pineapple, grape, lemon, watermelon
+    #   --   apple, banana, orange, carrot, strawberry, pineapple, grape, lemon, watermelon
 #]=======================================================================]
 
 include_guard()
 
-cmake_minimum_required(VERSION 3.20 FATAL_ERROR)
+cmake_minimum_required(VERSION 4.0.1 FATAL_ERROR)
 
 # Global variables
 set(PRINT_BASE_DIR "${CMAKE_SOURCE_DIR}")
@@ -235,10 +272,10 @@ function(print)
   set(options FATAL_ERROR SEND_ERROR WARNING AUTHOR_WARNING DEPRECATION NOTICE STATUS VERBOSE DEBUG TRACE INDENT)
   set(one_value_args "")
   set(multi_value_args PATHS STRINGS)
-  cmake_parse_arguments(PRT "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
-  
-  # Parse arguments. The macro `_print_formated_message()` can't use the result of
-  # cmake_parse_arguments() because it has to parse each argument.
+  cmake_parse_arguments(PARSE_ARGV 0 arg
+    "${options}" "${one_value_args}" "${multi_value_args}"
+  )
+
   # Parse arguments. The macro `_print_formated_message()` can't use the result
   # of cmake_parse_arguments() because it has to parse each argument.
   set(print_ARGV "")
@@ -250,9 +287,9 @@ function(print)
     list(APPEND print_ARGV "${ARGV${arg_index}}")
   endforeach()
 
-  if((DEFINED PRT_PATHS) OR ("PATHS" IN_LIST PRT_KEYWORDS_MISSING_VALUES))
+  if((DEFINED arg_PATHS) OR ("PATHS" IN_LIST arg_KEYWORDS_MISSING_VALUES))
     _print_paths_list()
-  elseif((DEFINED PRT_STRINGS) OR ("STRINGS" IN_LIST PRT_KEYWORDS_MISSING_VALUES))
+  elseif((DEFINED arg_STRINGS) OR ("STRINGS" IN_LIST arg_KEYWORDS_MISSING_VALUES))
     _print_strings_list()
   else()
     _print_formated_message()
@@ -262,7 +299,6 @@ endfunction()
 #------------------------------------------------------------------------------
 # [Internal use only]
 macro(_print_formated_message)
-  # Error when no arguments are given
   if(${print_ARGC} EQUAL 0)
     message(FATAL_ERROR "print() called with wrong number of arguments!")
   endif()
@@ -315,7 +351,7 @@ macro(_substitute_directives)
   set(message_head "")
   set(message_tail "${message}")
   set(message_cursor "")
-  while(on)
+  while(true)
     # Extract the directive "@...@" in traveling through the message parsed like
     # a cursor moving on a ribbon (like on a Turing machine).
     # `message_head` is what has already been parsed, `message_cursor` is what is
@@ -415,33 +451,33 @@ endmacro()
 #------------------------------------------------------------------------------
 # [Internal use only]
 macro(_print_paths_list)
-  if(DEFINED PRT_UNPARSED_ARGUMENTS)
-    message(FATAL_ERROR "Unrecognized arguments: \"${PRT_UNPARSED_ARGUMENTS}\"!")
+  if(DEFINED arg_UNPARSED_ARGUMENTS)
+    message(FATAL_ERROR "${CMAKE_CURRENT_FUNCTION}() called with unrecognized arguments: \"${arg_UNPARSED_ARGUMENTS}\"!")
   endif()
-  if((NOT DEFINED PRT_PATHS)
-      AND (NOT "PATHS" IN_LIST PRT_KEYWORDS_MISSING_VALUES))
-    message(FATAL_ERROR "PATHS arguments is missing!")
+  if((NOT DEFINED arg_PATHS)
+      AND (NOT "PATHS" IN_LIST arg_KEYWORDS_MISSING_VALUES))
+    message(FATAL_ERROR "${CMAKE_CURRENT_FUNCTION}() requires the keyword PATHS to be provided!")
   endif()
-  
+
   set(mode "")
   set(message "")
-  
-  # If the first of PRT_ARGV (index 0) is a mode from "options", set the
+
+  # If the first of print_ARGV (index 0) is a mode from "options", set the
   # mode var
-  if("${PRT_ARGV0}" IN_LIST options)
-    set(mode "${PRT_ARGV0}")
+  if("${print_ARGV0}" IN_LIST options)
+    set(mode "${print_ARGV0}")
   endif()
 
   # Format the paths
   set(relative_path_list "")
-  foreach(file IN ITEMS ${PRT_PATHS})
+  foreach(file IN ITEMS ${arg_PATHS})
     file(RELATIVE_PATH relative_path "${PRINT_BASE_DIR}" "${file}")
     list(APPEND relative_path_list "${relative_path}")
   endforeach()
   list(JOIN relative_path_list ", " formated_message)
   set(message "${formated_message}")
 
-  if(${PRT_INDENT})
+  if(${arg_INDENT})
     list(APPEND CMAKE_MESSAGE_INDENT "  ")
   endif()
   if(NOT mode STREQUAL "")
@@ -449,7 +485,7 @@ macro(_print_paths_list)
   else()
     message("${message}")
   endif()
-  if(${PRT_INDENT})
+  if(${arg_INDENT})
     list(POP_BACK CMAKE_MESSAGE_INDENT)
   endif()
 endmacro()
@@ -457,32 +493,32 @@ endmacro()
 #------------------------------------------------------------------------------
 # [Internal use only]
 macro(_print_strings_list)
-  if(DEFINED PRT_UNPARSED_ARGUMENTS)
-    message(FATAL_ERROR "Unrecognized arguments: \"${PRT_UNPARSED_ARGUMENTS}\"!")
+  if(DEFINED arg_UNPARSED_ARGUMENTS)
+    message(FATAL_ERROR "${CMAKE_CURRENT_FUNCTION}() called with unrecognized arguments: \"${arg_UNPARSED_ARGUMENTS}\"!")
   endif()
-  if((NOT DEFINED PRT_STRINGS)
-      AND (NOT "STRINGS" IN_LIST PRT_KEYWORDS_MISSING_VALUES))
-    message(FATAL_ERROR "STRINGS arguments is missing!")
+  if((NOT DEFINED arg_STRINGS)
+      AND (NOT "STRINGS" IN_LIST arg_KEYWORDS_MISSING_VALUES))
+    message(FATAL_ERROR "${CMAKE_CURRENT_FUNCTION}() requires the keyword STRINGS to be provided!")
   endif()
-  
+
   set(mode "")
   set(message "")
-  
-  # If the first of PRT_ARGV (index 0) is a mode from "options", set the
+
+  # If the first of print_ARGV (index 0) is a mode from "options", set the
   # mode var
-  if("${PRT_ARGV0}" IN_LIST options)
-    set(mode "${PRT_ARGV0}")
+  if("${print_ARGV0}" IN_LIST options)
+    set(mode "${print_ARGV0}")
   endif()
-  
+
   # Format the strings
   set(formated_message "")
-  foreach(string IN ITEMS ${PRT_STRINGS})
+  foreach(string IN ITEMS ${arg_STRINGS})
     list(APPEND formated_message "${string}")
   endforeach()
   list(JOIN formated_message ", " formated_message)
   set(message "${formated_message}")
 
-  if(${PRT_INDENT})
+  if(${arg_INDENT})
     list(APPEND CMAKE_MESSAGE_INDENT "  ")
   endif()
   if(NOT mode STREQUAL "")
@@ -490,7 +526,7 @@ macro(_print_strings_list)
   else()
     message("${message}")
   endif()
-  if(${PRT_INDENT})
+  if(${arg_INDENT})
     list(POP_BACK CMAKE_MESSAGE_INDENT)
   endif()
 endmacro()

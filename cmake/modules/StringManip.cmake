@@ -8,7 +8,7 @@
 StringManip
 -----------
 
-Operations on strings. It requires CMake 3.20 or newer.
+Operations on strings. It requires CMake 4.0.1 or newer.
 
 Synopsis
 ^^^^^^^^
@@ -86,12 +86,13 @@ Usage
 
   Example of transformations:
 
-  ====================  ======================  =======================================
+  ====================  ======================  =====================================
   Input                 Action                  Output
-  ====================  ======================  =======================================
-  ``"myVariableName"``  ``START_CASE``          ``"MyVariableName"``
-  ``"myVariableName"``  ``C_IDENTIFIER_UPPER``  ``"MY_VARIABLE_NAME_"`` (joined string)
-  ====================  ======================  =======================================
+  ====================  ======================  =====================================
+  ``myVariableName``    ``START_CASE``          ``MyVariableName``
+  ``my_variable_name``  ``START_CASE``          ``MyVariableName``
+  ``myVariableName``    ``C_IDENTIFIER_UPPER``  ``MY_VARIABLE_NAME_`` (joined string)
+  ====================  ======================  =====================================
 
   If no split points are detected, the input is treated as a single-element
   list and transformed accordingly.
@@ -155,7 +156,7 @@ Usage
 
 include_guard()
 
-cmake_minimum_required(VERSION 3.20 FATAL_ERROR)
+cmake_minimum_required(VERSION 4.0.1 FATAL_ERROR)
 
 #------------------------------------------------------------------------------
 # Public function of this module
@@ -163,60 +164,65 @@ function(string_manip)
   set(options START_CASE C_IDENTIFIER_UPPER BUILD INSTALL)
   set(one_value_args SPLIT_TRANSFORM STRIP_INTERFACES OUTPUT_VARIABLE EXTRACT_INTERFACE)
   set(multi_value_args SPLIT)
-  cmake_parse_arguments(SM "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
-  
-  if(DEFINED SM_UNPARSED_ARGUMENTS)
-    message(FATAL_ERROR "Unrecognized arguments: \"${SM_UNPARSED_ARGUMENTS}\"!")
+  cmake_parse_arguments(PARSE_ARGV 0 arg
+    "${options}" "${one_value_args}" "${multi_value_args}"
+  )
+
+  if(DEFINED arg_UNPARSED_ARGUMENTS)
+    message(FATAL_ERROR "${CMAKE_CURRENT_FUNCTION}() called with unrecognized arguments: \"${arg_UNPARSED_ARGUMENTS}\"!")
   endif()
-  if(DEFINED SM_SPLIT)
+  if(DEFINED arg_SPLIT)
     _string_manip_split()
-  elseif(DEFINED SM_SPLIT_TRANSFORM)
-    if(${SM_C_IDENTIFIER_UPPER})
+  elseif(DEFINED arg_SPLIT_TRANSFORM)
+    if(${arg_C_IDENTIFIER_UPPER})
       _string_manip_split_transform_identifier_upper()
-    elseif(${SM_START_CASE})
+    elseif(${arg_START_CASE})
       _string_manip_split_transform_start_case()
     else()
-      message(FATAL_ERROR "ACTION argument is missing!")
+      message(FATAL_ERROR "string_manip(SPLIT_TRANSFORM) requires an ACTION to be specified!")
     endif()
-  elseif(DEFINED SM_STRIP_INTERFACES)
+  elseif(DEFINED arg_STRIP_INTERFACES)
     _string_manip_strip_interfaces()
-  elseif(DEFINED SM_EXTRACT_INTERFACE)
+  elseif(DEFINED arg_EXTRACT_INTERFACE)
     _string_manip_extract_interface()
   else()
-    message(FATAL_ERROR "The operation name or arguments are missing!")
+    message(FATAL_ERROR "${CMAKE_CURRENT_FUNCTION}(<OP> <value> ...) requires an operation and a value to be specified!")
   endif()
 endfunction()
 
 #------------------------------------------------------------------------------
 # [Internal use only]
 macro(_string_manip_split)
-  list(LENGTH SM_SPLIT nb_args)
+  list(LENGTH arg_SPLIT nb_args)
   if(NOT ${nb_args} EQUAL 2)
-    message(FATAL_ERROR "SPLIT argument is missing or wrong!")
+    message(FATAL_ERROR "string_manip(SPLIT) called with wrong number of arguments!")
   endif()
 
-  list(GET SM_SPLIT 0 string_to_split)
+  list(GET arg_SPLIT 0 string_to_split)
+  list(GET arg_SPLIT 1 output_list_var)
   string(MAKE_C_IDENTIFIER "${string_to_split}" string_to_split)
-  string(REGEX MATCHALL "[^_][^|A-Z|_]*" strings_list "${string_to_split}")
-  list(GET SM_SPLIT 1 output_list_var)
-  set(${output_list_var} "${strings_list}" PARENT_SCOPE)
+  string(REGEX MATCHALL "[^_][^|A-Z|_]*" ${output_list_var} "${string_to_split}")
+  return(PROPAGATE "${output_list_var}")
 endmacro()
 
 #------------------------------------------------------------------------------
 # [Internal use only]
 macro(_string_manip_split_transform_identifier_upper)
-  if(NOT DEFINED SM_SPLIT_TRANSFORM)
-    message(FATAL_ERROR "TRANSFORM arguments is missing or need a value!")
+  if(NOT DEFINED arg_SPLIT_TRANSFORM)
+    message(FATAL_ERROR "${CMAKE_CURRENT_FUNCTION}() requires the keyword SPLIT_TRANSFORM to be provided!")
   endif()
-  if(NOT ${SM_C_IDENTIFIER_UPPER})
-    message(FATAL_ERROR "C_IDENTIFIER_UPPER argument is missing!")
+  if("${arg_SPLIT_TRANSFORM}" STREQUAL "")
+    message(FATAL_ERROR "string_manip(SPLIT_TRANSFORM) requires SPLIT_TRANSFORM to be a non-empty string!")
+  endif()
+  if(NOT ${arg_C_IDENTIFIER_UPPER})
+    message(FATAL_ERROR "string_manip(SPLIT_TRANSFORM) requires the keyword C_IDENTIFIER_UPPER to be provided!")
   endif()
   
   set(output_formated_word "")
     # Check if the input string is empty to avoid fatal error in ``string_manip(SPLIT ...)``
-  if(NOT "${${SM_SPLIT_TRANSFORM}}" STREQUAL "")
-    string_manip(SPLIT "${${SM_SPLIT_TRANSFORM}}" words_list)
-    foreach(word IN ITEMS ${words_list})
+  if(NOT "${${arg_SPLIT_TRANSFORM}}" STREQUAL "")
+    string_manip(SPLIT "${${arg_SPLIT_TRANSFORM}}" word_list)
+    foreach(word IN ITEMS ${word_list})
       string(TOUPPER "${word}" formated_word)
       string(APPEND output_formated_word "_${formated_word}")
       unset(formated_word)
@@ -232,28 +238,31 @@ macro(_string_manip_split_transform_identifier_upper)
     endif()
   endif()
 
-  if(NOT DEFINED SM_OUTPUT_VARIABLE)
-    set(${SM_SPLIT_TRANSFORM} "${output_formated_word}" PARENT_SCOPE)
+  if(NOT DEFINED arg_OUTPUT_VARIABLE)
+    set(${arg_SPLIT_TRANSFORM} "${output_formated_word}" PARENT_SCOPE)
   else()
-    set(${SM_OUTPUT_VARIABLE} "${output_formated_word}" PARENT_SCOPE)
+    set(${arg_OUTPUT_VARIABLE} "${output_formated_word}" PARENT_SCOPE)
   endif()
 endmacro()
 
 #------------------------------------------------------------------------------
 # [Internal use only]
 macro(_string_manip_split_transform_start_case)
-  if(NOT DEFINED SM_SPLIT_TRANSFORM)
-    message(FATAL_ERROR "TRANSFORM arguments is missing or need a value!")
+  if(NOT DEFINED arg_SPLIT_TRANSFORM)
+    message(FATAL_ERROR "${CMAKE_CURRENT_FUNCTION}() requires the keyword SPLIT_TRANSFORM to be provided!")
   endif()
-  if(NOT ${SM_START_CASE})
-    message(FATAL_ERROR "START_CASE argument is missing!")
+  if("${arg_SPLIT_TRANSFORM}" STREQUAL "")
+    message(FATAL_ERROR "string_manip(SPLIT_TRANSFORM) requires SPLIT_TRANSFORM to be a non-empty string!")
+  endif()
+  if(NOT ${arg_START_CASE})
+    message(FATAL_ERROR "string_manip(SPLIT_TRANSFORM) requires the keyword START_CASE to be provided!")
   endif()
   
   set(output_formated_word "")
   # Check if the input string is empty to avoid fatal error in ``string_manip(SPLIT ...)``
-  if(NOT "${${SM_SPLIT_TRANSFORM}}" STREQUAL "")
-    string_manip(SPLIT "${${SM_SPLIT_TRANSFORM}}" words_list)
-    foreach(word IN ITEMS ${words_list})
+  if(NOT "${${arg_SPLIT_TRANSFORM}}" STREQUAL "")
+    string_manip(SPLIT "${${arg_SPLIT_TRANSFORM}}" word_list)
+    foreach(word IN ITEMS ${word_list})
       string(TOLOWER "${word}" formated_word)
       string(SUBSTRING ${formated_word} 0 1 first_letter)
       string(TOUPPER "${first_letter}" first_letter)
@@ -263,60 +272,66 @@ macro(_string_manip_split_transform_start_case)
     endforeach()
   endif()
 
-  if(NOT DEFINED SM_OUTPUT_VARIABLE)
-    set(${SM_SPLIT_TRANSFORM} "${output_formated_word}" PARENT_SCOPE)
+  if(NOT DEFINED arg_OUTPUT_VARIABLE)
+    set(${arg_SPLIT_TRANSFORM} "${output_formated_word}" PARENT_SCOPE)
   else()
-    set(${SM_OUTPUT_VARIABLE} "${output_formated_word}" PARENT_SCOPE)
+    set(${arg_OUTPUT_VARIABLE} "${output_formated_word}" PARENT_SCOPE)
   endif()
 endmacro()
 
 #------------------------------------------------------------------------------
 # [Internal use only]
 macro(_string_manip_strip_interfaces)
-  if(NOT DEFINED SM_STRIP_INTERFACES)
-    message(FATAL_ERROR "STRIP_INTERFACES argument is missing or need a value!")
+  if(NOT DEFINED arg_STRIP_INTERFACES)
+    message(FATAL_ERROR "${CMAKE_CURRENT_FUNCTION}() requires the keyword STRIP_INTERFACES to be provided!")
+  endif()
+  if("${arg_STRIP_INTERFACES}" STREQUAL "")
+    message(FATAL_ERROR "string_manip(STRIP_INTERFACES) requires STRIP_INTERFACES to be a non-empty string!")
   endif()
 
   set(regex ";?\\$<BUILD_INTERFACE:[^>]+>|;?\\$<INSTALL_INTERFACE:[^>]+>")
-  string(REGEX REPLACE "${regex}" "" string_striped "${${SM_STRIP_INTERFACES}}")
+  string(REGEX REPLACE "${regex}" "" string_striped "${${arg_STRIP_INTERFACES}}")
 
-  if(NOT DEFINED SM_OUTPUT_VARIABLE)
-    set(${SM_STRIP_INTERFACES} "${string_striped}" PARENT_SCOPE)
+  if(NOT DEFINED arg_OUTPUT_VARIABLE)
+    set(${arg_STRIP_INTERFACES} "${string_striped}" PARENT_SCOPE)
   else()
-    set(${SM_OUTPUT_VARIABLE} "${string_striped}" PARENT_SCOPE)
+    set(${arg_OUTPUT_VARIABLE} "${string_striped}" PARENT_SCOPE)
   endif()
 endmacro()
 
 #------------------------------------------------------------------------------
 # [Internal use only]
 macro(_string_manip_extract_interface)
-  if(NOT DEFINED SM_EXTRACT_INTERFACE)
-    message(FATAL_ERROR "EXTRACT_INTERFACE arguments is missing or need a value!")
+  if(NOT DEFINED arg_EXTRACT_INTERFACE)
+    message(FATAL_ERROR "${CMAKE_CURRENT_FUNCTION}() requires the keyword EXTRACT_INTERFACE to be provided!")
   endif()
-  if((NOT ${SM_BUILD})
-      AND (NOT ${SM_INSTALL}))
-    message(FATAL_ERROR "BUILD|INSTALL arguments is missing!")
+  if("${arg_EXTRACT_INTERFACE}" STREQUAL "")
+    message(FATAL_ERROR "string_manip(EXTRACT_INTERFACE) requires EXTRACT_INTERFACE to be a non-empty string!")
   endif()
-  if(${SM_BUILD} AND ${SM_INSTALL})
-    message(FATAL_ERROR "BUILD|INSTALL cannot be used together!")
+  if((NOT ${arg_BUILD})
+      AND (NOT ${arg_INSTALL}))
+    message(FATAL_ERROR "string_manip(EXTRACT_INTERFACE) requires the keyword BUILD or INSTALL to be provided!")
+  endif()
+  if(${arg_BUILD} AND ${arg_INSTALL})
+    message(FATAL_ERROR "string_manip(EXTRACT_INTERFACE) requires BUILD and INSTALL not to be used together!")
   endif()
 
-  set(results_list "")
-  if(${SM_BUILD})
+  set(result_list "")
+  if(${arg_BUILD})
     set(opening_marker "$<BUILD_INTERFACE:")
-  elseif(${SM_INSTALL})
+  elseif(${arg_INSTALL})
     set(opening_marker "$<INSTALL_INTERFACE:")
   else()
     message(FATAL_ERROR "Wrong interface type!")
   endif()
   set(closing_marker ">")
   set(accumulator "")
-  set(inside_expr off)
-  foreach(item IN ITEMS ${${SM_EXTRACT_INTERFACE}})
+  set(inside_expr false)
+  foreach(item IN ITEMS ${${arg_EXTRACT_INTERFACE}})
     # Accumulate until the closing generator expression is found
     if(NOT ${inside_expr} AND ("${item}" MATCHES "^\\${opening_marker}.*"))
       set(accumulator "${item}")
-      set(inside_expr on)
+      set(inside_expr true)
     elseif(${inside_expr})
       list(APPEND accumulator "${item}")
     endif()
@@ -327,16 +342,16 @@ macro(_string_manip_extract_interface)
       # Remove prefix "$<...:" and suffix ">"
       string(REPLACE "${opening_marker}" "" expr_str "${expr_str}")
       string(REPLACE "${closing_marker}" "" expr_str "${expr_str}")
-      list(APPEND results_list "${expr_str}")
+      list(APPEND result_list "${expr_str}")
       unset(accumulator)
-      set(inside_expr off)
+      set(inside_expr false)
     endif()
   endforeach()
 
-  list(JOIN results_list ";" string_extracted)
-  if(NOT DEFINED SM_OUTPUT_VARIABLE)
-    set(${SM_EXTRACT_INTERFACE} "${string_extracted}" PARENT_SCOPE)
+  list(JOIN result_list ";" extracted_strings)
+  if(NOT DEFINED arg_OUTPUT_VARIABLE)
+    set(${arg_EXTRACT_INTERFACE} "${extracted_strings}" PARENT_SCOPE)
   else()
-    set(${SM_OUTPUT_VARIABLE} "${string_extracted}" PARENT_SCOPE)
+    set(${arg_OUTPUT_VARIABLE} "${extracted_strings}" PARENT_SCOPE)
   endif()
 endmacro()

@@ -58,6 +58,7 @@ function(${CMAKETEST_TEST})
       string_manip(EXTRACT_INTERFACE input INSTALL OUTPUT_VARIABLE output)
       ct_assert_equal(input "before;$<BUILD_INTERFACE:src/file-a.cpp;src/file-b.cpp;src/file-c.cpp>;$<BUILD_INTERFACE:src/file-d.cpp;src/file-e.cpp;src/file-f.cpp>;between;$<INSTALL_INTERFACE:include/file-a.h;include/file-b.h;include/file-c.h>;after")
       ct_assert_list(output)
+      ct_assert_equal(output "include/file-a.h;include/file-b.h;include/file-c.h")
     endfunction()
   endfunction()
 

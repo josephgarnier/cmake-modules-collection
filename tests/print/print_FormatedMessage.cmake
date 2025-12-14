@@ -15,24 +15,28 @@ ct_add_test(NAME "test_print_formated_message_operation")
 function(${CMAKETEST_TEST})
   include(Print)
 
+  set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
+
   # Functionalities checking
   ct_add_section(NAME "print_empty_message")
   function(${CMAKETEST_SECTION})
   
     ct_add_section(NAME "without_mode")
     function(${CMAKETEST_SECTION})
-      set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
       print("")
+      ct_assert_prints("")
+
+      # Test with extra argument
+      print("" "extra argument")
       ct_assert_prints("")
     endfunction()
 
     ct_add_section(NAME "with_mode")
     function(${CMAKETEST_SECTION})
-      set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
       print(STATUS "")
       ct_assert_prints("")
 
-      # The extra argument should be ignored
+      # Test with extra argument
       print(STATUS "" "extra argument")
       ct_assert_prints("")
     endfunction()
@@ -44,22 +48,19 @@ function(${CMAKETEST_TEST})
 
     ct_add_section(NAME "without_mode")
     function(${CMAKETEST_SECTION})
-      set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
-      set(input "a text to print")
-      print("${input}")
-      ct_assert_prints("${input}")
+      print("a text to print")
+      ct_assert_prints("a text to print")
     endfunction()
 
     ct_add_section(NAME "with_mode")
     function(${CMAKETEST_SECTION})
-      set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
-      set(input "a text to print")
-      print(STATUS "${input}")
-      ct_assert_prints("${input}") # This function ignores the status mode
+      # Test with no argument
+      print(STATUS "a text to print")
+      ct_assert_prints("a text to print") # This function ignores the status mode
 
-      # The extra argument should be ignored
-      print(STATUS "${input}" "extra argument")
-      ct_assert_prints("${input}") # This function ignores the status mode
+      # Test with extra argument
+      print(STATUS "a text to print" "extra argument")
+      ct_assert_prints("a text to print") # This function ignores the status mode
     endfunction()
   endfunction()
 
@@ -68,30 +69,14 @@ function(${CMAKETEST_TEST})
 
     ct_add_section(NAME "without_mode")
     function(${CMAKETEST_SECTION})
-      set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
-      set(input "../data/src/main.cpp")
-      set(expected_result "${TESTS_DATA_DIR}/src/main.cpp")
-
-      print("Absolute: @ap@." "${input}")
-      ct_assert_prints("Absolute: ${expected_result}.")
-
-      # Test with empty input
-      print("Absolute: @ap@." "")
-      ct_assert_prints("Absolute: .")
+      print("Before @ap@ After" "../data/src/main.cpp")
+      ct_assert_prints("Before ${TESTS_DATA_DIR}/src/main.cpp After")
     endfunction()
 
     ct_add_section(NAME "with_mode")
     function(${CMAKETEST_SECTION})
-      set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
-      set(input "../data/src/main.cpp")
-      set(expected_result "${TESTS_DATA_DIR}/src/main.cpp")
-
-      print(STATUS "Absolute: @ap@." "${input}")
-      ct_assert_prints("Absolute: ${expected_result}.") # This function ignores the status mode
-
-      # Test with empty input
-      print(STATUS "Absolute: @ap@." "")
-      ct_assert_prints("Absolute: .") # This function ignores the status mode
+      print(STATUS "Before @ap@ After" "../data/src/main.cpp")
+      ct_assert_prints("Before ${TESTS_DATA_DIR}/src/main.cpp After") # This function ignores the status mode
     endfunction()
   endfunction()
 
@@ -100,30 +85,14 @@ function(${CMAKETEST_TEST})
 
     ct_add_section(NAME "without_mode")
     function(${CMAKETEST_SECTION})
-      set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
-      set(input "${TESTS_DATA_DIR}/src/main.cpp")
-      set(expected_result "../data/src/main.cpp")
-
-      print("Relative: @rp@." "${input}")
-      ct_assert_prints("Relative: ${expected_result}.")
-
-      # Test with empty input
-      print("Relative: @rp@." "")
-      ct_assert_prints("Relative: .")
+      print("Before @rp@ After" "${TESTS_DATA_DIR}/src/main.cpp")
+      ct_assert_prints("Before ../data/src/main.cpp After")
     endfunction()
 
     ct_add_section(NAME "with_mode")
     function(${CMAKETEST_SECTION})
-      set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
-      set(input "${TESTS_DATA_DIR}/src/main.cpp")
-      set(expected_result "../data/src/main.cpp")
-
-      print(STATUS "Relative: @rp@." "${input}")
-      ct_assert_prints("Relative: ${expected_result}.") # This function ignores the status mode
-
-      # Test with empty input
-      print(STATUS "Relative: @rp@." "")
-      ct_assert_prints("Relative: .") # This function ignores the status mode
+      print(STATUS "Before @rp@ After" "${TESTS_DATA_DIR}/src/main.cpp")
+      ct_assert_prints("Before ../data/src/main.cpp After") # This function ignores the status mode
     endfunction()
   endfunction()
 
@@ -132,8 +101,8 @@ function(${CMAKETEST_TEST})
   
     ct_add_section(NAME "without_mode")
     function(${CMAKETEST_SECTION})
-      set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
-      set(input
+      # Test with input argument
+      set(input_paths_arg
         "../data/src/main.cpp"
         "../data/src/source_1.cpp"
         "../data/src/source_2.cpp"
@@ -142,19 +111,18 @@ function(${CMAKETEST_TEST})
         "../data/src/source_5.cpp"
         "../data/src/sub_1/source_sub_1.cpp"
         "../data/src/sub_2/source_sub_2.cpp")
+      print("Before @apl@ After" ${input_paths_arg})
+      ct_assert_prints("Before ${TESTS_DATA_DIR}/src/main.cpp, ${TESTS_DATA_DIR}/src/source_1.cpp, ${TESTS_DATA_DIR}/src/source_2.cpp, ${TESTS_DATA_DIR}/src/source_3.cpp, ${TESTS_DATA_DIR}/src/source_4.cpp, ${TESTS_DATA_DIR}/src/source_5.cpp, ${TESTS_DATA_DIR}/src/sub_1/source_sub_1.cpp, ${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp After")
 
-      print("Absolute path list: @apl@." "${input}")
-      ct_assert_prints("Absolute path list: ${TESTS_DATA_DIR}/src/main.cpp, ${TESTS_DATA_DIR}/src/source_1.cpp, ${TESTS_DATA_DIR}/src/source_2.cpp, ${TESTS_DATA_DIR}/src/source_3.cpp, ${TESTS_DATA_DIR}/src/source_4.cpp, ${TESTS_DATA_DIR}/src/source_5.cpp, ${TESTS_DATA_DIR}/src/sub_1/source_sub_1.cpp, ${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp.")
-
-      # Test with empty input
-      print("Absolute path list: @apl@." "")
-      ct_assert_prints("Absolute path list: .")
+      # Test with empty argument
+      print("Before @apl@ After" "")
+      ct_assert_prints("Before  After")
     endfunction()
 
     ct_add_section(NAME "with_mode")
     function(${CMAKETEST_SECTION})
-      set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
-      set(input
+      # Test with input argument
+      set(input_paths_arg
         "../data/src/main.cpp"
         "../data/src/source_1.cpp"
         "../data/src/source_2.cpp"
@@ -163,13 +131,12 @@ function(${CMAKETEST_TEST})
         "../data/src/source_5.cpp"
         "../data/src/sub_1/source_sub_1.cpp"
         "../data/src/sub_2/source_sub_2.cpp")
+      print(STATUS "Before @apl@ After" ${input_paths_arg})
+      ct_assert_prints("Before ${TESTS_DATA_DIR}/src/main.cpp, ${TESTS_DATA_DIR}/src/source_1.cpp, ${TESTS_DATA_DIR}/src/source_2.cpp, ${TESTS_DATA_DIR}/src/source_3.cpp, ${TESTS_DATA_DIR}/src/source_4.cpp, ${TESTS_DATA_DIR}/src/source_5.cpp, ${TESTS_DATA_DIR}/src/sub_1/source_sub_1.cpp, ${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp After") # This function ignores the status mode
 
-      print(STATUS "Absolute path list: @apl@." "${input}")
-      ct_assert_prints("Absolute path list: ${TESTS_DATA_DIR}/src/main.cpp, ${TESTS_DATA_DIR}/src/source_1.cpp, ${TESTS_DATA_DIR}/src/source_2.cpp, ${TESTS_DATA_DIR}/src/source_3.cpp, ${TESTS_DATA_DIR}/src/source_4.cpp, ${TESTS_DATA_DIR}/src/source_5.cpp, ${TESTS_DATA_DIR}/src/sub_1/source_sub_1.cpp, ${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp.") # This function ignores the status mode
-      
-      # Test with empty input
-      print(STATUS "Absolute path list: @apl@." "")
-      ct_assert_prints("Absolute path list: .") # This function ignores the status mode
+      # Test with empty argument
+      print(STATUS "Before @apl@ After" "")
+      ct_assert_prints("Before  After") # This function ignores the status mode
     endfunction()
   endfunction()
 
@@ -178,8 +145,8 @@ function(${CMAKETEST_TEST})
 
     ct_add_section(NAME "without_mode")
     function(${CMAKETEST_SECTION})
-      set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
-      set(input
+      # Test with input argument
+      set(input_paths_arg
         "${TESTS_DATA_DIR}/src/main.cpp"
         "${TESTS_DATA_DIR}/src/source_1.cpp"
         "${TESTS_DATA_DIR}/src/source_2.cpp"
@@ -188,19 +155,18 @@ function(${CMAKETEST_TEST})
         "${TESTS_DATA_DIR}/src/source_5.cpp"
         "${TESTS_DATA_DIR}/src/sub_1/source_sub_1.cpp"
         "${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp")
+      print("Before @rpl@ After" ${input_paths_arg})
+      ct_assert_prints("Before ../data/src/main.cpp, ../data/src/source_1.cpp, ../data/src/source_2.cpp, ../data/src/source_3.cpp, ../data/src/source_4.cpp, ../data/src/source_5.cpp, ../data/src/sub_1/source_sub_1.cpp, ../data/src/sub_2/source_sub_2.cpp After")
 
-      print("Relative path list: @rpl@." "${input}")
-      ct_assert_prints("Relative path list: ../data/src/main.cpp, ../data/src/source_1.cpp, ../data/src/source_2.cpp, ../data/src/source_3.cpp, ../data/src/source_4.cpp, ../data/src/source_5.cpp, ../data/src/sub_1/source_sub_1.cpp, ../data/src/sub_2/source_sub_2.cpp.")
-
-      # Test with empty input
-      print("Relative path list: @rpl@." "")
-      ct_assert_prints("Relative path list: .")
+      # Test with empty argument
+      print("Before @rpl@ After" "")
+      ct_assert_prints("Before  After")
     endfunction()
 
     ct_add_section(NAME "with_mode")
     function(${CMAKETEST_SECTION})
-      set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
-      set(input
+      # Test with input argument
+      set(input_paths_arg
         "${TESTS_DATA_DIR}/src/main.cpp"
         "${TESTS_DATA_DIR}/src/source_1.cpp"
         "${TESTS_DATA_DIR}/src/source_2.cpp"
@@ -209,13 +175,12 @@ function(${CMAKETEST_TEST})
         "${TESTS_DATA_DIR}/src/source_5.cpp"
         "${TESTS_DATA_DIR}/src/sub_1/source_sub_1.cpp"
         "${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp")
+      print(STATUS "Before @rpl@ After" ${input_paths_arg})
+      ct_assert_prints("Before ../data/src/main.cpp, ../data/src/source_1.cpp, ../data/src/source_2.cpp, ../data/src/source_3.cpp, ../data/src/source_4.cpp, ../data/src/source_5.cpp, ../data/src/sub_1/source_sub_1.cpp, ../data/src/sub_2/source_sub_2.cpp After") # This function ignores the status mode
 
-      print(STATUS "Relative path list: @rpl@." "${input}")
-      ct_assert_prints("Relative path list: ../data/src/main.cpp, ../data/src/source_1.cpp, ../data/src/source_2.cpp, ../data/src/source_3.cpp, ../data/src/source_4.cpp, ../data/src/source_5.cpp, ../data/src/sub_1/source_sub_1.cpp, ../data/src/sub_2/source_sub_2.cpp.") # This function ignores the status mode
-      
-      # Test with empty input
-      print(STATUS "Relative path list: @rpl@." "")
-      ct_assert_prints("Relative path list: .") # This function ignores the status mode
+      # Test with empty argument
+      print(STATUS "Before @rpl@ After" "")
+      ct_assert_prints("Before  After") # This function ignores the status mode
     endfunction()
   endfunction()
 
@@ -224,20 +189,12 @@ function(${CMAKETEST_TEST})
   
     ct_add_section(NAME "without_mode")
     function(${CMAKETEST_SECTION})
-      set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
-      
       # RP + AP
-      set(input_relative_path "../data/src/main.cpp")
-      set(input_absolute_path "${TESTS_DATA_DIR}/src/main.cpp")
-      print("Relative: @rp@, Absolute: @ap@." "${input_absolute_path}" "${input_relative_path}")
-      ct_assert_prints("Relative: ../data/src/main.cpp, Absolute: ${TESTS_DATA_DIR}/src/main.cpp.")
-
-      # Test RP + AP with empty input
-      print("Relative: @rp@, Absolute: @ap@." "" "")
-      ct_assert_prints("Relative: , Absolute: .")
+      print("Before @rp@ Middle @ap@ After" "${TESTS_DATA_DIR}/src/main.cpp" "../data/src/main.cpp")
+      ct_assert_prints("Before ../data/src/main.cpp Middle ${TESTS_DATA_DIR}/src/main.cpp After")
 
       # RP + APL
-      set(input_relative_path_list
+      set(input_paths_arg
         "../data/src/main.cpp"
         "../data/src/source_1.cpp"
         "../data/src/source_2.cpp"
@@ -246,30 +203,22 @@ function(${CMAKETEST_TEST})
         "../data/src/source_5.cpp"
         "../data/src/sub_1/source_sub_1.cpp"
         "../data/src/sub_2/source_sub_2.cpp")
-      print("Relative: @rp@, Absolute path list: @apl@." "${input_absolute_path}" "${input_relative_path_list}")
-      ct_assert_prints("Relative: ../data/src/main.cpp, Absolute path list: ${TESTS_DATA_DIR}/src/main.cpp, ${TESTS_DATA_DIR}/src/source_1.cpp, ${TESTS_DATA_DIR}/src/source_2.cpp, ${TESTS_DATA_DIR}/src/source_3.cpp, ${TESTS_DATA_DIR}/src/source_4.cpp, ${TESTS_DATA_DIR}/src/source_5.cpp, ${TESTS_DATA_DIR}/src/sub_1/source_sub_1.cpp, ${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp.")
+      print("Before @rp@ Middle @apl@ After" "${TESTS_DATA_DIR}/src/main.cpp" ${input_paths_arg})
+      ct_assert_prints("Before ../data/src/main.cpp Middle ${TESTS_DATA_DIR}/src/main.cpp, ${TESTS_DATA_DIR}/src/source_1.cpp, ${TESTS_DATA_DIR}/src/source_2.cpp, ${TESTS_DATA_DIR}/src/source_3.cpp, ${TESTS_DATA_DIR}/src/source_4.cpp, ${TESTS_DATA_DIR}/src/source_5.cpp, ${TESTS_DATA_DIR}/src/sub_1/source_sub_1.cpp, ${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp After")
 
-      # Test RP + APL with empty input
-      print("Relative: @rp@, Absolute path list: @apl@." "" "")
-      ct_assert_prints("Relative: , Absolute path list: .")
+      # RP + APL with empty argument
+      print("Before @rp@ Middle @apl@ After" "${TESTS_DATA_DIR}/src/main.cpp" "")
+      ct_assert_prints("Before ../data/src/main.cpp Middle  After")
     endfunction()
 
     ct_add_section(NAME "with_mode")
     function(${CMAKETEST_SECTION})
-      set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
-
       # RP + AP
-      set(input_relative_path "../data/src/main.cpp")
-      set(input_absolute_path "${TESTS_DATA_DIR}/src/main.cpp")
-      print(STATUS "Relative: @rp@, Absolute: @ap@." "${input_absolute_path}" "${input_relative_path}")
-      ct_assert_prints("Relative: ../data/src/main.cpp, Absolute: ${TESTS_DATA_DIR}/src/main.cpp.") # This function ignores the status mode
-
-      # Test RP + AP with empty input
-      print(STATUS "Relative: @rp@, Absolute: @ap@." "" "")
-      ct_assert_prints("Relative: , Absolute: .") # This function ignores the status mode
+      print(STATUS "Before @rp@ Middle @ap@ After" "${TESTS_DATA_DIR}/src/main.cpp" "../data/src/main.cpp")
+      ct_assert_prints("Before ../data/src/main.cpp Middle ${TESTS_DATA_DIR}/src/main.cpp After")
 
       # RP + APL
-      set(input_relative_path_list
+      set(input_paths_arg
         "../data/src/main.cpp"
         "../data/src/source_1.cpp"
         "../data/src/source_2.cpp"
@@ -278,12 +227,12 @@ function(${CMAKETEST_TEST})
         "../data/src/source_5.cpp"
         "../data/src/sub_1/source_sub_1.cpp"
         "../data/src/sub_2/source_sub_2.cpp")
-      print(STATUS "Relative: @rp@, Absolute path list: @apl@." "${input_absolute_path}" "${input_relative_path_list}")
-      ct_assert_prints("Relative: ../data/src/main.cpp, Absolute path list: ${TESTS_DATA_DIR}/src/main.cpp, ${TESTS_DATA_DIR}/src/source_1.cpp, ${TESTS_DATA_DIR}/src/source_2.cpp, ${TESTS_DATA_DIR}/src/source_3.cpp, ${TESTS_DATA_DIR}/src/source_4.cpp, ${TESTS_DATA_DIR}/src/source_5.cpp, ${TESTS_DATA_DIR}/src/sub_1/source_sub_1.cpp, ${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp.") # This function ignores the status mode
+      print(STATUS "Before @rp@ Middle @apl@ After" "${TESTS_DATA_DIR}/src/main.cpp" ${input_paths_arg})
+      ct_assert_prints("Before ../data/src/main.cpp Middle ${TESTS_DATA_DIR}/src/main.cpp, ${TESTS_DATA_DIR}/src/source_1.cpp, ${TESTS_DATA_DIR}/src/source_2.cpp, ${TESTS_DATA_DIR}/src/source_3.cpp, ${TESTS_DATA_DIR}/src/source_4.cpp, ${TESTS_DATA_DIR}/src/source_5.cpp, ${TESTS_DATA_DIR}/src/sub_1/source_sub_1.cpp, ${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp After") # This function ignores the status mode
 
-      # Test RP + APL with empty input
-      print(STATUS "Relative: @rp@, Absolute path list: @apl@." "" "")
-      ct_assert_prints("Relative: , Absolute path list: .") # This function ignores the status mode
+      # RP + APL with empty argument
+      print("Before @rp@ Middle @apl@ After" "${TESTS_DATA_DIR}/src/main.cpp" "")
+      ct_assert_prints("Before ../data/src/main.cpp Middle  After") # This function ignores the status mode
     endfunction()
   endfunction()
 
@@ -292,7 +241,8 @@ function(${CMAKETEST_TEST})
 
     ct_add_section(NAME "without_mode")
     function(${CMAKETEST_SECTION})
-      set(input
+      # Test with input argument
+      set(input_strings_arg
         "apple"
         "banana"
         "orange"
@@ -303,17 +253,18 @@ function(${CMAKETEST_TEST})
         "grape"
         "lemon"
         "watermelon")
-      print("String list: @sl@." "${input}")
-      ct_assert_prints("String list: apple, banana, orange, pineapple, carrot, strawberry, pineapple, grape, lemon, watermelon.")
+      print("Before @sl@ After" ${input_strings_arg})
+      ct_assert_prints("Before apple, banana, orange, pineapple, carrot, strawberry, pineapple, grape, lemon, watermelon After")
 
-      # Test with empty input
-      print("String list: @sl@." "")
-      ct_assert_prints("String list: .")
+      # Test with empty argument
+      print("Before @sl@ After" "")
+      ct_assert_prints("Before  After")
     endfunction()
 
     ct_add_section(NAME "with_mode")
     function(${CMAKETEST_SECTION})
-      set(input
+      # Test with input argument
+      set(input_strings_arg
         "apple"
         "banana"
         "orange"
@@ -324,51 +275,121 @@ function(${CMAKETEST_TEST})
         "grape"
         "lemon"
         "watermelon")
-      print(STATUS "String list: @sl@." "${input}")
-      ct_assert_prints("String list: apple, banana, orange, pineapple, carrot, strawberry, pineapple, grape, lemon, watermelon.") # This function ignores the status mode
+      print(STATUS "Before @sl@ After" ${input_strings_arg})
+      ct_assert_prints("Before apple, banana, orange, pineapple, carrot, strawberry, pineapple, grape, lemon, watermelon After") # This function ignores the status mode
 
-      # Test with empty input
-      print(STATUS "String list: @sl@." "")
-      ct_assert_prints("String list: .") # This function ignores the status mode
+      # Test with empty argument
+      print(STATUS "Before @sl@ After" "")
+      ct_assert_prints("Before  After") # This function ignores the status mode
     endfunction()
   endfunction()
 
   # Errors checking
-  ct_add_section(NAME "throws_if_arg_message_is_missing_1" EXPECTFAIL)
+  ct_add_section(NAME "throws_if_message_is_missing" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     print()
   endfunction()
 
-  ct_add_section(NAME "throws_if_arg_message_is_missing_2" EXPECTFAIL)
+  ct_add_section(NAME "throws_if_arg_for_unsupported_directive_is_missing1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    print("")
+    print("@unsupported@")
+  endfunction()
+
+  ct_add_section(NAME "throws_if_message_has_unsupported_directive_1" EXPECTFAIL)
+  function(${CMAKETEST_SECTION})
+    print("@unsupported@" "")
+  endfunction()
+
+  ct_add_section(NAME "throws_if_message_has_unsupported_directive_2" EXPECTFAIL)
+  function(${CMAKETEST_SECTION})
+    print("Before @unsupported@" "")
+  endfunction()
+
+  ct_add_section(NAME "throws_if_message_has_unsupported_directive_3" EXPECTFAIL)
+  function(${CMAKETEST_SECTION})
+    print("@unsupported@ After" "")
+  endfunction()
+
+  ct_add_section(NAME "throws_if_message_has_unsupported_directive_4" EXPECTFAIL)
+  function(${CMAKETEST_SECTION})
+    print("Before @unsupported@ After" "")
+  endfunction()
+
+  foreach(directive IN ITEMS "ap" "rp" "sl" "apl" "rpl")
+    ct_add_section(NAME "throws_if_arg_for_${directive}_directive_is_missing_1" EXPECTFAIL)
+    function(${CMAKETEST_SECTION})
+      print("@${directive}@")
+    endfunction()
+
+    ct_add_section(NAME "throws_if_arg_for_${directive}_directive_is_missing_2" EXPECTFAIL)
+    function(${CMAKETEST_SECTION})
+      print("Before @${directive}@")
+    endfunction()
+
+    ct_add_section(NAME "throws_if_arg_for_${directive}_directive_is_missing_3" EXPECTFAIL)
+    function(${CMAKETEST_SECTION})
+      print("@${directive}@ After")
+    endfunction()
+    
+    ct_add_section(NAME "throws_if_arg_for_${directive}_directive_is_missing_4" EXPECTFAIL)
+    function(${CMAKETEST_SECTION})
+      print("Before @${directive}@ After")
+    endfunction()
+
+    ct_add_section(NAME "throws_if_${directive}_directive_is_mixed_with_unsupported_directive_1" EXPECTFAIL)
+    function(${CMAKETEST_SECTION})
+      print("@unsupported@ @${directive}@" "arg" "${TESTS_DATA_DIR}/src/main.cpp")
+    endfunction()
+
+    ct_add_section(NAME "throws_if_${directive}_directive_is_mixed_with_unsupported_directive_2" EXPECTFAIL)
+    function(${CMAKETEST_SECTION})
+      print("@${directive}@ @unsupported@" "${TESTS_DATA_DIR}/src/main.cpp" "arg")
+    endfunction()
+  endforeach()
+
+  ct_add_section(NAME "throws_if_arg_for_ap_directive_is_empty_1" EXPECTFAIL)
+  function(${CMAKETEST_SECTION})
+    print("@ap@" "")
+  endfunction()
+
+  ct_add_section(NAME "throws_if_arg_for_ap_directive_is_empty_2" EXPECTFAIL)
+  function(${CMAKETEST_SECTION})
+    print("Before @ap@" "")
+  endfunction()
+
+  ct_add_section(NAME "throws_if_arg_for_ap_directive_is_empty_3" EXPECTFAIL)
+  function(${CMAKETEST_SECTION})
+    print("@ap@ After" "")
   endfunction()
   
-  ct_add_section(NAME "throws_if_arg_for_directrive_is_missing_1" EXPECTFAIL)
+  ct_add_section(NAME "throws_if_arg_for_ap_directive_is_empty_4" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    print("Absolute: @ap@")
+    print("Before @ap@ After" "")
   endfunction()
 
-  ct_add_section(NAME "throws_if_arg_for_directrive_is_missing_2" EXPECTFAIL)
+  ct_add_section(NAME "throws_if_arg_for_rp_directive_is_empty_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    print("Relative: @rp@")
+    print("@rp@" "")
   endfunction()
 
-  ct_add_section(NAME "throws_if_arg_for_directrive_is_missing_3" EXPECTFAIL)
+  ct_add_section(NAME "throws_if_arg_for_rp_directive_is_empty_2" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    print("Absolute: @ap@, Relative: @rp@")
+    print("Before @rp@" "")
   endfunction()
 
-  ct_add_section(NAME "throws_if_arg_for_directrive_is_unsupported" EXPECTFAIL)
+  ct_add_section(NAME "throws_if_arg_for_rp_directive_is_empty_3" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    print("What: @what@" "value")
+    print("@rp@ After" "")
   endfunction()
 
-  ct_add_section(NAME "throws_if_apl_directrive_is_not_the_last" EXPECTFAIL)
+  ct_add_section(NAME "throws_if_arg_for_rp_directive_is_empty_4" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
-    set(input_absolute_path "${TESTS_DATA_DIR}/src/main.cpp")
-    set(input_relative_path_list
+    print("Before @rp@ After" "")
+  endfunction()
+
+  ct_add_section(NAME "throws_if_apl_directive_is_not_the_last" EXPECTFAIL)
+  function(${CMAKETEST_SECTION})
+    set(input_paths_arg
       "../data/src/main.cpp"
       "../data/src/source_1.cpp"
       "../data/src/source_2.cpp"
@@ -377,14 +398,12 @@ function(${CMAKETEST_TEST})
       "../data/src/source_5.cpp"
       "../data/src/sub_1/source_sub_1.cpp"
       "../data/src/sub_2/source_sub_2.cpp")
-    print("Absolute path list: @apl@, Relative: @rp@." "${input_relative_path_list}" "${input_absolute_path}")
+    print("Before @apl@ Middle @rp@ After" ${input_paths_arg} "${TESTS_DATA_DIR}/src/main.cpp")
   endfunction()
 
-  ct_add_section(NAME "throws_if_rpl_directrive_is_not_the_last" EXPECTFAIL)
+  ct_add_section(NAME "throws_if_rpl_directive_is_not_the_last" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
-    set(input_relative_path "data/src/main.cpp")
-    set(input_absolute_path_list
+    set(input_paths_arg
       "${TESTS_DATA_DIR}/src/main.cpp"
       "${TESTS_DATA_DIR}/src/source_1.cpp"
       "${TESTS_DATA_DIR}/src/source_2.cpp"
@@ -393,13 +412,11 @@ function(${CMAKETEST_TEST})
       "${TESTS_DATA_DIR}/src/source_5.cpp"
       "${TESTS_DATA_DIR}/src/sub_1/source_sub_1.cpp"
       "${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp")
-    print("Relative path list: @rpl@, Absolute: @ap@." "${input_absolute_path_list}" "${input_relative_path}")
+    print("Before @rpl@ Middle @ap@ After" ${input_paths_arg} "data/src/main.cpp")
   endfunction()
 
-  ct_add_section(NAME "throws_if_sl_directrive_is_not_the_last" EXPECTFAIL)
+  ct_add_section(NAME "throws_if_sl_directive_is_not_the_last" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    set(PRINT_BASE_DIR "${CMAKE_CURRENT_FUNCTION_LIST_DIR}")
-    set(input_relative_path "data/src/main.cpp")
     set(input_string_list
         "apple"
         "banana"
@@ -411,6 +428,6 @@ function(${CMAKETEST_TEST})
         "grape"
         "lemon"
         "watermelon")
-    print("String list: @sl@, Absolute: @ap@." "${input_string_list}" "${input_relative_path}")
+    print("Before @sl@ Middle @ap@ After" ${input_string_list} "data/src/main.cpp")
   endfunction()
 endfunction()

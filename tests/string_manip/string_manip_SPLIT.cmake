@@ -49,6 +49,11 @@ function(${CMAKETEST_TEST})
   endfunction()
 
   # Errors checking
+  ct_add_section(NAME "throws_if_arg_string_and_output_vars_are_missing" EXPECTFAIL)
+  function(${CMAKETEST_SECTION})
+    string_manip(SPLIT)
+  endfunction()
+
   ct_add_section(NAME "throws_if_arg_string_is_missing_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     string_manip(SPLIT output)
