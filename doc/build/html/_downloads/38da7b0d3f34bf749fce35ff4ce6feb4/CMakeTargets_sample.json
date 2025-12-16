@@ -20,6 +20,7 @@
       "extDependencies": {
         "AppleLib": {
           "rulesFile": "generic",
+          "integrationMethod": "FIND_PACKAGE|FETCH_CONTENT|FIND_AND_FETCH|EXTERNAL_PROJECT",
           "packageLocation": {
             "windows": "C:/Program Files/libs/apple/1.15.0",
             "unix": "/opt/apple/1.15.0",

@@ -361,7 +361,7 @@ function(${CMAKETEST_TEST})
   endfunction()
 
   # Errors checking
-  ct_add_section(NAME "throws_if_unknown_argument" EXPECTFAIL)
+  ct_add_section(NAME "throws_if_unrecognized_argument" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     _validate_json_number(FOO)
   endfunction()

@@ -11,8 +11,8 @@
 #-------------------------------------------------------------------------------
 # Test of [StringManip module::EXTRACT_INTERFACE operation]:
 #    string_manip(EXTRACT_INTERFACE <string-var>
-#                <BUILD|INSTALL>
-#                [OUTPUT_VARIABLE <output-var>])
+#                 <BUILD|INSTALL>
+#                 [OUTPUT_VARIABLE <output-var>])
 ct_add_test(NAME "test_string_manip_extract_interface_operation")
 function(${CMAKETEST_TEST})
   include(StringManip)
@@ -50,7 +50,7 @@ function(${CMAKETEST_TEST})
       ct_assert_list(input)
       ct_assert_equal(input "include/file-a.h;include/file-b.h;include/file-c.h")
     endfunction()
-    
+
     ct_add_section(NAME "output_version")
     function(${CMAKETEST_SECTION})
       set(input "before;$<BUILD_INTERFACE:src/file-a.cpp;src/file-b.cpp;src/file-c.cpp>;$<BUILD_INTERFACE:src/file-d.cpp;src/file-e.cpp;src/file-f.cpp>;between;$<INSTALL_INTERFACE:include/file-a.h;include/file-b.h;include/file-c.h>;after")

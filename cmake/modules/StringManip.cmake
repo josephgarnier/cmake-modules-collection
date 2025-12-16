@@ -44,7 +44,8 @@ Usage
 
     # No split point detected
     string_manip(SPLIT "mystringtosplit" output)
-    # output is "mystringtosplit"
+    # output is:
+    #   "mystringtosplit"
     string_manip(SPLIT "my1string2to3split" output)
     # output is:
     #   my1string2to3split
@@ -108,6 +109,15 @@ Usage
   The resulting string is either stored back in ``<string-var>``, or in
   ``<output-var>`` if the ``OUTPUT_VARIABLE`` option is provided.
 
+  Example usage:
+
+  .. code-block:: cmake
+
+    set(input "libA;$<BUILD_INTERFACE:src>;libB;libC;$<INSTALL_INTERFACE:include/>libD")
+    string_manip(STRIP_INTERFACES input)
+    # input is:
+    #   libA;libB;libClibD
+
 .. signature::
   string_manip(EXTRACT_INTERFACE <string-var> <BUILD|INSTALL> [OUTPUT_VARIABLE <output-var>])
 
@@ -130,7 +140,7 @@ Usage
   The result is stored in ``<output-var>`` if the ``OUTPUT_VARIABLE`` option
   is specified. Otherwise, ``<string-var>`` is updated in place. If no
   matching expression is found, an empty string is returned.
-  
+
   Example usage:
 
   .. code-block:: cmake
@@ -138,19 +148,19 @@ Usage
     # Case 1: Extract from a single BUILD_INTERFACE expression in place
     set(value_1 "file1.h;$<BUILD_INTERFACE:file2.h;file3.h>;file4.h")
     string_manip(EXTRACT_INTERFACE value_1 BUILD)
-    # output is:
+    # value_1 is:
     #   file2.h;file3.h
 
     # Case 2: Extract from a single INSTALL_INTERFACE expression in place
-    set(value_1 "file5.h;$<INSTALL_INTERFACE:file6.h;file7.h>;file8.h")
-    string_manip(EXTRACT_INTERFACE value_1 INSTALL)
-    # output is:
+    set(value_2 "file5.h;$<INSTALL_INTERFACE:file6.h;file7.h>;file8.h")
+    string_manip(EXTRACT_INTERFACE value_2 INSTALL)
+    # value_2 is:
     #    file6.h;file7.h
 
     # Case 3: Multiple expressions (BUILD + INSTALL), extract only BUILD
     set(value_3 "file1.h;$<BUILD_INTERFACE:file2.h;file3.h>;file4.h;file5.h;$<INSTALL_INTERFACE:file6.h;file7.h>;file8.h")
     string_manip(EXTRACT_INTERFACE value_3 BUILD)
-    # output is:
+    # value_3 is:
     #   file2.h;file3.h
 #]=======================================================================]
 
@@ -217,7 +227,7 @@ macro(_string_manip_split_transform_identifier_upper)
   if(NOT ${arg_C_IDENTIFIER_UPPER})
     message(FATAL_ERROR "string_manip(SPLIT_TRANSFORM) requires the keyword C_IDENTIFIER_UPPER to be provided!")
   endif()
-  
+
   set(output_formated_word "")
     # Check if the input string is empty to avoid fatal error in ``string_manip(SPLIT ...)``
   if(NOT "${${arg_SPLIT_TRANSFORM}}" STREQUAL "")
@@ -257,7 +267,7 @@ macro(_string_manip_split_transform_start_case)
   if(NOT ${arg_START_CASE})
     message(FATAL_ERROR "string_manip(SPLIT_TRANSFORM) requires the keyword START_CASE to be provided!")
   endif()
-  
+
   set(output_formated_word "")
   # Check if the input string is empty to avoid fatal error in ``string_manip(SPLIT ...)``
   if(NOT "${${arg_SPLIT_TRANSFORM}}" STREQUAL "")

@@ -32,7 +32,7 @@ function(${CMAKETEST_TEST})
       file_manip(GET_COMPONENT "${input}" MODE DIRECTORY OUTPUT_VARIABLE output)
       ct_assert_string(output)
       ct_assert_equal(output "data/src")
-      
+
       set(input
         "${TESTS_DATA_DIR}/src/main.cpp"
         "${TESTS_DATA_DIR}/src/source_1.cpp"
@@ -67,7 +67,7 @@ function(${CMAKETEST_TEST})
       file_manip(GET_COMPONENT "${input}" MODE NAME OUTPUT_VARIABLE output)
       ct_assert_string(output)
       ct_assert_equal(output "main.cpp")
-      
+
       set(input
         "${TESTS_DATA_DIR}/src/main.cpp"
         "${TESTS_DATA_DIR}/src/source_1.cpp"
@@ -92,7 +92,7 @@ function(${CMAKETEST_TEST})
     endfunction()
   endfunction()
 
-  ct_add_section(NAME "path_to_non_existing_files")
+  ct_add_section(NAME "path_to_nonexistent_files")
   function(${CMAKETEST_SECTION})
 
     ct_add_section(NAME "directory_mode")
@@ -221,7 +221,7 @@ function(${CMAKETEST_TEST})
     set(input "${TESTS_DATA_DIR}/src/main.cpp")
     file_manip(GET_COMPONENT "${input}" MODE FAKE OUTPUT_VARIABLE output)
   endfunction()
-  
+
   ct_add_section(NAME "throws_if_arg_output_var_is_missing_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     set(input "${TESTS_DATA_DIR}/src/main.cpp")

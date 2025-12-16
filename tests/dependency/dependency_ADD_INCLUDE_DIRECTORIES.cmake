@@ -43,7 +43,7 @@ function(${CMAKETEST_TEST})
   endmacro()
 
   # Functionalities checking
-  ct_add_section(NAME "set_non_existing_dirs")
+  ct_add_section(NAME "set_nonexistent_dirs")
   function(${CMAKETEST_SECTION})
     _set_up_test("imp_static_mock_lib")
     dependency(ADD_INCLUDE_DIRECTORIES "imp_static_mock_lib" SET
@@ -206,7 +206,7 @@ function(${CMAKETEST_TEST})
     ct_assert_equal("imp_shared_mock_lib_INCLUDE_DIR" "")
     ct_assert_equal("imp_shared_mock_lib_INCLUDE_DIRS" "")
   endfunction()
-  
+
   ct_add_section(NAME "append_all_interfaces")
   function(${CMAKETEST_SECTION})
     _set_up_test("imp_static_mock_lib")
@@ -416,7 +416,7 @@ function(${CMAKETEST_TEST})
         "$<INSTALL_INTERFACE:include>"
     )
   endfunction()
-  
+
   ct_add_section(NAME "throws_if_arg_modifier_is_twice" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     dependency(ADD_INCLUDE_DIRECTORIES "imp_shared_mock_lib" SET APPEND

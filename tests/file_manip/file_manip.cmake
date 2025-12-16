@@ -17,7 +17,7 @@ function(${CMAKETEST_TEST})
   ct_add_section(NAME "public_command")
   function(${CMAKETEST_SECTION})
   
-    ct_add_section(NAME "throws_if_unknown_argument" EXPECTFAIL)
+    ct_add_section(NAME "throws_if_unrecognized_argument" EXPECTFAIL)
     function(${CMAKETEST_SECTION})
       file_manip(FOO)
     endfunction()

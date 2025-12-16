@@ -20,7 +20,7 @@ function(${CMAKETEST_TEST})
   # Functionalities checking
   ct_add_section(NAME "path_to_existing_files")
   function(${CMAKETEST_SECTION})
-  
+
     ct_add_section(NAME "inplace_version")
     function(${CMAKETEST_SECTION})
       set(input "")
@@ -95,9 +95,9 @@ function(${CMAKETEST_TEST})
     endfunction()
   endfunction()
 
-  ct_add_section(NAME "path_to_non_existing_input_file")
+  ct_add_section(NAME "path_to_nonexistent_input_file")
   function(${CMAKETEST_SECTION})
-  
+
     ct_add_section(NAME "inplace_version")
     function(${CMAKETEST_SECTION})
       set(input "${TESTS_DATA_DIR}/src/fake.cpp")
@@ -116,7 +116,7 @@ function(${CMAKETEST_TEST})
     endfunction()
   endfunction()
 
-  ct_add_section(NAME "path_to_non_existing_base_dir")
+  ct_add_section(NAME "path_to_nonexistent_base_dir")
   function(${CMAKETEST_SECTION})
 
     ct_add_section(NAME "inplace_version")

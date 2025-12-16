@@ -62,24 +62,24 @@
             
   <section id="print">
 <span id="module:Print"></span><h1>Print<a class="headerlink" href="#print" title="Link to this heading">¶</a></h1>
-<p>Log a message by wrapping the CMake <span class="target" id="index-0-command:cmake:command:message"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/message.html#command:message" title="(in CMake v4.2.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">message()</span></code></a> command to extend its functionalities .It requires CMake 3.20 or newer.</p>
+<p>Log a message by wrapping the CMake <span class="target" id="index-0-command:cmake:command:message"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/message.html#command:message" title="(in CMake v4.2.1)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">message()</span></code></a> command to extend its functionalities .It requires CMake 4.0.1 or newer.</p>
 <section id="synopsis">
 <h2>Synopsis<a class="headerlink" href="#synopsis" title="Link to this heading">¶</a></h2>
 <pre class="literal-block"><a class="reference internal" href="#print-formated-message">Print Formated Message</a>
   print([&lt;mode&gt;] &quot;message with formated text&quot; &lt;argument&gt;...)
 
 <a class="reference internal" href="#print-path-list">Print Path List</a>
-  print([&lt;mode&gt;] PATHS &lt;file-path&gt;... [INDENT])
+  print([&lt;mode&gt;] REL_PATHS [&lt;file-path&gt;...] [INDENT])
 
 <a class="reference internal" href="#print-string-list">Print String List</a>
-  print([&lt;mode&gt;] STRINGS &lt;string&gt;... [INDENT])</pre>
+  print([&lt;mode&gt;] STRINGS [&lt;string&gt;...] [INDENT])</pre>
 </section>
 <section id="module-variables">
 <h2>Module Variables<a class="headerlink" href="#module-variables" title="Link to this heading">¶</a></h2>
 <dl class="cmake variable">
 <dt class="sig sig-object cmake" id="variable:PRINT_BASE_DIR">
 <span class="sig-name descname"><span class="pre">PRINT_BASE_DIR</span></span><a class="headerlink" href="#variable:PRINT_BASE_DIR" title="Link to this definition">¶</a></dt>
-<dd><p>Specifies the base directory used to compute relative paths in the <span class="target" id="index-0-command:print"></span><a class="reference internal" href="#normal" title="print(normal)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">print(normal)</span></code></a> commands. Its default value is <span class="target" id="index-0-variable:cmake:variable:CMAKE_SOURCE_DIR"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/variable/CMAKE_SOURCE_DIR.html#variable:CMAKE_SOURCE_DIR" title="(in CMake v4.2.0)"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">CMAKE_SOURCE_DIR</span></code></a>.</p>
+<dd><p>Specifies the base directory used to compute relative paths in the <span class="target" id="index-0-command:print"></span><a class="reference internal" href="#normal" title="print(normal)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">print(normal)</span></code></a> commands. Its default value is <span class="target" id="index-0-variable:cmake:variable:CMAKE_SOURCE_DIR"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/variable/CMAKE_SOURCE_DIR.html#variable:CMAKE_SOURCE_DIR" title="(in CMake v4.2.1)"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">CMAKE_SOURCE_DIR</span></code></a>.</p>
 </dd></dl>
 
 </section>
@@ -89,87 +89,110 @@
 <dt class="sig sig-object cmake" id="normal">
 <span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">print(</span></span><span class="p"><span class="pre">[</span></span><span class="nv"><span class="pre">&lt;mode&gt;</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;message</span> <span class="pre">with</span> <span class="pre">formated</span> <span class="pre">text&quot;</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;argument&gt;...</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#normal" title="Link to this definition">¶</a></dt>
 <dd><p>Record the specified message text in the log, optionally specifying a message
-mode. This command is inspired by the <span class="target" id="index-1-command:cmake:command:message"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/message.html#command:message" title="(in CMake v4.2.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">message()</span></code></a> command from CMake and
+mode. This command is inspired by the <span class="target" id="index-1-command:cmake:command:message"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/message.html#command:message" title="(in CMake v4.2.1)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">message()</span></code></a> command from CMake and
 the C <a class="reference external" href="https://linux.die.net/man/3/printf">printf()</a> function.</p>
 <p>If specified, the optional <code class="docutils literal notranslate"><span class="pre">&lt;mode&gt;</span></code> keyword must be one of the standard
-message modes accepted by the <span class="target" id="index-2-command:cmake:command:message"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/message.html#command:message" title="(in CMake v4.2.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">message()</span></code></a> command, such as <code class="docutils literal notranslate"><span class="pre">STATUS</span></code>, <code class="docutils literal notranslate"><span class="pre">WARNING</span></code>, <code class="docutils literal notranslate"><span class="pre">ERROR</span></code>, etc.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">&quot;text</span> <span class="pre">to</span> <span class="pre">print&quot;</span></code> may contain one or more custom conversion directives
-enclosed in <code class="docutils literal notranslate"><span class="pre">&#64;</span></code> characters. These directives will be replaced using the
-provided arguments, in the order they are given. Text without directives
-is equivalent to a call to <span class="target" id="index-3-command:cmake:command:message"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/message.html#command:message" title="(in CMake v4.2.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">message()</span></code></a> command.</p>
+message modes accepted by the <span class="target" id="index-2-command:cmake:command:message"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/message.html#command:message" title="(in CMake v4.2.1)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">message()</span></code></a> command, such as <code class="docutils literal notranslate"><span class="pre">STATUS</span></code>, <code class="docutils literal notranslate"><span class="pre">WARNING</span></code>, <code class="docutils literal notranslate"><span class="pre">ERROR</span></code>, etc.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">&quot;message</span> <span class="pre">with</span> <span class="pre">formated</span> <span class="pre">text&quot;</span></code> may contain one or more custom conversion
+directives enclosed in <code class="docutils literal notranslate"><span class="pre">&#64;</span></code> characters. These directives will be replaced
+using the provided arguments, in the order they are given. Text without
+directives is equivalent to a call to
+<span class="target" id="index-3-command:cmake:command:message"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/message.html#command:message" title="(in CMake v4.2.1)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">message()</span></code></a> command.</p>
 <p>Each directive takes the form <code class="docutils literal notranslate"><span class="pre">&#64;specifier&#64;</span></code>, where <code class="docutils literal notranslate"><span class="pre">specifier</span></code> is one of
 the following:</p>
 <blockquote>
 <div><dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">&#64;ap&#64;</span></code> (for &quot;absolute path&quot;)</dt><dd><p>Converts the corresponding argument into an absolute path to an existing
-file or directory.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">&#64;ap&#64;</span></code> (for &quot;absolute path&quot;)</dt><dd><p>Converts the corresponding argument into an absolute path to a file or
+directory. The argument may be a relative or absolute path, and may even
+refer to a file or directory that does not exist on disk. An error is
+raised when the argument is empty.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">&#64;rp&#64;</span></code> (for &quot;relative path&quot;)</dt><dd><p>Converts the corresponding argument into a path relative to the value of
-the <span class="target" id="index-0-variable:PRINT_BASE_DIR"></span><a class="reference internal" href="#variable:PRINT_BASE_DIR" title="PRINT_BASE_DIR"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">PRINT_BASE_DIR</span></code></a> variable. The file or the directory must
-exist on the disk.</p>
+the <span class="target" id="index-0-variable:PRINT_BASE_DIR"></span><a class="reference internal" href="#variable:PRINT_BASE_DIR" title="PRINT_BASE_DIR"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">PRINT_BASE_DIR</span></code></a> variable. The argument may be a relative
+or absolute path, and may even refer to a file or directory that does not
+exist on disk. An error is raised when the argument is empty.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">&#64;apl&#64;</span></code> (for &quot;absolute path list&quot;)</dt><dd><p>Converts all the corresponding arguments into a list of absolute paths
-to existing files or directories. Each item is separated by a comma:
-<code class="docutils literal notranslate"><span class="pre">item1,</span> <span class="pre">item2,</span> <span class="pre">...</span></code>. This directive should be used last when the
-message includes several directives.</p>
+to files or directories. The arguments may be relative or absolute paths,
+and may even refer to files or directories that does not exist on disk.
+Each item is printed separated by a comma: <code class="docutils literal notranslate"><span class="pre">item1,</span> <span class="pre">item2,</span> <span class="pre">...</span></code>. When
+the provided list is empty, the directive is replaced with an empty
+string. This directive should be used last when the message includes
+several directives.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">&#64;rpl&#64;</span></code> (for &quot;relative path list&quot;)</dt><dd><p>Converts all the corresponding argument into a list of path relative to
-the value of the <span class="target" id="index-1-variable:PRINT_BASE_DIR"></span><a class="reference internal" href="#variable:PRINT_BASE_DIR" title="PRINT_BASE_DIR"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">PRINT_BASE_DIR</span></code></a> variable. Each item is
-separated by a comma: <code class="docutils literal notranslate"><span class="pre">item1,</span> <span class="pre">item2,</span> <span class="pre">...</span></code>. The files or the directories
-must exist on the disk. This directive should be used last when the
-message includes several directives.</p>
+the value of the <span class="target" id="index-1-variable:PRINT_BASE_DIR"></span><a class="reference internal" href="#variable:PRINT_BASE_DIR" title="PRINT_BASE_DIR"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">PRINT_BASE_DIR</span></code></a> variable. The arguments may
+be relative or absolute paths, and may even refer to files or
+directories that does not exist on disk. Each item is separated by a
+comma: <code class="docutils literal notranslate"><span class="pre">item1,</span> <span class="pre">item2,</span> <span class="pre">...</span></code>. The files or the directories must exist on
+the disk. When the provided list is empty, the directive is replaced with
+an empty string. This directive should be used last when the message
+includes several directives.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">&#64;sl&#64;</span></code> (for &quot;string list&quot;)</dt><dd><p>Converts all the corresponding argument into a list of strings where each
 item is separated by a comma: <code class="docutils literal notranslate"><span class="pre">item1,</span> <span class="pre">item2,</span> <span class="pre">...</span></code> like with the
-<span class="target" id="index-1-command:print"></span><a class="reference internal" href="#strings" title="print(strings)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">print(STRINGS)</span></code></a> command. This directive should be used last
-when the message includes several directives.</p>
+<span class="target" id="index-1-command:print"></span><a class="reference internal" href="#strings" title="print(strings)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">print(STRINGS)</span></code></a> command. When the provided list is empty, the
+directive is replaced with an empty string. This directive should be
+used last when the message includes several directives.</p>
 </dd>
 </dl>
 </div></blockquote>
+<p>For all path arguments, and because of the use of <span class="target" id="index-0-command:cmake:command:cmake_path"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/cmake_path.html#command:cmake_path" title="(in CMake v4.2.1)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_path()</span></code></a>,
+only syntactic aspects of paths are handled, there is no interaction of any
+kind with any underlying file system. A path may represent a non- existing
+path or even one that is not allowed to exist on the current file system
+or platform.</p>
+<p>An error is raised if a directive has no associated argument, or if a message
+contains an unsupported directive.</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="c"># Message with ap and rp directives, without mode</span>
 <span class="nf">set(</span><span class="no">PRINT_BASE_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}&quot;</span><span class="nf">)</span>
 <span class="nf">set(</span><span class="nb">my_path</span><span class="w"> </span><span class="s">&quot;src/main.cpp&quot;</span><span class="nf">)</span>
 <span class="nf">print(</span><span class="s">&quot;Absolute: @ap@, Relative: @rp@&quot;</span><span class="w"> </span><span class="s">&quot;${my_path}&quot;</span><span class="w"> </span><span class="s">&quot;${my_path}&quot;</span><span class="nf">)</span>
-<span class="c"># output is:</span>
+<span class="c"># Output:</span>
 <span class="c">#   Absolute: /full/path/to/src/main.cpp, Relative: src/main.cpp</span>
 
 <span class="c"># Message with ap and rp directives, with mode</span>
 <span class="nf">set(</span><span class="no">PRINT_BASE_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}&quot;</span><span class="nf">)</span>
 <span class="nf">set(</span><span class="nb">my_path</span><span class="w"> </span><span class="s">&quot;src/main.cpp&quot;</span><span class="nf">)</span>
 <span class="nf">print(</span><span class="no">STATUS</span><span class="w"> </span><span class="s">&quot;Absolute: @ap@, Relative: @rp@&quot;</span><span class="w"> </span><span class="s">&quot;${my_path}&quot;</span><span class="w"> </span><span class="s">&quot;${my_path}&quot;</span><span class="nf">)</span>
-<span class="c"># output is:</span>
+<span class="c"># Output:</span>
 <span class="c">#   -- Absolute: /full/path/to/src/main.cpp, Relative: src/main.cpp</span>
 
-<span class="c"># Message with apl directive</span>
+<span class="c"># Message with apl directive and empty argument</span>
+<span class="nf">print(</span><span class="no">STATUS</span><span class="w"> </span><span class="s">&quot;Absolute paths: @apl@&quot;</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="nf">)</span>
+<span class="c"># Output:</span>
+<span class="c">#   -- Absolute paths:</span>
+
+<span class="c"># Message with apl directive and various paths</span>
 <span class="nf">set(</span><span class="no">PRINT_BASE_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}&quot;</span><span class="nf">)</span>
 <span class="nf">set(</span><span class="nb">path_list</span>
 <span class="w">  </span><span class="s">&quot;src/main.cpp&quot;</span>
-<span class="w">  </span><span class="s">&quot;src/source_1.cpp&quot;</span>
-<span class="w">  </span><span class="s">&quot;src/source_2.cpp&quot;</span>
-<span class="w">  </span><span class="s">&quot;src/source_3.cpp&quot;</span>
-<span class="w">  </span><span class="s">&quot;src/source_4.cpp&quot;</span>
-<span class="w">  </span><span class="s">&quot;src/source_5.cpp&quot;</span>
-<span class="w">  </span><span class="s">&quot;src/sub_1/source_sub_1.cpp&quot;</span>
-<span class="w">  </span><span class="s">&quot;src/sub_2/source_sub_2.cpp&quot;</span><span class="nf">)</span>
-<span class="nf">print(</span><span class="no">STATUS</span><span class="w"> </span><span class="s">&quot;Absolute path list: @apl@.&quot;</span><span class="w"> </span><span class="s">&quot;${path_list}&quot;</span><span class="nf">)</span>
-<span class="c"># output is:</span>
-<span class="c">#   -- Absolute path list: /full/path/to/src/main.cpp, /full/path/to/src/source_1.cpp, /full/path/to/src/source_2.cpp, /full/path/to/src/source_3.cpp, /full/path/to/src/source_4.cpp, /full/path/to/src/source_5.cpp, /full/path/to/src/sub_1/source_sub_1.cpp, /full/path/to/src/sub_2/source_sub_2.cpp.</span>
+<span class="w">  </span><span class="s">&quot;src&quot;</span>
+<span class="w">  </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src/main.cpp&quot;</span>
+<span class="w">  </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src&quot;</span>
+<span class="w">  </span><span class="s">&quot;fake/directory/file.cpp&quot;</span>
+<span class="w">  </span><span class="s">&quot;fake/directory&quot;</span>
+<span class="w">  </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/fake/directory/file.cpp&quot;</span>
+<span class="w">  </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/fake/directory&quot;</span><span class="nf">)</span>
+<span class="nf">print(</span><span class="no">STATUS</span><span class="w"> </span><span class="s">&quot;Absolute path list: @apl@.&quot;</span><span class="w"> </span><span class="o">${</span><span class="nt">path_list</span><span class="o">}</span><span class="nf">)</span>
+<span class="c"># Output:</span>
+<span class="c">#   -- Absolute path list: /full/path/to/src/main.cpp, /full/path/to/src, /full/path/to/src/main.cpp, /full/path/to/src, /full/path/to/fake/directory/file.cpp, /full/path/to/fake/directory, /full/path/to/fake/directory/file.cpp, /full/path/to/fake/directory.</span>
 
-<span class="c"># Message with rpl directive</span>
+<span class="c"># Message with rpl directive and various paths</span>
 <span class="nf">set(</span><span class="no">PRINT_BASE_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}&quot;</span><span class="nf">)</span>
 <span class="nf">set(</span><span class="nb">path_list</span>
+<span class="w">  </span><span class="s">&quot;src/main.cpp&quot;</span>
+<span class="w">  </span><span class="s">&quot;src&quot;</span>
 <span class="w">  </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src/main.cpp&quot;</span>
-<span class="w">  </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src/source_1.cpp&quot;</span>
-<span class="w">  </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src/source_2.cpp&quot;</span>
-<span class="w">  </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src/source_3.cpp&quot;</span>
-<span class="w">  </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src/source_4.cpp&quot;</span>
-<span class="w">  </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src/source_5.cpp&quot;</span>
-<span class="w">  </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src/sub_1/source_sub_1.cpp&quot;</span>
-<span class="w">  </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src/sub_2/source_sub_2.cpp&quot;</span><span class="nf">)</span>
-<span class="nf">print(</span><span class="no">STATUS</span><span class="w"> </span><span class="s">&quot;Relative path list: @rpl@.&quot;</span><span class="w"> </span><span class="s">&quot;${path_list}&quot;</span><span class="nf">)</span>
-<span class="c"># output is:</span>
-<span class="c">#   -- Relative path list: src/main.cpp, src/source_1.cpp, src/source_2.cpp, src/source_3.cpp, src/source_4.cpp, src/source_5.cpp, src/sub_1/source_sub_1.cpp, src/sub_2/source_sub_2.cpp.</span>
+<span class="w">  </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src&quot;</span>
+<span class="w">  </span><span class="s">&quot;fake/directory/file.cpp&quot;</span>
+<span class="w">  </span><span class="s">&quot;fake/directory&quot;</span>
+<span class="w">  </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/fake/directory/file.cpp&quot;</span>
+<span class="w">  </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/fake/directory&quot;</span><span class="nf">)</span>
+<span class="nf">print(</span><span class="no">STATUS</span><span class="w"> </span><span class="s">&quot;Relative path list: @rpl@.&quot;</span><span class="w"> </span><span class="o">${</span><span class="nt">path_list</span><span class="o">}</span><span class="nf">)</span>
+<span class="c"># Output:</span>
+<span class="c">#   -- Relative path list: src/main.cpp, src, src/main.cpp, src, fake/directory/file.cpp, fake/directory, fake/directory/file.cpp, fake/directory.</span>
 
 <span class="c"># Message with sl directive</span>
 <span class="nf">set(</span><span class="nb">string_list</span>
@@ -183,29 +206,52 @@ when the message includes several directives.</p>
 <span class="w">  </span><span class="s">&quot;grape&quot;</span>
 <span class="w">  </span><span class="s">&quot;lemon&quot;</span>
 <span class="w">  </span><span class="s">&quot;watermelon&quot;</span><span class="nf">)</span>
-<span class="nf">print(</span><span class="no">STATUS</span><span class="w"> </span><span class="s">&quot;String list: @sl@.&quot;</span><span class="w"> </span><span class="s">&quot;${string_list}&quot;</span><span class="nf">)</span>
-<span class="c"># output is:</span>
+<span class="nf">print(</span><span class="no">STATUS</span><span class="w"> </span><span class="s">&quot;String list: @sl@.&quot;</span><span class="w"> </span><span class="o">${</span><span class="nt">string_list</span><span class="o">}</span><span class="nf">)</span>
+<span class="c"># Output:</span>
 <span class="c">#   -- String list: apple, banana, orange, pineapple, carrot, strawberry, pineapple, grape, lemon, watermelon.</span>
 </pre></div>
 </div>
 </dd></dl>
 
 <dl class="cmake signature" id="print-path-list">
-<dt class="sig sig-object cmake" id="paths">
-<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">print(</span></span><span class="p"><span class="pre">[</span></span><span class="nv"><span class="pre">&lt;mode&gt;</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="no"><span class="pre">PATHS</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;file-path&gt;...</span></span><span class="w"> </span><span class="p"><span class="pre">[</span></span><span class="no"><span class="pre">INDENT</span></span><span class="p"><span class="pre">]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#paths" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object cmake" id="rel-paths">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">print(</span></span><span class="p"><span class="pre">[</span></span><span class="nv"><span class="pre">&lt;mode&gt;</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="no"><span class="pre">REL_PATHS</span></span><span class="w"> </span><span class="p"><span class="pre">[</span></span><span class="nv"><span class="pre">&lt;file-path&gt;...</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">[</span></span><span class="no"><span class="pre">INDENT</span></span><span class="p"><span class="pre">]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#rel-paths" title="Link to this definition">¶</a></dt>
 <dd><p>Record in the log each file from the specified <code class="docutils literal notranslate"><span class="pre">&lt;file-path&gt;</span></code> list after
 converting them to paths relative to the value of the <span class="target" id="index-2-variable:PRINT_BASE_DIR"></span><a class="reference internal" href="#variable:PRINT_BASE_DIR" title="PRINT_BASE_DIR"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">PRINT_BASE_DIR</span></code></a>
-variable. Each item is separated by a comma: <code class="docutils literal notranslate"><span class="pre">item1,</span> <span class="pre">item2,</span> <span class="pre">...</span></code>. This
-command is inspired by the <span class="target" id="index-4-command:cmake:command:message"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/message.html#command:message" title="(in CMake v4.2.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">message()</span></code></a>
+variable. Each item is printed separated by a comma: <code class="docutils literal notranslate"><span class="pre">item1,</span> <span class="pre">item2,</span> <span class="pre">...</span></code>.
+This command is inspired by the <span class="target" id="index-4-command:cmake:command:message"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/message.html#command:message" title="(in CMake v4.2.1)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">message()</span></code></a>
 command from CMake.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">REL_PATHS</span></code> values may be relative or absolute paths, and may even
+refer to files or directories that does not exist on disk. Because of the use
+of <span class="target" id="index-1-command:cmake:command:cmake_path"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/cmake_path.html#command:cmake_path" title="(in CMake v4.2.1)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_path()</span></code></a>,
+only syntactic aspects of paths are handled, there is no interaction of any
+kind with any underlying file system. A path may represent a non- existing
+path or even one that is not allowed to exist on the current file system
+or platform.</p>
 <p>The optional <code class="docutils literal notranslate"><span class="pre">&lt;mode&gt;</span></code> argument determines the message type and may be any
-of the standard message modes supported by the <span class="target" id="index-5-command:cmake:command:message"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/message.html#command:message" title="(in CMake v4.2.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">message()</span></code></a> command,
+of the standard message modes supported by the <span class="target" id="index-5-command:cmake:command:message"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/message.html#command:message" title="(in CMake v4.2.1)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">message()</span></code></a> command,
 such as <code class="docutils literal notranslate"><span class="pre">STATUS</span></code>, <code class="docutils literal notranslate"><span class="pre">WARNING</span></code>, <code class="docutils literal notranslate"><span class="pre">ERROR</span></code>, etc.</p>
 <p>If the <code class="docutils literal notranslate"><span class="pre">INDENT</span></code> option is specified, the output message is indented by
 two spaces. This affects the indentation level of the printed message using
-the internal <span class="target" id="index-0-variable:cmake:variable:CMAKE_MESSAGE_INDENT"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/variable/CMAKE_MESSAGE_INDENT.html#variable:CMAKE_MESSAGE_INDENT" title="(in CMake v4.2.0)"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">CMAKE_MESSAGE_INDENT</span></code></a> stack.</p>
+the internal <span class="target" id="index-0-variable:cmake:variable:CMAKE_MESSAGE_INDENT"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/variable/CMAKE_MESSAGE_INDENT.html#variable:CMAKE_MESSAGE_INDENT" title="(in CMake v4.2.1)"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">CMAKE_MESSAGE_INDENT</span></code></a> stack.</p>
 <p>Example usage:</p>
-<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">set(</span><span class="no">PRINT_BASE_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}&quot;</span><span class="nf">)</span>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="c"># Print empty list</span>
+<span class="nf">print(</span><span class="no">STATUS</span><span class="w"> </span><span class="no">REL_PATHS</span><span class="nf">)</span>
+<span class="c"># Output:</span>
+<span class="c">#   --</span>
+
+<span class="c"># Print empty list with indentation</span>
+<span class="nf">print(</span><span class="no">STATUS</span><span class="w"> </span><span class="no">REL_PATHS</span><span class="w"> </span><span class="no">INDENT</span><span class="nf">)</span>
+<span class="c"># Output:</span>
+<span class="c">#   --</span>
+
+<span class="c"># Print empty list with quote</span>
+<span class="nf">print(</span><span class="no">STATUS</span><span class="w"> </span><span class="no">REL_PATHS</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="nf">)</span>
+<span class="c"># Output:</span>
+<span class="c">#   --</span>
+
+<span class="c"># Print list with indentation</span>
+<span class="nf">set(</span><span class="no">PRINT_BASE_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}&quot;</span><span class="nf">)</span>
 <span class="nf">set(</span><span class="nb">path_list</span>
 <span class="w">  </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src/main.cpp&quot;</span>
 <span class="w">  </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src/source_1.cpp&quot;</span>
@@ -215,32 +261,62 @@ the internal <span class="target" id="index-0-variable:cmake:variable:CMAKE_MESS
 <span class="w">  </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src/source_5.cpp&quot;</span>
 <span class="w">  </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src/sub_1/source_sub_1.cpp&quot;</span>
 <span class="w">  </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src/sub_2/source_sub_2.cpp&quot;</span><span class="nf">)</span>
-<span class="nf">print(</span><span class="no">STATUS</span><span class="w"> </span><span class="no">PATHS</span><span class="w"> </span><span class="o">${</span><span class="nt">path_list</span><span class="o">}</span><span class="w"> </span><span class="no">INDENT</span><span class="nf">)</span>
-<span class="c"># output is:</span>
-<span class="c">#   -- src/main.cpp, src/source_2.cpp, src/source_3.cpp, src/source_4.cpp, src/source_5.cpp, src/sub_1/source_sub_1.cpp, src/sub_2/source_sub_2.cpp</span>
+<span class="nf">print(</span><span class="no">STATUS</span><span class="w"> </span><span class="no">REL_PATHS</span><span class="w"> </span><span class="o">${</span><span class="nt">path_list</span><span class="o">}</span><span class="w"> </span><span class="no">INDENT</span><span class="nf">)</span>
+<span class="c"># Output:</span>
+<span class="c">#   --   src/main.cpp, src/source_2.cpp, src/source_3.cpp, src/source_4.cpp, src/source_5.cpp, src/sub_1/source_sub_1.cpp, src/sub_2/source_sub_2.cpp</span>
+
+<span class="c"># Print list with various paths</span>
+<span class="nf">set(</span><span class="no">PRINT_BASE_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}&quot;</span><span class="nf">)</span>
+<span class="nf">set(</span><span class="nb">path_list</span>
+<span class="w">  </span><span class="s">&quot;src/main.cpp&quot;</span>
+<span class="w">  </span><span class="s">&quot;src&quot;</span>
+<span class="w">  </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src/main.cpp&quot;</span>
+<span class="w">  </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src&quot;</span>
+<span class="w">  </span><span class="s">&quot;fake/directory/file.cpp&quot;</span>
+<span class="w">  </span><span class="s">&quot;fake/directory&quot;</span>
+<span class="w">  </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/fake/directory/file.cpp&quot;</span>
+<span class="w">  </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/fake/directory&quot;</span><span class="nf">)</span>
+<span class="nf">print(</span><span class="no">STATUS</span><span class="w"> </span><span class="no">REL_PATHS</span><span class="w"> </span><span class="o">${</span><span class="nt">path_list</span><span class="o">}</span><span class="nf">)</span>
+<span class="c"># Output:</span>
+<span class="c">#   -- src/main.cpp, src, src/main.cpp, src, fake/directory/file.cpp, fake/directory, fake/directory/file.cpp, fake/directory.</span>
 </pre></div>
 </div>
 </dd></dl>
 
 <dl class="cmake signature" id="print-string-list">
 <dt class="sig sig-object cmake" id="strings">
-<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">print(</span></span><span class="p"><span class="pre">[</span></span><span class="nv"><span class="pre">&lt;mode&gt;</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="no"><span class="pre">STRINGS</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;string&gt;...</span></span><span class="w"> </span><span class="p"><span class="pre">[</span></span><span class="no"><span class="pre">INDENT</span></span><span class="p"><span class="pre">]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#strings" title="Link to this definition">¶</a></dt>
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">print(</span></span><span class="p"><span class="pre">[</span></span><span class="nv"><span class="pre">&lt;mode&gt;</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="no"><span class="pre">STRINGS</span></span><span class="w"> </span><span class="p"><span class="pre">[</span></span><span class="nv"><span class="pre">&lt;string&gt;...</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">[</span></span><span class="no"><span class="pre">INDENT</span></span><span class="p"><span class="pre">]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#strings" title="Link to this definition">¶</a></dt>
 <dd><p>Record in the log each string from the given <code class="docutils literal notranslate"><span class="pre">&lt;string&gt;</span></code> list. Each item is
-separated by a comma: <code class="docutils literal notranslate"><span class="pre">item1,</span> <span class="pre">item2,</span> <span class="pre">...</span></code>. This command is inspired by the
-<span class="target" id="index-6-command:cmake:command:message"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/message.html#command:message" title="(in CMake v4.2.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">message()</span></code></a> command from CMake.</p>
+printed separated by a comma: <code class="docutils literal notranslate"><span class="pre">item1,</span> <span class="pre">item2,</span> <span class="pre">...</span></code>. This command is inspired by the
+<span class="target" id="index-6-command:cmake:command:message"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/message.html#command:message" title="(in CMake v4.2.1)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">message()</span></code></a> command from CMake.</p>
 <p>If specified, the optional <code class="docutils literal notranslate"><span class="pre">&lt;mode&gt;</span></code> keyword must be one of the standard
-message modes accepted by the <span class="target" id="index-7-command:cmake:command:message"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/message.html#command:message" title="(in CMake v4.2.0)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">message()</span></code></a> command, such as <code class="docutils literal notranslate"><span class="pre">STATUS</span></code>, <code class="docutils literal notranslate"><span class="pre">WARNING</span></code>, <code class="docutils literal notranslate"><span class="pre">ERROR</span></code>, etc.</p>
+message modes accepted by the <span class="target" id="index-7-command:cmake:command:message"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/message.html#command:message" title="(in CMake v4.2.1)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">message()</span></code></a> command, such as <code class="docutils literal notranslate"><span class="pre">STATUS</span></code>, <code class="docutils literal notranslate"><span class="pre">WARNING</span></code>, <code class="docutils literal notranslate"><span class="pre">ERROR</span></code>, etc.</p>
 <p>If the <code class="docutils literal notranslate"><span class="pre">INDENT</span></code> option is specified, the output message is indented by
 two spaces. This affects the indentation level of the printed message using
-the internal <span class="target" id="index-1-variable:cmake:variable:CMAKE_MESSAGE_INDENT"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/variable/CMAKE_MESSAGE_INDENT.html#variable:CMAKE_MESSAGE_INDENT" title="(in CMake v4.2.0)"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">CMAKE_MESSAGE_INDENT</span></code></a> stack.</p>
+the internal <span class="target" id="index-1-variable:cmake:variable:CMAKE_MESSAGE_INDENT"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/variable/CMAKE_MESSAGE_INDENT.html#variable:CMAKE_MESSAGE_INDENT" title="(in CMake v4.2.1)"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">CMAKE_MESSAGE_INDENT</span></code></a> stack.</p>
 <p>Example usage:</p>
-<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">set(</span><span class="nb">string_list</span>
-<span class="w">    </span><span class="s">&quot;apple&quot;</span><span class="w"> </span><span class="s">&quot;banana&quot;</span><span class="w"> </span><span class="s">&quot;orange&quot;</span>
-<span class="w">    </span><span class="s">&quot;carrot&quot;</span><span class="w"> </span><span class="s">&quot;strawberry&quot;</span><span class="w"> </span><span class="s">&quot;pineapple&quot;</span>
-<span class="w">    </span><span class="s">&quot;grape&quot;</span><span class="w"> </span><span class="s">&quot;lemon&quot;</span><span class="w"> </span><span class="s">&quot;watermelon&quot;</span><span class="nf">)</span>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="c"># Print empty list</span>
+<span class="nf">print(</span><span class="no">STATUS</span><span class="w"> </span><span class="no">STRINGS</span><span class="nf">)</span>
+<span class="c"># Output:</span>
+<span class="c">#   --</span>
+
+<span class="c"># Print empty list with indentation</span>
+<span class="nf">print(</span><span class="no">STATUS</span><span class="w"> </span><span class="no">STRINGS</span><span class="w"> </span><span class="no">INDENT</span><span class="nf">)</span>
+<span class="c"># Output:</span>
+<span class="c">#   --</span>
+
+<span class="c"># Print empty list with quote</span>
+<span class="nf">print(</span><span class="no">STATUS</span><span class="w"> </span><span class="no">STRINGS</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="nf">)</span>
+<span class="c"># Output:</span>
+<span class="c">#   --</span>
+
+<span class="c"># Print list of strings with indentation</span>
+<span class="nf">set(</span><span class="nb">string_list</span>
+<span class="w">  </span><span class="s">&quot;apple&quot;</span><span class="w"> </span><span class="s">&quot;banana&quot;</span><span class="w"> </span><span class="s">&quot;orange&quot;</span><span class="w"> </span><span class="s">&quot;pineapple&quot;</span><span class="w"> </span><span class="s">&quot;carrot&quot;</span>
+<span class="w">  </span><span class="s">&quot;strawberry&quot;</span><span class="w"> </span><span class="s">&quot;pineapple&quot;</span><span class="w"> </span><span class="s">&quot;grape&quot;</span><span class="w"> </span><span class="s">&quot;lemon&quot;</span><span class="w"> </span><span class="s">&quot;watermelon&quot;</span><span class="nf">)</span>
 <span class="nf">print(</span><span class="no">STATUS</span><span class="w"> </span><span class="no">STRINGS</span><span class="w"> </span><span class="o">${</span><span class="nt">string_list</span><span class="o">}</span><span class="w"> </span><span class="no">INDENT</span><span class="nf">)</span>
-<span class="c"># output is:</span>
-<span class="c">#   -- apple, banana, orange, carrot, strawberry, pineapple, grape, lemon, watermelon</span>
+<span class="c"># Output:</span>
+<span class="c">#   --   apple, banana, orange, pineapple, carrot, strawberry, pineapple, grape, lemon, watermelon</span>
 </pre></div>
 </div>
 </dd></dl>

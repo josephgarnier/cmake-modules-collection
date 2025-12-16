@@ -11,8 +11,8 @@
 #-------------------------------------------------------------------------------
 # Test of [FileManip module::ABSOLUTE_PATH operation]:
 #    file_manip(ABSOLUTE_PATH <file-list-var>
-#              BASE_DIR <dir-path>
-#              [OUTPUT_VARIABLE <output-list-var>])
+#               BASE_DIR <dir-path>
+#               [OUTPUT_VARIABLE <output-list-var>])
 ct_add_test(NAME "test_file_manip_absolute_path_operation")
 function(${CMAKETEST_TEST})
   include(FileManip)

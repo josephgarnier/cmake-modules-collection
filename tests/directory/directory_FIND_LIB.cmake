@@ -45,7 +45,7 @@ function(${CMAKETEST_TEST})
     # Build regex to find the binary library (IMPORTED_LOCATION)
     string(REGEX REPLACE [[\.]] [[\\.]] lib_suffix_list "${lib_suffix_list}") # escape '.' char
     set(LIB_REGEX "^(${lib_prefix_list})?${LIB_NAME}(${lib_suffix_list})$")
-    
+
     # Build regex to find the import library (IMPORTED_IMPLIB), only if applicable
     if(NOT "${implib_suffix_list}" STREQUAL "")
       list(JOIN implib_prefix_list "|" implib_prefix_list)
@@ -110,7 +110,7 @@ function(${CMAKETEST_TEST})
       ct_assert_false(output_implib) # equals to "output_implib-NOTFOUND"
     endfunction()
   endfunction()
-  
+
   ct_add_section(NAME "find_shared_lib")
   function(${CMAKETEST_SECTION})
 
@@ -170,9 +170,9 @@ function(${CMAKETEST_TEST})
 
   endfunction()
 
-  ct_add_section(NAME "find_non_existing_static_lib")
+  ct_add_section(NAME "find_nonexistent_static_lib")
   function(${CMAKETEST_SECTION})
-  
+
     ct_add_section(NAME "get_absolute_path")
     function(${CMAKETEST_SECTION})
       set(lib_name "fake_lib")
@@ -242,7 +242,7 @@ function(${CMAKETEST_TEST})
     endfunction()
   endfunction()
 
-  ct_add_section(NAME "find_non_existing_shared_lib")
+  ct_add_section(NAME "find_nonexistent_shared_lib")
   function(${CMAKETEST_SECTION})
     ct_add_section(NAME "get_absolute_path")
     function(${CMAKETEST_SECTION})
@@ -280,7 +280,7 @@ function(${CMAKETEST_TEST})
         ct_assert_true(output_implib) # NOT equals to "output_implib-NOTFOUND"
       endif()
     endfunction()
-    
+
     ct_add_section(NAME "get_relative_path")
     function(${CMAKETEST_SECTION})
       set(lib_name "fake_lib")
@@ -333,7 +333,7 @@ function(${CMAKETEST_TEST})
     )
     file(REMOVE_RECURSE "${TESTS_DATA_DIR}/bin_throws_if_lib_is_duplicated")
   endfunction()
-  
+
   ct_add_section(NAME "throws_if_arg_output_lib_var_is_missing_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     set(lib_name "shared_mock_lib")
@@ -451,7 +451,7 @@ function(${CMAKETEST_TEST})
       ROOT_DIR "${TESTS_DATA_DIR}"
     )
   endfunction()
-  
+
   ct_add_section(NAME "throws_if_arg_binary_type_is_twice" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     set(lib_name "shared_mock_lib")
@@ -498,7 +498,7 @@ function(${CMAKETEST_TEST})
       ROOT_DIR "${TESTS_DATA_DIR}"
     )
   endfunction()
-  
+
   ct_add_section(NAME "throws_if_arg_root_dir_is_missing_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     set(lib_name "shared_mock_lib")

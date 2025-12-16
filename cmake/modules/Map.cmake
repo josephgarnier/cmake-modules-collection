@@ -57,7 +57,7 @@ Reading
 
     set(input_map "one:1" "two:2" "three:" "four:4:4" "invalid" ":missing key")
     map(SIZE input_map size)
-    # map_size = 4, the two last entries are invalid and ignored, but "four:4:4"
+    # size is 4, the two last entries are invalid and ignored, but "four:4:4"
     # is valid
 
 .. signature::
@@ -75,7 +75,8 @@ Reading
 
     set(input_map "one:1" "two:2" "three:" "four:4:4" "invalid" ":missing key")
     map(GET input_map "four" value)
-    # value = 4:4
+    # value is:
+    #   "4:4"
     map(GET input_map "invalid" value)
     # Uncaught exception: Cannot find the key 'invalid'!
 
@@ -91,7 +92,8 @@ Reading
 
     set(input_map "one:1" "two:2" "three:" "four:4:4" "invalid" ":missing key")
     map(KEYS input_map map_keys)
-    # keys = one;two;three;four
+    # map_keys is:
+    #   one;two;three;four
 
 .. signature::
   map(VALUES <map-var> <output-list-var>)
@@ -105,7 +107,8 @@ Reading
 
     set(input_map "one:1" "two:2" "three:" "four:4:4" "invalid" ":missing key")
     map(VALUES input_map map_values)
-    # map_values = 1;2;;4:4
+    # map_values is:
+    #   1;2;;4:4
 
 Search
 ^^^^^^
@@ -126,9 +129,11 @@ Search
 
     set(input_map "one:1" "two:2" "three:" "four:4:4" "invalid" ":missing key")
     map(FIND input_map "four" value)
-    # value = 4:4
+    # value is:
+    #   "4:4"
     map(FIND input_map "invalid" value)
-    # value = invalid-NOTFOUND
+    # value is:
+    #   "invalid-NOTFOUND"
 
 .. signature::
   map(SEARCH <map-var> <value> <output-list-var>)
@@ -142,9 +147,11 @@ Search
 
     set(input_map "one:1" "two:2" "three:" "four:4:4" "invalid" ":missing key")
     map(SEARCH input_map "2" map_keys)
-    # map_keys = two
+    # map_keys is:
+    #   "two"
     map(SEARCH input_map "" map_keys)
-    # map_keys = three
+    # map_keys is:
+    #   "three"
 
 .. signature::
   map(HAS_KEY <map-var> <key> <output-var>)
@@ -159,11 +166,14 @@ Search
 
     set(input_map "one:1" "two:2" "three:" "four:4:4" "invalid" ":missing key")
     map(HAS_KEY input_map "two" map_has_key)
-    # map_has_key = true
+    # map_has_key is:
+    #   true
     map(HAS_KEY input_map "five" map_has_key)
-    # map_has_key = false
+    # map_has_key is:
+    #   false
     map(HAS_KEY input_map "invalid" map_has_key)
-    # map_has_key = false
+    # map_has_key is:
+    #   false
 
 .. signature::
   map(HAS_VALUE <map-var> <value> <output-var>)
@@ -178,11 +188,14 @@ Search
 
     set(input_map "one:1" "two:2" "three:" "four:4:4" "invalid" ":missing key")
     map(HAS_VALUE input_map "2" map_has_value)
-    # map_has_value = true
+    # map_has_value is:
+    #   true
     map(HAS_VALUE input_map "5" map_has_value)
-    # map_has_value = false
+    # map_has_value is:
+    #   false
     map(HAS_VALUE input_map "missing key" map_has_value)
-    # map_has_value = false
+    # map_has_value is:
+    #   false
 
 Modification
 ^^^^^^^^^^^^
@@ -201,7 +214,8 @@ Modification
     set(input_map "one:1" "two:2" "three:" "invalid" ":missing key")
     map(SET input_map "three" "3")
     map(SET input_map "four" "4:4")
-    # input_map = one:1;two:2;three:3;invalid;:missing key;four:4:4
+    # input_map is:
+    #   one:1;two:2;three:3;invalid;:missing key;four:4:4
 
 .. signature::
   map(ADD <map-var> <key> <value>)
@@ -218,7 +232,8 @@ Modification
     map(ADD input_map "three" "3")
     # No change, "three" already exists
     map(ADD input_map "four" "4:4")
-    # input_map = one:1;two:2;three:;invalid;:missing key;four:4:4
+    # input_map is:
+    #   one:1;two:2;three:;invalid;:missing key;four:4:4
 
 .. signature::
   map(REMOVE <map-var> <key>)
@@ -233,7 +248,8 @@ Modification
 
     set(input_map "one:1" "two:2" "three:" "four:4:4" "invalid" ":missing key")
     map(REMOVE input_map "two")
-    # input_map = one:1;three:;four:4:4;invalid;:missing key
+    # input_map is:
+    #   one:1;three:;four:4:4;invalid;:missing key
 #]=======================================================================]
 
 include_guard()
@@ -246,7 +262,6 @@ function(map)
   set(options "")
   set(one_value_args "")
   set(multi_value_args SIZE GET KEYS VALUES FIND SEARCH HAS_KEY HAS_VALUE SET ADD REMOVE)
-  # cmake_parse_arguments(MAP "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
   cmake_parse_arguments(PARSE_ARGV 0 arg
     "${options}" "${one_value_args}" "${multi_value_args}"
   )
@@ -433,7 +448,7 @@ macro(_map_search)
   if("${output_var}" STREQUAL "")
     message(FATAL_ERROR "map(SEARCH) cannot store result in empty variable!")
   endif()
-  
+
   set(map_content "${${map_var}}")
   set(${output_var} "")
 
@@ -442,11 +457,11 @@ macro(_map_search)
     if(NOT ${key_is_valid})
       continue()
     endif()
-    
+
     string(LENGTH "${entry_key}" key_len)
     math(EXPR value_start "${key_len} + 1") # Skip the colon separator
     string(SUBSTRING "${entry}" ${value_start} -1 entry_value)
-    
+
     list(APPEND result_values "${entry_value}")
     if("${entry_value}" STREQUAL "${value}")
       list(APPEND ${output_var} "${entry_key}")
@@ -518,7 +533,7 @@ macro(_map_has_value)
     if(NOT ${key_is_valid})
       continue()
     endif()
-    
+
     string(LENGTH "${entry_key}" key_len)
     math(EXPR value_start "${key_len} + 1") # Skip the colon separator
     string(SUBSTRING "${entry}" ${value_start} -1 entry_value)
@@ -548,7 +563,7 @@ macro(_map_set)
   if("${new_key}" STREQUAL "")
     message(FATAL_ERROR "map(SET) cannot set empty key!")
   endif()
-  
+
   set(map_content "${${map_var}}")
   set(new_entry "${new_key}:${new_value}")
   set(key_is_found false)
@@ -687,7 +702,7 @@ function(_validate_map_key entry output_key_var output_is_valid_var)
     set(${output_is_valid_var} false)
     return(PROPAGATE "${output_key_var}" "${output_is_valid_var}")
   endif()
-  
+
   set(${output_key_var} "${entry_key}")
   set(${output_is_valid_var} true)
   return(PROPAGATE "${output_key_var}" "${output_is_valid_var}")
