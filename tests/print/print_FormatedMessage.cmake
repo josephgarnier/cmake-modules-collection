@@ -20,7 +20,7 @@ function(${CMAKETEST_TEST})
   # Functionalities checking
   ct_add_section(NAME "print_empty_message")
   function(${CMAKETEST_SECTION})
-  
+
     ct_add_section(NAME "without_mode")
     function(${CMAKETEST_SECTION})
       print("")
@@ -69,14 +69,72 @@ function(${CMAKETEST_TEST})
 
     ct_add_section(NAME "without_mode")
     function(${CMAKETEST_SECTION})
+      # Relative input path to existing file
       print("Before @ap@ After" "../data/src/main.cpp")
       ct_assert_prints("Before ${TESTS_DATA_DIR}/src/main.cpp After")
+
+      # Relative input path to existing directory
+      print("Before @ap@ After" "../data/src")
+      ct_assert_prints("Before ${TESTS_DATA_DIR}/src After")
+
+      # Absolute input path to existing file
+      print("Before @ap@ After" "${TESTS_DATA_DIR}/src/main.cpp")
+      ct_assert_prints("Before ${TESTS_DATA_DIR}/src/main.cpp After")
+
+      # Absolute input path to existing directory
+      print("Before @ap@ After" "${TESTS_DATA_DIR}/src")
+      ct_assert_prints("Before ${TESTS_DATA_DIR}/src After")
+
+      # Relative input path to nonexistent file
+      print("Before @ap@ After" "../data/fake/directory/file.cpp")
+      ct_assert_prints("Before ${TESTS_DATA_DIR}/fake/directory/file.cpp After")
+
+      # Relative input path to nonexistent directory
+      print("Before @ap@ After" "../data/fake/directory")
+      ct_assert_prints("Before ${TESTS_DATA_DIR}/fake/directory After")
+
+      # Absolute input path to nonexistent file
+      print("Before @ap@ After" "${TESTS_DATA_DIR}/fake/directory/file.cpp")
+      ct_assert_prints("Before ${TESTS_DATA_DIR}/fake/directory/file.cpp After")
+
+      # Absolute input path to nonexistent directory
+      print("Before @ap@ After" "${TESTS_DATA_DIR}/fake/directory")
+      ct_assert_prints("Before ${TESTS_DATA_DIR}/fake/directory After")
     endfunction()
 
     ct_add_section(NAME "with_mode")
     function(${CMAKETEST_SECTION})
+      # Relative input path to existing file
       print(STATUS "Before @ap@ After" "../data/src/main.cpp")
-      ct_assert_prints("Before ${TESTS_DATA_DIR}/src/main.cpp After") # This function ignores the status mode
+      ct_assert_prints("Before ${TESTS_DATA_DIR}/src/main.cpp After")
+
+      # Relative input path to existing directory
+      print(STATUS "Before @ap@ After" "../data/src")
+      ct_assert_prints("Before ${TESTS_DATA_DIR}/src After")
+
+      # Absolute input path to existing file
+      print(STATUS "Before @ap@ After" "${TESTS_DATA_DIR}/src/main.cpp")
+      ct_assert_prints("Before ${TESTS_DATA_DIR}/src/main.cpp After")
+
+      # Absolute input path to existing directory
+      print(STATUS "Before @ap@ After" "${TESTS_DATA_DIR}/src")
+      ct_assert_prints("Before ${TESTS_DATA_DIR}/src After")
+
+      # Relative input path to nonexistent file
+      print(STATUS "Before @ap@ After" "../data/fake/directory/file.cpp")
+      ct_assert_prints("Before ${TESTS_DATA_DIR}/fake/directory/file.cpp After")
+
+      # Relative input path to nonexistent directory
+      print(STATUS "Before @ap@ After" "../data/fake/directory")
+      ct_assert_prints("Before ${TESTS_DATA_DIR}/fake/directory After")
+
+      # Absolute input path to nonexistent file
+      print(STATUS "Before @ap@ After" "${TESTS_DATA_DIR}/fake/directory/file.cpp")
+      ct_assert_prints("Before ${TESTS_DATA_DIR}/fake/directory/file.cpp After")
+
+      # Absolute input path to nonexistent directory
+      print(STATUS "Before @ap@ After" "${TESTS_DATA_DIR}/fake/directory")
+      ct_assert_prints("Before ${TESTS_DATA_DIR}/fake/directory After")
     endfunction()
   endfunction()
 
@@ -85,58 +143,116 @@ function(${CMAKETEST_TEST})
 
     ct_add_section(NAME "without_mode")
     function(${CMAKETEST_SECTION})
+      # Relative input path to existing file
+      print("Before @rp@ After" "../data/src/main.cpp")
+      ct_assert_prints("Before ../data/src/main.cpp After")
+
+      # Relative input path to existing directory
+      print("Before @rp@ After" "../data/src")
+      ct_assert_prints("Before ../data/src After")
+
+      # Absolute input path to existing file
       print("Before @rp@ After" "${TESTS_DATA_DIR}/src/main.cpp")
       ct_assert_prints("Before ../data/src/main.cpp After")
+
+      # Absolute input path to existing directory
+      print("Before @rp@ After" "${TESTS_DATA_DIR}/src")
+      ct_assert_prints("Before ../data/src After")
+
+      # Relative input path to nonexistent file
+      print("Before @rp@ After" "../data/fake/directory/file.cpp")
+      ct_assert_prints("Before ../data/fake/directory/file.cpp After")
+
+      # Relative input path to nonexistent directory
+      print("Before @rp@ After" "../data/fake/directory")
+      ct_assert_prints("Before ../data/fake/directory After")
+
+      # Absolute input path to nonexistent file
+      print("Before @rp@ After" "${TESTS_DATA_DIR}/fake/directory/file.cpp")
+      ct_assert_prints("Before ../data/fake/directory/file.cpp After")
+
+      # Absolute input path to nonexistent directory
+      print("Before @rp@ After" "${TESTS_DATA_DIR}/fake/directory")
+      ct_assert_prints("Before ../data/fake/directory After")
     endfunction()
 
     ct_add_section(NAME "with_mode")
     function(${CMAKETEST_SECTION})
+      # Relative input path to existing file
+      print(STATUS "Before @rp@ After" "../data/src/main.cpp")
+      ct_assert_prints("Before ../data/src/main.cpp After")
+
+      # Relative input path to existing directory
+      print(STATUS "Before @rp@ After" "../data/src")
+      ct_assert_prints("Before ../data/src After")
+
+      # Absolute input path to existing file
       print(STATUS "Before @rp@ After" "${TESTS_DATA_DIR}/src/main.cpp")
-      ct_assert_prints("Before ../data/src/main.cpp After") # This function ignores the status mode
+      ct_assert_prints("Before ../data/src/main.cpp After")
+
+      # Absolute input path to existing directory
+      print(STATUS "Before @rp@ After" "${TESTS_DATA_DIR}/src")
+      ct_assert_prints("Before ../data/src After")
+
+      # Relative input path to nonexistent file
+      print(STATUS "Before @rp@ After" "../data/fake/directory/file.cpp")
+      ct_assert_prints("Before ../data/fake/directory/file.cpp After")
+
+      # Relative input path to nonexistent directory
+      print(STATUS "Before @rp@ After" "../data/fake/directory")
+      ct_assert_prints("Before ../data/fake/directory After")
+
+      # Absolute input path to nonexistent file
+      print(STATUS "Before @rp@ After" "${TESTS_DATA_DIR}/fake/directory/file.cpp")
+      ct_assert_prints("Before ../data/fake/directory/file.cpp After")
+
+      # Absolute input path to nonexistent directory
+      print(STATUS "Before @rp@ After" "${TESTS_DATA_DIR}/fake/directory")
+      ct_assert_prints("Before ../data/fake/directory After")
     endfunction()
   endfunction()
 
   ct_add_section(NAME "print_message_with_apl_directive")
   function(${CMAKETEST_SECTION})
-  
+
     ct_add_section(NAME "without_mode")
     function(${CMAKETEST_SECTION})
-      # Test with input argument
-      set(input_paths_arg
+      # Input argument is set
+      set(input_mixed_paths_arg
         "../data/src/main.cpp"
-        "../data/src/source_1.cpp"
-        "../data/src/source_2.cpp"
-        "../data/src/source_3.cpp"
-        "../data/src/source_4.cpp"
-        "../data/src/source_5.cpp"
-        "../data/src/sub_1/source_sub_1.cpp"
-        "../data/src/sub_2/source_sub_2.cpp")
-      print("Before @apl@ After" ${input_paths_arg})
-      ct_assert_prints("Before ${TESTS_DATA_DIR}/src/main.cpp, ${TESTS_DATA_DIR}/src/source_1.cpp, ${TESTS_DATA_DIR}/src/source_2.cpp, ${TESTS_DATA_DIR}/src/source_3.cpp, ${TESTS_DATA_DIR}/src/source_4.cpp, ${TESTS_DATA_DIR}/src/source_5.cpp, ${TESTS_DATA_DIR}/src/sub_1/source_sub_1.cpp, ${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp After")
+        "../data/src"
+        "${TESTS_DATA_DIR}/src/main.cpp"
+        "${TESTS_DATA_DIR}/src"
+        "../data/fake/directory/file.cpp"
+        "../data/fake/directory"
+        "${TESTS_DATA_DIR}/fake/directory/file.cpp"
+        "${TESTS_DATA_DIR}/fake/directory")
+      print("Before @apl@ After" ${input_mixed_paths_arg})
+      ct_assert_prints("Before ${TESTS_DATA_DIR}/src/main.cpp, ${TESTS_DATA_DIR}/src, ${TESTS_DATA_DIR}/src/main.cpp, ${TESTS_DATA_DIR}/src, ${TESTS_DATA_DIR}/fake/directory/file.cpp, ${TESTS_DATA_DIR}/fake/directory, ${TESTS_DATA_DIR}/fake/directory/file.cpp, ${TESTS_DATA_DIR}/fake/directory After")
 
-      # Test with empty argument
+      # Input argument is empty
       print("Before @apl@ After" "")
       ct_assert_prints("Before  After")
     endfunction()
 
     ct_add_section(NAME "with_mode")
     function(${CMAKETEST_SECTION})
-      # Test with input argument
-      set(input_paths_arg
+      # Input argument is set
+      set(input_mixed_paths_arg
         "../data/src/main.cpp"
-        "../data/src/source_1.cpp"
-        "../data/src/source_2.cpp"
-        "../data/src/source_3.cpp"
-        "../data/src/source_4.cpp"
-        "../data/src/source_5.cpp"
-        "../data/src/sub_1/source_sub_1.cpp"
-        "../data/src/sub_2/source_sub_2.cpp")
-      print(STATUS "Before @apl@ After" ${input_paths_arg})
-      ct_assert_prints("Before ${TESTS_DATA_DIR}/src/main.cpp, ${TESTS_DATA_DIR}/src/source_1.cpp, ${TESTS_DATA_DIR}/src/source_2.cpp, ${TESTS_DATA_DIR}/src/source_3.cpp, ${TESTS_DATA_DIR}/src/source_4.cpp, ${TESTS_DATA_DIR}/src/source_5.cpp, ${TESTS_DATA_DIR}/src/sub_1/source_sub_1.cpp, ${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp After") # This function ignores the status mode
+        "../data/src"
+        "${TESTS_DATA_DIR}/src/main.cpp"
+        "${TESTS_DATA_DIR}/src"
+        "../data/fake/directory/file.cpp"
+        "../data/fake/directory"
+        "${TESTS_DATA_DIR}/fake/directory/file.cpp"
+        "${TESTS_DATA_DIR}/fake/directory")
+      print(STATUS "Before @apl@ After" ${input_mixed_paths_arg})
+      ct_assert_prints("Before ${TESTS_DATA_DIR}/src/main.cpp, ${TESTS_DATA_DIR}/src, ${TESTS_DATA_DIR}/src/main.cpp, ${TESTS_DATA_DIR}/src, ${TESTS_DATA_DIR}/fake/directory/file.cpp, ${TESTS_DATA_DIR}/fake/directory, ${TESTS_DATA_DIR}/fake/directory/file.cpp, ${TESTS_DATA_DIR}/fake/directory After")
 
-      # Test with empty argument
+      # Input argument is empty
       print(STATUS "Before @apl@ After" "")
-      ct_assert_prints("Before  After") # This function ignores the status mode
+      ct_assert_prints("Before  After")
     endfunction()
   endfunction()
 
@@ -145,48 +261,48 @@ function(${CMAKETEST_TEST})
 
     ct_add_section(NAME "without_mode")
     function(${CMAKETEST_SECTION})
-      # Test with input argument
-      set(input_paths_arg
+      # Input argument is set
+      set(input_mixed_paths_arg
+        "../data/src/main.cpp"
+        "../data/src"
         "${TESTS_DATA_DIR}/src/main.cpp"
-        "${TESTS_DATA_DIR}/src/source_1.cpp"
-        "${TESTS_DATA_DIR}/src/source_2.cpp"
-        "${TESTS_DATA_DIR}/src/source_3.cpp"
-        "${TESTS_DATA_DIR}/src/source_4.cpp"
-        "${TESTS_DATA_DIR}/src/source_5.cpp"
-        "${TESTS_DATA_DIR}/src/sub_1/source_sub_1.cpp"
-        "${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp")
-      print("Before @rpl@ After" ${input_paths_arg})
-      ct_assert_prints("Before ../data/src/main.cpp, ../data/src/source_1.cpp, ../data/src/source_2.cpp, ../data/src/source_3.cpp, ../data/src/source_4.cpp, ../data/src/source_5.cpp, ../data/src/sub_1/source_sub_1.cpp, ../data/src/sub_2/source_sub_2.cpp After")
+        "${TESTS_DATA_DIR}/src"
+        "../data/fake/directory/file.cpp"
+        "../data/fake/directory"
+        "${TESTS_DATA_DIR}/fake/directory/file.cpp"
+        "${TESTS_DATA_DIR}/fake/directory")
+      print("Before @rpl@ After" ${input_mixed_paths_arg})
+      ct_assert_prints("Before ../data/src/main.cpp, ../data/src, ../data/src/main.cpp, ../data/src, ../data/fake/directory/file.cpp, ../data/fake/directory, ../data/fake/directory/file.cpp, ../data/fake/directory After")
 
-      # Test with empty argument
+      # Input argument is empty
       print("Before @rpl@ After" "")
       ct_assert_prints("Before  After")
     endfunction()
 
     ct_add_section(NAME "with_mode")
     function(${CMAKETEST_SECTION})
-      # Test with input argument
-      set(input_paths_arg
+      # Input argument is set
+      set(input_mixed_paths_arg
+        "../data/src/main.cpp"
+        "../data/src"
         "${TESTS_DATA_DIR}/src/main.cpp"
-        "${TESTS_DATA_DIR}/src/source_1.cpp"
-        "${TESTS_DATA_DIR}/src/source_2.cpp"
-        "${TESTS_DATA_DIR}/src/source_3.cpp"
-        "${TESTS_DATA_DIR}/src/source_4.cpp"
-        "${TESTS_DATA_DIR}/src/source_5.cpp"
-        "${TESTS_DATA_DIR}/src/sub_1/source_sub_1.cpp"
-        "${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp")
-      print(STATUS "Before @rpl@ After" ${input_paths_arg})
-      ct_assert_prints("Before ../data/src/main.cpp, ../data/src/source_1.cpp, ../data/src/source_2.cpp, ../data/src/source_3.cpp, ../data/src/source_4.cpp, ../data/src/source_5.cpp, ../data/src/sub_1/source_sub_1.cpp, ../data/src/sub_2/source_sub_2.cpp After") # This function ignores the status mode
+        "${TESTS_DATA_DIR}/src"
+        "../data/fake/directory/file.cpp"
+        "../data/fake/directory"
+        "${TESTS_DATA_DIR}/fake/directory/file.cpp"
+        "${TESTS_DATA_DIR}/fake/directory")
+      print(STATUS "Before @rpl@ After" ${input_mixed_paths_arg})
+      ct_assert_prints("Before ../data/src/main.cpp, ../data/src, ../data/src/main.cpp, ../data/src, ../data/fake/directory/file.cpp, ../data/fake/directory, ../data/fake/directory/file.cpp, ../data/fake/directory After")
 
-      # Test with empty argument
+      # Input argument is empty
       print(STATUS "Before @rpl@ After" "")
-      ct_assert_prints("Before  After") # This function ignores the status mode
+      ct_assert_prints("Before  After")
     endfunction()
   endfunction()
 
   ct_add_section(NAME "print_message_with_mixed_directives")
   function(${CMAKETEST_SECTION})
-  
+
     ct_add_section(NAME "without_mode")
     function(${CMAKETEST_SECTION})
       # RP + AP
@@ -196,7 +312,7 @@ function(${CMAKETEST_TEST})
       # RP + APL
       set(input_paths_arg
         "../data/src/main.cpp"
-        "../data/src/source_1.cpp"
+        "../data/src/main.cpp"
         "../data/src/source_2.cpp"
         "../data/src/source_3.cpp"
         "../data/src/source_4.cpp"
@@ -204,7 +320,7 @@ function(${CMAKETEST_TEST})
         "../data/src/sub_1/source_sub_1.cpp"
         "../data/src/sub_2/source_sub_2.cpp")
       print("Before @rp@ Middle @apl@ After" "${TESTS_DATA_DIR}/src/main.cpp" ${input_paths_arg})
-      ct_assert_prints("Before ../data/src/main.cpp Middle ${TESTS_DATA_DIR}/src/main.cpp, ${TESTS_DATA_DIR}/src/source_1.cpp, ${TESTS_DATA_DIR}/src/source_2.cpp, ${TESTS_DATA_DIR}/src/source_3.cpp, ${TESTS_DATA_DIR}/src/source_4.cpp, ${TESTS_DATA_DIR}/src/source_5.cpp, ${TESTS_DATA_DIR}/src/sub_1/source_sub_1.cpp, ${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp After")
+      ct_assert_prints("Before ../data/src/main.cpp Middle ${TESTS_DATA_DIR}/src/main.cpp, ${TESTS_DATA_DIR}/src/main.cpp, ${TESTS_DATA_DIR}/src/source_2.cpp, ${TESTS_DATA_DIR}/src/source_3.cpp, ${TESTS_DATA_DIR}/src/source_4.cpp, ${TESTS_DATA_DIR}/src/source_5.cpp, ${TESTS_DATA_DIR}/src/sub_1/source_sub_1.cpp, ${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp After")
 
       # RP + APL with empty argument
       print("Before @rp@ Middle @apl@ After" "${TESTS_DATA_DIR}/src/main.cpp" "")
@@ -220,7 +336,7 @@ function(${CMAKETEST_TEST})
       # RP + APL
       set(input_paths_arg
         "../data/src/main.cpp"
-        "../data/src/source_1.cpp"
+        "../data/src/main.cpp"
         "../data/src/source_2.cpp"
         "../data/src/source_3.cpp"
         "../data/src/source_4.cpp"
@@ -228,11 +344,11 @@ function(${CMAKETEST_TEST})
         "../data/src/sub_1/source_sub_1.cpp"
         "../data/src/sub_2/source_sub_2.cpp")
       print(STATUS "Before @rp@ Middle @apl@ After" "${TESTS_DATA_DIR}/src/main.cpp" ${input_paths_arg})
-      ct_assert_prints("Before ../data/src/main.cpp Middle ${TESTS_DATA_DIR}/src/main.cpp, ${TESTS_DATA_DIR}/src/source_1.cpp, ${TESTS_DATA_DIR}/src/source_2.cpp, ${TESTS_DATA_DIR}/src/source_3.cpp, ${TESTS_DATA_DIR}/src/source_4.cpp, ${TESTS_DATA_DIR}/src/source_5.cpp, ${TESTS_DATA_DIR}/src/sub_1/source_sub_1.cpp, ${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp After") # This function ignores the status mode
+      ct_assert_prints("Before ../data/src/main.cpp Middle ${TESTS_DATA_DIR}/src/main.cpp, ${TESTS_DATA_DIR}/src/main.cpp, ${TESTS_DATA_DIR}/src/source_2.cpp, ${TESTS_DATA_DIR}/src/source_3.cpp, ${TESTS_DATA_DIR}/src/source_4.cpp, ${TESTS_DATA_DIR}/src/source_5.cpp, ${TESTS_DATA_DIR}/src/sub_1/source_sub_1.cpp, ${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp After")
 
       # RP + APL with empty argument
       print("Before @rp@ Middle @apl@ After" "${TESTS_DATA_DIR}/src/main.cpp" "")
-      ct_assert_prints("Before ../data/src/main.cpp Middle  After") # This function ignores the status mode
+      ct_assert_prints("Before ../data/src/main.cpp Middle  After")
     endfunction()
   endfunction()
 
@@ -241,7 +357,7 @@ function(${CMAKETEST_TEST})
 
     ct_add_section(NAME "without_mode")
     function(${CMAKETEST_SECTION})
-      # Test with input argument
+      # Input argument is set
       set(input_strings_arg
         "apple"
         "banana"
@@ -256,14 +372,14 @@ function(${CMAKETEST_TEST})
       print("Before @sl@ After" ${input_strings_arg})
       ct_assert_prints("Before apple, banana, orange, pineapple, carrot, strawberry, pineapple, grape, lemon, watermelon After")
 
-      # Test with empty argument
+      # Input argument is empty
       print("Before @sl@ After" "")
       ct_assert_prints("Before  After")
     endfunction()
 
     ct_add_section(NAME "with_mode")
     function(${CMAKETEST_SECTION})
-      # Test with input argument
+      # Input argument is set
       set(input_strings_arg
         "apple"
         "banana"
@@ -276,11 +392,11 @@ function(${CMAKETEST_TEST})
         "lemon"
         "watermelon")
       print(STATUS "Before @sl@ After" ${input_strings_arg})
-      ct_assert_prints("Before apple, banana, orange, pineapple, carrot, strawberry, pineapple, grape, lemon, watermelon After") # This function ignores the status mode
+      ct_assert_prints("Before apple, banana, orange, pineapple, carrot, strawberry, pineapple, grape, lemon, watermelon After")
 
-      # Test with empty argument
+      # Input argument is empty
       print(STATUS "Before @sl@ After" "")
-      ct_assert_prints("Before  After") # This function ignores the status mode
+      ct_assert_prints("Before  After")
     endfunction()
   endfunction()
 
@@ -330,7 +446,7 @@ function(${CMAKETEST_TEST})
     function(${CMAKETEST_SECTION})
       print("@${directive}@ After")
     endfunction()
-    
+
     ct_add_section(NAME "throws_if_arg_for_${directive}_directive_is_missing_4" EXPECTFAIL)
     function(${CMAKETEST_SECTION})
       print("Before @${directive}@ After")
@@ -361,7 +477,7 @@ function(${CMAKETEST_TEST})
   function(${CMAKETEST_SECTION})
     print("@ap@ After" "")
   endfunction()
-  
+
   ct_add_section(NAME "throws_if_arg_for_ap_directive_is_empty_4" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     print("Before @ap@ After" "")
@@ -391,7 +507,7 @@ function(${CMAKETEST_TEST})
   function(${CMAKETEST_SECTION})
     set(input_paths_arg
       "../data/src/main.cpp"
-      "../data/src/source_1.cpp"
+      "../data/src/main.cpp"
       "../data/src/source_2.cpp"
       "../data/src/source_3.cpp"
       "../data/src/source_4.cpp"
@@ -405,7 +521,7 @@ function(${CMAKETEST_TEST})
   function(${CMAKETEST_SECTION})
     set(input_paths_arg
       "${TESTS_DATA_DIR}/src/main.cpp"
-      "${TESTS_DATA_DIR}/src/source_1.cpp"
+      "${TESTS_DATA_DIR}/src/main.cpp"
       "${TESTS_DATA_DIR}/src/source_2.cpp"
       "${TESTS_DATA_DIR}/src/source_3.cpp"
       "${TESTS_DATA_DIR}/src/source_4.cpp"

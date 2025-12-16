@@ -37,16 +37,16 @@ function(${CMAKETEST_TEST})
     ct_add_section(NAME "with_mode")
     function(${CMAKETEST_SECTION})
       print(STATUS STRINGS)
-      ct_assert_prints("") # This function ignores the status
+      ct_assert_prints("")
 
       print(STATUS STRINGS INDENT)
-      ct_assert_prints("") # This function ignores the status
+      ct_assert_prints("")
 
       print(STATUS STRINGS "")
-      ct_assert_prints("") # This function ignores the status
+      ct_assert_prints("")
 
       print(STATUS STRINGS "" INDENT)
-      ct_assert_prints("") # This function ignores the status
+      ct_assert_prints("")
     endfunction()
   endfunction()
 
@@ -59,6 +59,7 @@ function(${CMAKETEST_TEST})
         "apple"
         "banana"
         "orange"
+        "pineapple"
         "carrot"
         "strawberry"
         "pineapple"
@@ -66,10 +67,10 @@ function(${CMAKETEST_TEST})
         "lemon"
         "watermelon")
       print(STRINGS ${input_strings})
-      ct_assert_prints("apple, banana, orange, carrot, strawberry, pineapple, grape, lemon, watermelon") # This function ignores the indentation
+      ct_assert_prints("apple, banana, orange, pineapple, carrot, strawberry, pineapple, grape, lemon, watermelon")
 
       print(STRINGS ${input_strings} INDENT)
-      ct_assert_prints("apple, banana, orange, carrot, strawberry, pineapple, grape, lemon, watermelon") # This function ignores the indentation
+      ct_assert_prints("apple, banana, orange, pineapple, carrot, strawberry, pineapple, grape, lemon, watermelon")
     endfunction()
 
     ct_add_section(NAME "with_mode")
@@ -78,6 +79,7 @@ function(${CMAKETEST_TEST})
         "apple"
         "banana"
         "orange"
+        "pineapple"
         "carrot"
         "strawberry"
         "pineapple"
@@ -85,10 +87,10 @@ function(${CMAKETEST_TEST})
         "lemon"
         "watermelon")
       print(STATUS STRINGS ${input_strings})
-      ct_assert_prints("apple, banana, orange, carrot, strawberry, pineapple, grape, lemon, watermelon") # This function ignores the status
+      ct_assert_prints("apple, banana, orange, pineapple, carrot, strawberry, pineapple, grape, lemon, watermelon")
 
       print(STATUS STRINGS ${input_strings} INDENT)
-      ct_assert_prints("apple, banana, orange, carrot, strawberry, pineapple, grape, lemon, watermelon") # This function ignores the indentation and the status
+      ct_assert_prints("apple, banana, orange, pineapple, carrot, strawberry, pineapple, grape, lemon, watermelon")
     endfunction()
   endfunction()
 

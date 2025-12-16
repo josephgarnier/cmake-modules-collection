@@ -19,7 +19,7 @@ Synopsis
     print([<mode>] "message with formated text" <argument>...)
 
   `Print Path List`_
-    print([<mode>] PATHS [<file-path>...] [INDENT])
+    print([<mode>] REL_PATHS [<file-path>...] [INDENT])
 
   `Print String List`_
     print([<mode>] STRINGS [<string>...] [INDENT])
@@ -57,28 +57,35 @@ Usage
   the following:
 
     ``@ap@`` (for "absolute path")
-      Converts the corresponding argument into an absolute path to an existing
-      file or directory. An error is raised when the argument is empty.
+      Converts the corresponding argument into an absolute path to a file or
+      directory. The argument may be a relative or absolute path, and may even
+      refer to a file or directory that does not exist on disk. An error is
+      raised when the argument is empty.
 
     ``@rp@`` (for "relative path")
       Converts the corresponding argument into a path relative to the value of
-      the :variable:`PRINT_BASE_DIR` variable. The file or the directory must
-      exist on the disk. An error is raised when the argument is empty.
+      the :variable:`PRINT_BASE_DIR` variable. The argument may be a relative
+      or absolute path, and may even refer to a file or directory that does not
+      exist on disk. An error is raised when the argument is empty.
 
     ``@apl@`` (for "absolute path list")
       Converts all the corresponding arguments into a list of absolute paths
-      to existing files or directories. Each item is separated by a comma:
-      ``item1, item2, ...``. When the provided list is empty, the directive is
-      replaced with an empty string. This directive should be used last when
-      the message includes several directives.
+      to files or directories. The arguments may be relative or absolute paths,
+      and may even refer to files or directories that does not exist on disk.
+      Each item is printed separated by a comma: ``item1, item2, ...``. When
+      the provided list is empty, the directive is replaced with an empty
+      string. This directive should be used last when the message includes
+      several directives.
 
     ``@rpl@`` (for "relative path list")
       Converts all the corresponding argument into a list of path relative to
-      the value of the :variable:`PRINT_BASE_DIR` variable. Each item is
-      separated by a comma: ``item1, item2, ...``. The files or the directories
-      must exist on the disk. When the provided list is empty, the directive is
-      replaced with an empty string. This directive should be used last when
-      the message includes several directives.
+      the value of the :variable:`PRINT_BASE_DIR` variable. The arguments may
+      be relative or absolute paths, and may even refer to files or
+      directories that does not exist on disk. Each item is separated by a
+      comma: ``item1, item2, ...``. The files or the directories must exist on
+      the disk. When the provided list is empty, the directive is replaced with
+      an empty string. This directive should be used last when the message
+      includes several directives.
 
     ``@sl@`` (for "string list")
       Converts all the corresponding argument into a list of strings where each
@@ -86,6 +93,12 @@ Usage
       :command:`print(STRINGS)` command. When the provided list is empty, the
       directive is replaced with an empty string. This directive should be
       used last when the message includes several directives.
+
+  For all path arguments, and because of the use of :cmake:command:`cmake_path() <cmake:command:cmake_path>`,
+  only syntactic aspects of paths are handled, there is no interaction of any
+  kind with any underlying file system. A path may represent a non- existing
+  path or even one that is not allowed to exist on the current file system
+  or platform.
 
   An error is raised if a directive has no associated argument, or if a message
   contains an unsupported directive.
@@ -98,50 +111,50 @@ Usage
     set(PRINT_BASE_DIR "${CMAKE_SOURCE_DIR}")
     set(my_path "src/main.cpp")
     print("Absolute: @ap@, Relative: @rp@" "${my_path}" "${my_path}")
-    # output is:
+    # Output:
     #   Absolute: /full/path/to/src/main.cpp, Relative: src/main.cpp
 
     # Message with ap and rp directives, with mode
     set(PRINT_BASE_DIR "${CMAKE_SOURCE_DIR}")
     set(my_path "src/main.cpp")
     print(STATUS "Absolute: @ap@, Relative: @rp@" "${my_path}" "${my_path}")
-    # output is:
+    # Output:
     #   -- Absolute: /full/path/to/src/main.cpp, Relative: src/main.cpp
 
     # Message with apl directive and empty argument
     print(STATUS "Absolute paths: @apl@" "")
-    # output is:
-    #   -- Absolute paths: 
+    # Output:
+    #   -- Absolute paths:
 
-    # Message with apl directive
+    # Message with apl directive and various paths
     set(PRINT_BASE_DIR "${CMAKE_SOURCE_DIR}")
     set(path_list
       "src/main.cpp"
-      "src/source_1.cpp"
-      "src/source_2.cpp"
-      "src/source_3.cpp"
-      "src/source_4.cpp"
-      "src/source_5.cpp"
-      "src/sub_1/source_sub_1.cpp"
-      "src/sub_2/source_sub_2.cpp")
+      "src"
+      "${CMAKE_SOURCE_DIR}/src/main.cpp"
+      "${CMAKE_SOURCE_DIR}/src"
+      "fake/directory/file.cpp"
+      "fake/directory"
+      "${CMAKE_SOURCE_DIR}/fake/directory/file.cpp"
+      "${CMAKE_SOURCE_DIR}/fake/directory")
     print(STATUS "Absolute path list: @apl@." ${path_list})
-    # output is:
-    #   -- Absolute path list: /full/path/to/src/main.cpp, /full/path/to/src/source_1.cpp, /full/path/to/src/source_2.cpp, /full/path/to/src/source_3.cpp, /full/path/to/src/source_4.cpp, /full/path/to/src/source_5.cpp, /full/path/to/src/sub_1/source_sub_1.cpp, /full/path/to/src/sub_2/source_sub_2.cpp.
+    # Output:
+    #   -- Absolute path list: /full/path/to/src/main.cpp, /full/path/to/src, /full/path/to/src/main.cpp, /full/path/to/src, /full/path/to/fake/directory/file.cpp, /full/path/to/fake/directory, /full/path/to/fake/directory/file.cpp, /full/path/to/fake/directory.
 
-    # Message with rpl directive
+    # Message with rpl directive and various paths
     set(PRINT_BASE_DIR "${CMAKE_SOURCE_DIR}")
     set(path_list
+      "src/main.cpp"
+      "src"
       "${CMAKE_SOURCE_DIR}/src/main.cpp"
-      "${CMAKE_SOURCE_DIR}/src/source_1.cpp"
-      "${CMAKE_SOURCE_DIR}/src/source_2.cpp"
-      "${CMAKE_SOURCE_DIR}/src/source_3.cpp"
-      "${CMAKE_SOURCE_DIR}/src/source_4.cpp"
-      "${CMAKE_SOURCE_DIR}/src/source_5.cpp"
-      "${CMAKE_SOURCE_DIR}/src/sub_1/source_sub_1.cpp"
-      "${CMAKE_SOURCE_DIR}/src/sub_2/source_sub_2.cpp")
+      "${CMAKE_SOURCE_DIR}/src"
+      "fake/directory/file.cpp"
+      "fake/directory"
+      "${CMAKE_SOURCE_DIR}/fake/directory/file.cpp"
+      "${CMAKE_SOURCE_DIR}/fake/directory")
     print(STATUS "Relative path list: @rpl@." ${path_list})
-    # output is:
-    #   -- Relative path list: src/main.cpp, src/source_1.cpp, src/source_2.cpp, src/source_3.cpp, src/source_4.cpp, src/source_5.cpp, src/sub_1/source_sub_1.cpp, src/sub_2/source_sub_2.cpp.
+    # Output:
+    #   -- Relative path list: src/main.cpp, src, src/main.cpp, src, fake/directory/file.cpp, fake/directory, fake/directory/file.cpp, fake/directory.
 
     # Message with sl directive
     set(string_list
@@ -156,20 +169,28 @@ Usage
       "lemon"
       "watermelon")
     print(STATUS "String list: @sl@." ${string_list})
-    # output is:
+    # Output:
     #   -- String list: apple, banana, orange, pineapple, carrot, strawberry, pineapple, grape, lemon, watermelon.
 
 .. _`Print Path List`:
 
 .. signature::
-  print([<mode>] PATHS [<file-path>...] [INDENT])
-  :target: PATHS
+  print([<mode>] REL_PATHS [<file-path>...] [INDENT])
+  :target: REL_PATHS
 
   Record in the log each file from the specified ``<file-path>`` list after
   converting them to paths relative to the value of the :variable:`PRINT_BASE_DIR`
-  variable. Each item is separated by a comma: ``item1, item2, ...``. This
-  command is inspired by the :cmake:command:`message() <cmake:command:message>`
+  variable. Each item is printed separated by a comma: ``item1, item2, ...``.
+  This command is inspired by the :cmake:command:`message() <cmake:command:message>`
   command from CMake.
+
+  The ``REL_PATHS`` values may be relative or absolute paths, and may even
+  refer to files or directories that does not exist on disk. Because of the use
+  of :cmake:command:`cmake_path() <cmake:command:cmake_path>`,
+  only syntactic aspects of paths are handled, there is no interaction of any
+  kind with any underlying file system. A path may represent a non- existing
+  path or even one that is not allowed to exist on the current file system
+  or platform.
 
   The optional ``<mode>`` argument determines the message type and may be any
   of the standard message modes supported by the :cmake:command:`message() <cmake:command:message>` command,
@@ -184,21 +205,21 @@ Usage
   .. code-block:: cmake
 
     # Print empty list
-    print(STATUS PATHS)
-    # output is:
-    #   -- 
+    print(STATUS REL_PATHS)
+    # Output:
+    #   --
 
     # Print empty list with indentation
-    print(STATUS PATHS INDENT)
-    # output is:
-    #   --   
+    print(STATUS REL_PATHS INDENT)
+    # Output:
+    #   --
 
     # Print empty list with quote
-    print(STATUS PATHS "")
-    # output is:
-    #   -- 
+    print(STATUS REL_PATHS "")
+    # Output:
+    #   --
 
-    # Print list of paths with indentation
+    # Print list with indentation
     set(PRINT_BASE_DIR "${CMAKE_SOURCE_DIR}")
     set(path_list
       "${CMAKE_SOURCE_DIR}/src/main.cpp"
@@ -209,9 +230,24 @@ Usage
       "${CMAKE_SOURCE_DIR}/src/source_5.cpp"
       "${CMAKE_SOURCE_DIR}/src/sub_1/source_sub_1.cpp"
       "${CMAKE_SOURCE_DIR}/src/sub_2/source_sub_2.cpp")
-    print(STATUS PATHS ${path_list} INDENT)
-    # output is:
+    print(STATUS REL_PATHS ${path_list} INDENT)
+    # Output:
     #   --   src/main.cpp, src/source_2.cpp, src/source_3.cpp, src/source_4.cpp, src/source_5.cpp, src/sub_1/source_sub_1.cpp, src/sub_2/source_sub_2.cpp
+
+    # Print list with various paths
+    set(PRINT_BASE_DIR "${CMAKE_SOURCE_DIR}")
+    set(path_list
+      "src/main.cpp"
+      "src"
+      "${CMAKE_SOURCE_DIR}/src/main.cpp"
+      "${CMAKE_SOURCE_DIR}/src"
+      "fake/directory/file.cpp"
+      "fake/directory"
+      "${CMAKE_SOURCE_DIR}/fake/directory/file.cpp"
+      "${CMAKE_SOURCE_DIR}/fake/directory")
+    print(STATUS REL_PATHS ${path_list})
+    # Output:
+    #   -- src/main.cpp, src, src/main.cpp, src, fake/directory/file.cpp, fake/directory, fake/directory/file.cpp, fake/directory.
 
 .. _`Print String List`:
 
@@ -220,7 +256,7 @@ Usage
   :target: STRINGS
 
   Record in the log each string from the given ``<string>`` list. Each item is
-  separated by a comma: ``item1, item2, ...``. This command is inspired by the
+  printed separated by a comma: ``item1, item2, ...``. This command is inspired by the
   :cmake:command:`message() <cmake:command:message>` command from CMake.
 
   If specified, the optional ``<mode>`` keyword must be one of the standard
@@ -236,27 +272,26 @@ Usage
 
     # Print empty list
     print(STATUS STRINGS)
-    # output is:
-    #   -- 
+    # Output:
+    #   --
 
     # Print empty list with indentation
     print(STATUS STRINGS INDENT)
-    # output is:
-    #   --   
+    # Output:
+    #   --
 
     # Print empty list with quote
     print(STATUS STRINGS "")
-    # output is:
-    #   -- 
+    # Output:
+    #   --
 
     # Print list of strings with indentation
     set(string_list
-        "apple" "banana" "orange"
-        "carrot" "strawberry" "pineapple"
-        "grape" "lemon" "watermelon")
+      "apple" "banana" "orange" "pineapple" "carrot"
+      "strawberry" "pineapple" "grape" "lemon" "watermelon")
     print(STATUS STRINGS ${string_list} INDENT)
-    # output is:
-    #   --   apple, banana, orange, carrot, strawberry, pineapple, grape, lemon, watermelon
+    # Output:
+    #   --   apple, banana, orange, pineapple, carrot, strawberry, pineapple, grape, lemon, watermelon
 #]=======================================================================]
 
 include_guard()
@@ -271,7 +306,7 @@ set(PRINT_BASE_DIR "${CMAKE_SOURCE_DIR}")
 function(print)
   set(options FATAL_ERROR SEND_ERROR WARNING AUTHOR_WARNING DEPRECATION NOTICE STATUS VERBOSE DEBUG TRACE INDENT)
   set(one_value_args "")
-  set(multi_value_args PATHS STRINGS)
+  set(multi_value_args REL_PATHS STRINGS)
   cmake_parse_arguments(PARSE_ARGV 0 arg
     "${options}" "${one_value_args}" "${multi_value_args}"
   )
@@ -287,7 +322,7 @@ function(print)
     list(APPEND print_ARGV "${ARGV${arg_index}}")
   endforeach()
 
-  if((DEFINED arg_PATHS) OR ("PATHS" IN_LIST arg_KEYWORDS_MISSING_VALUES))
+  if((DEFINED arg_REL_PATHS) OR ("REL_PATHS" IN_LIST arg_KEYWORDS_MISSING_VALUES))
     _print_paths_list()
   elseif((DEFINED arg_STRINGS) OR ("STRINGS" IN_LIST arg_KEYWORDS_MISSING_VALUES))
     _print_strings_list()
@@ -302,7 +337,7 @@ macro(_print_formated_message)
   if(${print_ARGC} EQUAL 0)
     message(FATAL_ERROR "print() called with wrong number of arguments!")
   endif()
-  
+
   # Warning: this macro doesn't have to loop on ARGV or ARGN because the message
   # to print can contain a semi column character ";", which will be interpreted as
   # a new argument, as an item separator. So, it is necessary to use print_ARGV#,
@@ -384,7 +419,11 @@ macro(_substitute_directives)
     if("${directive_to_substitute}" STREQUAL "@ap@")
       list(POP_FRONT message_arg_list message_arg)
       if(NOT "${message_arg}" STREQUAL "")
-        file(REAL_PATH "${message_arg}" absolute_path BASE_DIRECTORY "${PRINT_BASE_DIR}")
+        cmake_path(ABSOLUTE_PATH message_arg
+          BASE_DIRECTORY "${PRINT_BASE_DIR}"
+          NORMALIZE
+          OUTPUT_VARIABLE absolute_path
+        )
         set(directive_to_substitute "${absolute_path}")
       else()
         message(FATAL_ERROR
@@ -394,7 +433,14 @@ macro(_substitute_directives)
     elseif("${directive_to_substitute}" STREQUAL "@rp@")
       list(POP_FRONT message_arg_list message_arg)
       if(NOT "${message_arg}" STREQUAL "")
-        file(RELATIVE_PATH relative_path "${PRINT_BASE_DIR}" "${message_arg}")
+        cmake_path(IS_ABSOLUTE message_arg is_absolute)
+        set(relative_path "${message_arg}")
+        if(${is_absolute})
+          cmake_path(RELATIVE_PATH message_arg
+            BASE_DIRECTORY "${PRINT_BASE_DIR}"
+            OUTPUT_VARIABLE relative_path
+          )
+        endif()
         set(directive_to_substitute "${relative_path}")
       else()
         message(FATAL_ERROR
@@ -405,7 +451,11 @@ macro(_substitute_directives)
       list(LENGTH message_arg_list nb_message_args)
       if(${nb_message_args} GREATER 0)
         foreach(file IN ITEMS ${message_arg_list})
-          file(REAL_PATH "${file}" absolute_path BASE_DIRECTORY "${PRINT_BASE_DIR}")
+          cmake_path(ABSOLUTE_PATH file
+            BASE_DIRECTORY "${PRINT_BASE_DIR}"
+            NORMALIZE
+            OUTPUT_VARIABLE absolute_path
+          )
           list(APPEND absolute_path_list "${absolute_path}")
         endforeach()
         list(JOIN absolute_path_list ", " formated_path_list)
@@ -418,7 +468,14 @@ macro(_substitute_directives)
       list(LENGTH message_arg_list nb_message_args)
       if(${nb_message_args} GREATER 0)
         foreach(file IN ITEMS ${message_arg_list})
-          file(RELATIVE_PATH relative_path "${PRINT_BASE_DIR}" "${file}")
+          cmake_path(IS_ABSOLUTE file is_absolute)
+          set(relative_path "${file}")
+          if(${is_absolute})
+            cmake_path(RELATIVE_PATH file
+              BASE_DIRECTORY "${PRINT_BASE_DIR}"
+              OUTPUT_VARIABLE relative_path
+            )
+          endif()
           list(APPEND relative_path_list "${relative_path}")
         endforeach()
         list(JOIN relative_path_list ", " formated_path_list)
@@ -454,9 +511,9 @@ macro(_print_paths_list)
   if(DEFINED arg_UNPARSED_ARGUMENTS)
     message(FATAL_ERROR "${CMAKE_CURRENT_FUNCTION}() called with unrecognized arguments: \"${arg_UNPARSED_ARGUMENTS}\"!")
   endif()
-  if((NOT DEFINED arg_PATHS)
-      AND (NOT "PATHS" IN_LIST arg_KEYWORDS_MISSING_VALUES))
-    message(FATAL_ERROR "${CMAKE_CURRENT_FUNCTION}() requires the keyword PATHS to be provided!")
+  if((NOT DEFINED arg_REL_PATHS)
+      AND (NOT "REL_PATHS" IN_LIST arg_KEYWORDS_MISSING_VALUES))
+    message(FATAL_ERROR "${CMAKE_CURRENT_FUNCTION}() requires the keyword REL_PATHS to be provided!")
   endif()
 
   set(mode "")
@@ -470,8 +527,15 @@ macro(_print_paths_list)
 
   # Format the paths
   set(relative_path_list "")
-  foreach(file IN ITEMS ${arg_PATHS})
-    file(RELATIVE_PATH relative_path "${PRINT_BASE_DIR}" "${file}")
+  foreach(file IN ITEMS ${arg_REL_PATHS})
+    cmake_path(IS_ABSOLUTE file is_absolute)
+    set(relative_path "${file}")
+    if(${is_absolute})
+      cmake_path(RELATIVE_PATH file
+        BASE_DIRECTORY "${PRINT_BASE_DIR}"
+        OUTPUT_VARIABLE relative_path
+      )
+    endif()
     list(APPEND relative_path_list "${relative_path}")
   endforeach()
   list(JOIN relative_path_list ", " formated_message)
