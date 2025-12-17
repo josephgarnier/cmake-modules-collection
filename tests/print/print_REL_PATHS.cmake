@@ -57,7 +57,7 @@ function(${CMAKETEST_TEST})
 
     ct_add_section(NAME "without_mode")
     function(${CMAKETEST_SECTION})
-      set(input_mixed_paths_arg
+      set(input_mixed_paths
         "../data/src/main.cpp"
         "../data/src"
         "${TESTS_DATA_DIR}/src/main.cpp"
@@ -66,16 +66,16 @@ function(${CMAKETEST_TEST})
         "../data/fake/directory"
         "${TESTS_DATA_DIR}/fake/directory/file.cpp"
         "${TESTS_DATA_DIR}/fake/directory")
-      print(REL_PATHS ${input_mixed_paths_arg})
+      print(REL_PATHS ${input_mixed_paths})
       ct_assert_prints("../data/src/main.cpp, ../data/src, ../data/src/main.cpp, ../data/src, ../data/fake/directory/file.cpp, ../data/fake/directory, ../data/fake/directory/file.cpp, ../data/fake/directory")
 
-      print(REL_PATHS ${input_mixed_paths_arg} INDENT)
+      print(REL_PATHS ${input_mixed_paths} INDENT)
       ct_assert_prints("../data/src/main.cpp, ../data/src, ../data/src/main.cpp, ../data/src, ../data/fake/directory/file.cpp, ../data/fake/directory, ../data/fake/directory/file.cpp, ../data/fake/directory")
     endfunction()
 
     ct_add_section(NAME "with_mode")
     function(${CMAKETEST_SECTION})
-      set(input_mixed_paths_arg
+      set(input_mixed_paths
         "../data/src/main.cpp"
         "../data/src"
         "${TESTS_DATA_DIR}/src/main.cpp"
@@ -84,10 +84,10 @@ function(${CMAKETEST_TEST})
         "../data/fake/directory"
         "${TESTS_DATA_DIR}/fake/directory/file.cpp"
         "${TESTS_DATA_DIR}/fake/directory")
-      print(STATUS REL_PATHS ${input_mixed_paths_arg})
+      print(STATUS REL_PATHS ${input_mixed_paths})
       ct_assert_prints("../data/src/main.cpp, ../data/src, ../data/src/main.cpp, ../data/src, ../data/fake/directory/file.cpp, ../data/fake/directory, ../data/fake/directory/file.cpp, ../data/fake/directory")
 
-      print(STATUS REL_PATHS ${input_mixed_paths_arg} INDENT)
+      print(STATUS REL_PATHS ${input_mixed_paths} INDENT)
       ct_assert_prints("../data/src/main.cpp, ../data/src, ../data/src/main.cpp, ../data/src, ../data/fake/directory/file.cpp, ../data/fake/directory, ../data/fake/directory/file.cpp, ../data/fake/directory")
     endfunction()
   endfunction()
