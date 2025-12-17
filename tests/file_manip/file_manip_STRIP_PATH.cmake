@@ -18,132 +18,75 @@ function(${CMAKETEST_TEST})
   include(FileManip)
 
   # Functionalities checking
-  ct_add_section(NAME "path_to_existing_files")
+  ct_add_section(NAME "inplace_version")
   function(${CMAKETEST_SECTION})
+    set(input "")
+    file_manip(STRIP_PATH input BASE_DIR "${TESTS_DATA_DIR}")
+    ct_assert_string(input)
+    ct_assert_equal(input "")
 
-    ct_add_section(NAME "inplace_version")
-    function(${CMAKETEST_SECTION})
-      set(input "")
-      file_manip(STRIP_PATH input BASE_DIR "${TESTS_DATA_DIR}")
-      ct_assert_string(input)
-      ct_assert_equal(input "")
-
-      set(input "${TESTS_DATA_DIR}/src/main.cpp")
-      file_manip(STRIP_PATH input BASE_DIR "${TESTS_DATA_DIR}")
-      ct_assert_string(input)
-      ct_assert_equal(input "src/main.cpp")
-
-      set(input
-        "${TESTS_DATA_DIR}/src/main.cpp"
-        "${TESTS_DATA_DIR}/src/source_1.cpp"
-        "${TESTS_DATA_DIR}/src/source_2.cpp"
-        "${TESTS_DATA_DIR}/src/source_3.cpp"
-        "${TESTS_DATA_DIR}/src/source_4.cpp"
-        "${TESTS_DATA_DIR}/src/source_5.cpp"
-        "${TESTS_DATA_DIR}/src/sub_1/source_sub_1.cpp"
-        "${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp")
-      set(expected_result
-        "src/main.cpp"
-        "src/source_1.cpp"
-        "src/source_2.cpp"
-        "src/source_3.cpp"
-        "src/source_4.cpp"
-        "src/source_5.cpp"
-        "src/sub_1/source_sub_1.cpp"
-        "src/sub_2/source_sub_2.cpp")
-      file_manip(STRIP_PATH input BASE_DIR "${TESTS_DATA_DIR}")
-      ct_assert_list(input)
-      ct_assert_equal(input "${expected_result}")
-    endfunction()
-
-    ct_add_section(NAME "output_version")
-    function(${CMAKETEST_SECTION})
-      set(input "")
-      unset(output)
-      file_manip(STRIP_PATH input BASE_DIR "${TESTS_DATA_DIR}" OUTPUT_VARIABLE output)
-      ct_assert_string(output)
-      ct_assert_equal(output "")
-
-      set(input "${TESTS_DATA_DIR}/src/main.cpp")
-      unset(output)
-      file_manip(STRIP_PATH input BASE_DIR "${TESTS_DATA_DIR}" OUTPUT_VARIABLE output)
-      ct_assert_string(output)
-      ct_assert_equal(output "src/main.cpp")
-
-      set(input
-        "${TESTS_DATA_DIR}/src/main.cpp"
-        "${TESTS_DATA_DIR}/src/source_1.cpp"
-        "${TESTS_DATA_DIR}/src/source_2.cpp"
-        "${TESTS_DATA_DIR}/src/source_3.cpp"
-        "${TESTS_DATA_DIR}/src/source_4.cpp"
-        "${TESTS_DATA_DIR}/src/source_5.cpp"
-        "${TESTS_DATA_DIR}/src/sub_1/source_sub_1.cpp"
-        "${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp")
-      set(expected_result
-        "src/main.cpp"
-        "src/source_1.cpp"
-        "src/source_2.cpp"
-        "src/source_3.cpp"
-        "src/source_4.cpp"
-        "src/source_5.cpp"
-        "src/sub_1/source_sub_1.cpp"
-        "src/sub_2/source_sub_2.cpp")
-      unset(output)
-      file_manip(STRIP_PATH input BASE_DIR "${TESTS_DATA_DIR}" OUTPUT_VARIABLE output)
-      ct_assert_list(output)
-      ct_assert_equal(output "${expected_result}")
-    endfunction()
+    set(input_mixed_paths
+      "../data/src/main.cpp"
+      "../data/src"
+      "${TESTS_DATA_DIR}/src/main.cpp"
+      "${TESTS_DATA_DIR}/src"
+      "../data/fake/directory/file.cpp"
+      "../data/fake/directory"
+      "${TESTS_DATA_DIR}/fake/directory/file.cpp"
+      "${TESTS_DATA_DIR}/fake/directory")
+    set(expected_result
+      "../data/src/main.cpp"
+      "../data/src"
+      "src/main.cpp"
+      "src"
+      "../data/fake/directory/file.cpp"
+      "../data/fake/directory"
+      "fake/directory/file.cpp"
+      "fake/directory")
+    file_manip(STRIP_PATH input_mixed_paths BASE_DIR "${TESTS_DATA_DIR}")
+    ct_assert_list(input_mixed_paths)
+    ct_assert_equal(input_mixed_paths "${expected_result}")
   endfunction()
 
-  ct_add_section(NAME "path_to_nonexistent_input_file")
+  ct_add_section(NAME "output_version")
   function(${CMAKETEST_SECTION})
+    set(input "")
+    unset(output)
+    file_manip(STRIP_PATH input BASE_DIR "${TESTS_DATA_DIR}" OUTPUT_VARIABLE output)
+    ct_assert_string(output)
+    ct_assert_equal(output "")
 
-    ct_add_section(NAME "inplace_version")
-    function(${CMAKETEST_SECTION})
-      set(input "${TESTS_DATA_DIR}/src/fake.cpp")
-      file_manip(STRIP_PATH input BASE_DIR "${TESTS_DATA_DIR}")
-      ct_assert_string(input)
-      ct_assert_equal(input "src/fake.cpp")
-    endfunction()
-
-    ct_add_section(NAME "output_version")
-    function(${CMAKETEST_SECTION})
-      set(input "${TESTS_DATA_DIR}/src/fake.cpp")
-      unset(output)
-      file_manip(STRIP_PATH input BASE_DIR "${TESTS_DATA_DIR}" OUTPUT_VARIABLE output)
-      ct_assert_string(output)
-      ct_assert_equal(output "src/fake.cpp")
-    endfunction()
+    set(input_mixed_paths
+      "../data/src/main.cpp"
+      "../data/src"
+      "${TESTS_DATA_DIR}/src/main.cpp"
+      "${TESTS_DATA_DIR}/src"
+      "../data/fake/directory/file.cpp"
+      "../data/fake/directory"
+      "${TESTS_DATA_DIR}/fake/directory/file.cpp"
+      "${TESTS_DATA_DIR}/fake/directory")
+    set(expected_result
+      "../data/src/main.cpp"
+      "../data/src"
+      "src/main.cpp"
+      "src"
+      "../data/fake/directory/file.cpp"
+      "../data/fake/directory"
+      "fake/directory/file.cpp"
+      "fake/directory")
+    unset(output)
+    file_manip(STRIP_PATH input_mixed_paths BASE_DIR "${TESTS_DATA_DIR}" OUTPUT_VARIABLE output)
+    ct_assert_list(output)
+    ct_assert_equal(output "${expected_result}")
   endfunction()
 
-  ct_add_section(NAME "path_to_nonexistent_base_dir")
-  function(${CMAKETEST_SECTION})
-
-    ct_add_section(NAME "inplace_version")
-    function(${CMAKETEST_SECTION})
-      set(input "${TESTS_DATA_DIR}/fake/src/main.cpp")
-      file_manip(STRIP_PATH input BASE_DIR "${TESTS_DATA_DIR}/fake")
-      ct_assert_string(input)
-      ct_assert_equal(input "src/main.cpp")
-    endfunction()
-
-    ct_add_section(NAME "output_version")
-    function(${CMAKETEST_SECTION})
-      set(input "${TESTS_DATA_DIR}/fake/src/main.cpp")
-      unset(output)
-      file_manip(STRIP_PATH input BASE_DIR "${TESTS_DATA_DIR}/fake" OUTPUT_VARIABLE output)
-      ct_assert_string(output)
-      ct_assert_equal(output "src/main.cpp")
-    endfunction()
-  endfunction()
-
-  ct_add_section(NAME "path_to_inconsistent_base_dir")
+  ct_add_section(NAME "strip_with_different_and_nonexistent_base_dir")
   function(${CMAKETEST_SECTION})
 
     ct_add_section(NAME "inplace_version")
     function(${CMAKETEST_SECTION})
       set(input "${TESTS_DATA_DIR}/src/main.cpp")
-      file_manip(STRIP_PATH input BASE_DIR "${TESTS_DATA_DIR}/fake")
+      file_manip(STRIP_PATH input BASE_DIR "${TESTS_DATA_DIR}/fake/directory")
       ct_assert_string(input)
       ct_assert_equal(input "${TESTS_DATA_DIR}/src/main.cpp")
     endfunction()
@@ -152,7 +95,7 @@ function(${CMAKETEST_TEST})
     function(${CMAKETEST_SECTION})
       set(input "${TESTS_DATA_DIR}/src/main.cpp")
       unset(output)
-      file_manip(STRIP_PATH input BASE_DIR "${TESTS_DATA_DIR}/fake" OUTPUT_VARIABLE output)
+      file_manip(STRIP_PATH input BASE_DIR "${TESTS_DATA_DIR}/fake/directory" OUTPUT_VARIABLE output)
       ct_assert_string(output)
       ct_assert_equal(output "${TESTS_DATA_DIR}/src/main.cpp")
     endfunction()
