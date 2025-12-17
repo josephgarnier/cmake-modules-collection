@@ -9,22 +9,22 @@
 # See README file in the root directory of this source tree.
 
 #-------------------------------------------------------------------------------
-# Test of [FileManip module::GET_COMPONENT operation]:
-#    file_manip(GET_COMPONENT [<file-path>...]
+# Test of [PathManip module::GET_COMPONENT operation]:
+#    path_manip(GET_COMPONENT [<file-path>...]
 #               MODE <mode>
 #               OUTPUT_VARIABLE <output-list-var>)
-ct_add_test(NAME "test_file_manip_get_component_operation")
+ct_add_test(NAME "test_path_manip_get_component_operation")
 function(${CMAKETEST_TEST})
-  include(FileManip)
+  include(PathManip)
 
   # Functionalities checking
   ct_add_section(NAME "directory_mode")
   function(${CMAKETEST_SECTION})
-    file_manip(GET_COMPONENT MODE DIRECTORY OUTPUT_VARIABLE output)
+    path_manip(GET_COMPONENT MODE DIRECTORY OUTPUT_VARIABLE output)
     ct_assert_string(output)
     ct_assert_equal(output "")
 
-    file_manip(GET_COMPONENT "" MODE DIRECTORY OUTPUT_VARIABLE output)
+    path_manip(GET_COMPONENT "" MODE DIRECTORY OUTPUT_VARIABLE output)
     ct_assert_string(output)
     ct_assert_equal(output "")
 
@@ -46,18 +46,18 @@ function(${CMAKETEST_TEST})
       "../data/fake"
       "${TESTS_DATA_DIR}/fake/directory"
       "${TESTS_DATA_DIR}/fake")
-    file_manip(GET_COMPONENT ${input_mixed_paths} MODE DIRECTORY OUTPUT_VARIABLE output)
+    path_manip(GET_COMPONENT ${input_mixed_paths} MODE DIRECTORY OUTPUT_VARIABLE output)
     ct_assert_list(output)
     ct_assert_equal(output "${expected_output}")
   endfunction()
 
   ct_add_section(NAME "name_mode")
   function(${CMAKETEST_SECTION})
-    file_manip(GET_COMPONENT MODE NAME OUTPUT_VARIABLE output)
+    path_manip(GET_COMPONENT MODE NAME OUTPUT_VARIABLE output)
     ct_assert_string(output)
     ct_assert_equal(output "")
 
-    file_manip(GET_COMPONENT "" MODE NAME OUTPUT_VARIABLE output)
+    path_manip(GET_COMPONENT "" MODE NAME OUTPUT_VARIABLE output)
     ct_assert_string(output)
     ct_assert_equal(output "")
 
@@ -79,7 +79,7 @@ function(${CMAKETEST_TEST})
       "directory"
       "file.cpp"
       "directory")
-    file_manip(GET_COMPONENT ${input_mixed_paths} MODE NAME OUTPUT_VARIABLE output)
+    path_manip(GET_COMPONENT ${input_mixed_paths} MODE NAME OUTPUT_VARIABLE output)
     ct_assert_list(output)
     ct_assert_equal(output "${expected_output}")
   endfunction()
@@ -88,48 +88,48 @@ function(${CMAKETEST_TEST})
   ct_add_section(NAME "throws_if_arg_mode_is_missing_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     set(input "${TESTS_DATA_DIR}/src/main.cpp")
-    file_manip(GET_COMPONENT "${input}" OUTPUT_VARIABLE output)
+    path_manip(GET_COMPONENT "${input}" OUTPUT_VARIABLE output)
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_mode_is_missing_2" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     set(input "${TESTS_DATA_DIR}/src/main.cpp")
-    file_manip(GET_COMPONENT "${input}" MODE "" OUTPUT_VARIABLE output)
+    path_manip(GET_COMPONENT "${input}" MODE "" OUTPUT_VARIABLE output)
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_mode_is_missing_3" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     set(input "${TESTS_DATA_DIR}/src/main.cpp")
-    file_manip(GET_COMPONENT "${input}" MODE "mode" OUTPUT_VARIABLE output)
+    path_manip(GET_COMPONENT "${input}" MODE "mode" OUTPUT_VARIABLE output)
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_mode_is_wrong" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     set(input "${TESTS_DATA_DIR}/src/main.cpp")
-    file_manip(GET_COMPONENT "${input}" MODE FAKE OUTPUT_VARIABLE output)
+    path_manip(GET_COMPONENT "${input}" MODE FAKE OUTPUT_VARIABLE output)
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_output_var_is_missing_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     set(input "${TESTS_DATA_DIR}/src/main.cpp")
-    file_manip(GET_COMPONENT "${input}" MODE DIRECTORY)
+    path_manip(GET_COMPONENT "${input}" MODE DIRECTORY)
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_output_var_is_missing_2" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     set(input "${TESTS_DATA_DIR}/src/main.cpp")
-    file_manip(GET_COMPONENT "${input}" MODE DIRECTORY OUTPUT_VARIABLE)
+    path_manip(GET_COMPONENT "${input}" MODE DIRECTORY OUTPUT_VARIABLE)
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_output_var_is_missing_3" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     set(input "${TESTS_DATA_DIR}/src/main.cpp")
-    file_manip(GET_COMPONENT "${input}" MODE DIRECTORY OUTPUT_VARIABLE "")
+    path_manip(GET_COMPONENT "${input}" MODE DIRECTORY OUTPUT_VARIABLE "")
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_output_var_is_missing_4" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     set(input "${TESTS_DATA_DIR}/src/main.cpp")
-    file_manip(GET_COMPONENT "${input}" MODE DIRECTORY OUTPUT_VARIABLE "output")
+    path_manip(GET_COMPONENT "${input}" MODE DIRECTORY OUTPUT_VARIABLE "output")
   endfunction()
 endfunction()

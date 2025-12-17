@@ -32,7 +32,7 @@ else()
   # Store whether we are building tests or not, then turn off the tests
   set(build_testing_old "${BUILD_TESTING}")
   set(BUILD_TESTING off CACHE BOOL "" FORCE)
-  
+
   # Download CMakeTest and bring it into scope
   include(FetchContent)
   set(FETCHCONTENT_QUIET off)
@@ -57,10 +57,10 @@ else()
     USES_TERMINAL_DOWNLOAD on
   )
   FetchContent_MakeAvailable(cmake_test)
-  
+
   # Restore the previous value
   set(BUILD_TESTING "${build_testing_old}" CACHE BOOL "" FORCE)
-  
+
   if(${cmake_test_POPULATED})
     message(STATUS "CMakeTest downloaded with success")
   else()
@@ -125,6 +125,12 @@ ct_add_dir("./file_manip" USE_REL_PATH_NAMES LANGUAGES FORWARD_LANGUAGES CMAKE_O
   "-DTESTS_DATA_DIR=${TESTS_DATA_DIR}"
 )
 ct_add_dir("./map" USE_REL_PATH_NAMES LANGUAGES FORWARD_LANGUAGES CMAKE_OPTIONS
+  "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}"
+  "-DCMAKE_GENERATOR=${CMAKE_GENERATOR}"
+  "-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}"
+  "-DTESTS_DATA_DIR=${TESTS_DATA_DIR}"
+)
+ct_add_dir("./path_manip" USE_REL_PATH_NAMES LANGUAGES FORWARD_LANGUAGES CMAKE_OPTIONS
   "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}"
   "-DCMAKE_GENERATOR=${CMAKE_GENERATOR}"
   "-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}"
