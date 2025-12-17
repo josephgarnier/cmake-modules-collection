@@ -62,38 +62,32 @@
             
   <section id="filemanip">
 <span id="module:FileManip"></span><h1>FileManip<a class="headerlink" href="#filemanip" title="Link to this heading">¶</a></h1>
-<p>Operations on files. It requires CMake 4.0.1 or newer.</p>
+<p>Operations on files by extending the <span class="target" id="index-0-command:cmake:command:file"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/file.html#command:file" title="(in CMake v4.2.1)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">file()</span></code></a>
+command. It requires CMake 4.0.1 or newer.</p>
+<p>This module is dedicated to file and path manipulation requiring access to the filesystem. All files must exist on the disk. For other path manipulation, handling only syntactic aspects, see the <span class="target" id="index-0-module:PathManip"></span><a class="reference internal" href="PathManip.html#module:PathManip" title="PathManip"><code class="xref cmake cmake-module docutils literal notranslate"><span class="pre">PathManip</span></code></a> module and the <span class="target" id="index-0-command:cmake:command:cmake_path"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/cmake_path.html#command:cmake_path" title="(in CMake v4.2.1)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_path()</span></code></a> command.</p>
 <section id="synopsis">
 <h2>Synopsis<a class="headerlink" href="#synopsis" title="Link to this heading">¶</a></h2>
 <pre class="literal-block">file_manip(<a class="reference internal" href="#relative-path">RELATIVE_PATH</a> &lt;file-list-var&gt; BASE_DIR &lt;dir-path&gt; [OUTPUT_VARIABLE &lt;output-list-var&gt;])
-file_manip(<a class="reference internal" href="#absolute-path">ABSOLUTE_PATH</a> &lt;file-list-var&gt; BASE_DIR &lt;dir-path&gt; [OUTPUT_VARIABLE &lt;output-list-var&gt;])
-file_manip(<a class="reference internal" href="#strip-path">STRIP_PATH</a> &lt;file-list-var&gt; BASE_DIR &lt;dir-path&gt; [OUTPUT_VARIABLE &lt;output-list-var&gt;])
-file_manip(<a class="reference internal" href="#get-component">GET_COMPONENT</a> [&lt;file-path&gt;...] MODE &lt;mode&gt; OUTPUT_VARIABLE &lt;output-list-var&gt;)</pre>
+file_manip(<a class="reference internal" href="#absolute-path">ABSOLUTE_PATH</a> &lt;file-list-var&gt; BASE_DIR &lt;dir-path&gt; [OUTPUT_VARIABLE &lt;output-list-var&gt;])</pre>
 </section>
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h2>
 <dl class="cmake signature">
 <dt class="sig sig-object cmake" id="relative-path">
 <span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">file_manip(</span></span><span class="no"><span class="pre">RELATIVE_PATH</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;file-list-var&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">BASE_DIR</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;dir-path&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">[</span></span><span class="no"><span class="pre">OUTPUT_VARIABLE</span></span><span class="nbsp"> </span><span class="nv"><span class="pre">&lt;output-list-var&gt;</span></span><span class="p"><span class="pre">]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#relative-path" title="Link to this definition">¶</a></dt>
-<dd><p>Computes the relative path from a given <code class="docutils literal notranslate"><span class="pre">BASE_DIR</span></code> for each file
-in the list variable named <code class="docutils literal notranslate"><span class="pre">&lt;file-list-var&gt;</span></code>. The files and the <code class="docutils literal notranslate"><span class="pre">BASE_DIR</span></code>
-must exist on the disk. The result is stored either in-place in
-<code class="docutils literal notranslate"><span class="pre">&lt;file-list-var&gt;</span></code>, or in the variable specified by <code class="docutils literal notranslate"><span class="pre">&lt;output-list-var&gt;</span></code>,
-if the <code class="docutils literal notranslate"><span class="pre">OUTPUT_VARIABLE</span></code> option is provided. The result is an empty list if
-the input list is empty.</p>
+<dd><p>Computes the relative path from a given <code class="docutils literal notranslate"><span class="pre">BASE_DIR</span></code> for each file and
+directory in the list variable named <code class="docutils literal notranslate"><span class="pre">&lt;file-list-var&gt;</span></code>. The files and the
+<code class="docutils literal notranslate"><span class="pre">BASE_DIR</span></code> must exist on the disk and must be passed as absolute path. The
+result is stored either in-place in <code class="docutils literal notranslate"><span class="pre">&lt;file-list-var&gt;</span></code>, or in the variable
+specified by <code class="docutils literal notranslate"><span class="pre">&lt;output-list-var&gt;</span></code>, if the <code class="docutils literal notranslate"><span class="pre">OUTPUT_VARIABLE</span></code> option is
+provided. The result is an empty list if the input list is empty.</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">set(</span><span class="nb">files</span>
 <span class="w">  </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src/main.cpp&quot;</span>
-<span class="w">  </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src/source_1.cpp&quot;</span>
-<span class="w">  </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src/source_2.cpp&quot;</span>
-<span class="w">  </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src/source_3.cpp&quot;</span>
-<span class="w">  </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src/source_4.cpp&quot;</span>
-<span class="w">  </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src/source_5.cpp&quot;</span>
-<span class="w">  </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src/sub_1/source_sub_1.cpp&quot;</span>
-<span class="w">  </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src/sub_2/source_sub_2.cpp&quot;</span><span class="nf">)</span>
+<span class="w">  </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src&quot;</span><span class="nf">)</span>
 <span class="nf">file_manip(</span><span class="no">RELATIVE_PATH</span><span class="w"> </span><span class="nb">files</span><span class="w"> </span><span class="no">BASE_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}&quot;</span><span class="nf">)</span>
 <span class="c"># files is:</span>
-<span class="c">#   src/main.cpp;src/source_1.cpp;src/source_2.cpp;src/source_3.cpp;src/source_4.cpp;src/source_5.cpp;src/sub_1/source_sub_1.cpp;src/sub_2/source_sub_2.cpp</span>
+<span class="c">#   src/main.cpp;src</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -101,88 +95,22 @@ the input list is empty.</p>
 <dl class="cmake signature">
 <dt class="sig sig-object cmake" id="absolute-path">
 <span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">file_manip(</span></span><span class="no"><span class="pre">ABSOLUTE_PATH</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;file-list-var&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">BASE_DIR</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;dir-path&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">[</span></span><span class="no"><span class="pre">OUTPUT_VARIABLE</span></span><span class="nbsp"> </span><span class="nv"><span class="pre">&lt;output-list-var&gt;</span></span><span class="p"><span class="pre">]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#absolute-path" title="Link to this definition">¶</a></dt>
-<dd><p>Computes the absolute path from a given <code class="docutils literal notranslate"><span class="pre">BASE_DIR</span></code> for each file
-in the list variable named <code class="docutils literal notranslate"><span class="pre">&lt;file-list-var&gt;</span></code>. The files and the <code class="docutils literal notranslate"><span class="pre">BASE_DIR</span></code>
-must exist on the disk. The result is stored either in-place in
-<code class="docutils literal notranslate"><span class="pre">&lt;file-list-var&gt;</span></code>, or in the variable specified by <code class="docutils literal notranslate"><span class="pre">&lt;output-list-var&gt;</span></code>,
-if the <code class="docutils literal notranslate"><span class="pre">OUTPUT_VARIABLE</span></code> option is provided. The result is an empty list if
-the input list is empty.</p>
+<dd><p>Computes the absolute path from a given <code class="docutils literal notranslate"><span class="pre">BASE_DIR</span></code> for each file and
+directory in the list variable named <code class="docutils literal notranslate"><span class="pre">&lt;file-list-var&gt;</span></code>. Files and the
+<code class="docutils literal notranslate"><span class="pre">BASE_DIR</span></code> must exist on the disk. <code class="docutils literal notranslate"><span class="pre">BASE_DIR</span></code> must be passed as absolute
+path, while the files can be relative or absolute. The result is stored
+either in-place in <code class="docutils literal notranslate"><span class="pre">&lt;file-list-var&gt;</span></code>, or in the variable specified by
+<code class="docutils literal notranslate"><span class="pre">&lt;output-list-var&gt;</span></code>, if the <code class="docutils literal notranslate"><span class="pre">OUTPUT_VARIABLE</span></code> option is provided. The
+result is an empty list if the input list is empty.</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">set(</span><span class="nb">files</span>
 <span class="w">  </span><span class="s">&quot;src/main.cpp&quot;</span>
-<span class="w">  </span><span class="s">&quot;src/source_1.cpp&quot;</span>
-<span class="w">  </span><span class="s">&quot;src/source_2.cpp&quot;</span>
-<span class="w">  </span><span class="s">&quot;src/source_3.cpp&quot;</span>
-<span class="w">  </span><span class="s">&quot;src/source_4.cpp&quot;</span>
-<span class="w">  </span><span class="s">&quot;src/source_5.cpp&quot;</span>
-<span class="w">  </span><span class="s">&quot;src/sub_1/source_sub_1.cpp&quot;</span>
-<span class="w">  </span><span class="s">&quot;src/sub_2/source_sub_2.cpp&quot;</span><span class="nf">)</span>
+<span class="w">  </span><span class="s">&quot;src&quot;</span>
+<span class="w">  </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src/main.cpp&quot;</span>
+<span class="w">  </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src&quot;</span><span class="nf">)</span>
 <span class="nf">file_manip(</span><span class="no">ABSOLUTE_PATH</span><span class="w"> </span><span class="nb">files</span><span class="w"> </span><span class="no">BASE_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}&quot;</span><span class="nf">)</span>
 <span class="c"># files is:</span>
-<span class="c">#   /full/path/to/src/main.cpp;/full/path/to/src/source_1.cpp;/full/path/to/src/source_2.cpp;/full/path/to/src/source_3.cpp;/full/path/to/src/source_4.cpp;/full/path/to/src/source_5.cpp;/full/path/to/src/sub_1/source_sub_1.cpp;/full/path/to/src/sub_2/source_sub_2.cpp</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="cmake signature">
-<dt class="sig sig-object cmake" id="strip-path">
-<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">file_manip(</span></span><span class="no"><span class="pre">STRIP_PATH</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;file-list-var&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">BASE_DIR</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;dir-path&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">[</span></span><span class="no"><span class="pre">OUTPUT_VARIABLE</span></span><span class="nbsp"> </span><span class="nv"><span class="pre">&lt;output-list-var&gt;</span></span><span class="p"><span class="pre">]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#strip-path" title="Link to this definition">¶</a></dt>
-<dd><p>Removes the <code class="docutils literal notranslate"><span class="pre">BASE_DIR</span></code> prefix from each file path in <code class="docutils literal notranslate"><span class="pre">&lt;file-list-var&gt;</span></code>.
-The result is stored either in-place in <code class="docutils literal notranslate"><span class="pre">&lt;file-list-var&gt;</span></code>, or in the
-variable specified by <code class="docutils literal notranslate"><span class="pre">&lt;output-list-var&gt;</span></code>, if the <code class="docutils literal notranslate"><span class="pre">OUTPUT_VARIABLE</span></code>
-option is provided. <code class="docutils literal notranslate"><span class="pre">BASE_DIR</span></code> must be provided without trailing slash.
-The result is an empty list if the input list is empty.</p>
-<p>Unlike to <span class="target" id="index-0-command:file_manip"></span><a class="reference internal" href="#relative-path" title="file_manip(relative_path)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">file_manip(RELATIVE_PATH)</span></code></a>, no checks
-on the existence of files are performed, even for <code class="docutils literal notranslate"><span class="pre">BASE_DIR</span></code>. Like with
-<span class="target" id="index-0-command:cmake:command:cmake_path"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/cmake_path.html#command:cmake_path" title="(in CMake v4.2.1)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_path()</span></code></a>, only syntactic
-aspects of paths are handled, there is no interaction of any kind with any
-underlying file system. A path may represent a non-existing path or even one
-that is not allowed to exist on the current file system or platform.</p>
-<p>Example usage:</p>
-<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">set(</span><span class="nb">files</span>
-<span class="w">  </span><span class="s">&quot;/full/path/to/src/main.cpp&quot;</span>
-<span class="w">  </span><span class="s">&quot;/full/path/to/src/source_1.cpp&quot;</span>
-<span class="w">  </span><span class="s">&quot;/full/path/to/src/source_2.cpp&quot;</span>
-<span class="w">  </span><span class="s">&quot;/full/path/to/src/source_3.cpp&quot;</span>
-<span class="w">  </span><span class="s">&quot;/full/path/to/src/source_4.cpp&quot;</span>
-<span class="w">  </span><span class="s">&quot;/full/path/to/src/source_5.cpp&quot;</span>
-<span class="w">  </span><span class="s">&quot;/full/path/to/src/sub_1/source_sub_1.cpp&quot;</span>
-<span class="w">  </span><span class="s">&quot;/full/path/to/src/sub_2/source_sub_2.cpp&quot;</span><span class="nf">)</span>
-<span class="nf">file_manip(</span><span class="no">STRIP_PATH</span><span class="w"> </span><span class="nb">files</span><span class="w"> </span><span class="no">BASE_DIR</span><span class="w"> </span><span class="s">&quot;/full/path/to&quot;</span><span class="nf">)</span>
-<span class="c"># output is:</span>
-<span class="c">#   src/main.cpp;src/source_1.cpp;src/source_2.cpp;src/source_3.cpp;src/source_4.cpp;src/source_5.cpp;src/sub_1/source_sub_1.cpp;src/sub_2/source_sub_2.cpp</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="cmake signature">
-<dt class="sig sig-object cmake" id="get-component">
-<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">file_manip(</span></span><span class="no"><span class="pre">GET_COMPONENT</span></span><span class="w"> </span><span class="p"><span class="pre">[</span></span><span class="nv"><span class="pre">&lt;file-path&gt;...</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="no"><span class="pre">MODE</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;mode&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">OUTPUT_VARIABLE</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;output-list-var&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#get-component" title="Link to this definition">¶</a></dt>
-<dd><p>Extracts a specific component defined by <code class="docutils literal notranslate"><span class="pre">MODE</span></code> from each path in the given
-<code class="docutils literal notranslate"><span class="pre">&lt;file-path&gt;</span></code> list and stores the result in the variable specified by
-<code class="docutils literal notranslate"><span class="pre">OUTPUT_VARIABLE</span></code> option. The result is an empty list if the input list is
-empty.</p>
-<p>Like with <span class="target" id="index-1-command:cmake:command:cmake_path"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/cmake_path.html#command:cmake_path" title="(in CMake v4.2.1)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_path()</span></code></a>,
-only syntactic aspects of paths are handled, there is no interaction of any
-kind with any underlying file system. The path may represent a non-existing
-path or even one that is not allowed to exist on the current file system or
-platform, no error is raised when a file do not exist.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">MODE</span></code> argument determines which component to extract and must be one of:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">DIRECTORY</span></code> - Directory without file name.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">NAME</span></code>      - File name without directory.</p></li>
-</ul>
-<p>Example usage:</p>
-<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">set(</span><span class="nb">files</span>
-<span class="w">  </span><span class="s">&quot;src/main.cpp&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="s">&quot;/full/path/to/src/source_1.cpp&quot;</span>
-<span class="nf">)</span>
-<span class="nf">file_manip(</span><span class="no">GET_COMPONENT</span><span class="w"> </span><span class="o">${</span><span class="nt">files</span><span class="o">}</span><span class="w"> </span><span class="no">MODE</span><span class="w"> </span><span class="no">DIRECTORY</span><span class="w"> </span><span class="no">OUTPUT_VARIABLE</span><span class="w"> </span><span class="nb">dirs</span><span class="nf">)</span>
-<span class="c"># dirs is:</span>
-<span class="c">#   src;/full/path/to/src</span>
-<span class="nf">file_manip(</span><span class="no">GET_COMPONENT</span><span class="w"> </span><span class="o">${</span><span class="nt">files</span><span class="o">}</span><span class="w"> </span><span class="no">MODE</span><span class="w"> </span><span class="no">NAME</span><span class="w"> </span><span class="no">OUTPUT_VARIABLE</span><span class="w"> </span><span class="nb">filenames</span><span class="nf">)</span>
-<span class="c"># filenames is:</span>
-<span class="c">#   main.cpp;source_1.cpp</span>
+<span class="c">#   /full/path/to/src/main.cpp;/full/path/to/src;/full/path/to/src/main.cpp;/full/path/to/src</span>
 </pre></div>
 </div>
 </dd></dl>

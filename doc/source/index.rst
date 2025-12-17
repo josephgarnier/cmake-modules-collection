@@ -25,5 +25,6 @@ is exposed per module.
    /module/Directory
    /module/FileManip
    /module/Map
+   /module/PathManip
    /module/Print
    /module/StringManip
