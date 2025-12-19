@@ -323,10 +323,13 @@ function(print)
   endforeach()
 
   if((DEFINED arg_REL_PATHS) OR ("REL_PATHS" IN_LIST arg_KEYWORDS_MISSING_VALUES))
+    set(current_command "print(REL_PATHS)")
     _print_paths_list()
   elseif((DEFINED arg_STRINGS) OR ("STRINGS" IN_LIST arg_KEYWORDS_MISSING_VALUES))
+    set(current_command "print(STRINGS)")
     _print_strings_list()
   else()
+    set(current_command "print()")
     _print_formated_message()
   endif()
 endfunction()
@@ -335,7 +338,7 @@ endfunction()
 # [Internal use only]
 macro(_print_formated_message)
   if(${print_ARGC} EQUAL 0)
-    message(FATAL_ERROR "print() called with wrong number of arguments!")
+    message(FATAL_ERROR "${current_command} called with wrong number of arguments!")
   endif()
 
   # Warning: this macro doesn't have to loop on ARGV or ARGN because the message
@@ -412,7 +415,7 @@ macro(_substitute_directives)
     set(directive_to_substitute "@${message_cursor}@")
     if(NOT DEFINED message_arg_list)
       message(FATAL_ERROR
-        "print() requires the directive ${directive_to_substitute} to have an associated argument!"
+        "${current_command} requires the directive ${directive_to_substitute} to have an associated argument!"
       )
     endif()
 
@@ -427,7 +430,7 @@ macro(_substitute_directives)
         set(directive_to_substitute "${absolute_path}")
       else()
         message(FATAL_ERROR
-          "print() requires the directive ${directive_to_substitute} to have a non-empty string argument!"
+          "${current_command} requires the directive ${directive_to_substitute} to have a non-empty string argument!"
         )
       endif()
     elseif("${directive_to_substitute}" STREQUAL "@rp@")
@@ -444,7 +447,7 @@ macro(_substitute_directives)
         set(directive_to_substitute "${relative_path}")
       else()
         message(FATAL_ERROR
-          "print() requires the directive ${directive_to_substitute} to have a non-empty string argument!"
+          "${current_command} requires the directive ${directive_to_substitute} to have a non-empty string argument!"
         )
       endif()
     elseif("${directive_to_substitute}" STREQUAL "@apl@")
@@ -495,7 +498,7 @@ macro(_substitute_directives)
       unset(message_arg_list) # This directive consumes all the arguments
     else()
       message(FATAL_ERROR
-        "print() does not support the directive ${directive_to_substitute}!"
+        "${current_command} does not support the directive ${directive_to_substitute}!"
       )
     endif()
     set(message_cursor "${directive_to_substitute}")
@@ -509,11 +512,11 @@ endmacro()
 # [Internal use only]
 macro(_print_paths_list)
   if(DEFINED arg_UNPARSED_ARGUMENTS)
-    message(FATAL_ERROR "${CMAKE_CURRENT_FUNCTION}() called with unrecognized arguments: \"${arg_UNPARSED_ARGUMENTS}\"!")
+    message(FATAL_ERROR "${current_command} called with unrecognized arguments: \"${arg_UNPARSED_ARGUMENTS}\"!")
   endif()
   if((NOT DEFINED arg_REL_PATHS)
       AND (NOT "REL_PATHS" IN_LIST arg_KEYWORDS_MISSING_VALUES))
-    message(FATAL_ERROR "${CMAKE_CURRENT_FUNCTION}() requires the keyword REL_PATHS to be provided!")
+    message(FATAL_ERROR "${current_command} requires the keyword REL_PATHS to be provided!")
   endif()
 
   set(mode "")
@@ -558,11 +561,11 @@ endmacro()
 # [Internal use only]
 macro(_print_strings_list)
   if(DEFINED arg_UNPARSED_ARGUMENTS)
-    message(FATAL_ERROR "${CMAKE_CURRENT_FUNCTION}() called with unrecognized arguments: \"${arg_UNPARSED_ARGUMENTS}\"!")
+    message(FATAL_ERROR "${current_command} called with unrecognized arguments: \"${arg_UNPARSED_ARGUMENTS}\"!")
   endif()
   if((NOT DEFINED arg_STRINGS)
       AND (NOT "STRINGS" IN_LIST arg_KEYWORDS_MISSING_VALUES))
-    message(FATAL_ERROR "${CMAKE_CURRENT_FUNCTION}() requires the keyword STRINGS to be provided!")
+    message(FATAL_ERROR "${current_command} requires the keyword STRINGS to be provided!")
   endif()
 
   set(mode "")
