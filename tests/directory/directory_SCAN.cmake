@@ -11,10 +11,10 @@
 #-------------------------------------------------------------------------------
 # Test of [Directory module::SCAN operation]:
 #    directory(SCAN <output-list-var>
-#             LIST_DIRECTORIES <on|off>
-#             RELATIVE <on|off>
-#             ROOT_DIR <dir-path>
-#             <INCLUDE_REGEX|EXCLUDE_REGEX> <regular-expression>)
+#              LIST_DIRECTORIES <true|false>
+#              RELATIVE <true|false>
+#              ROOT_DIR <dir-path>
+#              <INCLUDE_REGEX|EXCLUDE_REGEX> <regular-expression>)
 ct_add_test(NAME "test_directory_scan_operation")
 function(${CMAKETEST_TEST})
   include(Directory)
@@ -22,7 +22,7 @@ function(${CMAKETEST_TEST})
   # Functionalities checking
   ct_add_section(NAME "list_all")
   function(${CMAKETEST_SECTION})
-  
+
     ct_add_section(NAME "get_absolute_path")
     function(${CMAKETEST_SECTION})
       set(expected_output
@@ -44,8 +44,8 @@ function(${CMAKETEST_TEST})
         "${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp"
         "${TESTS_DATA_DIR}/src/sub_2/source_sub_2.h")
       directory(SCAN output
-        LIST_DIRECTORIES on
-        RELATIVE off
+        LIST_DIRECTORIES true
+        RELATIVE false
         ROOT_DIR "${TESTS_DATA_DIR}/src"
         INCLUDE_REGEX ".*"
       )
@@ -74,8 +74,8 @@ function(${CMAKETEST_TEST})
         "sub_2/source_sub_2.cpp"
         "sub_2/source_sub_2.h")
       directory(SCAN output
-        LIST_DIRECTORIES on
-        RELATIVE on
+        LIST_DIRECTORIES true
+        RELATIVE true
         ROOT_DIR "${TESTS_DATA_DIR}/src"
         INCLUDE_REGEX ".*"
       )
@@ -86,7 +86,7 @@ function(${CMAKETEST_TEST})
 
   ct_add_section(NAME "list_only_files")
   function(${CMAKETEST_SECTION})
-  
+
     ct_add_section(NAME "get_absolute_path")
     function(${CMAKETEST_SECTION})
       set(expected_output
@@ -106,8 +106,8 @@ function(${CMAKETEST_TEST})
         "${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp"
         "${TESTS_DATA_DIR}/src/sub_2/source_sub_2.h")
       directory(SCAN output
-        LIST_DIRECTORIES off
-        RELATIVE off
+        LIST_DIRECTORIES false
+        RELATIVE false
         ROOT_DIR "${TESTS_DATA_DIR}/src"
         INCLUDE_REGEX ".*"
       )
@@ -134,8 +134,8 @@ function(${CMAKETEST_TEST})
         "sub_2/source_sub_2.cpp"
         "sub_2/source_sub_2.h")
       directory(SCAN output
-        LIST_DIRECTORIES off
-        RELATIVE on
+        LIST_DIRECTORIES false
+        RELATIVE true
         ROOT_DIR "${TESTS_DATA_DIR}/src"
         INCLUDE_REGEX ".*"
       )
@@ -146,7 +146,7 @@ function(${CMAKETEST_TEST})
 
   ct_add_section(NAME "list_filtered_with_include_regex")
   function(${CMAKETEST_SECTION})
-  
+
     ct_add_section(NAME "get_absolute_path")
     function(${CMAKETEST_SECTION})
       set(expected_output
@@ -159,8 +159,8 @@ function(${CMAKETEST_TEST})
         "${TESTS_DATA_DIR}/src/sub_1/source_sub_1.cpp"
         "${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp")
       directory(SCAN output
-        LIST_DIRECTORIES on
-        RELATIVE off
+        LIST_DIRECTORIES true
+        RELATIVE false
         ROOT_DIR "${TESTS_DATA_DIR}/src"
         INCLUDE_REGEX ".*[.]cpp$|.*[.]cc$|.*[.]cxx$"
       )
@@ -180,8 +180,8 @@ function(${CMAKETEST_TEST})
         "sub_1/source_sub_1.cpp"
         "sub_2/source_sub_2.cpp")
       directory(SCAN output
-        LIST_DIRECTORIES on
-        RELATIVE on
+        LIST_DIRECTORIES true
+        RELATIVE true
         ROOT_DIR "${TESTS_DATA_DIR}/src"
         INCLUDE_REGEX ".*[.]cpp$|.*[.]cc$|.*[.]cxx$"
       )
@@ -192,7 +192,7 @@ function(${CMAKETEST_TEST})
 
   ct_add_section(NAME "list_filtered_with_exclude_regex")
   function(${CMAKETEST_SECTION})
-  
+
     ct_add_section(NAME "get_absolute_path")
     function(${CMAKETEST_SECTION})
       set(expected_output
@@ -207,8 +207,8 @@ function(${CMAKETEST_TEST})
         "${TESTS_DATA_DIR}/src/sub_2"
         "${TESTS_DATA_DIR}/src/sub_2/source_sub_2.cpp")
       directory(SCAN output
-        LIST_DIRECTORIES on
-        RELATIVE off
+        LIST_DIRECTORIES true
+        RELATIVE false
         ROOT_DIR "${TESTS_DATA_DIR}/src"
         EXCLUDE_REGEX ".*[.]h$|.*[.]hpp$|.*[.]hxx$|.*[.]inl$|.*[.]tpp$"
       )
@@ -230,8 +230,8 @@ function(${CMAKETEST_TEST})
         "sub_2"
         "sub_2/source_sub_2.cpp")
       directory(SCAN output
-        LIST_DIRECTORIES on
-        RELATIVE on
+        LIST_DIRECTORIES true
+        RELATIVE true
         ROOT_DIR "${TESTS_DATA_DIR}/src"
         EXCLUDE_REGEX ".*[.]h$|.*[.]hpp$|.*[.]hxx$|.*[.]inl$|.*[.]tpp$"
       )
@@ -244,8 +244,8 @@ function(${CMAKETEST_TEST})
   ct_add_section(NAME "throws_if_arg_output_list_var_is_missing_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     directory(SCAN
-      LIST_DIRECTORIES on
-      RELATIVE off
+      LIST_DIRECTORIES true
+      RELATIVE false
       ROOT_DIR "${TESTS_DATA_DIR}/src"
       INCLUDE_REGEX ".*"
     )
@@ -254,8 +254,8 @@ function(${CMAKETEST_TEST})
   ct_add_section(NAME "throws_if_arg_output_list_var_is_missing_2" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     directory(SCAN ""
-      LIST_DIRECTORIES on
-      RELATIVE off
+      LIST_DIRECTORIES true
+      RELATIVE false
       ROOT_DIR "${TESTS_DATA_DIR}/src"
       INCLUDE_REGEX ".*"
     )
@@ -264,8 +264,8 @@ function(${CMAKETEST_TEST})
   ct_add_section(NAME "throws_if_arg_output_list_var_is_missing_3" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     directory(SCAN "output"
-      LIST_DIRECTORIES on
-      RELATIVE off
+      LIST_DIRECTORIES true
+      RELATIVE false
       ROOT_DIR "${TESTS_DATA_DIR}/src"
       INCLUDE_REGEX ".*"
     )
@@ -274,7 +274,7 @@ function(${CMAKETEST_TEST})
   ct_add_section(NAME "throws_if_arg_list_directories_is_missing_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     directory(SCAN output
-      RELATIVE off
+      RELATIVE false
       ROOT_DIR "${TESTS_DATA_DIR}/src"
       INCLUDE_REGEX ".*"
     )
@@ -284,17 +284,17 @@ function(${CMAKETEST_TEST})
   function(${CMAKETEST_SECTION})
     directory(SCAN output
       LIST_DIRECTORIES
-      RELATIVE off
+      RELATIVE false
       ROOT_DIR "${TESTS_DATA_DIR}/src"
       INCLUDE_REGEX ".*"
     )
   endfunction()
-  
+
   ct_add_section(NAME "throws_if_arg_list_directories_is_missing_3" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     directory(SCAN output
       LIST_DIRECTORIES ""
-      RELATIVE off
+      RELATIVE false
       ROOT_DIR "${TESTS_DATA_DIR}/src"
       INCLUDE_REGEX ".*"
     )
@@ -304,16 +304,16 @@ function(${CMAKETEST_TEST})
   function(${CMAKETEST_SECTION})
     directory(SCAN output
       LIST_DIRECTORIES "wrong"
-      RELATIVE off
+      RELATIVE false
       ROOT_DIR "${TESTS_DATA_DIR}/src"
       INCLUDE_REGEX ".*"
     )
   endfunction()
-  
+
   ct_add_section(NAME "throws_if_arg_relative_is_missing_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     directory(SCAN output
-      LIST_DIRECTORIES on
+      LIST_DIRECTORIES true
       ROOT_DIR "${TESTS_DATA_DIR}/src"
       INCLUDE_REGEX ".*"
     )
@@ -322,7 +322,7 @@ function(${CMAKETEST_TEST})
   ct_add_section(NAME "throws_if_arg_relative_is_missing_2" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     directory(SCAN output
-      LIST_DIRECTORIES on
+      LIST_DIRECTORIES true
       RELATIVE
       ROOT_DIR "${TESTS_DATA_DIR}/src"
       INCLUDE_REGEX ".*"
@@ -332,7 +332,7 @@ function(${CMAKETEST_TEST})
   ct_add_section(NAME "throws_if_arg_relative_is_missing_3" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     directory(SCAN output
-      LIST_DIRECTORIES on
+      LIST_DIRECTORIES true
       RELATIVE ""
       ROOT_DIR "${TESTS_DATA_DIR}/src"
       INCLUDE_REGEX ".*"
@@ -342,7 +342,7 @@ function(${CMAKETEST_TEST})
   ct_add_section(NAME "throws_if_arg_relative_is_not_bool" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     directory(SCAN output
-      LIST_DIRECTORIES on
+      LIST_DIRECTORIES true
       RELATIVE "wrong"
       ROOT_DIR "${TESTS_DATA_DIR}/src"
       INCLUDE_REGEX ".*"
@@ -352,8 +352,8 @@ function(${CMAKETEST_TEST})
   ct_add_section(NAME "throws_if_arg_root_dir_is_missing_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     directory(SCAN output
-      LIST_DIRECTORIES on
-      RELATIVE off
+      LIST_DIRECTORIES true
+      RELATIVE false
       INCLUDE_REGEX ".*"
     )
   endfunction()
@@ -361,8 +361,8 @@ function(${CMAKETEST_TEST})
   ct_add_section(NAME "throws_if_arg_root_dir_is_missing_2" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     directory(SCAN output
-      LIST_DIRECTORIES on
-      RELATIVE off
+      LIST_DIRECTORIES true
+      RELATIVE false
       ROOT_DIR
       INCLUDE_REGEX ".*"
     )
@@ -371,8 +371,8 @@ function(${CMAKETEST_TEST})
   ct_add_section(NAME "throws_if_arg_root_dir_is_missing_3" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     directory(SCAN output
-      LIST_DIRECTORIES on
-      RELATIVE off
+      LIST_DIRECTORIES true
+      RELATIVE false
       ROOT_DIR ""
       INCLUDE_REGEX ".*"
     )
@@ -381,8 +381,8 @@ function(${CMAKETEST_TEST})
   ct_add_section(NAME "throws_if_arg_root_dir_does_not_exist" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     directory(SCAN output
-      LIST_DIRECTORIES on
-      RELATIVE off
+      LIST_DIRECTORIES true
+      RELATIVE false
       ROOT_DIR "fake/directory"
       INCLUDE_REGEX ".*"
     )
@@ -391,8 +391,8 @@ function(${CMAKETEST_TEST})
   ct_add_section(NAME "throws_if_arg_root_dir_is_not_a_diretory" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     directory(SCAN output
-      LIST_DIRECTORIES on
-      RELATIVE off
+      LIST_DIRECTORIES true
+      RELATIVE false
       ROOT_DIR "${TESTS_DATA_DIR}/src/source_1.cpp"
       INCLUDE_REGEX ".*"
     )
@@ -401,8 +401,8 @@ function(${CMAKETEST_TEST})
   ct_add_section(NAME "throws_if_arg_regex_is_missing_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     directory(SCAN output
-      LIST_DIRECTORIES on
-      RELATIVE off
+      LIST_DIRECTORIES true
+      RELATIVE false
       ROOT_DIR "${TESTS_DATA_DIR}/src"
     )
   endfunction()
@@ -410,8 +410,8 @@ function(${CMAKETEST_TEST})
   ct_add_section(NAME "throws_if_arg_regex_is_missing_2" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     directory(SCAN output
-      LIST_DIRECTORIES on
-      RELATIVE off
+      LIST_DIRECTORIES true
+      RELATIVE false
       ROOT_DIR "${TESTS_DATA_DIR}/src"
       INCLUDE_REGEX
     )
@@ -420,10 +420,40 @@ function(${CMAKETEST_TEST})
   ct_add_section(NAME "throws_if_arg_regex_is_missing_3" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     directory(SCAN output
-      LIST_DIRECTORIES on
-      RELATIVE off
+      LIST_DIRECTORIES true
+      RELATIVE false
       ROOT_DIR "${TESTS_DATA_DIR}/src"
       INCLUDE_REGEX ""
+    )
+  endfunction()
+
+  ct_add_section(NAME "throws_if_arg_regex_is_missing_4" EXPECTFAIL)
+  function(${CMAKETEST_SECTION})
+    directory(SCAN output
+      LIST_DIRECTORIES true
+      RELATIVE false
+      ROOT_DIR "${TESTS_DATA_DIR}/src"
+      EXCLUDE_REGEX
+    )
+  endfunction()
+
+  ct_add_section(NAME "throws_if_arg_regex_is_missing_5" EXPECTFAIL)
+  function(${CMAKETEST_SECTION})
+    directory(SCAN output
+      LIST_DIRECTORIES true
+      RELATIVE false
+      ROOT_DIR "${TESTS_DATA_DIR}/src"
+      EXCLUDE_REGEX ""
+    )
+  endfunction()
+
+  ct_add_section(NAME "throws_if_arg_regex_is_twice" EXPECTFAIL)
+  function(${CMAKETEST_SECTION})
+    directory(SCAN output
+      LIST_DIRECTORIES true
+      RELATIVE false
+      ROOT_DIR "${TESTS_DATA_DIR}/src"
+      INCLUDE_REGEX ".*" EXCLUDE_REGEX ".*"
     )
   endfunction()
 endfunction()

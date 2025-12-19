@@ -11,11 +11,11 @@
 #-------------------------------------------------------------------------------
 # Test of [Directory module::COLLECT_SOURCES_BY_LOCATION operation]:
 #    directory(COLLECT_SOURCES_BY_LOCATION
-#             [SRC_DIR <dir-path>
-#             SRC_SOURCE_FILES <output-list-var>
-#             SRC_HEADER_FILES <output-list-var>]
-#             [INCLUDE_DIR <dir-path>
-#             INCLUDE_HEADER_FILES <output-list-var>])
+#              [SRC_DIR <dir-path>
+#              SRC_SOURCE_FILES <output-list-var>
+#              SRC_HEADER_FILES <output-list-var>]
+#              [INCLUDE_DIR <dir-path>
+#              INCLUDE_HEADER_FILES <output-list-var>])
 ct_add_test(NAME "test_directory_collect_sources_by_location_operation")
 function(${CMAKETEST_TEST})
   include(Directory)
@@ -42,7 +42,7 @@ function(${CMAKETEST_TEST})
     "${TESTS_DATA_DIR}/include/include_1.h"
     "${TESTS_DATA_DIR}/include/include_2.h"
     "${TESTS_DATA_DIR}/include/include_pch.h")
-  
+
   # Functionalities checking
   ct_add_section(NAME "get_from_all_dir_locations")
   function(${CMAKETEST_SECTION})

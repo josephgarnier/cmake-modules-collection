@@ -11,11 +11,11 @@
 #-------------------------------------------------------------------------------
 # Test of [Directory module::FIND_LIB operation]:
 #    directory(FIND_LIB <output-lib-var>
-#             FIND_IMPLIB <output-implib-var>
-#             NAME <raw-filename>
-#             <STATIC|SHARED>
-#             RELATIVE <on|off>
-#             ROOT_DIR <dir-path>)
+#              FIND_IMPLIB <output-implib-var>
+#              NAME <raw-filename>
+#              <STATIC|SHARED>
+#              RELATIVE <true|false>
+#              ROOT_DIR <dir-path>)
 ct_add_test(NAME "test_directory_find_lib_operation")
 function(${CMAKETEST_TEST})
   include(Directory)
@@ -69,7 +69,7 @@ function(${CMAKETEST_TEST})
         FIND_IMPLIB output_implib
         NAME "${lib_name}"
         STATIC
-        RELATIVE off
+        RELATIVE false
         ROOT_DIR "${TESTS_DATA_DIR}"
       )
       _build_test_regex("${lib_name}" "STATIC")
@@ -93,7 +93,7 @@ function(${CMAKETEST_TEST})
         FIND_IMPLIB output_implib
         NAME "${lib_name}"
         STATIC
-        RELATIVE on
+        RELATIVE true
         ROOT_DIR "${TESTS_DATA_DIR}"
       )
       _build_test_regex("${lib_name}" "STATIC")
@@ -121,7 +121,7 @@ function(${CMAKETEST_TEST})
         FIND_IMPLIB output_implib
         NAME "${lib_name}"
         SHARED
-        RELATIVE off
+        RELATIVE false
         ROOT_DIR "${TESTS_DATA_DIR}"
       )
       _build_test_regex("${lib_name}" "SHARED")
@@ -148,7 +148,7 @@ function(${CMAKETEST_TEST})
         FIND_IMPLIB output_implib
         NAME "${lib_name}"
         SHARED
-        RELATIVE on
+        RELATIVE true
         ROOT_DIR "${TESTS_DATA_DIR}"
       )
       _build_test_regex("${lib_name}" "SHARED")
@@ -180,7 +180,7 @@ function(${CMAKETEST_TEST})
         FIND_IMPLIB output_implib
         NAME "${lib_name}"
         STATIC
-        RELATIVE off
+        RELATIVE false
         ROOT_DIR "${TESTS_DATA_DIR}"
       )
       ct_assert_string(output_lib)
@@ -196,7 +196,7 @@ function(${CMAKETEST_TEST})
         FIND_IMPLIB output_implib
         NAME "${lib_name}"
         STATIC
-        RELATIVE off
+        RELATIVE false
         ROOT_DIR "${TESTS_DATA_DIR}"
       )
       ct_assert_string(output_lib)
@@ -214,7 +214,7 @@ function(${CMAKETEST_TEST})
         FIND_IMPLIB output_implib
         NAME "${lib_name}"
         STATIC
-        RELATIVE on
+        RELATIVE true
         ROOT_DIR "${TESTS_DATA_DIR}"
       )
       ct_assert_string(output_lib)
@@ -230,7 +230,7 @@ function(${CMAKETEST_TEST})
         FIND_IMPLIB output_implib
         NAME "${lib_name}"
         STATIC
-        RELATIVE on
+        RELATIVE true
         ROOT_DIR "${TESTS_DATA_DIR}"
       )
       ct_assert_string(output_lib)
@@ -251,7 +251,7 @@ function(${CMAKETEST_TEST})
         FIND_IMPLIB output_implib
         NAME "${lib_name}"
         SHARED
-        RELATIVE off
+        RELATIVE false
         ROOT_DIR "${TESTS_DATA_DIR}"
       )
       ct_assert_string(output_lib)
@@ -270,7 +270,7 @@ function(${CMAKETEST_TEST})
           FIND_IMPLIB output_implib
           NAME "${lib_name}"
           SHARED
-          RELATIVE off
+          RELATIVE false
           ROOT_DIR "${TESTS_DATA_DIR}"
         )
         ct_assert_string(output_lib)
@@ -288,7 +288,7 @@ function(${CMAKETEST_TEST})
         FIND_IMPLIB output_implib
         NAME "${lib_name}"
         SHARED
-        RELATIVE on
+        RELATIVE true
         ROOT_DIR "${TESTS_DATA_DIR}"
       )
       ct_assert_string(output_lib)
@@ -307,7 +307,7 @@ function(${CMAKETEST_TEST})
           FIND_IMPLIB output_implib
           NAME "${lib_name}"
           SHARED
-          RELATIVE on
+          RELATIVE true
           ROOT_DIR "${TESTS_DATA_DIR}"
         )
         ct_assert_string(output_lib)
@@ -328,7 +328,7 @@ function(${CMAKETEST_TEST})
       FIND_IMPLIB output_implib
       NAME "${lib_name}"
       SHARED
-      RELATIVE off
+      RELATIVE false
       ROOT_DIR "${TESTS_DATA_DIR}"
     )
     file(REMOVE_RECURSE "${TESTS_DATA_DIR}/bin_throws_if_lib_is_duplicated")
@@ -341,7 +341,7 @@ function(${CMAKETEST_TEST})
       FIND_IMPLIB output_implib
       NAME "${lib_name}"
       SHARED
-      RELATIVE off
+      RELATIVE false
       ROOT_DIR "${TESTS_DATA_DIR}"
     )
   endfunction()
@@ -353,7 +353,7 @@ function(${CMAKETEST_TEST})
       FIND_IMPLIB output_implib
       NAME "${lib_name}"
       SHARED
-      RELATIVE off
+      RELATIVE false
       ROOT_DIR "${TESTS_DATA_DIR}"
     )
   endfunction()
@@ -365,7 +365,7 @@ function(${CMAKETEST_TEST})
       FIND_IMPLIB output_implib
       NAME "${lib_name}"
       SHARED
-      RELATIVE off
+      RELATIVE false
       ROOT_DIR "${TESTS_DATA_DIR}"
     )
   endfunction()
@@ -377,7 +377,7 @@ function(${CMAKETEST_TEST})
       FIND_IMPLIB
       NAME "${lib_name}"
       SHARED
-      RELATIVE off
+      RELATIVE false
       ROOT_DIR "${TESTS_DATA_DIR}"
     )
   endfunction()
@@ -389,7 +389,7 @@ function(${CMAKETEST_TEST})
       FIND_IMPLIB ""
       NAME "${lib_name}"
       SHARED
-      RELATIVE off
+      RELATIVE false
       ROOT_DIR "${TESTS_DATA_DIR}"
     )
   endfunction()
@@ -401,7 +401,7 @@ function(${CMAKETEST_TEST})
       FIND_IMPLIB "output_implib"
       NAME "${lib_name}"
       SHARED
-      RELATIVE off
+      RELATIVE false
       ROOT_DIR "${TESTS_DATA_DIR}"
     )
   endfunction()
@@ -412,7 +412,7 @@ function(${CMAKETEST_TEST})
     directory(FIND_LIB output_lib
       FIND_IMPLIB output_implib
       SHARED
-      RELATIVE off
+      RELATIVE false
       ROOT_DIR "${TESTS_DATA_DIR}"
     )
   endfunction()
@@ -424,7 +424,7 @@ function(${CMAKETEST_TEST})
       FIND_IMPLIB output_implib
       NAME
       SHARED
-      RELATIVE off
+      RELATIVE false
       ROOT_DIR "${TESTS_DATA_DIR}"
     )
   endfunction()
@@ -436,7 +436,7 @@ function(${CMAKETEST_TEST})
       FIND_IMPLIB output_implib
       NAME ""
       SHARED
-      RELATIVE off
+      RELATIVE false
       ROOT_DIR "${TESTS_DATA_DIR}"
     )
   endfunction()
@@ -447,7 +447,7 @@ function(${CMAKETEST_TEST})
     directory(FIND_LIB output_lib
       FIND_IMPLIB output_implib
       NAME "${lib_name}"
-      RELATIVE off
+      RELATIVE false
       ROOT_DIR "${TESTS_DATA_DIR}"
     )
   endfunction()
@@ -459,7 +459,7 @@ function(${CMAKETEST_TEST})
       FIND_IMPLIB output_implib
       NAME "${lib_name}"
       SHARED STATIC
-      RELATIVE off
+      RELATIVE false
       ROOT_DIR "${TESTS_DATA_DIR}"
     )
   endfunction()
@@ -506,7 +506,7 @@ function(${CMAKETEST_TEST})
       FIND_IMPLIB output_implib
       NAME "${lib_name}"
       SHARED
-      RELATIVE off
+      RELATIVE false
     )
   endfunction()
 
@@ -517,7 +517,7 @@ function(${CMAKETEST_TEST})
       FIND_IMPLIB output_implib
       NAME "${lib_name}"
       SHARED
-      RELATIVE off
+      RELATIVE false
       ROOT_DIR
     )
   endfunction()
@@ -529,7 +529,7 @@ function(${CMAKETEST_TEST})
       FIND_IMPLIB output_implib
       NAME "${lib_name}"
       SHARED
-      RELATIVE off
+      RELATIVE false
       ROOT_DIR ""
     )
   endfunction()
@@ -541,20 +541,8 @@ function(${CMAKETEST_TEST})
       FIND_IMPLIB output_implib
       NAME "${lib_name}"
       SHARED
-      RELATIVE off
+      RELATIVE false
       ROOT_DIR "fake/directory"
-    )
-  endfunction()
-
-  ct_add_section(NAME "throws_if_arg_root_dir_is_not_a_diretory" EXPECTFAIL)
-  function(${CMAKETEST_SECTION})
-    set(lib_name "shared_mock_lib")
-    directory(FIND_LIB output_lib
-      FIND_IMPLIB output_implib
-      NAME "${lib_name}"
-      SHARED
-      RELATIVE off
-      ROOT_DIR "${TESTS_DATA_DIR}/src/source_1.cpp"
     )
   endfunction()
 
@@ -565,7 +553,7 @@ function(${CMAKETEST_TEST})
       FIND_IMPLIB output_implib
       NAME "${lib_name}"
       SHARED
-      RELATIVE off
+      RELATIVE false
       ROOT_DIR "${TESTS_DATA_DIR}/src/source_1.cpp"
     )
   endfunction()
