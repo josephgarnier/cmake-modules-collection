@@ -50,7 +50,7 @@ function(import_mock_lib lib_target_name lib_file_basename)
     FIND_IMPLIB ${lib_target_name}_IMP_LIBRARY_${build_type}
     NAME "${lib_file_basename}"
     ${lib_type}
-    RELATIVE off
+    RELATIVE false
     ROOT_DIR "${TESTS_DATA_DIR}/bin"
   )
   if("${${lib_target_name}_IMP_LIBRARY_${build_type}}" MATCHES "-NOTFOUND$")

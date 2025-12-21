@@ -54,7 +54,7 @@ function(${CMAKETEST_TEST})
       FIND_IMPLIB expected_implib_file_path
       NAME "${lib_file_basename}"
       STATIC
-      RELATIVE off
+      RELATIVE false
       ROOT_DIR "${TESTS_DATA_DIR}/bin"
     )
     cmake_path(GET expected_lib_file_path FILENAME expected_lib_file_name)
@@ -149,7 +149,7 @@ function(${CMAKETEST_TEST})
       FIND_IMPLIB expected_implib_file_path
       NAME "${lib_file_basename}"
       STATIC
-      RELATIVE off
+      RELATIVE false
       ROOT_DIR "${TESTS_DATA_DIR}/bin"
     )
 
@@ -207,7 +207,7 @@ function(${CMAKETEST_TEST})
       FIND_IMPLIB expected_implib_file_path
       NAME "${lib_file_basename}"
       STATIC
-      RELATIVE off
+      RELATIVE false
       ROOT_DIR "${TESTS_DATA_DIR}/bin_import_nonexistent_static_lib"
     )
 
@@ -260,7 +260,7 @@ function(${CMAKETEST_TEST})
       FIND_IMPLIB expected_implib_file_path
       NAME "${lib_file_basename}"
       SHARED
-      RELATIVE off
+      RELATIVE false
       ROOT_DIR "${TESTS_DATA_DIR}/bin"
     )
     cmake_path(GET expected_lib_file_path FILENAME expected_lib_file_name)
@@ -350,7 +350,7 @@ function(${CMAKETEST_TEST})
       FIND_IMPLIB expected_implib_file_path
       NAME "${lib_file_basename}"
       SHARED
-      RELATIVE off
+      RELATIVE false
       ROOT_DIR "${TESTS_DATA_DIR}/bin"
     )
 
@@ -408,7 +408,7 @@ function(${CMAKETEST_TEST})
       FIND_IMPLIB expected_implib_file_path
       NAME "${lib_file_basename}"
       SHARED
-      RELATIVE off
+      RELATIVE false
       ROOT_DIR "${TESTS_DATA_DIR}/bin_import_nonexistent_shared_lib"
     )
 
@@ -472,7 +472,7 @@ function(${CMAKETEST_TEST})
       FIND_IMPLIB expected_implib_file_path
       NAME "${lib_file_basename}"
       SHARED
-      RELATIVE off
+      RELATIVE false
       ROOT_DIR "${TESTS_DATA_DIR}/bin_import_nonexistent_shared_implib"
     )
 

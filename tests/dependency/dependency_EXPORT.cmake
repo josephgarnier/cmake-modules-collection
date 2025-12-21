@@ -11,9 +11,9 @@
 #-------------------------------------------------------------------------------
 # Test of [Dependency module::EXPORT operation]:
 #    dependency(EXPORT <lib-target-name>...
-#              <BUILD_TREE|INSTALL_TREE>
-#              [APPEND]
-#              OUTPUT_FILE <file_name>)
+#               <BUILD_TREE|INSTALL_TREE>
+#               [APPEND]
+#               OUTPUT_FILE <file_name>)
 ct_add_test(NAME "test_dependency_export_operation")
 function(${CMAKETEST_TEST})
   include(Dependency)
@@ -33,7 +33,7 @@ function(${CMAKETEST_TEST})
   import_full_mock_lib("imp_shared_mock_lib" "shared_mock_lib${build_type_suffix}"
     SHARED SKIP_IF_EXISTS)
 
-  # Functionalities checking
+  # Functionalities checking [!! OUTDATED !!]
   # Since dependency() generates the “part” files created during the generation phase and the final file during the build phase from the “part” files created during the generation phase, it is not possible to test the results of several calls to dependency() during the test phase. Therefore, tests on result are commented.
   # ct_add_section(NAME "export_from_build_tree")
   # function(${CMAKETEST_SECTION})
