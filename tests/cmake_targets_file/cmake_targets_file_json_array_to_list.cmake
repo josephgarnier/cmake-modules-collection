@@ -27,7 +27,10 @@ function(${CMAKETEST_TEST})
     "",
     "pineapple",
     "grape",
-    ""
+    "",
+    "lemon",
+    "watermelon",
+    "peach"
   ]
   ]=])
 
@@ -45,6 +48,9 @@ function(${CMAKETEST_TEST})
       "pineapple"
       "grape"
       ""
+      "lemon"
+      "watermelon"
+      "peach"
     )
     string(JSON json_block_type TYPE "${input_json_array}")
     ct_assert_equal(json_block_type "ARRAY")

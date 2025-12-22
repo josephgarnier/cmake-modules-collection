@@ -60,12 +60,12 @@ function(${CMAKETEST_TEST})
 
     ct_add_section(NAME "error_if_boolean_1" EXPECTFAIL)
     function(${CMAKETEST_SECTION})
-      _validate_json_number(PROP_PATH "one;two;three" PROP_VALUE "on")
+      _validate_json_number(PROP_PATH "one;two;three" PROP_VALUE "true")
     endfunction()
 
     ct_add_section(NAME "error_if_boolean_2" EXPECTFAIL)
     function(${CMAKETEST_SECTION})
-      _validate_json_number(PROP_PATH "one;two;three" PROP_VALUE "off")
+      _validate_json_number(PROP_PATH "one;two;three" PROP_VALUE "false")
     endfunction()
 
     ct_add_section(NAME "error_if_null" EXPECTFAIL)
@@ -423,12 +423,12 @@ function(${CMAKETEST_TEST})
 
   ct_add_section(NAME "throws_if_arg_multiple_of_is_boolean_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    _validate_json_number(PROP_PATH "one;two;three" PROP_VALUE "1" MULTIPLE_OF "on")
+    _validate_json_number(PROP_PATH "one;two;three" PROP_VALUE "1" MULTIPLE_OF "true")
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_multiple_of_is_boolean_2" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    _validate_json_number(PROP_PATH "one;two;three" PROP_VALUE "1" MULTIPLE_OF "off")
+    _validate_json_number(PROP_PATH "one;two;three" PROP_VALUE "1" MULTIPLE_OF "false")
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_multiple_of_is_null" EXPECTFAIL)
@@ -483,12 +483,12 @@ function(${CMAKETEST_TEST})
 
   ct_add_section(NAME "throws_if_arg_min_is_boolean_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    _validate_json_number(PROP_PATH "one;two;three" PROP_VALUE "10" MIN "on")
+    _validate_json_number(PROP_PATH "one;two;three" PROP_VALUE "10" MIN "true")
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_min_is_boolean_2" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    _validate_json_number(PROP_PATH "one;two;three" PROP_VALUE "10" MIN "off")
+    _validate_json_number(PROP_PATH "one;two;three" PROP_VALUE "10" MIN "false")
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_min_is_null" EXPECTFAIL)
@@ -528,12 +528,12 @@ function(${CMAKETEST_TEST})
 
   ct_add_section(NAME "throws_if_arg_exclu_min_is_boolean_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    _validate_json_number(PROP_PATH "one;two;three" PROP_VALUE "10" EXCLU_MIN "on")
+    _validate_json_number(PROP_PATH "one;two;three" PROP_VALUE "10" EXCLU_MIN "true")
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_exclu_min_is_boolean_2" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    _validate_json_number(PROP_PATH "one;two;three" PROP_VALUE "10" EXCLU_MIN "off")
+    _validate_json_number(PROP_PATH "one;two;three" PROP_VALUE "10" EXCLU_MIN "false")
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_exclu_min_is_null" EXPECTFAIL)
@@ -573,12 +573,12 @@ function(${CMAKETEST_TEST})
 
   ct_add_section(NAME "throws_if_arg_max_is_boolean_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    _validate_json_number(PROP_PATH "one;two;three" PROP_VALUE "10" MAX "on")
+    _validate_json_number(PROP_PATH "one;two;three" PROP_VALUE "10" MAX "true")
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_max_is_boolean_2" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    _validate_json_number(PROP_PATH "one;two;three" PROP_VALUE "10" MAX "off")
+    _validate_json_number(PROP_PATH "one;two;three" PROP_VALUE "10" MAX "false")
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_max_is_null" EXPECTFAIL)
@@ -618,12 +618,12 @@ function(${CMAKETEST_TEST})
 
   ct_add_section(NAME "throws_if_arg_exclu_max_is_boolean_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    _validate_json_number(PROP_PATH "one;two;three" PROP_VALUE "10" EXCLU_MAX "on")
+    _validate_json_number(PROP_PATH "one;two;three" PROP_VALUE "10" EXCLU_MAX "true")
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_exclu_max_is_boolean_2" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    _validate_json_number(PROP_PATH "one;two;three" PROP_VALUE "10" EXCLU_MAX "off")
+    _validate_json_number(PROP_PATH "one;two;three" PROP_VALUE "10" EXCLU_MAX "false")
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_exclu_max_is_null" EXPECTFAIL)

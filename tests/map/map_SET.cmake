@@ -53,7 +53,7 @@ function(${CMAKETEST_TEST})
     map(SET copy_of_input_map "entry 6" "peach")
     ct_assert_list(copy_of_input_map)
     ct_assert_equal(copy_of_input_map "${expected_result}")
-    
+
     set(copy_of_input_map "${input_map}")
     set(expected_result
       "entry 1:apple"
@@ -116,7 +116,7 @@ function(${CMAKETEST_TEST})
     map(SET copy_of_input_map "entry 11" "peach")
     ct_assert_list(copy_of_input_map)
     ct_assert_equal(copy_of_input_map "${expected_result}")
-    
+
     set(copy_of_input_map "${input_map}")
     set(expected_result
       "entry 1:apple"
@@ -136,7 +136,7 @@ function(${CMAKETEST_TEST})
     map(SET copy_of_input_map "entry 11" "blueberry:blackberry")
     ct_assert_list(copy_of_input_map)
     ct_assert_equal(copy_of_input_map "${expected_result}")
-    
+
     # Set empty value
     set(copy_of_input_map "${input_map}")
     set(expected_result
@@ -181,7 +181,7 @@ function(${CMAKETEST_TEST})
     map(SET copy_of_input_map "invalid" "peach")
     ct_assert_list(copy_of_input_map)
     ct_assert_equal(copy_of_input_map "${expected_result}")
-    
+
     set(copy_of_input_map "${input_map}")
     set(expected_result
       "entry 1:apple"
@@ -201,7 +201,7 @@ function(${CMAKETEST_TEST})
     map(SET copy_of_input_map "invalid" "blueberry:blackberry")
     ct_assert_list(copy_of_input_map)
     ct_assert_equal(copy_of_input_map "${expected_result}")
-    
+
     # Set empty value
     set(copy_of_input_map "${input_map}")
     set(expected_result
@@ -231,7 +231,7 @@ function(${CMAKETEST_TEST})
     set(expected_result "entry 6:peach")
     map(SET input_map "entry 6" "peach")
     ct_assert_equal(input_map "${expected_result}")
-    
+
     # Set empty value
     set(input_map "")
     set(expected_result "entry 6:")

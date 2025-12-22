@@ -23,7 +23,7 @@ function(${CMAKETEST_TEST})
     )
     ct_assert_not_list(input_encoded_string)
     _is_serialized_list(is_serialized "${input_encoded_string}")
-    ct_assert_equal(is_serialized "on")
+    ct_assert_equal(is_serialized "true")
     ct_assert_true(is_serialized)
 
     set(input_encoded_string
@@ -31,7 +31,7 @@ function(${CMAKETEST_TEST})
     )
     ct_assert_not_list(input_encoded_string)
     _is_serialized_list(is_serialized "${input_encoded_string}")
-    ct_assert_equal(is_serialized "on")
+    ct_assert_equal(is_serialized "true")
     ct_assert_true(is_serialized)
 
     set(input_encoded_string
@@ -39,7 +39,7 @@ function(${CMAKETEST_TEST})
     )
     ct_assert_not_list(input_encoded_string)
     _is_serialized_list(is_serialized "${input_encoded_string}")
-    ct_assert_equal(is_serialized "on")
+    ct_assert_equal(is_serialized "true")
     ct_assert_true(is_serialized)
 
     set(input_encoded_string
@@ -47,15 +47,15 @@ function(${CMAKETEST_TEST})
     )
     ct_assert_not_list(input_encoded_string)
     _is_serialized_list(is_serialized "${input_encoded_string}")
-    ct_assert_equal(is_serialized "on")
+    ct_assert_equal(is_serialized "true")
     ct_assert_true(is_serialized)
-  
+
     set(input_encoded_string
       "|"
     )
     ct_assert_not_list(input_encoded_string)
     _is_serialized_list(is_serialized "${input_encoded_string}")
-    ct_assert_equal(is_serialized "on")
+    ct_assert_equal(is_serialized "true")
     ct_assert_true(is_serialized)
   endfunction()
 
@@ -72,10 +72,13 @@ function(${CMAKETEST_TEST})
       "pineapple"
       "grape"
       ""
+      "lemon"
+      "watermelon"
+      "peach"
     )
     ct_assert_list(input_cmake_list)
     _is_serialized_list(is_serialized "${input_cmake_list}")
-    ct_assert_equal(is_serialized "off")
+    ct_assert_equal(is_serialized "false")
     ct_assert_false(is_serialized)
 
     set(input_cmake_list
@@ -89,10 +92,13 @@ function(${CMAKETEST_TEST})
       "pineapple"
       "grape"
       ""
+      "lemon"
+      "watermelon"
+      "peach"
     )
     ct_assert_list(input_cmake_list)
     _is_serialized_list(is_serialized "${input_cmake_list}")
-    ct_assert_equal(is_serialized "on")
+    ct_assert_equal(is_serialized "true")
     ct_assert_true(is_serialized)
   endfunction()
 
@@ -103,7 +109,7 @@ function(${CMAKETEST_TEST})
     )
     ct_assert_not_list(input_string)
     _is_serialized_list(is_serialized "${input_string}")
-    ct_assert_equal(is_serialized "off")
+    ct_assert_equal(is_serialized "false")
     ct_assert_false(is_serialized)
 
     set(input_string
@@ -111,14 +117,14 @@ function(${CMAKETEST_TEST})
     )
     ct_assert_not_list(input_string)
     _is_serialized_list(is_serialized "${input_string}")
-    ct_assert_equal(is_serialized "off")
+    ct_assert_equal(is_serialized "false")
     ct_assert_false(is_serialized)
   endfunction()
 
   ct_add_section(NAME "check_in_empty_string")
   function(${CMAKETEST_SECTION})
     _is_serialized_list(is_serialized "")
-    ct_assert_equal(is_serialized "off")
+    ct_assert_equal(is_serialized "false")
     ct_assert_false(is_serialized)
   endfunction()
 

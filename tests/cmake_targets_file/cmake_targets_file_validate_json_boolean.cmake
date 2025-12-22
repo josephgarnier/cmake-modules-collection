@@ -11,7 +11,7 @@
 #-------------------------------------------------------------------------------
 # Test of [CMakeTargetsFile module::_validate_json_boolean internal function]:
 #    _validate_json_boolean(PROP_PATH [<prop-key>...]
-#                           PROP_VALUE <number>)
+#                           PROP_VALUE <string>)
 ct_add_test(NAME "test_cmake_targets_file_validate_json_boolean_internal_function")
 function(${CMAKETEST_TEST})
   include(CMakeTargetsFile)
@@ -57,7 +57,7 @@ function(${CMAKETEST_TEST})
     function(${CMAKETEST_SECTION})
       _validate_json_boolean(PROP_PATH "one;two;three" PROP_VALUE "null")
     endfunction()
-    
+
     ct_add_section(NAME "error_if_true" EXPECTFAIL)
     function(${CMAKETEST_SECTION})
       _validate_json_boolean(PROP_PATH "one;two;three" PROP_VALUE "true")
@@ -78,14 +78,14 @@ function(${CMAKETEST_TEST})
       _validate_json_boolean(PROP_PATH "one;two;three" PROP_VALUE "0")
     endfunction()
 
-    ct_add_section(NAME "error_if_on" EXPECTFAIL)
+    ct_add_section(NAME "error_if_true" EXPECTFAIL)
     function(${CMAKETEST_SECTION})
-      _validate_json_boolean(PROP_PATH "one;two;three" PROP_VALUE "on")
+      _validate_json_boolean(PROP_PATH "one;two;three" PROP_VALUE "true")
     endfunction()
 
-    ct_add_section(NAME "error_if_off" EXPECTFAIL)
+    ct_add_section(NAME "error_if_false" EXPECTFAIL)
     function(${CMAKETEST_SECTION})
-      _validate_json_boolean(PROP_PATH "one;two;three" PROP_VALUE "off")
+      _validate_json_boolean(PROP_PATH "one;two;three" PROP_VALUE "false")
     endfunction()
   endfunction()
 

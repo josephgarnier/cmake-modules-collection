@@ -27,13 +27,16 @@ function(${CMAKETEST_TEST})
     "pineapple"
     "grape"
     ""
+    "lemon"
+    "watermelon"
+    "peach"
   )
-  
+
   # Functionalities checking
   ct_add_section(NAME "serialize_list_with_various_elements")
   function(${CMAKETEST_SECTION})
     set(expected_output
-      "apple|banana|orange|pineapple|carrot\\||strawberry\\|||pineapple|grape|"
+      "apple|banana|orange|pineapple|carrot\\||strawberry\\|||pineapple|grape||lemon|watermelon|peach"
     )
     ct_assert_list(input_list)
     _serialize_list(encoded_string "${input_list}")

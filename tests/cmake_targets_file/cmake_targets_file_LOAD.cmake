@@ -170,21 +170,21 @@ function(${CMAKETEST_TEST})
       "extDependencies.AppleLib.build.compileDefinitions:DEFINE_ONE=1"
       "extDependencies.AppleLib.build.compileOptions:-Wall"
       "extDependencies.AppleLib.build.linkOptions:-s"
-      "extDependencies.BananaLib.rulesFile:RulesBananaLib.cmake"
+      "extDependencies.BananaLib.rulesFile:cmake/rules/RulesBananaLib.cmake"
       "extDependencies.BananaLib.minVersion:4"
       "extDependencies.BananaLib.optional:ON"
       "extDependencies.BananaLib.fetchInfo.autodownload:OFF"
-      "extDependencies.CarrotLib.rulesFile:RulesCarrotLib.cmake"
+      "extDependencies.CarrotLib.rulesFile:cmake/rules/RulesCarrotLib.cmake"
       "extDependencies.CarrotLib.fetchInfo.autodownload:ON"
       "extDependencies.CarrotLib.fetchInfo.kind:svn"
       "extDependencies.CarrotLib.fetchInfo.repository:svn://svn.carrot.lib.org/links/trunk"
       "extDependencies.CarrotLib.fetchInfo.revision:1234567"
-      "extDependencies.OrangeLib.rulesFile:RulesOrangeLib.cmake"
+      "extDependencies.OrangeLib.rulesFile:cmake/rules/RulesOrangeLib.cmake"
       "extDependencies.OrangeLib.fetchInfo.autodownload:ON"
       "extDependencies.OrangeLib.fetchInfo.kind:mercurial"
       "extDependencies.OrangeLib.fetchInfo.repository:https://hg.example.com/RulesOrangeLib"
       "extDependencies.OrangeLib.fetchInfo.tag:1234567"
-      "extDependencies.PineappleLib.rulesFile:RulesPineappleLib.cmake"
+      "extDependencies.PineappleLib.rulesFile:cmake/rules/RulesPineappleLib.cmake"
       "extDependencies.PineappleLib.fetchInfo.autodownload:ON"
       "extDependencies.PineappleLib.fetchInfo.kind:url"
       "extDependencies.PineappleLib.fetchInfo.repository:https://example.com/PineappleLib.zip"
@@ -226,7 +226,7 @@ function(${CMAKETEST_TEST})
     get_property(output_property GLOBAL PROPERTY "TARGETS_CONFIG_LOADED")
     ct_assert_string(output_property)
     ct_assert_true(output_property)
-    ct_assert_equal(output_property "on")
+    ct_assert_equal(output_property "true")
 
     get_property(output_property GLOBAL PROPERTY "TARGETS_CONFIG_src")
     ct_assert_list(output_property)
@@ -387,21 +387,21 @@ function(${CMAKETEST_TEST})
       "extDependencies.AppleLib.build.compileDefinitions:DEFINE_ONE=1"
       "extDependencies.AppleLib.build.compileOptions:-Wall"
       "extDependencies.AppleLib.build.linkOptions:-s"
-      "extDependencies.BananaLib.rulesFile:RulesBananaLib.cmake"
+      "extDependencies.BananaLib.rulesFile:cmake/rules/RulesBananaLib.cmake"
       "extDependencies.BananaLib.minVersion:4"
       "extDependencies.BananaLib.optional:ON"
       "extDependencies.BananaLib.fetchInfo.autodownload:OFF"
-      "extDependencies.CarrotLib.rulesFile:RulesCarrotLib.cmake"
+      "extDependencies.CarrotLib.rulesFile:cmake/rules/RulesCarrotLib.cmake"
       "extDependencies.CarrotLib.fetchInfo.autodownload:ON"
       "extDependencies.CarrotLib.fetchInfo.kind:svn"
       "extDependencies.CarrotLib.fetchInfo.repository:svn://svn.carrot.lib.org/links/trunk"
       "extDependencies.CarrotLib.fetchInfo.revision:1234567"
-      "extDependencies.OrangeLib.rulesFile:RulesOrangeLib.cmake"
+      "extDependencies.OrangeLib.rulesFile:cmake/rules/RulesOrangeLib.cmake"
       "extDependencies.OrangeLib.fetchInfo.autodownload:ON"
       "extDependencies.OrangeLib.fetchInfo.kind:mercurial"
       "extDependencies.OrangeLib.fetchInfo.repository:https://hg.example.com/RulesOrangeLib"
       "extDependencies.OrangeLib.fetchInfo.tag:1234567"
-      "extDependencies.PineappleLib.rulesFile:RulesPineappleLib.cmake"
+      "extDependencies.PineappleLib.rulesFile:cmake/rules/RulesPineappleLib.cmake"
       "extDependencies.PineappleLib.fetchInfo.autodownload:ON"
       "extDependencies.PineappleLib.fetchInfo.kind:url"
       "extDependencies.PineappleLib.fetchInfo.repository:https://example.com/PineappleLib.zip"
@@ -443,10 +443,12 @@ function(${CMAKETEST_TEST})
     get_property(output_property GLOBAL PROPERTY "TARGETS_CONFIG_LOADED")
     ct_assert_string(output_property)
     ct_assert_true(output_property)
-    ct_assert_equal(output_property "on")
+    ct_assert_equal(output_property "true")
 
     get_property(output_property GLOBAL PROPERTY "TARGETS_CONFIG_src")
     ct_assert_list(output_property)
+    message("output_property            : ${output_property}")
+    message("expected_src_config_output : ${expected_src_config_output}")
     ct_assert_equal(output_property "${expected_src_config_output}")
 
     get_property(output_property GLOBAL PROPERTY "TARGETS_CONFIG_src/apple")

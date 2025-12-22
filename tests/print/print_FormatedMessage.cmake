@@ -368,9 +368,10 @@ function(${CMAKETEST_TEST})
         "pineapple"
         "grape"
         "lemon"
-        "watermelon")
+        "watermelon"
+        "peach")
       print("Before @sl@ After" ${input_strings_arg})
-      ct_assert_prints("Before apple, banana, orange, pineapple, carrot, strawberry, pineapple, grape, lemon, watermelon After")
+      ct_assert_prints("Before apple, banana, orange, pineapple, carrot, strawberry, pineapple, grape, lemon, watermelon peach After")
 
       # Input argument is empty
       print("Before @sl@ After" "")
@@ -390,9 +391,10 @@ function(${CMAKETEST_TEST})
         "pineapple"
         "grape"
         "lemon"
-        "watermelon")
+        "watermelon"
+        "peach")
       print(STATUS "Before @sl@ After" ${input_strings_arg})
-      ct_assert_prints("Before apple, banana, orange, pineapple, carrot, strawberry, pineapple, grape, lemon, watermelon After")
+      ct_assert_prints("Before apple, banana, orange, pineapple, carrot, strawberry, pineapple, grape, lemon, watermelon peach After")
 
       # Input argument is empty
       print(STATUS "Before @sl@ After" "")
@@ -543,7 +545,8 @@ function(${CMAKETEST_TEST})
         "pineapple"
         "grape"
         "lemon"
-        "watermelon")
+        "watermelon"
+        "peach")
     print("Before @sl@ Middle @ap@ After" ${input_string_list} "data/src/main.cpp")
   endfunction()
 endfunction()

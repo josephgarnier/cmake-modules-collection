@@ -17,9 +17,9 @@ function(${CMAKETEST_TEST})
 
   # Set global test variables
   set(input_encoded_string
-    "apple|banana|orange|pineapple|carrot\\||strawberry\\|||pineapple|grape|"
+    "apple|banana|orange|pineapple|carrot\\||strawberry\\|||pineapple|grape||lemon|watermelon|peach|"
   )
-  
+
   # Functionalities checking
   ct_add_section(NAME "deserialize_encoded_string_with_various_elements")
   function(${CMAKETEST_SECTION})
@@ -33,6 +33,10 @@ function(${CMAKETEST_TEST})
       ""
       "pineapple"
       "grape"
+      ""
+      "lemon"
+      "watermelon"
+      "peach"
       ""
     )
     ct_assert_string(input_encoded_string)

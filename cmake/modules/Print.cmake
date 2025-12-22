@@ -167,7 +167,8 @@ Usage
       "pineapple"
       "grape"
       "lemon"
-      "watermelon")
+      "watermelon"
+      "peach")
     print(STATUS "String list: @sl@." ${string_list})
     # Output:
     #   -- String list: apple, banana, orange, pineapple, carrot, strawberry, pineapple, grape, lemon, watermelon.
@@ -288,10 +289,10 @@ Usage
     # Print list of strings with indentation
     set(string_list
       "apple" "banana" "orange" "pineapple" "carrot"
-      "strawberry" "pineapple" "grape" "lemon" "watermelon")
+      "strawberry" "pineapple" "grape" "lemon" "watermelon" "peach")
     print(STATUS STRINGS ${string_list} INDENT)
     # Output:
-    #   --   apple, banana, orange, pineapple, carrot, strawberry, pineapple, grape, lemon, watermelon
+    #   --   apple, banana, orange, pineapple, carrot, strawberry, pineapple, grape, lemon, watermelon, peach
 #]=======================================================================]
 
 include_guard()

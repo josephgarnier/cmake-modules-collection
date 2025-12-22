@@ -65,12 +65,13 @@ function(${CMAKETEST_TEST})
         "pineapple"
         "grape"
         "lemon"
-        "watermelon")
+        "watermelon"
+        "peach")
       print(STRINGS ${input_strings})
-      ct_assert_prints("apple, banana, orange, pineapple, carrot, strawberry, pineapple, grape, lemon, watermelon")
+      ct_assert_prints("apple, banana, orange, pineapple, carrot, strawberry, pineapple, grape, lemon, watermelon, peach")
 
       print(STRINGS ${input_strings} INDENT)
-      ct_assert_prints("apple, banana, orange, pineapple, carrot, strawberry, pineapple, grape, lemon, watermelon")
+      ct_assert_prints("apple, banana, orange, pineapple, carrot, strawberry, pineapple, grape, lemon, watermelon, peach")
     endfunction()
 
     ct_add_section(NAME "with_mode")
@@ -85,12 +86,13 @@ function(${CMAKETEST_TEST})
         "pineapple"
         "grape"
         "lemon"
-        "watermelon")
+        "watermelon"
+        "peach")
       print(STATUS STRINGS ${input_strings})
-      ct_assert_prints("apple, banana, orange, pineapple, carrot, strawberry, pineapple, grape, lemon, watermelon")
+      ct_assert_prints("apple, banana, orange, pineapple, carrot, strawberry, pineapple, grape, lemon, watermelon, peach")
 
       print(STATUS STRINGS ${input_strings} INDENT)
-      ct_assert_prints("apple, banana, orange, pineapple, carrot, strawberry, pineapple, grape, lemon, watermelon")
+      ct_assert_prints("apple, banana, orange, pineapple, carrot, strawberry, pineapple, grape, lemon, watermelon, peach")
     endfunction()
   endfunction()
 
