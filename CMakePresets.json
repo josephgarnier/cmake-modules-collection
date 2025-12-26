@@ -13,7 +13,9 @@
       "description": "Base preset with common options for final presets",
       "binaryDir": "${sourceDir}/build/${presetName}",
       "installDir": "${sourceDir}/build/install/${presetName}",
-      "cacheVariables": {}
+      "cacheVariables": {
+        "CMAKE_MESSAGE_LOG_LEVEL": "TRACE"
+      }
     },
     {
       "name": "x64",
