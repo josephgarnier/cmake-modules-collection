@@ -767,6 +767,7 @@ endfunction()
 # [Internal use only]
 macro(_cmake_targets_file_load)
   if((NOT DEFINED arg_LOAD)
+      OR (NOT EXISTS "${arg_LOAD}")
       OR (IS_DIRECTORY "${arg_LOAD}"))
     message(FATAL_ERROR "${current_command} requires the keyword LOAD '${arg_LOAD}' to be provided with a path to an existing file on disk!")
   endif()

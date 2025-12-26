@@ -20,8 +20,9 @@ function(${CMAKETEST_TEST})
   include(CMakeTargetsFile)
 
   # Functionalities checking
-  ct_add_section(NAME "check_value_is_string")
+  ct_add_section(NAME "check_value_is_a_string")
   function(${CMAKETEST_SECTION})
+    _validate_json_string(PROP_PATH PROP_VALUE "banana")
     _validate_json_string(PROP_PATH "" PROP_VALUE "banana")
     _validate_json_string(PROP_PATH "one" PROP_VALUE "banana")
     _validate_json_string(PROP_PATH "one;two" PROP_VALUE "banana")
@@ -110,14 +111,9 @@ function(${CMAKETEST_TEST})
     _validate_json_string()
   endfunction()
 
-  ct_add_section(NAME "throws_if_arg_prop_path_is_missing_1" EXPECTFAIL)
+  ct_add_section(NAME "throws_if_arg_prop_path_is_missing" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     _validate_json_string(PROP_VALUE "banana")
-  endfunction()
-
-  ct_add_section(NAME "throws_if_arg_prop_path_is_missing_2" EXPECTFAIL)
-  function(${CMAKETEST_SECTION})
-  _validate_json_string(PROP_PATH PROP_VALUE "banana")
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_prop_value_is_missing_1" EXPECTFAIL)

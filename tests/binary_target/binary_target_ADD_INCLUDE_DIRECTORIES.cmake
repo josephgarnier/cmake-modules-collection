@@ -10,7 +10,7 @@
 
 #-------------------------------------------------------------------------------
 # Test of [BinaryTarget module::ADD_INCLUDE_DIRECTORIES operation]:
-#    binary_target(ADD_INCLUDE_DIRECTORIES <target-name> PRIVATE [<dir-path>...])
+#    binary_target(ADD_INCLUDE_DIRECTORIES <target-name> PRIVATE [<dir-path>...|<gen-expr>...])
 ct_add_test(NAME "test_binary_target_add_include_directories_operation")
 function(${CMAKETEST_TEST})
   include(BinaryTarget)
@@ -31,19 +31,60 @@ function(${CMAKETEST_TEST})
   endmacro()
 
   # Set global test variables
-  set(input_public_header_dir "${TESTS_DATA_DIR}/include")
+  set(input_mixed_paths
+    "../data/src/main.cpp"
+    "../data/src"
+    "${TESTS_DATA_DIR}/src/main.cpp"
+    "${TESTS_DATA_DIR}/src"
+    "../data/fake/directory/file.cpp"
+    "../data/fake/directory"
+    "${TESTS_DATA_DIR}/fake/directory/file.cpp"
+    "${TESTS_DATA_DIR}/fake/directory")
+  set(expected_output
+    "${CMAKE_CURRENT_SOURCE_DIR}/../data/src/main.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../data/src"
+    "${TESTS_DATA_DIR}/src/main.cpp"
+    "${TESTS_DATA_DIR}/src"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../data/fake/directory/file.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../data/fake/directory"
+    "${TESTS_DATA_DIR}/fake/directory/file.cpp"
+    "${TESTS_DATA_DIR}/fake/directory")
 
   # Functionalities checking
-  ct_add_section(NAME "add_no_dir")
+  ct_add_section(NAME "add_no_dir_1")
   function(${CMAKETEST_SECTION})
     _set_up_test()
-    binary_target(ADD_INCLUDE_DIRECTORIES "new_static_mock_lib" PRIVATE "")
+    binary_target(ADD_INCLUDE_DIRECTORIES "new_static_mock_lib"
+      PRIVATE
+    )
     ct_assert_target_does_not_have_property("new_static_mock_lib"
       INCLUDE_DIRECTORIES)
     ct_assert_target_does_not_have_property("new_static_mock_lib"
       INTERFACE_INCLUDE_DIRECTORIES)
 
-    binary_target(ADD_INCLUDE_DIRECTORIES "new_shared_mock_lib" PRIVATE "")
+    binary_target(ADD_INCLUDE_DIRECTORIES "new_shared_mock_lib"
+      PRIVATE
+    )
+    ct_assert_target_does_not_have_property("new_shared_mock_lib"
+      INCLUDE_DIRECTORIES)
+    ct_assert_target_does_not_have_property("new_shared_mock_lib"
+      INTERFACE_INCLUDE_DIRECTORIES)
+  endfunction()
+
+  ct_add_section(NAME "add_no_dir_2")
+  function(${CMAKETEST_SECTION})
+    _set_up_test()
+    binary_target(ADD_INCLUDE_DIRECTORIES "new_static_mock_lib"
+      PRIVATE ""
+    )
+    ct_assert_target_does_not_have_property("new_static_mock_lib"
+      INCLUDE_DIRECTORIES)
+    ct_assert_target_does_not_have_property("new_static_mock_lib"
+      INTERFACE_INCLUDE_DIRECTORIES)
+
+    binary_target(ADD_INCLUDE_DIRECTORIES "new_shared_mock_lib"
+      PRIVATE ""
+    )
     ct_assert_target_does_not_have_property("new_shared_mock_lib"
       INCLUDE_DIRECTORIES)
     ct_assert_target_does_not_have_property("new_shared_mock_lib"
@@ -53,19 +94,23 @@ function(${CMAKETEST_TEST})
   ct_add_section(NAME "add_header_dirs")
   function(${CMAKETEST_SECTION})
     _set_up_test()
-    binary_target(ADD_INCLUDE_DIRECTORIES "new_static_mock_lib" PRIVATE "${input_public_header_dir}")
+    binary_target(ADD_INCLUDE_DIRECTORIES "new_static_mock_lib"
+      PRIVATE ${input_mixed_paths}
+    )
     get_target_property(output_bin_property "new_static_mock_lib"
       INCLUDE_DIRECTORIES)
-    ct_assert_string(output_bin_property)
-    ct_assert_equal(output_bin_property "${input_public_header_dir}")
+    ct_assert_list(output_bin_property)
+    ct_assert_equal(output_bin_property "${expected_output}")
     ct_assert_target_does_not_have_property("new_static_mock_lib"
       INTERFACE_INCLUDE_DIRECTORIES)
 
-    binary_target(ADD_INCLUDE_DIRECTORIES "new_shared_mock_lib" PRIVATE "${input_public_header_dir}")
+    binary_target(ADD_INCLUDE_DIRECTORIES "new_shared_mock_lib"
+      PRIVATE ${input_mixed_paths}
+    )
     get_target_property(output_bin_property "new_shared_mock_lib"
       INCLUDE_DIRECTORIES)
-    ct_assert_string(output_bin_property)
-    ct_assert_equal(output_bin_property "${input_public_header_dir}")
+    ct_assert_list(output_bin_property)
+    ct_assert_equal(output_bin_property "${expected_output}")
     ct_assert_target_does_not_have_property("new_shared_mock_lib"
       INTERFACE_INCLUDE_DIRECTORIES)
   endfunction()
@@ -73,26 +118,30 @@ function(${CMAKETEST_TEST})
   # Errors checking
   ct_add_section(NAME "throws_if_arg_target_is_missing_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    binary_target(ADD_INCLUDE_DIRECTORIES PRIVATE "${input_public_header_dir}")
+    binary_target(ADD_INCLUDE_DIRECTORIES
+      PRIVATE
+        ${input_mixed_paths}
+    )
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_target_is_missing_2" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    binary_target(ADD_INCLUDE_DIRECTORIES "" PRIVATE "${input_public_header_dir}")
+    binary_target(ADD_INCLUDE_DIRECTORIES ""
+      PRIVATE
+        ${input_mixed_paths}
+    )
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_target_is_unknown" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    binary_target(ADD_INCLUDE_DIRECTORIES "unknown_target" PRIVATE "${input_public_header_dir}")
+    binary_target(ADD_INCLUDE_DIRECTORIES "unknown_target"
+      PRIVATE
+        ${input_mixed_paths}
+    )
   endfunction()
 
-  ct_add_section(NAME "throws_if_arg_private_is_missing_1" EXPECTFAIL)
+  ct_add_section(NAME "throws_if_arg_private_is_missing" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     binary_target(ADD_INCLUDE_DIRECTORIES "new_static_mock_lib")
-  endfunction()
-
-  ct_add_section(NAME "throws_if_arg_private_is_missing_2" EXPECTFAIL)
-  function(${CMAKETEST_SECTION})
-    binary_target(ADD_INCLUDE_DIRECTORIES "new_static_mock_lib" PRIVATE)
   endfunction()
 endfunction()

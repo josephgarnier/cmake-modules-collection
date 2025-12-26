@@ -19,6 +19,7 @@ function(${CMAKETEST_TEST})
   # Functionalities checking
   ct_add_section(NAME "check_value_is_boolean")
   function(${CMAKETEST_SECTION})
+    _validate_json_boolean(PROP_PATH PROP_VALUE "ON")
     _validate_json_boolean(PROP_PATH "" PROP_VALUE "ON")
     _validate_json_boolean(PROP_PATH "one" PROP_VALUE "ON")
     _validate_json_boolean(PROP_PATH "one;two" PROP_VALUE "ON")
@@ -77,16 +78,6 @@ function(${CMAKETEST_TEST})
     function(${CMAKETEST_SECTION})
       _validate_json_boolean(PROP_PATH "one;two;three" PROP_VALUE "0")
     endfunction()
-
-    ct_add_section(NAME "error_if_true" EXPECTFAIL)
-    function(${CMAKETEST_SECTION})
-      _validate_json_boolean(PROP_PATH "one;two;three" PROP_VALUE "true")
-    endfunction()
-
-    ct_add_section(NAME "error_if_false" EXPECTFAIL)
-    function(${CMAKETEST_SECTION})
-      _validate_json_boolean(PROP_PATH "one;two;three" PROP_VALUE "false")
-    endfunction()
   endfunction()
 
   # Errors checking
@@ -100,14 +91,9 @@ function(${CMAKETEST_TEST})
     _validate_json_boolean()
   endfunction()
 
-  ct_add_section(NAME "throws_if_arg_prop_path_is_missing_1" EXPECTFAIL)
+  ct_add_section(NAME "throws_if_arg_prop_path_is_missing" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     _validate_json_boolean(PROP_VALUE "ON")
-  endfunction()
-
-  ct_add_section(NAME "throws_if_arg_prop_path_is_missing_2" EXPECTFAIL)
-  function(${CMAKETEST_SECTION})
-  _validate_json_boolean(PROP_PATH PROP_VALUE "ON")
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_prop_value_is_missing_1" EXPECTFAIL)

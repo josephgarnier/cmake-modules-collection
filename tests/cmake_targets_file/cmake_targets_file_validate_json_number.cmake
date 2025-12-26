@@ -24,6 +24,7 @@ function(${CMAKETEST_TEST})
   # Functionalities checking
   ct_add_section(NAME "check_value_is_number")
   function(${CMAKETEST_SECTION})
+    _validate_json_number(PROP_PATH PROP_VALUE "1")
     _validate_json_number(PROP_PATH "" PROP_VALUE "1")
     _validate_json_number(PROP_PATH "one" PROP_VALUE "1")
     _validate_json_number(PROP_PATH "one;two" PROP_VALUE "1")
@@ -371,14 +372,9 @@ function(${CMAKETEST_TEST})
     _validate_json_number()
   endfunction()
 
-  ct_add_section(NAME "throws_if_arg_prop_path_is_missing_1" EXPECTFAIL)
+  ct_add_section(NAME "throws_if_arg_prop_path_is_missing" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     _validate_json_number(PROP_VALUE "1")
-  endfunction()
-
-  ct_add_section(NAME "throws_if_arg_prop_path_is_missing_2" EXPECTFAIL)
-  function(${CMAKETEST_SECTION})
-  _validate_json_number(PROP_PATH PROP_VALUE "1")
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_prop_value_is_missing_1" EXPECTFAIL)

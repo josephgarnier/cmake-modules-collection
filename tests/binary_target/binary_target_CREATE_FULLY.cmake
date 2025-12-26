@@ -20,8 +20,8 @@
 #                  PRIVATE_HEADER_FILES [<file-path>...]
 #                  PUBLIC_HEADER_FILES [<file-path>...]
 #                  [PRECOMPILE_HEADER_FILE <file-path>]
-#                  INCLUDE_DIRECTORIES [<dir-path>...]
-#                  [LINK_LIBRARIES [<target-name>...] ])
+#                  INCLUDE_DIRECTORIES [<dir-path>...|<gen-expr>...]
+#                  [LINK_LIBRARIES [<target-name>...|<gen-expr>...] ])
 ct_add_test(NAME "test_binary_target_create_fully_operation")
 function(${CMAKETEST_TEST})
   include(BinaryTarget)
@@ -35,7 +35,15 @@ function(${CMAKETEST_TEST})
 
   # Set global test variables
   set(CMAKE_SOURCE_DIR "${TESTS_DATA_DIR}") # Required to call `source_group()`. CMakeTest change this value while it should be the same as the root of the sources.
-  set(input_public_header_dir "${TESTS_DATA_DIR}/include")
+  set(input_mixed_paths
+    "../data/src/main.cpp"
+    "../data/src"
+    "${TESTS_DATA_DIR}/src/main.cpp"
+    "${TESTS_DATA_DIR}/src"
+    "../data/fake/directory/file.cpp"
+    "../data/fake/directory"
+    "${TESTS_DATA_DIR}/fake/directory/file.cpp"
+    "${TESTS_DATA_DIR}/fake/directory")
   set(input_pch_header "${TESTS_DATA_DIR}/include/include_pch.h")
   set(input_sources
     "${TESTS_DATA_DIR}/src/main.cpp"
@@ -67,11 +75,11 @@ function(${CMAKETEST_TEST})
       COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
       COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
-      SOURCE_FILES "${input_sources}"
-      PRIVATE_HEADER_FILES "${input_private_headers}"
-      PUBLIC_HEADER_FILES "${input_public_headers}"
-      PRECOMPILE_HEADER_FILE "${input_pch_header}"
-      INCLUDE_DIRECTORIES "${input_public_header_dir}"
+      SOURCE_FILES ${input_sources}
+      PRIVATE_HEADER_FILES ${input_private_headers}
+      PUBLIC_HEADER_FILES ${input_public_headers}
+      PRECOMPILE_HEADER_FILE ${input_pch_header}
+      INCLUDE_DIRECTORIES ${input_mixed_paths}
       LINK_LIBRARIES "dep_static_mock_lib_1" "dep_static_mock_lib_2"
     )
 
@@ -80,50 +88,71 @@ function(${CMAKETEST_TEST})
       COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
       LINK_OPTIONS "-s" "-z"
-      SOURCE_FILES "${input_sources}"
-      PRIVATE_HEADER_FILES "${input_private_headers}"
-      PUBLIC_HEADER_FILES "${input_public_headers}"
-      PRECOMPILE_HEADER_FILE "${input_pch_header}"
-      INCLUDE_DIRECTORIES "${input_public_header_dir}"
+      SOURCE_FILES ${input_sources}
+      PRIVATE_HEADER_FILES ${input_private_headers}
+      PUBLIC_HEADER_FILES ${input_public_headers}
+      PRECOMPILE_HEADER_FILE ${input_pch_header}
+      INCLUDE_DIRECTORIES ${input_mixed_paths}
       LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
 
-  ct_add_section(NAME "create_bin_target_with_empty_args")
+  ct_add_section(NAME "create_bin_target_with_no_values")
   function(${CMAKETEST_SECTION})
     binary_target(CREATE_FULLY "new_static_mock_lib_2" STATIC
-      SOURCE_FILES ""
-      PRIVATE_HEADER_FILES ""
-      PUBLIC_HEADER_FILES ""
-      INCLUDE_DIRECTORIES ""
-      LINK_LIBRARIES ""
+      SOURCE_FILES
+      PRIVATE_HEADER_FILES
+      PUBLIC_HEADER_FILES
+      INCLUDE_DIRECTORIES
+      LINK_LIBRARIES
     )
     target_sources("new_static_mock_lib_2" PRIVATE "${TESTS_DATA_DIR}/src/main.cpp") # A target needs at least one source to avoid an error
 
     binary_target(CREATE_FULLY "new_shared_mock_lib_2" SHARED
+      SOURCE_FILES
+      PRIVATE_HEADER_FILES
+      PUBLIC_HEADER_FILES
+      INCLUDE_DIRECTORIES
+      LINK_LIBRARIES
+    )
+    target_sources("new_shared_mock_lib_2" PRIVATE "${TESTS_DATA_DIR}/src/main.cpp") # A target needs at least one source to avoid an error
+  endfunction()
+
+  ct_add_section(NAME "create_bin_target_with_empty_values")
+  function(${CMAKETEST_SECTION})
+    binary_target(CREATE_FULLY "new_static_mock_lib_3" STATIC
       SOURCE_FILES ""
       PRIVATE_HEADER_FILES ""
       PUBLIC_HEADER_FILES ""
       INCLUDE_DIRECTORIES ""
       LINK_LIBRARIES ""
     )
-    target_sources("new_shared_mock_lib_2" PRIVATE "${TESTS_DATA_DIR}/src/main.cpp") # A target needs at least one source to avoid an error
+    target_sources("new_static_mock_lib_3" PRIVATE "${TESTS_DATA_DIR}/src/main.cpp") # A target needs at least one source to avoid an error
+
+    binary_target(CREATE_FULLY "new_shared_mock_lib_3" SHARED
+      SOURCE_FILES ""
+      PRIVATE_HEADER_FILES ""
+      PUBLIC_HEADER_FILES ""
+      INCLUDE_DIRECTORIES ""
+      LINK_LIBRARIES ""
+    )
+    target_sources("new_shared_mock_lib_3" PRIVATE "${TESTS_DATA_DIR}/src/main.cpp") # A target needs at least one source to avoid an error
   endfunction()
 
   ct_add_section(NAME "create_bin_target_with_less_args")
   function(${CMAKETEST_SECTION})
-    binary_target(CREATE_FULLY "new_static_mock_lib_3" STATIC
-      SOURCE_FILES "${input_sources}"
-      PRIVATE_HEADER_FILES "${input_private_headers}"
-      PUBLIC_HEADER_FILES "${input_public_headers}"
-      INCLUDE_DIRECTORIES "${input_public_header_dir}"
+    binary_target(CREATE_FULLY "new_static_mock_lib_4" STATIC
+      SOURCE_FILES ${input_sources}
+      PRIVATE_HEADER_FILES ${input_private_headers}
+      PUBLIC_HEADER_FILES ${input_public_headers}
+      INCLUDE_DIRECTORIES ${input_mixed_paths}
     )
 
-    binary_target(CREATE_FULLY "new_shared_mock_lib_3" SHARED
-      SOURCE_FILES "${input_sources}"
-      PRIVATE_HEADER_FILES "${input_private_headers}"
-      PUBLIC_HEADER_FILES "${input_public_headers}"
-      INCLUDE_DIRECTORIES "${input_public_header_dir}"
+    binary_target(CREATE_FULLY "new_shared_mock_lib_4" SHARED
+      SOURCE_FILES ${input_sources}
+      PRIVATE_HEADER_FILES ${input_private_headers}
+      PUBLIC_HEADER_FILES ${input_public_headers}
+      INCLUDE_DIRECTORIES ${input_mixed_paths}
     )
   endfunction()
 
@@ -135,11 +164,11 @@ function(${CMAKETEST_TEST})
       COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
       LINK_OPTIONS "-s" "-z"
-      SOURCE_FILES "${input_sources}"
-      PRIVATE_HEADER_FILES "${input_private_headers}"
-      PUBLIC_HEADER_FILES "${input_public_headers}"
-      PRECOMPILE_HEADER_FILE "${input_pch_header}"
-      INCLUDE_DIRECTORIES "${input_public_header_dir}"
+      SOURCE_FILES ${input_sources}
+      PRIVATE_HEADER_FILES ${input_private_headers}
+      PUBLIC_HEADER_FILES ${input_public_headers}
+      PRECOMPILE_HEADER_FILE ${input_pch_header}
+      INCLUDE_DIRECTORIES ${input_mixed_paths}
       LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
@@ -151,27 +180,27 @@ function(${CMAKETEST_TEST})
       COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
       LINK_OPTIONS "-s" "-z"
-      SOURCE_FILES "${input_sources}"
-      PRIVATE_HEADER_FILES "${input_private_headers}"
-      PUBLIC_HEADER_FILES "${input_public_headers}"
-      PRECOMPILE_HEADER_FILE "${input_pch_header}"
-      INCLUDE_DIRECTORIES "${input_public_header_dir}"
+      SOURCE_FILES ${input_sources}
+      PRIVATE_HEADER_FILES ${input_private_headers}
+      PUBLIC_HEADER_FILES ${input_public_headers}
+      PRECOMPILE_HEADER_FILE ${input_pch_header}
+      INCLUDE_DIRECTORIES ${input_mixed_paths}
       LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
 
-  ct_add_section(NAME "throws_if_arg_target_already_exists")
+  ct_add_section(NAME "throws_if_arg_target_already_exists" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    binary_target(CREATE_FULLY "new_shared_mock_lib_4" SHARED
+    binary_target(CREATE_FULLY "dep_shared_mock_lib_1" SHARED
       COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
       COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
       LINK_OPTIONS "-s" "-z"
-      SOURCE_FILES "${input_sources}"
-      PRIVATE_HEADER_FILES "${input_private_headers}"
-      PUBLIC_HEADER_FILES "${input_public_headers}"
-      PRECOMPILE_HEADER_FILE "${input_pch_header}"
-      INCLUDE_DIRECTORIES "${input_public_header_dir}"
+      SOURCE_FILES ${input_sources}
+      PRIVATE_HEADER_FILES ${input_private_headers}
+      PUBLIC_HEADER_FILES ${input_public_headers}
+      PRECOMPILE_HEADER_FILE ${input_pch_header}
+      INCLUDE_DIRECTORIES ${input_mixed_paths}
       LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
@@ -183,11 +212,11 @@ function(${CMAKETEST_TEST})
       COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
       LINK_OPTIONS "-s" "-z"
-      SOURCE_FILES "${input_sources}"
-      PRIVATE_HEADER_FILES "${input_private_headers}"
-      PUBLIC_HEADER_FILES "${input_public_headers}"
-      PRECOMPILE_HEADER_FILE "${input_pch_header}"
-      INCLUDE_DIRECTORIES "${input_public_header_dir}"
+      SOURCE_FILES ${input_sources}
+      PRIVATE_HEADER_FILES ${input_private_headers}
+      PUBLIC_HEADER_FILES ${input_public_headers}
+      PRECOMPILE_HEADER_FILE ${input_pch_header}
+      INCLUDE_DIRECTORIES ${input_mixed_paths}
       LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
@@ -199,155 +228,87 @@ function(${CMAKETEST_TEST})
       COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
       LINK_OPTIONS "-s" "-z"
-      SOURCE_FILES "${input_sources}"
-      PRIVATE_HEADER_FILES "${input_private_headers}"
-      PUBLIC_HEADER_FILES "${input_public_headers}"
-      PRECOMPILE_HEADER_FILE "${input_pch_header}"
-      INCLUDE_DIRECTORIES "${input_public_header_dir}"
+      SOURCE_FILES ${input_sources}
+      PRIVATE_HEADER_FILES ${input_private_headers}
+      PUBLIC_HEADER_FILES ${input_public_headers}
+      PRECOMPILE_HEADER_FILE ${input_pch_header}
+      INCLUDE_DIRECTORIES ${input_mixed_paths}
       LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
 
-  ct_add_section(NAME "throws_if_arg_compile_features_is_missing_1" EXPECTFAIL)
+  ct_add_section(NAME "throws_if_arg_compile_features_is_missing" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     binary_target(CREATE_FULLY "new_shared_mock_lib_7" SHARED
-      COMPILE_FEATURES
       COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
       LINK_OPTIONS "-s" "-z"
-      SOURCE_FILES "${input_sources}"
-      PRIVATE_HEADER_FILES "${input_private_headers}"
-      PUBLIC_HEADER_FILES "${input_public_headers}"
-      PRECOMPILE_HEADER_FILE "${input_pch_header}"
-      INCLUDE_DIRECTORIES "${input_public_header_dir}"
+      SOURCE_FILES ${input_sources}
+      PRIVATE_HEADER_FILES ${input_private_headers}
+      PUBLIC_HEADER_FILES ${input_public_headers}
+      PRECOMPILE_HEADER_FILE ${input_pch_header}
+      INCLUDE_DIRECTORIES ${input_mixed_paths}
       LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
 
-  ct_add_section(NAME "throws_if_arg_compile_features_is_missing_2" EXPECTFAIL)
-  function(${CMAKETEST_SECTION})
-    binary_target(CREATE_FULLY "new_shared_mock_lib_8" SHARED
-      COMPILE_FEATURES ""
-      COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
-      COMPILE_OPTIONS "-Wall" "-Wextra"
-      LINK_OPTIONS "-s" "-z"
-      SOURCE_FILES "${input_sources}"
-      PRIVATE_HEADER_FILES "${input_private_headers}"
-      PUBLIC_HEADER_FILES "${input_public_headers}"
-      PRECOMPILE_HEADER_FILE "${input_pch_header}"
-      INCLUDE_DIRECTORIES "${input_public_header_dir}"
-      LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
-    )
-  endfunction()
-
-  ct_add_section(NAME "throws_if_arg_compile_definition_is_missing_1" EXPECTFAIL)
-  function(${CMAKETEST_SECTION})
-    binary_target(CREATE_FULLY "new_shared_mock_lib_7" SHARED
-      COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
-      COMPILE_DEFINITIONS
-      COMPILE_OPTIONS "-Wall" "-Wextra"
-      LINK_OPTIONS "-s" "-z"
-      SOURCE_FILES "${input_sources}"
-      PRIVATE_HEADER_FILES "${input_private_headers}"
-      PUBLIC_HEADER_FILES "${input_public_headers}"
-      PRECOMPILE_HEADER_FILE "${input_pch_header}"
-      INCLUDE_DIRECTORIES "${input_public_header_dir}"
-      LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
-    )
-  endfunction()
-
-  ct_add_section(NAME "throws_if_arg_compile_definition_is_missing_2" EXPECTFAIL)
+  ct_add_section(NAME "throws_if_arg_compile_definition_is_missing" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     binary_target(CREATE_FULLY "new_shared_mock_lib_8" SHARED
       COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
-      COMPILE_DEFINITIONS ""
       COMPILE_OPTIONS "-Wall" "-Wextra"
       LINK_OPTIONS "-s" "-z"
-      SOURCE_FILES "${input_sources}"
-      PRIVATE_HEADER_FILES "${input_private_headers}"
-      PUBLIC_HEADER_FILES "${input_public_headers}"
-      PRECOMPILE_HEADER_FILE "${input_pch_header}"
-      INCLUDE_DIRECTORIES "${input_public_header_dir}"
+      SOURCE_FILES ${input_sources}
+      PRIVATE_HEADER_FILES ${input_private_headers}
+      PUBLIC_HEADER_FILES ${input_public_headers}
+      PRECOMPILE_HEADER_FILE ${input_pch_header}
+      INCLUDE_DIRECTORIES ${input_mixed_paths}
       LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
 
-  ct_add_section(NAME "throws_if_arg_compile_options_is_missing_1" EXPECTFAIL)
+  ct_add_section(NAME "throws_if_arg_compile_options_is_missing" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     binary_target(CREATE_FULLY "new_shared_mock_lib_9" SHARED
       COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
       COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
-      COMPILE_OPTIONS
       LINK_OPTIONS "-s" "-z"
-      SOURCE_FILES "${input_sources}"
-      PRIVATE_HEADER_FILES "${input_private_headers}"
-      PUBLIC_HEADER_FILES "${input_public_headers}"
-      PRECOMPILE_HEADER_FILE "${input_pch_header}"
-      INCLUDE_DIRECTORIES "${input_public_header_dir}"
+      SOURCE_FILES ${input_sources}
+      PRIVATE_HEADER_FILES ${input_private_headers}
+      PUBLIC_HEADER_FILES ${input_public_headers}
+      PRECOMPILE_HEADER_FILE ${input_pch_header}
+      INCLUDE_DIRECTORIES ${input_mixed_paths}
       LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
 
-  ct_add_section(NAME "throws_if_arg_compile_options_is_missing_2" EXPECTFAIL)
+  ct_add_section(NAME "throws_if_arg_link_options_is_missing" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     binary_target(CREATE_FULLY "new_shared_mock_lib_10" SHARED
       COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
       COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
-      COMPILE_OPTIONS ""
-      LINK_OPTIONS "-s" "-z"
-      SOURCE_FILES "${input_sources}"
-      PRIVATE_HEADER_FILES "${input_private_headers}"
-      PUBLIC_HEADER_FILES "${input_public_headers}"
-      PRECOMPILE_HEADER_FILE "${input_pch_header}"
-      INCLUDE_DIRECTORIES "${input_public_header_dir}"
-      LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
-    )
-  endfunction()
-
-  ct_add_section(NAME "throws_if_arg_link_options_is_missing_1" EXPECTFAIL)
-  function(${CMAKETEST_SECTION})
-    binary_target(CREATE_FULLY "new_shared_mock_lib_11" SHARED
-      COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
-      COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
-      LINK_OPTIONS
-      SOURCE_FILES "${input_sources}"
-      PRIVATE_HEADER_FILES "${input_private_headers}"
-      PUBLIC_HEADER_FILES "${input_public_headers}"
-      PRECOMPILE_HEADER_FILE "${input_pch_header}"
-      INCLUDE_DIRECTORIES "${input_public_header_dir}"
-      LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
-    )
-  endfunction()
-
-  ct_add_section(NAME "throws_if_arg_link_options_is_missing_2" EXPECTFAIL)
-  function(${CMAKETEST_SECTION})
-    binary_target(CREATE_FULLY "new_shared_mock_lib_12" SHARED
-      COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
-      COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
-      COMPILE_OPTIONS "-Wall" "-Wextra"
-      LINK_OPTIONS ""
-      SOURCE_FILES "${input_sources}"
-      PRIVATE_HEADER_FILES "${input_private_headers}"
-      PUBLIC_HEADER_FILES "${input_public_headers}"
-      PRECOMPILE_HEADER_FILE "${input_pch_header}"
-      INCLUDE_DIRECTORIES "${input_public_header_dir}"
+      SOURCE_FILES ${input_sources}
+      PRIVATE_HEADER_FILES ${input_private_headers}
+      PUBLIC_HEADER_FILES ${input_public_headers}
+      PRECOMPILE_HEADER_FILE ${input_pch_header}
+      INCLUDE_DIRECTORIES ${input_mixed_paths}
       LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
 
   ct_add_section(NAME "throws_if_link_options_are_added_to_static_lib" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    binary_target(CREATE_FULLY "new_static_mock_lib_4" STATIC
+    binary_target(CREATE_FULLY "new_static_mock_lib_5" STATIC
       COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
       COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
       LINK_OPTIONS "-s" "-z"
-      SOURCE_FILES "${input_sources}"
-      PRIVATE_HEADER_FILES "${input_private_headers}"
-      PUBLIC_HEADER_FILES "${input_public_headers}"
-      PRECOMPILE_HEADER_FILE "${input_pch_header}"
-      INCLUDE_DIRECTORIES "${input_public_header_dir}"
+      SOURCE_FILES ${input_sources}
+      PRIVATE_HEADER_FILES ${input_private_headers}
+      PUBLIC_HEADER_FILES ${input_public_headers}
+      PRECOMPILE_HEADER_FILE ${input_pch_header}
+      INCLUDE_DIRECTORIES ${input_mixed_paths}
       LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
@@ -355,16 +316,16 @@ function(${CMAKETEST_TEST})
   ct_add_section(NAME "throws_if_cmake_cxx_standard_is_not_set_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     unset(CMAKE_CXX_STANDARD)
-    binary_target(CREATE_FULLY "new_shared_mock_lib_13" SHARED
+    binary_target(CREATE_FULLY "new_shared_mock_lib_11" SHARED
       COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
       COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
       LINK_OPTIONS "-s" "-z"
-      SOURCE_FILES "${input_sources}"
-      PRIVATE_HEADER_FILES "${input_private_headers}"
-      PUBLIC_HEADER_FILES "${input_public_headers}"
-      PRECOMPILE_HEADER_FILE "${input_pch_header}"
-      INCLUDE_DIRECTORIES "${input_public_header_dir}"
+      SOURCE_FILES ${input_sources}
+      PRIVATE_HEADER_FILES ${input_private_headers}
+      PUBLIC_HEADER_FILES ${input_public_headers}
+      PRECOMPILE_HEADER_FILE ${input_pch_header}
+      INCLUDE_DIRECTORIES ${input_mixed_paths}
       LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
@@ -372,205 +333,125 @@ function(${CMAKETEST_TEST})
   ct_add_section(NAME "throws_if_cmake_cxx_standard_is_not_set_2" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     set(CMAKE_CXX_STANDARD "")
+    binary_target(CREATE_FULLY "new_shared_mock_lib_12" SHARED
+      COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
+      COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
+      COMPILE_OPTIONS "-Wall" "-Wextra"
+      LINK_OPTIONS "-s" "-z"
+      SOURCE_FILES ${input_sources}
+      PRIVATE_HEADER_FILES ${input_private_headers}
+      PUBLIC_HEADER_FILES ${input_public_headers}
+      PRECOMPILE_HEADER_FILE ${input_pch_header}
+      INCLUDE_DIRECTORIES ${input_mixed_paths}
+      LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
+    )
+  endfunction()
+
+  ct_add_section(NAME "throws_if_arg_source_files_is_missing" EXPECTFAIL)
+  function(${CMAKETEST_SECTION})
+    binary_target(CREATE_FULLY "new_shared_mock_lib_13" SHARED
+      COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
+      COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
+      COMPILE_OPTIONS "-Wall" "-Wextra"
+      LINK_OPTIONS "-s" "-z"
+      PRIVATE_HEADER_FILES ${input_private_headers}
+      PUBLIC_HEADER_FILES ${input_public_headers}
+      PRECOMPILE_HEADER_FILE ${input_pch_header}
+      INCLUDE_DIRECTORIES ${input_mixed_paths}
+      LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
+    )
+  endfunction()
+
+  ct_add_section(NAME "throws_if_arg_private_header_files_is_missing" EXPECTFAIL)
+  function(${CMAKETEST_SECTION})
     binary_target(CREATE_FULLY "new_shared_mock_lib_14" SHARED
       COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
       COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
       LINK_OPTIONS "-s" "-z"
-      SOURCE_FILES "${input_sources}"
-      PRIVATE_HEADER_FILES "${input_private_headers}"
-      PUBLIC_HEADER_FILES "${input_public_headers}"
-      PRECOMPILE_HEADER_FILE "${input_pch_header}"
-      INCLUDE_DIRECTORIES "${input_public_header_dir}"
+      SOURCE_FILES ${input_sources}
+      PUBLIC_HEADER_FILES ${input_public_headers}
+      PRECOMPILE_HEADER_FILE ${input_pch_header}
+      INCLUDE_DIRECTORIES ${input_mixed_paths}
       LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
 
-  ct_add_section(NAME "throws_if_arg_source_files_is_missing_1" EXPECTFAIL)
+  ct_add_section(NAME "throws_if_arg_public_header_files_is_missing" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     binary_target(CREATE_FULLY "new_shared_mock_lib_15" SHARED
       COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
       COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
       LINK_OPTIONS "-s" "-z"
-      PRIVATE_HEADER_FILES "${input_private_headers}"
-      PUBLIC_HEADER_FILES "${input_public_headers}"
-      PRECOMPILE_HEADER_FILE "${input_pch_header}"
-      INCLUDE_DIRECTORIES "${input_public_header_dir}"
-      LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
-    )
-  endfunction()
-
-  ct_add_section(NAME "throws_if_arg_source_files_is_missing_2" EXPECTFAIL)
-  function(${CMAKETEST_SECTION})
-    binary_target(CREATE_FULLY "new_shared_mock_lib_16" SHARED
-      COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
-      COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
-      COMPILE_OPTIONS "-Wall" "-Wextra"
-      LINK_OPTIONS "-s" "-z"
-      SOURCE_FILES
-      PRIVATE_HEADER_FILES "${input_private_headers}"
-      PUBLIC_HEADER_FILES "${input_public_headers}"
-      PRECOMPILE_HEADER_FILE "${input_pch_header}"
-      INCLUDE_DIRECTORIES "${input_public_header_dir}"
-      LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
-    )
-  endfunction()
-
-  ct_add_section(NAME "throws_if_arg_private_header_files_is_missing_1" EXPECTFAIL)
-  function(${CMAKETEST_SECTION})
-    binary_target(CREATE_FULLY "new_shared_mock_lib_17" SHARED
-      COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
-      COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
-      COMPILE_OPTIONS "-Wall" "-Wextra"
-      LINK_OPTIONS "-s" "-z"
-      SOURCE_FILES "${input_sources}"
-      PUBLIC_HEADER_FILES "${input_public_headers}"
-      PRECOMPILE_HEADER_FILE "${input_pch_header}"
-      INCLUDE_DIRECTORIES "${input_public_header_dir}"
-      LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
-    )
-  endfunction()
-
-  ct_add_section(NAME "throws_if_arg_private_header_files_is_missing_2" EXPECTFAIL)
-  function(${CMAKETEST_SECTION})
-    binary_target(CREATE_FULLY "new_shared_mock_lib_18" SHARED
-      COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
-      COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
-      COMPILE_OPTIONS "-Wall" "-Wextra"
-      LINK_OPTIONS "-s" "-z"
-      SOURCE_FILES "${input_sources}"
-      PRIVATE_HEADER_FILES
-      PUBLIC_HEADER_FILES "${input_public_headers}"
-      PRECOMPILE_HEADER_FILE "${input_pch_header}"
-      INCLUDE_DIRECTORIES "${input_public_header_dir}"
-      LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
-    )
-  endfunction()
-
-  ct_add_section(NAME "throws_if_arg_public_header_files_is_missing_1" EXPECTFAIL)
-  function(${CMAKETEST_SECTION})
-    binary_target(CREATE_FULLY "new_shared_mock_lib_19" SHARED
-      COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
-      COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
-      COMPILE_OPTIONS "-Wall" "-Wextra"
-      LINK_OPTIONS "-s" "-z"
-      SOURCE_FILES "${input_sources}"
-      PRIVATE_HEADER_FILES "${input_private_headers}"
-      PRECOMPILE_HEADER_FILE "${input_pch_header}"
-      INCLUDE_DIRECTORIES "${input_public_header_dir}"
-      LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
-    )
-  endfunction()
-
-  ct_add_section(NAME "throws_if_arg_public_header_files_is_missing_2" EXPECTFAIL)
-  function(${CMAKETEST_SECTION})
-    binary_target(CREATE_FULLY "new_shared_mock_lib_20" SHARED
-      COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
-      COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
-      COMPILE_OPTIONS "-Wall" "-Wextra"
-      LINK_OPTIONS "-s" "-z"
-      SOURCE_FILES "${input_sources}"
-      PRIVATE_HEADER_FILES "${input_private_headers}"
-      PUBLIC_HEADER_FILES
-      PRECOMPILE_HEADER_FILE "${input_pch_header}"
-      INCLUDE_DIRECTORIES "${input_public_header_dir}"
+      SOURCE_FILES ${input_sources}
+      PRIVATE_HEADER_FILES ${input_private_headers}
+      PRECOMPILE_HEADER_FILE ${input_pch_header}
+      INCLUDE_DIRECTORIES ${input_mixed_paths}
       LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_pch_header_file_is_missing_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    binary_target(CREATE_FULLY "new_shared_mock_lib_21" SHARED
+    binary_target(CREATE_FULLY "new_shared_mock_lib_16" SHARED
       COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
       COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
       LINK_OPTIONS "-s" "-z"
-      SOURCE_FILES "${input_sources}"
-      PRIVATE_HEADER_FILES "${input_private_headers}"
-      PUBLIC_HEADER_FILES "${input_public_headers}"
+      SOURCE_FILES ${input_sources}
+      PRIVATE_HEADER_FILES ${input_private_headers}
+      PUBLIC_HEADER_FILES ${input_public_headers}
       PRECOMPILE_HEADER_FILE
-      INCLUDE_DIRECTORIES "${input_public_header_dir}"
+      INCLUDE_DIRECTORIES ${input_mixed_paths}
       LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_pch_header_file_is_missing_2" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    binary_target(CREATE_FULLY "new_shared_mock_lib_22" SHARED
+    binary_target(CREATE_FULLY "new_shared_mock_lib_17" SHARED
       COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
       COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
       LINK_OPTIONS "-s" "-z"
-      SOURCE_FILES "${input_sources}"
-      PRIVATE_HEADER_FILES "${input_private_headers}"
-      PUBLIC_HEADER_FILES "${input_public_headers}"
+      SOURCE_FILES ${input_sources}
+      PRIVATE_HEADER_FILES ${input_private_headers}
+      PUBLIC_HEADER_FILES ${input_public_headers}
       PRECOMPILE_HEADER_FILE ""
-      INCLUDE_DIRECTORIES "${input_public_header_dir}"
+      INCLUDE_DIRECTORIES ${input_mixed_paths}
       LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_pch_header_file_does_not_exist" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    binary_target(CREATE_FULLY "new_shared_mock_lib_23" SHARED
+    binary_target(CREATE_FULLY "new_shared_mock_lib_18" SHARED
       COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
       COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
       LINK_OPTIONS "-s" "-z"
-      SOURCE_FILES "${input_sources}"
-      PRIVATE_HEADER_FILES "${input_private_headers}"
-      PUBLIC_HEADER_FILES "${input_public_headers}"
-      PRECOMPILE_HEADER_FILE "data/src/not-exists.h"
-      INCLUDE_DIRECTORIES "${input_public_header_dir}"
+      SOURCE_FILES ${input_sources}
+      PRIVATE_HEADER_FILES ${input_private_headers}
+      PUBLIC_HEADER_FILES ${input_public_headers}
+      PRECOMPILE_HEADER_FILE "${TESTS_DATA_DIR}/fake/directory/file.cpp"
+      INCLUDE_DIRECTORIES ${input_mixed_paths}
       LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
     )
   endfunction()
 
-  ct_add_section(NAME "throws_if_arg_include_directories_is_missing_1" EXPECTFAIL)
+  ct_add_section(NAME "throws_if_arg_include_directories_is_missing" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    binary_target(CREATE_FULLY "new_shared_mock_lib_24" SHARED
+    binary_target(CREATE_FULLY "new_shared_mock_lib_19" SHARED
       COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
       COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
       LINK_OPTIONS "-s" "-z"
-      SOURCE_FILES "${input_sources}"
-      PRIVATE_HEADER_FILES "${input_private_headers}"
-      PUBLIC_HEADER_FILES "${input_public_headers}"
-      PRECOMPILE_HEADER_FILE "${input_pch_header}"
+      SOURCE_FILES ${input_sources}
+      PRIVATE_HEADER_FILES ${input_private_headers}
+      PUBLIC_HEADER_FILES ${input_public_headers}
+      PRECOMPILE_HEADER_FILE ${input_pch_header}
       LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
-    )
-  endfunction()
-
-  ct_add_section(NAME "throws_if_arg_include_directories_is_missing_2" EXPECTFAIL)
-  function(${CMAKETEST_SECTION})
-    binary_target(CREATE_FULLY "new_shared_mock_lib_25" SHARED
-      COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
-      COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
-      COMPILE_OPTIONS "-Wall" "-Wextra"
-      LINK_OPTIONS "-s" "-z"
-      SOURCE_FILES "${input_sources}"
-      PRIVATE_HEADER_FILES "${input_private_headers}"
-      PUBLIC_HEADER_FILES "${input_public_headers}"
-      PRECOMPILE_HEADER_FILE "${input_pch_header}"
-      INCLUDE_DIRECTORIES
-      LINK_LIBRARIES "dep_shared_mock_lib_1" "dep_shared_mock_lib_2"
-    )
-  endfunction()
-
-  ct_add_section(NAME "throws_if_arg_link_libraries_is_missing" EXPECTFAIL)
-  function(${CMAKETEST_SECTION})
-    binary_target(CREATE_FULLY "new_shared_mock_lib_26" SHARED
-      COMPILE_FEATURES "cxx_thread_local" "cxx_trailing_return_types"
-      COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
-      COMPILE_OPTIONS "-Wall" "-Wextra"
-      LINK_OPTIONS "-s" "-z"
-      SOURCE_FILES "${input_sources}"
-      PRIVATE_HEADER_FILES "${input_private_headers}"
-      PUBLIC_HEADER_FILES "${input_public_headers}"
-      PRECOMPILE_HEADER_FILE "${input_pch_header}"
-      INCLUDE_DIRECTORIES "${input_public_header_dir}"
-      LINK_LIBRARIES
     )
   endfunction()
 endfunction()
