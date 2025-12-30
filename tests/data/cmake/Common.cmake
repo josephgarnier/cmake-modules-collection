@@ -16,7 +16,9 @@ include(Directory)
 #------------------------------------------------------------------------------
 # Create a mock library targets for tests
 function(add_mock_lib name)
-  cmake_parse_arguments(arg "SKIP_IF_EXISTS;STATIC;SHARED" "" "" ${ARGN})
+  cmake_parse_arguments(PARSE_ARGV 1 arg
+    "SKIP_IF_EXISTS;STATIC;SHARED" "" ""
+  )
   if(TARGET "${name}" AND ${arg_SKIP_IF_EXISTS})
     return()
   endif()
@@ -34,7 +36,9 @@ endfunction()
 # Create an imported mock library target for tests in simulating a call to
 # `dependency(IMPORT)`
 function(import_mock_lib lib_target_name lib_file_basename)
-  cmake_parse_arguments(arg "SKIP_IF_EXISTS;STATIC;SHARED" "" "" ${ARGN})
+  cmake_parse_arguments(PARSE_ARGV 2 arg
+    "SKIP_IF_EXISTS;STATIC;SHARED" "" ""
+  )
   if(TARGET "${lib_target_name}" AND ${arg_SKIP_IF_EXISTS})
     return()
   endif()
@@ -129,7 +133,9 @@ endfunction()
 # `dependency(IMPORT)`, `dependency(ADD_INCLUDE_DIRECTORIES)`, and
 # `dependency(IMPORTED_LOCATION)`
 function(import_full_mock_lib lib_target_name lib_file_basename)
-  cmake_parse_arguments(arg "SKIP_IF_EXISTS;STATIC;SHARED" "" "" ${ARGN})
+  cmake_parse_arguments(PARSE_ARGV 2 arg
+    "SKIP_IF_EXISTS;STATIC;SHARED" "" ""
+  )
   if(TARGET "${lib_target_name}" AND ${arg_SKIP_IF_EXISTS})
     return()
   endif()
