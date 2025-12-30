@@ -78,8 +78,8 @@ directory(<a class="reference internal" href="#collect-sources-by-policy">COLLEC
 <span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">directory(</span></span><span class="no"><span class="pre">SCAN</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;output-list-var&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">[...]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#scan" title="Link to this definition">¶</a></dt>
 <dd><p>Recursively get files and directories:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">directory(</span><span class="no">SCAN</span><span class="w"> </span><span class="nv">&lt;output-list-var&gt;</span>
-<span class="w">          </span><span class="no">LIST_DIRECTORIES</span><span class="w"> </span><span class="o">&lt;</span><span class="nb">on</span><span class="p">|</span><span class="nb">off</span><span class="o">&gt;</span>
-<span class="w">          </span><span class="no">RELATIVE</span><span class="w"> </span><span class="o">&lt;</span><span class="nb">on</span><span class="p">|</span><span class="nb">off</span><span class="o">&gt;</span>
+<span class="w">          </span><span class="no">LIST_DIRECTORIES</span><span class="w"> </span><span class="o">&lt;</span><span class="nb">true</span><span class="p">|</span><span class="nb">false</span><span class="o">&gt;</span>
+<span class="w">          </span><span class="no">RELATIVE</span><span class="w"> </span><span class="o">&lt;</span><span class="nb">true</span><span class="p">|</span><span class="nb">false</span><span class="o">&gt;</span>
 <span class="w">          </span><span class="no">ROOT_DIR</span><span class="w"> </span><span class="nv">&lt;dir-path&gt;</span>
 <span class="w">          </span><span class="o">&lt;</span><span class="no">INCLUDE_REGEX</span><span class="p">|</span><span class="no">EXCLUDE_REGEX</span><span class="o">&gt;</span><span class="w"> </span><span class="nv">&lt;regular-expression&gt;</span><span class="nf">)</span>
 </pre></div>
@@ -87,18 +87,18 @@ directory(<a class="reference internal" href="#collect-sources-by-policy">COLLEC
 <p>Recursively scan and collect all files and directories under <code class="docutils literal notranslate"><span class="pre">ROOT_DIR</span></code>
 that match the filter provided with either <code class="docutils literal notranslate"><span class="pre">INCLUDE_REGEX</span></code> or
 <code class="docutils literal notranslate"><span class="pre">EXCLUDE_REGEX</span></code>, and store the result in <code class="docutils literal notranslate"><span class="pre">&lt;output-list-var&gt;</span></code>.</p>
-<p>Paths are returned as relative to <code class="docutils literal notranslate"><span class="pre">ROOT_DIR</span></code> if <code class="docutils literal notranslate"><span class="pre">RELATIVE</span></code> is <code class="docutils literal notranslate"><span class="pre">on</span></code>,
-or as absolute paths if <code class="docutils literal notranslate"><span class="pre">RELATIVE</span></code> is <code class="docutils literal notranslate"><span class="pre">off</span></code>.</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">LIST_DIRECTORIES</span></code> is <code class="docutils literal notranslate"><span class="pre">on</span></code>, directories are included in
-the result. If <code class="docutils literal notranslate"><span class="pre">LIST_DIRECTORIES</span></code> is <code class="docutils literal notranslate"><span class="pre">off</span></code>, only files are listed.</p>
+<p>Paths are returned as relative to <code class="docutils literal notranslate"><span class="pre">ROOT_DIR</span></code> if <code class="docutils literal notranslate"><span class="pre">RELATIVE</span></code> is <code class="docutils literal notranslate"><span class="pre">true</span></code>,
+or as absolute paths if <code class="docutils literal notranslate"><span class="pre">RELATIVE</span></code> is <code class="docutils literal notranslate"><span class="pre">false</span></code>.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">LIST_DIRECTORIES</span></code> is <code class="docutils literal notranslate"><span class="pre">true</span></code>, directories are included in
+the result. If <code class="docutils literal notranslate"><span class="pre">LIST_DIRECTORIES</span></code> is <code class="docutils literal notranslate"><span class="pre">false</span></code>, only files are listed.</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">directory(</span><span class="no">SCAN</span><span class="w"> </span><span class="nb">files_found</span>
-<span class="w">  </span><span class="no">LIST_DIRECTORIES</span><span class="w"> </span><span class="nb">off</span>
-<span class="w">  </span><span class="no">RELATIVE</span><span class="w"> </span><span class="nb">on</span>
+<span class="w">  </span><span class="no">LIST_DIRECTORIES</span><span class="w"> </span><span class="nb">false</span>
+<span class="w">  </span><span class="no">RELATIVE</span><span class="w"> </span><span class="nb">true</span>
 <span class="w">  </span><span class="no">ROOT_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_CURRENT_SOURCE_DIR}&quot;</span>
 <span class="w">  </span><span class="no">INCLUDE_REGEX</span><span class="w"> </span><span class="s">&quot;.*[.]cpp$|.*[.]cc$|.*[.]cxx$&quot;</span>
 <span class="nf">)</span>
-<span class="c"># output is:</span>
+<span class="c"># files_found is:</span>
 <span class="c">#   src/main.cpp;src/util.cpp;lib/module.cpp</span>
 </pre></div>
 </div>
@@ -109,28 +109,28 @@ the result. If <code class="docutils literal notranslate"><span class="pre">LIST
 <span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">directory(</span></span><span class="no"><span class="pre">SCAN_DIRS</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;output-list-var&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">[...]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#scan-dirs" title="Link to this definition">¶</a></dt>
 <dd><p>Recursively get directories only:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">directory(</span><span class="no">SCAN_DIRS</span><span class="w"> </span><span class="nv">&lt;output-list-var&gt;</span>
-<span class="w">         </span><span class="no">RECURSE</span><span class="w"> </span><span class="o">&lt;</span><span class="nb">on</span><span class="p">|</span><span class="nb">off</span><span class="o">&gt;</span>
-<span class="w">         </span><span class="no">RELATIVE</span><span class="w"> </span><span class="o">&lt;</span><span class="nb">on</span><span class="p">|</span><span class="nb">off</span><span class="o">&gt;</span>
-<span class="w">         </span><span class="no">ROOT_DIR</span><span class="w"> </span><span class="nv">&lt;dir-path&gt;</span>
-<span class="w">         </span><span class="o">&lt;</span><span class="no">INCLUDE_REGEX</span><span class="p">|</span><span class="no">EXCLUDE_REGEX</span><span class="o">&gt;</span><span class="w"> </span><span class="nv">&lt;regular-expression&gt;</span><span class="nf">)</span>
+<span class="w">          </span><span class="no">RECURSE</span><span class="w"> </span><span class="o">&lt;</span><span class="nb">true</span><span class="p">|</span><span class="nb">false</span><span class="o">&gt;</span>
+<span class="w">          </span><span class="no">RELATIVE</span><span class="w"> </span><span class="o">&lt;</span><span class="nb">true</span><span class="p">|</span><span class="nb">false</span><span class="o">&gt;</span>
+<span class="w">          </span><span class="no">ROOT_DIR</span><span class="w"> </span><span class="nv">&lt;dir-path&gt;</span>
+<span class="w">          </span><span class="o">&lt;</span><span class="no">INCLUDE_REGEX</span><span class="p">|</span><span class="no">EXCLUDE_REGEX</span><span class="o">&gt;</span><span class="w"> </span><span class="nv">&lt;regular-expression&gt;</span><span class="nf">)</span>
 </pre></div>
 </div>
 <p>Scan and collect all directories under <code class="docutils literal notranslate"><span class="pre">ROOT_DIR</span></code> that match the regular
 expression provided with either <code class="docutils literal notranslate"><span class="pre">INCLUDE_REGEX</span></code> or <code class="docutils literal notranslate"><span class="pre">EXCLUDE_REGEX</span></code>, and
 store the result in <code class="docutils literal notranslate"><span class="pre">&lt;output-list-var&gt;</span></code>.</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">RECURSE</span></code> is <code class="docutils literal notranslate"><span class="pre">on</span></code>, the function traverses subdirectories recursively.
-If <code class="docutils literal notranslate"><span class="pre">RECURSE</span></code> is <code class="docutils literal notranslate"><span class="pre">off</span></code>, only the directories directly under <code class="docutils literal notranslate"><span class="pre">ROOT_DIR</span></code>
+<p>If <code class="docutils literal notranslate"><span class="pre">RECURSE</span></code> is <code class="docutils literal notranslate"><span class="pre">true</span></code>, the function traverses subdirectories recursively.
+If <code class="docutils literal notranslate"><span class="pre">RECURSE</span></code> is <code class="docutils literal notranslate"><span class="pre">false</span></code>, only the directories directly under <code class="docutils literal notranslate"><span class="pre">ROOT_DIR</span></code>
 are considered.</p>
 <p>The paths in the result are returned relative to <code class="docutils literal notranslate"><span class="pre">ROOT_DIR</span></code> if
-<code class="docutils literal notranslate"><span class="pre">RELATIVE</span></code> is <code class="docutils literal notranslate"><span class="pre">on</span></code>, or as absolute paths if <code class="docutils literal notranslate"><span class="pre">RELATIVE</span></code> is <code class="docutils literal notranslate"><span class="pre">off</span></code>.</p>
+<code class="docutils literal notranslate"><span class="pre">RELATIVE</span></code> is <code class="docutils literal notranslate"><span class="pre">true</span></code>, or as absolute paths if <code class="docutils literal notranslate"><span class="pre">RELATIVE</span></code> is <code class="docutils literal notranslate"><span class="pre">false</span></code>.</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">directory(</span><span class="no">SCAN_DIRS</span><span class="w"> </span><span class="nb">matched_dirs</span>
-<span class="w">  </span><span class="no">RECURSE</span><span class="w"> </span><span class="nb">on</span>
-<span class="w">  </span><span class="no">RELATIVE</span><span class="w"> </span><span class="nb">on</span>
+<span class="w">  </span><span class="no">RECURSE</span><span class="w"> </span><span class="nb">true</span>
+<span class="w">  </span><span class="no">RELATIVE</span><span class="w"> </span><span class="nb">true</span>
 <span class="w">  </span><span class="no">ROOT_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}&quot;</span>
 <span class="w">  </span><span class="no">INCLUDE_REGEX</span><span class="w"> </span><span class="s">&quot;include&quot;</span>
 <span class="nf">)</span>
-<span class="c"># output is:</span>
+<span class="c"># matched_dirs is:</span>
 <span class="c">#   src/include;src/lib/include</span>
 </pre></div>
 </div>
@@ -144,7 +144,7 @@ are considered.</p>
 <span class="w">          </span><span class="no">FIND_IMPLIB</span><span class="w"> </span><span class="nv">&lt;output-implib-var&gt;</span>
 <span class="w">          </span><span class="no">NAME</span><span class="w"> </span><span class="nv">&lt;raw-filename&gt;</span>
 <span class="w">          </span><span class="o">&lt;</span><span class="no">STATIC</span><span class="p">|</span><span class="no">SHARED</span><span class="o">&gt;</span>
-<span class="w">          </span><span class="no">RELATIVE</span><span class="w"> </span><span class="o">&lt;</span><span class="nb">on</span><span class="p">|</span><span class="nb">off</span><span class="o">&gt;</span>
+<span class="w">          </span><span class="no">RELATIVE</span><span class="w"> </span><span class="o">&lt;</span><span class="nb">true</span><span class="p">|</span><span class="nb">false</span><span class="o">&gt;</span>
 <span class="w">          </span><span class="no">ROOT_DIR</span><span class="w"> </span><span class="nv">&lt;dir-path&gt;</span><span class="nf">)</span>
 </pre></div>
 </div>
@@ -154,7 +154,7 @@ represent the base name of the library (without prefix or suffix).</p>
 <p>The matching uses system-defined prefixes and suffixes depending on the
 <code class="docutils literal notranslate"><span class="pre">STATIC</span></code> (by <span class="target" id="index-0-variable:cmake:variable:CMAKE_STATIC_LIBRARY_PREFIX"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/variable/CMAKE_STATIC_LIBRARY_PREFIX.html#variable:CMAKE_STATIC_LIBRARY_PREFIX" title="(in CMake v4.2.1)"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">CMAKE_STATIC_LIBRARY_PREFIX</span></code></a> and <span class="target" id="index-0-variable:cmake:variable:CMAKE_STATIC_LIBRARY_SUFFIX"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/variable/CMAKE_STATIC_LIBRARY_SUFFIX.html#variable:CMAKE_STATIC_LIBRARY_SUFFIX" title="(in CMake v4.2.1)"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">CMAKE_STATIC_LIBRARY_SUFFIX</span></code></a>)
 or <code class="docutils literal notranslate"><span class="pre">SHARED</span></code> (by <span class="target" id="index-0-variable:cmake:variable:CMAKE_SHARED_LIBRARY_PREFIX"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/variable/CMAKE_SHARED_LIBRARY_PREFIX.html#variable:CMAKE_SHARED_LIBRARY_PREFIX" title="(in CMake v4.2.1)"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">CMAKE_SHARED_LIBRARY_PREFIX</span></code></a> and
-<span class="target" id="index-0-variable:cmake:variable:CMAKE_SHARED_LIBRARY_SUFFIX"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/variable/CMAKE_SHARED_LIBRARY_SUFFIX.html#variable:CMAKE_SHARED_LIBRARY_SUFFIX" title="(in CMake v4.2.1)"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">CMAKE_SHARED_LIBRARY_SUFFIX</span></code></a>) flag, as well as 
+<span class="target" id="index-0-variable:cmake:variable:CMAKE_SHARED_LIBRARY_SUFFIX"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/variable/CMAKE_SHARED_LIBRARY_SUFFIX.html#variable:CMAKE_SHARED_LIBRARY_SUFFIX" title="(in CMake v4.2.1)"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">CMAKE_SHARED_LIBRARY_SUFFIX</span></code></a>) flag, as well as
 <span class="target" id="index-0-variable:cmake:variable:CMAKE_FIND_LIBRARY_PREFIXES"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/variable/CMAKE_FIND_LIBRARY_PREFIXES.html#variable:CMAKE_FIND_LIBRARY_PREFIXES" title="(in CMake v4.2.1)"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">CMAKE_FIND_LIBRARY_PREFIXES</span></code></a> and <span class="target" id="index-0-variable:cmake:variable:CMAKE_FIND_LIBRARY_SUFFIXES"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/variable/CMAKE_FIND_LIBRARY_SUFFIXES.html#variable:CMAKE_FIND_LIBRARY_SUFFIXES" title="(in CMake v4.2.1)"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">CMAKE_FIND_LIBRARY_SUFFIXES</span></code></a> if
 defined. This makes the behavior similar to <span class="target" id="index-0-command:cmake:command:find_library"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/command/find_library.html#command:find_library" title="(in CMake v4.2.1)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">find_library()</span></code></a>, but more robust.</p>
 <div class="admonition note">
@@ -181,7 +181,7 @@ to search for libraries can take are:</p>
 </div>
 <p>If a matching library is found, its path is stored in <code class="docutils literal notranslate"><span class="pre">&lt;output-lib-var&gt;</span></code>. If a
 matching import library is found, its path is stored in <code class="docutils literal notranslate"><span class="pre">&lt;output-implib-var&gt;</span></code>. If
-<code class="docutils literal notranslate"><span class="pre">RELATIVE</span></code> is set to <code class="docutils literal notranslate"><span class="pre">on</span></code>, the results are relative to <code class="docutils literal notranslate"><span class="pre">ROOT_DIR</span></code>.
+<code class="docutils literal notranslate"><span class="pre">RELATIVE</span></code> is set to <code class="docutils literal notranslate"><span class="pre">true</span></code>, the results are relative to <code class="docutils literal notranslate"><span class="pre">ROOT_DIR</span></code>.
 Otherwise, absolute paths are returned.</p>
 <p>If no match is found, the values will be <code class="docutils literal notranslate"><span class="pre">&lt;output-lib-var&gt;-NOTFOUND</span></code> and
 <code class="docutils literal notranslate"><span class="pre">&lt;output-implib-var&gt;-NOTFOUND</span></code>. In <code class="docutils literal notranslate"><span class="pre">STATIC</span></code> mode,
@@ -200,12 +200,13 @@ sufficient.</p>
 <span class="w">  </span><span class="no">FIND_IMPLIB</span><span class="w"> </span><span class="nb">mylib_import</span>
 <span class="w">  </span><span class="no">NAME</span><span class="w"> </span><span class="s">&quot;zlib1&quot;</span>
 <span class="w">  </span><span class="no">SHARED</span>
-<span class="w">  </span><span class="no">RELATIVE</span><span class="w"> </span><span class="nb">on</span>
+<span class="w">  </span><span class="no">RELATIVE</span><span class="w"> </span><span class="nb">true</span>
 <span class="w">  </span><span class="no">ROOT_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/libs&quot;</span>
 <span class="nf">)</span>
-<span class="c"># output is:</span>
-<span class="c">#   lib=lib/zlib1.dll</span>
-<span class="c">#   implib=lib/zlib1.lib</span>
+<span class="c"># mylib_path is:</span>
+<span class="c">#   lib/zlib1.dll</span>
+<span class="c"># mylib_import is:</span>
+<span class="c">#   lib/zlib1.lib</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -269,7 +270,7 @@ arguments are missing, the command raises a fatal error.</p>
 <span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">directory(</span></span><span class="no"><span class="pre">COLLECT_SOURCES_BY_POLICY</span></span><span class="w"> </span><span class="p"><span class="pre">[...]</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#collect-sources-by-policy" title="Link to this definition">¶</a></dt>
 <dd><p>Recursively get source and header file according to a policy:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">directory(</span><span class="no">COLLECT_SOURCES_BY_POLICY</span>
-<span class="w">          </span><span class="no">PUBLIC_HEADERS_SEPARATED</span><span class="w"> </span><span class="o">&lt;</span><span class="nb">on</span><span class="p">|</span><span class="nb">off</span><span class="o">&gt;</span><span class="w"> </span><span class="p">[</span><span class="nv">&lt;include-dir-path&gt;</span><span class="p">]</span>
+<span class="w">          </span><span class="no">PUBLIC_HEADERS_SEPARATED</span><span class="w"> </span><span class="o">&lt;</span><span class="nb">true</span><span class="p">|</span><span class="nb">false</span><span class="o">&gt;</span><span class="w"> </span><span class="p">[</span><span class="nv">&lt;include-dir-path&gt;</span><span class="p">]</span>
 <span class="w">          </span><span class="no">PRIVATE_SOURCE_DIR</span><span class="w"> </span><span class="nv">&lt;dir-path&gt;</span>
 <span class="w">          </span><span class="no">PRIVATE_SOURCE_FILES</span><span class="w"> </span><span class="nv">&lt;output-list-var&gt;</span>
 <span class="w">          </span><span class="no">PUBLIC_HEADER_DIR</span><span class="w"> </span><span class="nv">&lt;output-var&gt;</span>
@@ -286,7 +287,7 @@ in the variable referenced by <code class="docutils literal notranslate"><span c
 <p>The behavior for header files depends on the policy value given to
 <code class="docutils literal notranslate"><span class="pre">PUBLIC_HEADERS_SEPARATED</span></code>:</p>
 <ul class="simple">
-<li><p>If <code class="docutils literal notranslate"><span class="pre">PUBLIC_HEADERS_SEPARATED</span> <span class="pre">on</span> <span class="pre">&lt;include-dir-path&gt;</span></code> is specified:</p>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">PUBLIC_HEADERS_SEPARATED</span> <span class="pre">true</span> <span class="pre">&lt;include-dir-path&gt;</span></code> is specified:</p>
 <ul>
 <li><p>Public headers are collected from <code class="docutils literal notranslate"><span class="pre">&lt;include-dir-path&gt;</span></code> and stored
 in the variable referenced by <code class="docutils literal notranslate"><span class="pre">PUBLIC_HEADER_FILES</span></code>.</p></li>
@@ -298,7 +299,7 @@ variable referenced by <code class="docutils literal notranslate"><span class="p
 <code class="docutils literal notranslate"><span class="pre">PRIVATE_SOURCE_DIR</span></code>.</p></li>
 </ul>
 </li>
-<li><p>If <code class="docutils literal notranslate"><span class="pre">PUBLIC_HEADERS_SEPARATED</span> <span class="pre">off</span></code> is specified:</p>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">PUBLIC_HEADERS_SEPARATED</span> <span class="pre">false</span></code> is specified:</p>
 <ul>
 <li><p>All headers are treated as public and collected from <code class="docutils literal notranslate"><span class="pre">PRIVATE_SOURCE_DIR</span></code>.</p></li>
 <li><p>The variable referenced by <code class="docutils literal notranslate"><span class="pre">PUBLIC_HEADER_FILES</span></code> contains the
@@ -309,11 +310,11 @@ header file list.</p></li>
 </ul>
 </li>
 </ul>
-<p>If the policy is set to <code class="docutils literal notranslate"><span class="pre">on</span></code>, but <code class="docutils literal notranslate"><span class="pre">&lt;include-dir-path&gt;</span></code> is missing or
+<p>If the policy is set to <code class="docutils literal notranslate"><span class="pre">true</span></code>, but <code class="docutils literal notranslate"><span class="pre">&lt;include-dir-path&gt;</span></code> is missing or
 does not refer to an existing directory, a fatal error is raised.</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">directory(</span><span class="no">COLLECT_SOURCES_BY_POLICY</span>
-<span class="w">  </span><span class="no">PUBLIC_HEADERS_SEPARATED</span><span class="w"> </span><span class="nb">on</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/include/mylib&quot;</span>
+<span class="w">  </span><span class="no">PUBLIC_HEADERS_SEPARATED</span><span class="w"> </span><span class="nb">true</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/include/mylib&quot;</span>
 <span class="w">  </span><span class="no">PRIVATE_SOURCE_DIR</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/src&quot;</span>
 <span class="w">  </span><span class="no">PRIVATE_SOURCE_FILES</span><span class="w"> </span><span class="nb">private_sources</span>
 <span class="w">  </span><span class="no">PUBLIC_HEADER_DIR</span><span class="w"> </span><span class="nb">public_header_dir</span>

@@ -81,8 +81,8 @@ prefixed by its relative directory path from
 <span class="target" id="index-0-variable:cmake:variable:CMAKE_SOURCE_DIR"></span><a class="reference external" href="https://cmake.org/cmake/help/latest/variable/CMAKE_SOURCE_DIR.html#variable:CMAKE_SOURCE_DIR" title="(in CMake v4.2.1)"><code class="xref cmake cmake-variable docutils literal notranslate"><span class="pre">CMAKE_SOURCE_DIR</span></code></a>.</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">debug(</span><span class="no">DUMP_TARGETS</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}&quot;</span><span class="nf">)</span>
-<span class="c"># output is:</span>
-<span class="c">#   -- </span>
+<span class="c"># Output:</span>
+<span class="c">#   --</span>
 <span class="c">#    Targets in the project:</span>
 <span class="c">#      [][Buildsystem] Experimental</span>
 <span class="c">#      [][Buildsystem] Nightly</span>
@@ -106,8 +106,8 @@ regular expression are printed. If <code class="docutils literal notranslate"><s
 whose names match the given expression are omitted from the output.</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">debug(</span><span class="no">DUMP_VARIABLES</span><span class="nf">)</span>
-<span class="c"># output is:</span>
-<span class="c">#   -- </span>
+<span class="c"># Output:</span>
+<span class="c">#   --</span>
 <span class="c">#    Variables of CMake:</span>
 <span class="c">#      BUILD_SHARED_LIBS = &quot;ON&quot;</span>
 <span class="c">#      CMAKE_CURRENT_SOURCE_DIR = &quot;/home/user/project/src&quot;</span>
@@ -116,8 +116,8 @@ whose names match the given expression are omitted from the output.</p>
 <span class="c">#   ...</span>
 
 <span class="nf">debug(</span><span class="no">DUMP_VARIABLES</span><span class="w"> </span><span class="no">INCLUDE_REGEX</span><span class="w"> </span><span class="s">&quot;^PROJECT_&quot;</span><span class="nf">)</span>
-<span class="c"># output is:</span>
-<span class="c">#   -- </span>
+<span class="c"># Output:</span>
+<span class="c">#   --</span>
 <span class="c">#    Variables of CMake:</span>
 <span class="c">#   ...</span>
 <span class="c">#      PROJECT_IS_TOP_LEVEL = &quot;ON&quot;</span>
@@ -125,8 +125,8 @@ whose names match the given expression are omitted from the output.</p>
 <span class="c">#   ...</span>
 
 <span class="nf">debug(</span><span class="no">DUMP_VARIABLES</span><span class="w"> </span><span class="no">EXCLUDE_REGEX</span><span class="w"> </span><span class="s">&quot;^CMAKE_&quot;</span><span class="nf">)</span>
-<span class="c"># output is:</span>
-<span class="c">#   -- </span>
+<span class="c"># Output:</span>
+<span class="c">#   --</span>
 <span class="c">#    Variables of CMake:</span>
 <span class="c">#      BUILD_SHARED_LIBS = &quot;ON&quot;</span>
 <span class="c">#      PROJECT_NAME = &quot;MyProject&quot;</span>
@@ -149,8 +149,8 @@ more.</p>
 all recognized property names in the CMake environment.</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">debug(</span><span class="no">DUMP_PROPERTIES</span><span class="nf">)</span>
-<span class="c"># output is:</span>
-<span class="c">#   -- </span>
+<span class="c"># Output:</span>
+<span class="c">#   --</span>
 <span class="c">#    Properties of CMake:</span>
 <span class="c">#      ADDITIONAL_CLEAN_FILES</span>
 <span class="c">#      ALIAS_GLOBAL</span>
@@ -176,8 +176,8 @@ like <span class="target" id="index-0-prop_tgt:cmake:prop_tgt:LOCATION"></span><
 known to trigger errors on access are excluded from the output.</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">debug(</span><span class="no">DUMP_TARGET_PROPERTIES</span><span class="w"> </span><span class="nb">my_library</span><span class="nf">)</span>
-<span class="c"># output is:</span>
-<span class="c">#   -- </span>
+<span class="c"># Output:</span>
+<span class="c">#   --</span>
 <span class="c">#    Properties for TARGET my_library:</span>
 <span class="c">#      my_library.TYPE = &quot;STATIC_LIBRARY&quot;</span>
 <span class="c">#      my_library.SOURCES = &quot;src/a.cpp;src/b.cpp&quot;</span>

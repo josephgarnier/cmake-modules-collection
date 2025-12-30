@@ -559,8 +559,8 @@ serialized key-value <span class="target" id="index-1-module:Map"></span><a clas
 serve as value to get the target configurations stored in
 <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_&lt;target-dir-path&gt;</span></code>.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_LOADED</span></code></dt><dd><p>Set to <code class="docutils literal notranslate"><span class="pre">on</span></code> once the configuration is successfully loaded, otherwise
-to <code class="docutils literal notranslate"><span class="pre">off</span></code>.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_LOADED</span></code></dt><dd><p>Set to <code class="docutils literal notranslate"><span class="pre">true</span></code> once the configuration is successfully loaded, otherwise
+to <code class="docutils literal notranslate"><span class="pre">false</span></code>.</p>
 </dd>
 </dl>
 </div></blockquote>
@@ -594,7 +594,7 @@ conflicts, pipe characters (<code class="docutils literal notranslate"><span cla
 <span class="nf">get_property(</span><span class="nb">banana_config</span><span class="w"> </span><span class="no">GLOBAL</span><span class="w"> </span><span class="no">PROPERTY</span><span class="w"> </span><span class="s">&quot;TARGETS_CONFIG_src/banana&quot;</span><span class="nf">)</span>
 <span class="nf">get_property(</span><span class="nb">src_config</span><span class="w"> </span><span class="no">GLOBAL</span><span class="w"> </span><span class="no">PROPERTY</span><span class="w"> </span><span class="s">&quot;TARGETS_CONFIG_src&quot;</span><span class="nf">)</span>
 <span class="nf">message(</span><span class="s">&quot;&#39;src&#39; array is: ${src_config}&quot;</span><span class="nf">)</span>
-<span class="c"># output is:</span>
+<span class="c"># Output:</span>
 <span class="c">#   &#39;src&#39; array is: name:fruit-salad;type:executable;mainFile:src/main.cpp;</span>
 <span class="c">#   pchFile:include/fruit_salad_pch.h;build.compileFeatures:cxx_std_20;</span>
 <span class="c">#   build.compileDefinitions:DEFINE_ONE=1|DEFINE_TWO=2|</span>
@@ -607,16 +607,16 @@ conflicts, pipe characters (<code class="docutils literal notranslate"><span cla
 <dl class="cmake signature">
 <dt class="sig sig-object cmake" id="is-loaded">
 <span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">cmake_targets_file(</span></span><span class="no"><span class="pre">IS_LOADED</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;output-var&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#is-loaded" title="Link to this definition">¶</a></dt>
-<dd><p>Set <code class="docutils literal notranslate"><span class="pre">&lt;output-var&gt;</span></code> to <code class="docutils literal notranslate"><span class="pre">on</span></code> if a targets configuration file has been
-loaded with success, or <code class="docutils literal notranslate"><span class="pre">off</span></code> otherwise. This checks the global property
+<dd><p>Set <code class="docutils literal notranslate"><span class="pre">&lt;output-var&gt;</span></code> to <code class="docutils literal notranslate"><span class="pre">true</span></code> if a targets configuration file has been
+loaded with success, or <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise. This checks the global property
 <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_LOADED</span></code> set by a successful invocation of the
 <span class="target" id="index-2-command:cmake_targets_file"></span><a class="reference internal" href="#load" title="cmake_targets_file(load)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(LOAD)</span></code></a> command.</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">cmake_targets_file(</span><span class="no">LOAD</span><span class="w"> </span><span class="s">&quot;${CMAKE_SOURCE_DIR}/CMakeTargets.json&quot;</span><span class="nf">)</span>
 <span class="nf">cmake_targets_file(</span><span class="no">IS_LOADED</span><span class="w"> </span><span class="nb">is_file_loaded</span><span class="nf">)</span>
 <span class="nf">message(</span><span class="s">&quot;file_loaded: ${is_file_loaded}&quot;</span><span class="nf">)</span>
-<span class="c"># output is:</span>
-<span class="c">#   file_loaded: on</span>
+<span class="c"># Output:</span>
+<span class="c">#   file_loaded: true</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -632,7 +632,7 @@ targets configuration file. The content is retrieved from the global property
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">cmake_targets_file(</span><span class="no">GET_LOADED_FILE</span><span class="w"> </span><span class="nb">json_file_content</span><span class="nf">)</span>
 <span class="nf">message(</span><span class="s">&quot;json_file_content: ${json_file_content}&quot;</span><span class="nf">)</span>
-<span class="c"># output is:</span>
+<span class="c"># Output:</span>
 <span class="c">#   json_file_content: {</span>
 <span class="c">#     &quot;$schema&quot;: &quot;schema.json&quot;,</span>
 <span class="c">#     &quot;$id&quot;: &quot;schema.json&quot;,</span>
@@ -650,13 +650,13 @@ targets configuration file. The content is retrieved from the global property
 <dl class="cmake signature">
 <dt class="sig sig-object cmake" id="has-config">
 <span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">cmake_targets_file(</span></span><span class="no"><span class="pre">HAS_CONFIG</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;output-var&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">TARGET</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;target-dir-path&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#has-config" title="Link to this definition">¶</a></dt>
-<dd><p>Set <code class="docutils literal notranslate"><span class="pre">&lt;output-var&gt;</span></code> to <code class="docutils literal notranslate"><span class="pre">on</span></code> if a configuration exists for the given
-target directory path <code class="docutils literal notranslate"><span class="pre">&lt;target-dir-path&gt;</span></code>, or <code class="docutils literal notranslate"><span class="pre">off</span></code> otherwise.</p>
+<dd><p>Set <code class="docutils literal notranslate"><span class="pre">&lt;output-var&gt;</span></code> to <code class="docutils literal notranslate"><span class="pre">true</span></code> if a configuration exists for the given
+target directory path <code class="docutils literal notranslate"><span class="pre">&lt;target-dir-path&gt;</span></code>, or <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p>
 <p>Example usage :</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">cmake_targets_file(</span><span class="no">HAS_CONFIG</span><span class="w"> </span><span class="nb">is_target_configured</span><span class="w"> </span><span class="no">TARGET</span><span class="w"> </span><span class="s">&quot;src&quot;</span><span class="nf">)</span>
 <span class="nf">message(</span><span class="s">&quot;is_target_configured (src): ${is_target_configured}&quot;</span><span class="nf">)</span>
 <span class="c"># output is:</span>
-<span class="c">#   is_target_configured (src): on</span>
+<span class="c">#   is_target_configured (src): true</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -680,7 +680,7 @@ exist in the loaded configuration file.</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">cmake_targets_file(</span><span class="no">GET_SETTINGS</span><span class="w"> </span><span class="nb">target_config_map</span><span class="w"> </span><span class="no">TARGET</span><span class="w"> </span><span class="s">&quot;src&quot;</span><span class="nf">)</span>
 <span class="nf">message(</span><span class="s">&quot;target_config (src): ${target_config_map}&quot;</span><span class="nf">)</span>
-<span class="c"># output is:</span>
+<span class="c"># Output:</span>
 <span class="c">#   target_config (src): name:fruit-salad;type:executable;mainFile:</span>
 <span class="c">#   src/main.cpp;pchFile:include/fruit_salad_pch.h;...</span>
 </pre></div>
@@ -690,13 +690,13 @@ exist in the loaded configuration file.</p>
 <dl class="cmake signature">
 <dt class="sig sig-object cmake" id="has-setting">
 <span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">cmake_targets_file(</span></span><span class="no"><span class="pre">HAS_SETTING</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;output-var&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">TARGET</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;target-dir-path&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">KEY</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;setting-name&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#has-setting" title="Link to this definition">¶</a></dt>
-<dd><p>Set <code class="docutils literal notranslate"><span class="pre">&lt;output-var&gt;</span></code> to <code class="docutils literal notranslate"><span class="pre">on</span></code> if the configuration of the given target
-contains the specified setting key <code class="docutils literal notranslate"><span class="pre">&lt;setting-name&gt;</span></code>, or <code class="docutils literal notranslate"><span class="pre">off</span></code> otherwise.</p>
+<dd><p>Set <code class="docutils literal notranslate"><span class="pre">&lt;output-var&gt;</span></code> to <code class="docutils literal notranslate"><span class="pre">true</span></code> if the configuration of the given target
+contains the specified setting key <code class="docutils literal notranslate"><span class="pre">&lt;setting-name&gt;</span></code>, or <code class="docutils literal notranslate"><span class="pre">false</span></code> otherwise.</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">cmake_targets_file(</span><span class="no">HAS_SETTING</span><span class="w"> </span><span class="nb">has_setting_key</span><span class="w"> </span><span class="no">TARGET</span><span class="w"> </span><span class="s">&quot;src&quot;</span><span class="w"> </span><span class="no">KEY</span><span class="w"> </span><span class="s">&quot;type&quot;</span><span class="nf">)</span>
 <span class="nf">message(</span><span class="s">&quot;has_setting_key (type): ${has_setting_key}&quot;</span><span class="nf">)</span>
-<span class="c"># output is:</span>
-<span class="c">#   has_setting_key (type): on</span>
+<span class="c"># Output:</span>
+<span class="c">#   has_setting_key (type): true</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -747,16 +747,16 @@ the target configuration.</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">cmake_targets_file(</span><span class="no">GET_VALUE</span><span class="w"> </span><span class="nb">setting_value</span><span class="w"> </span><span class="no">TARGET</span><span class="w"> </span><span class="s">&quot;src&quot;</span><span class="w"> </span><span class="no">KEY</span><span class="w"> </span><span class="s">&quot;type&quot;</span><span class="nf">)</span>
 <span class="nf">message(</span><span class="s">&quot;setting_value (type): ${setting_value}&quot;</span><span class="nf">)</span>
-<span class="c"># output is:</span>
+<span class="c"># Output:</span>
 <span class="c">#   setting_value (type): executable</span>
 <span class="nf">cmake_targets_file(</span><span class="no">GET_VALUE</span><span class="w"> </span><span class="nb">setting_value</span><span class="w"> </span><span class="no">TARGET</span><span class="w"> </span><span class="s">&quot;src&quot;</span><span class="w"> </span><span class="no">KEY</span><span class="w"> </span><span class="s">&quot;build.compileDefinitions&quot;</span><span class="nf">)</span>
 <span class="nf">message(</span><span class="s">&quot;setting_value (build.compileDefinitions): ${setting_value}&quot;</span><span class="nf">)</span>
-<span class="c"># output is:</span>
+<span class="c"># Output:</span>
 <span class="c">#   setting_value (build.compileDefinitions): DEFINE_ONE=1;DEFINE_TWO=2;</span>
 <span class="c">#   OPTION_1</span>
 <span class="nf">cmake_targets_file(</span><span class="no">GET_VALUE</span><span class="w"> </span><span class="nb">setting_value</span><span class="w"> </span><span class="no">TARGET</span><span class="w"> </span><span class="s">&quot;src&quot;</span><span class="w"> </span><span class="no">KEY</span><span class="w"> </span><span class="s">&quot;extDependencies&quot;</span><span class="nf">)</span>
 <span class="nf">message(</span><span class="s">&quot;setting_value (extDependencies): ${setting_value}&quot;</span><span class="nf">)</span>
-<span class="c"># output is:</span>
+<span class="c"># Output:</span>
 <span class="c">#   setting_value (extDependencies): AppleLib;BananaLib;CarrotLib;OrangeLib;</span>
 <span class="c">#   PineappleLib</span>
 </pre></div>
@@ -786,21 +786,21 @@ exist in the loaded configuration file.</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">cmake_targets_file(</span><span class="no">TRY_GET_VALUE</span><span class="w"> </span><span class="nb">setting_value</span><span class="w"> </span><span class="no">TARGET</span><span class="w"> </span><span class="s">&quot;src&quot;</span><span class="w"> </span><span class="no">KEY</span><span class="w"> </span><span class="s">&quot;type&quot;</span><span class="nf">)</span>
 <span class="nf">message(</span><span class="s">&quot;setting_value (type): ${setting_value}&quot;</span><span class="nf">)</span>
-<span class="c"># output is:</span>
+<span class="c"># Output:</span>
 <span class="c">#   setting_value (type): executable</span>
 <span class="nf">cmake_targets_file(</span><span class="no">TRY_GET_VALUE</span><span class="w"> </span><span class="nb">setting_value</span><span class="w"> </span><span class="no">TARGET</span><span class="w"> </span><span class="s">&quot;src&quot;</span><span class="w"> </span><span class="no">KEY</span><span class="w"> </span><span class="s">&quot;build.compileDefinitions&quot;</span><span class="nf">)</span>
 <span class="nf">message(</span><span class="s">&quot;setting_value (build.compileDefinitions): ${setting_value}&quot;</span><span class="nf">)</span>
-<span class="c"># output is:</span>
+<span class="c"># Output:</span>
 <span class="c">#   setting_value (build.compileDefinitions): DEFINE_ONE=1;DEFINE_TWO=2;</span>
 <span class="c">#   OPTION_1</span>
 <span class="nf">cmake_targets_file(</span><span class="no">TRY_GET_VALUE</span><span class="w"> </span><span class="nb">setting_value</span><span class="w"> </span><span class="no">TARGET</span><span class="w"> </span><span class="s">&quot;src&quot;</span><span class="w"> </span><span class="no">KEY</span><span class="w"> </span><span class="s">&quot;extDependencies&quot;</span><span class="nf">)</span>
 <span class="nf">message(</span><span class="s">&quot;setting_value (extDependencies): ${setting_value}&quot;</span><span class="nf">)</span>
-<span class="c"># output is:</span>
+<span class="c"># Output:</span>
 <span class="c">#   setting_value (extDependencies): AppleLib;BananaLib;CarrotLib;OrangeLib;</span>
 <span class="c">#   PineappleLib</span>
 <span class="nf">cmake_targets_file(</span><span class="no">TRY_GET_VALUE</span><span class="w"> </span><span class="nb">setting_value</span><span class="w"> </span><span class="no">TARGET</span><span class="w"> </span><span class="s">&quot;src&quot;</span><span class="w"> </span><span class="no">KEY</span><span class="w"> </span><span class="s">&quot;nonexistent.setting&quot;</span><span class="nf">)</span>
 <span class="nf">message(</span><span class="s">&quot;setting_value (nonexistent.setting): ${setting_value}&quot;</span><span class="nf">)</span>
-<span class="c"># output is:</span>
+<span class="c"># Output:</span>
 <span class="c">#   setting_value (nonexistent.setting): nonexistent.setting-NOTFOUND</span>
 </pre></div>
 </div>
@@ -819,7 +819,7 @@ parsed target settings after loading a configuration file.</p>
 the <span class="target" id="index-9-command:cmake_targets_file"></span><a class="reference internal" href="#load" title="cmake_targets_file(load)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(LOAD)</span></code></a> command</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">cmake_targets_file(</span><span class="no">PRINT_CONFIGS</span><span class="nf">)</span>
-<span class="c"># output is:</span>
+<span class="c"># Output:</span>
 <span class="c">#   -- Target: fruit-salad</span>
 <span class="c">#   --   type: executable</span>
 <span class="c">#   --   build.compileFeatures: cxx_std_20|cxx_thread_local|cxx_trailing_return_types</span>
@@ -848,7 +848,7 @@ of the keys in the <code class="docutils literal notranslate"><span class="pre">
 the <span class="target" id="index-10-command:cmake_targets_file"></span><a class="reference internal" href="#load" title="cmake_targets_file(load)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(LOAD)</span></code></a> command.</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">cmake_targets_file(</span><span class="no">PRINT_TARGET_CONFIG</span><span class="w"> </span><span class="s">&quot;src&quot;</span><span class="nf">)</span>
-<span class="c"># output is:</span>
+<span class="c"># Output:</span>
 <span class="c">#   -- Target: fruit-salad</span>
 <span class="c">#   --   type: executable</span>
 <span class="c">#   --   build.compileFeatures: cxx_std_20|cxx_thread_local|cxx_trailing_return_types</span>
