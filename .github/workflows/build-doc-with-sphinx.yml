@@ -2,7 +2,7 @@
 # GitHub Actions Workflow: Build and Deploy Sphinx Documentation
 #
 # Description:
-# This workflow builds the Sphinx documentation located in the `doc/` folder
+# This workflow builds the Sphinx documentation located in the `docs/` folder
 # and deploys it to the `gh-pages` branch for GitHub Pages hosting.
 #
 # Trigger Conditions:
@@ -17,7 +17,7 @@ name: Build doc with sphinx
 on:
   push:
     branches: [ 'main' ]
-    paths: ['doc/**']
+    paths: ['docs/**']
   workflow_dispatch:
 permissions:
   contents: write
@@ -32,12 +32,12 @@ jobs:
       - name: Build with Sphinx
         uses: ammaraskar/sphinx-action@8.2.3
         with:
-          docs-folder: doc
+          docs-folder: docs
           build-command: "sphinx-build -M html ./source ./build"
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           publish_branch: gh-pages
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./doc/build/html
+          publish_dir: ./docs/build/html
           force_orphan: true
