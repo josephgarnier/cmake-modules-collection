@@ -75,6 +75,8 @@ message(STATUS "C++ standard version set to C++${CMAKE_CXX_STANDARD}")
 if(NOT DEFINED CMAKE_BUILD_TYPE)
   message(STATUS "Setting build type to Release as none was specified")
   set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Build type" FORCE)
+  # Set the possible values of build type for cmake-gui
+  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release")
 endif()
 message(STATUS "Build type set to ${CMAKE_BUILD_TYPE}")
 
