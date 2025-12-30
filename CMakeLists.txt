@@ -10,6 +10,10 @@
 
 cmake_minimum_required(VERSION 4.0.1 FATAL_ERROR)
 
+####################### Set project options ###################################
+option(BUILD_TESTS   "Specifies whether build CMakeTest tests"             ON)
+option(BUILD_DOCS    "Specifies whether build Sphinx doc"                  ON)
+
 ####################### Declare project metadata ##############################
 set(PROJECT_NAME                    "cmake-modules-collection")
 set(${PROJECT_NAME}_SUMMARY         "A collection of extra macros and functions for CMake")
@@ -75,15 +79,14 @@ endif()
 message(STATUS "Build type set to ${CMAKE_BUILD_TYPE}")
 
 ####################### Add tests #############################################
-set(BUILD_TESTING on)
-if("${BUILD_TESTING}")
+if("${BUILD_TESTS}")
+  set(BUILD_TESTING off)
   include(CTest)
   enable_testing()
   add_subdirectory(tests)
 endif()
 
 ####################### Add docs ##############################################
-set(BUILD_DOC on)
-if("${BUILD_DOC}")
+if("${BUILD_DOCS}")
   add_subdirectory(docs)
 endif()
