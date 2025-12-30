@@ -41,9 +41,9 @@ The following dependencies are **required** to execute the modules and must be i
 The following dependencies are **optional** and only required to contribute to this project and to run it in standalone mode:
 
 - Python >= 3.12.9 (for doc generation).
-- Sphinx >= 8.2.3 (for doc generation) - can be found [here](https://www.sphinx-doc.org/en/master/usage/installation.html) or installed from `requirements.txt` in `doc/` folder.
-- Sphinx Domain for Modern CMake (for doc generation) - can be found [here](https://github.com/scikit-build/moderncmakedomain) or installed from `requirements.txt` in `doc/` folder.
-- doc8 (for doc style checking) - can be found [here](https://github.com/PyCQA/doc8) or installed from `requirements.txt` in `doc/` folder.
+- Sphinx >= 8.2.3 (for doc generation) - can be found [here](https://www.sphinx-doc.org/en/master/usage/installation.html) or installed from `requirements.txt` in `docs/` folder.
+- Sphinx Domain for Modern CMake (for doc generation) - can be found [here](https://github.com/scikit-build/moderncmakedomain) or installed from `requirements.txt` in `docs/` folder.
+- doc8 (for doc style checking) - can be found [here](https://github.com/PyCQA/doc8) or installed from `requirements.txt` in `docs/` folder.
 
 The following dependencies are **used and delivered** by the project:
 
@@ -155,7 +155,7 @@ If you are a VS Code user, all commands have been written as **Visual Studio Cod
 
 The use of commands and scripts is described below, in the order of execution of a complete and classic sequence of build phases. They must be executed from the root project directory:
 
-- To **clean** the buildsystem (remove content of `build/`, `doc/` and `bin/`):
+- To **clean** the buildsystem (remove content of `build/`, `docs/` and `bin/`):
 
   <details>
   <summary>see details</summary>
@@ -302,7 +302,7 @@ The use of commands and scripts is described below, in the order of execution of
   ```
 
   - VS Code task: `CMake: Doc`.
-  - **Note:** the 'doc' CMake target is included in 'all' CMake target.
+  - **Note:** the 'doc' CMake target is not included in 'all' CMake target.
   </details>
 
 - To **execute the `install`** build phase (call the CMake target 'install'):
@@ -321,7 +321,7 @@ The use of commands and scripts is described below, in the order of execution of
   - VS Code task: `CMake: Install`.
   </details>
 
-- To **execute a default workflow with `default`, `test`, `doc`** build phases:
+- To **execute a default workflow with `default`, `test`** build phases:
 
   <details>
   <summary>see details</summary>

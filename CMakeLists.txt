@@ -36,9 +36,9 @@ list(APPEND CMAKE_MODULE_PATH
   "${${PROJECT_NAME}_CMAKE_MODULES_DIR}"
   "${${PROJECT_NAME}_CMAKE_MODULES_EXT_DIR}"
   "${${PROJECT_NAME}_CMAKE_TOOLCHAINS_DIR}")
-set(${PROJECT_NAME}_DOC_DIR                "${${PROJECT_NAME}_PROJECT_DIR}/doc")
+set(${PROJECT_NAME}_DOCS_DIR               "${${PROJECT_NAME}_PROJECT_DIR}/docs")
+set(${PROJECT_NAME}_EXTERNAL_DIR           "${${PROJECT_NAME}_PROJECT_DIR}/external")
 set(${PROJECT_NAME}_TESTS_DIR              "${${PROJECT_NAME}_PROJECT_DIR}/tests")
-set(${PROJECT_NAME}_VENDORS_DIR            "${${PROJECT_NAME}_PROJECT_DIR}/vendors")
 
 list(APPEND ${PROJECT_NAME}_PROJECT_DIRS
   "${${PROJECT_NAME}_BUILD_DIR}"
@@ -46,9 +46,9 @@ list(APPEND ${PROJECT_NAME}_PROJECT_DIRS
   "${${PROJECT_NAME}_CMAKE_MODULES_DIR}"
   "${${PROJECT_NAME}_CMAKE_MODULES_EXT_DIR}"
   "${${PROJECT_NAME}_CMAKE_TOOLCHAINS_DIR}"
-  "${${PROJECT_NAME}_DOC_DIR}"
-  "${${PROJECT_NAME}_TESTS_DIR}"
-  "${${PROJECT_NAME}_VENDORS_DIR}")
+  "${${PROJECT_NAME}_DOCS_DIR}"
+  "${${PROJECT_NAME}_EXTERNAL_DIR}"
+  "${${PROJECT_NAME}_TESTS_DIR}")
 
 foreach(folder IN ITEMS ${${PROJECT_NAME}_PROJECT_DIRS})
   if((NOT EXISTS "${folder}") OR (NOT IS_DIRECTORY "${folder}"))
@@ -74,7 +74,7 @@ if(NOT DEFINED CMAKE_BUILD_TYPE)
 endif()
 message(STATUS "Build type set to ${CMAKE_BUILD_TYPE}")
 
-####################### Add module test #######################################
+####################### Add tests #############################################
 set(BUILD_TESTING on)
 if("${BUILD_TESTING}")
   include(CTest)
@@ -82,8 +82,8 @@ if("${BUILD_TESTING}")
   add_subdirectory(tests)
 endif()
 
-####################### Add module doc ########################################
+####################### Add docs ##############################################
 set(BUILD_DOC on)
 if("${BUILD_DOC}")
-  add_subdirectory(doc)
+  add_subdirectory(docs)
 endif()
