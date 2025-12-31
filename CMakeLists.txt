@@ -80,8 +80,11 @@ if(NOT DEFINED CMAKE_BUILD_TYPE)
 endif()
 message(STATUS "Build type set to ${CMAKE_BUILD_TYPE}")
 
+####################### Import dependencies ###################################
+include("${${PROJECT_NAME}_EXTERNAL_DIR}/dependencies.cmake")
+
 ####################### Add tests #############################################
-if("${BUILD_TESTS}")
+if(${BUILD_TESTS} AND ${cmake_test_FOUND})
   set(BUILD_TESTING off)
   include(CTest)
   enable_testing()
@@ -89,6 +92,6 @@ if("${BUILD_TESTS}")
 endif()
 
 ####################### Add docs ##############################################
-if("${BUILD_DOCS}")
+if(${BUILD_DOCS} AND ${sphinx_FOUND})
   add_subdirectory(docs)
 endif()

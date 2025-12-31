@@ -10,23 +10,6 @@
 
 cmake_minimum_required(VERSION 4.0.1 FATAL_ERROR)
 
-####################### Import Sphinx #########################################
-message(CHECK_START "Importing Sphinx")
-list(APPEND CMAKE_MESSAGE_INDENT "  ")
-
-find_package(Sphinx)
-
-if(Sphinx_FOUND)
-  message(STATUS "Sphinx found locally")
-  list(POP_BACK CMAKE_MESSAGE_INDENT)
-  message(CHECK_PASS "done")
-else()
-  message(STATUS "Sphinx not found locally, 'doc' target will not be available")
-  list(POP_BACK CMAKE_MESSAGE_INDENT)
-  message(CHECK_FAIL "failed")
-  return()
-endif()
-
 ####################### Create doc target #####################################
 message(CHECK_START "Creating doc target")
 list(APPEND CMAKE_MESSAGE_INDENT "  ")

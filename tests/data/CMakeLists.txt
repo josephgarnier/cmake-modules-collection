@@ -10,7 +10,7 @@
 
 cmake_minimum_required(VERSION 4.0.1 FATAL_ERROR)
 
-message(CHECK_START "Creating data test")
+message(CHECK_START "Creating data for tests")
 list(APPEND CMAKE_MESSAGE_INDENT "  ")
 
 ####################### Init level variables ##################################
