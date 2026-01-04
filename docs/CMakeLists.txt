@@ -26,7 +26,7 @@ if(NOT TARGET "doc")
     COMMENT "Generating the doc with Sphinx..."
     VERBATIM
   )
-  message(STATUS "Doc target 'doc' added to buildsystem and 'all' target")
+  message(STATUS "Doc target 'doc' added to buildsystem")
 endif()
 
 # Add generated doc files to the `clean` target
