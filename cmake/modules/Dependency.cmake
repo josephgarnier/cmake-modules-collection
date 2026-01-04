@@ -173,10 +173,12 @@ Usage
                [FIND_RELEASE_FILE <lib-file-basename>]
                [FIND_DEBUG_FILE <lib-file-basename>])
 
-  Create an imported library target named ``<lib-target-name>`` by locating its
-  binary files in ``FIND_ROOT_DIR`` for ``RELEASE`` and/or ``DEBUG``, and set
-  the necessary target properties. An aliased target is also created with the
-  name ``<lib-target-name>::<lib-target-name>``.
+  Create an imported library target named ``<PROJECT_NAME>_<lib-target-name>``
+  by locating its binary files in ``FIND_ROOT_DIR`` for ``RELEASE`` and/or
+  ``DEBUG`` configurations, and set the necessary target properties. Note that
+  the logical name of the target ``<target-name>`` is prefixed with
+  ``<PROJECT_NAME>_`` in order to follow best practices. That is also why an
+  aliased target is created with the name ``<PROJECT_NAME>::<lib-target-name>``.
 
   This command combines calls to :command:`directory(FIND_LIB)`,
   :cmake:command:`add_library(IMPORTED) <cmake:command:add_library(imported)>` and
@@ -215,9 +217,10 @@ Usage
 
   An error is raised if more than one file matches or no file is found.
 
-  Once located, an imported target is created using :cmake:command:`add_library(IMPORTED) <cmake:command:add_library(imported)>` and
-  appropriate properties for each available configuration (``RELEASE`` and/or
-  ``DEBUG``) are set, including paths to the binary and import libraries (if
+  Once located, an imported target is created using
+  :cmake:command:`add_library(IMPORTED) <cmake:command:add_library(imported)>`
+  and appropriate properties for each available configuration (``RELEASE`` and/
+  or ``DEBUG``) are set, including paths to the binary and import libraries (if
   applicable), as well as the soname.
 
   The following target properties are configured:
@@ -287,60 +290,61 @@ Usage
   :cmake:module:`SelectLibraryConfigurations <cmake:module:SelectLibraryConfigurations>`
   module.
 
-  This command then returns the following result variables:
+  This command then returns the following result variables, where
+  ``<lib-target-fullname>`` is set to ``<PROJECT_NAME>_<lib-target-name>``:
 
-    ``<lib-target-name>_LIBRARY_RELEASE``
+    ``<lib-target-fullname>_LIBRARY_RELEASE``
       The full absolute path to the ``Release`` build of the library. If no
       file found, its value is set to
-      ``<lib-target-name>_LIBRARY_RELEASE-NOTFOUND``. The variable is undefined
+      ``<lib-target-fullname>_LIBRARY_RELEASE-NOTFOUND``. The variable is undefined
       when the ``FIND_RELEASE_FILE`` argument is not provided.
 
-    ``<lib-target-name>_LIBRARY_DEBUG``
+    ``<lib-target-fullname>_LIBRARY_DEBUG``
       The full absolute path to the ``Debug`` build of the library. If no
       file found, its value is set to
-      ``<lib-target-name>_LIBRARY_DEBUG-NOTFOUND``. The variable is undefined
+      ``<lib-target-fullname>_LIBRARY_DEBUG-NOTFOUND``. The variable is undefined
       when the ``FIND_DEBUG_FILE`` argument is not provided.
 
-    ``<lib-target-name>_IMP_LIBRARY_RELEASE``
+    ``<lib-target-fullname>_IMP_LIBRARY_RELEASE``
       The full absolute path to the ``Release`` import build of the library. If
       no file found, its value is set to
-      ``<lib-target-name>_IMP_LIBRARY_RELEASE-NOTFOUND``. The variable is
+      ``<lib-target-fullname>_IMP_LIBRARY_RELEASE-NOTFOUND``. The variable is
       undefined when the ``FIND_RELEASE_FILE`` argument is not provided.
 
-    ``<lib-target-name>_IMP_LIBRARY_DEBUG``
+    ``<lib-target-fullname>_IMP_LIBRARY_DEBUG``
       The full absolute path to the ``Debug`` import build of the library. If
       no file found, its value is set to
-      ``<lib-target-name>_IMP_LIBRARY_DEBUG-NOTFOUND``. The variable is
+      ``<lib-target-fullname>_IMP_LIBRARY_DEBUG-NOTFOUND``. The variable is
       undefined when the ``FIND_DEBUG_FILE`` argument is not provided.
 
-    ``<lib-target-name>_FOUND_RELEASE``
+    ``<lib-target-fullname>_FOUND_RELEASE``
       Set to true if the ``Release`` library and import library has been found
       successfully, otherwise set to false. To be true, both
-      ``<lib-target-name>_LIBRARY_RELEASE`` and
-      ``<lib-target-name>_IMP_LIBRARY_RELEASE`` must not be set to
+      ``<lib-target-fullname>_LIBRARY_RELEASE`` and
+      ``<lib-target-fullname>_IMP_LIBRARY_RELEASE`` must not be set to
       ``-NOTFOUND``. The variable is undefined when the ``FIND_RELEASE_FILE``
       argument is not provided.
 
-    ``<lib-target-name>_FOUND_DEBUG``
+    ``<lib-target-fullname>_FOUND_DEBUG``
       Set to true if the ``Debug`` library and import library has been found
       successfully, otherwise set to false. To be true, both
-      ``<lib-target-name>_LIBRARY_DEBUG`` and
-      ``<lib-target-name>_IMP_LIBRARY_DEBUG`` must not be set to
+      ``<lib-target-fullname>_LIBRARY_DEBUG`` and
+      ``<lib-target-fullname>_IMP_LIBRARY_DEBUG`` must not be set to
       ``-NOTFOUND``. The variable is undefined when the ``FIND_DEBUG_FILE``
       argument is not provided.
 
-    ``<lib-target-name>_FOUND``
-      Set to false if ``<lib-target-name>_FOUND_RELEASE`` or
-      ``<lib-target-name>_FOUND_DEBUG`` are defined and set to false. Otherwise,
+    ``<lib-target-fullname>_FOUND``
+      Set to false if ``<lib-target-fullname>_FOUND_RELEASE`` or
+      ``<lib-target-fullname>_FOUND_DEBUG`` are defined and set to false. Otherwise,
       set to true.
 
-    ``<lib-target-name>_LIBRARY``
-      The value of ``<lib-target-name>_LIBRARY_RELEASE`` variable if found,
-      otherwise it is set to the value of ``<lib-target-name>_LIBRARY_DEBUG``
+    ``<lib-target-fullname>_LIBRARY``
+      The value of ``<lib-target-fullname>_LIBRARY_RELEASE`` variable if found,
+      otherwise it is set to the value of ``<lib-target-fullname>_LIBRARY_DEBUG``
       variable if found. If both are found, the release library value takes
       precedence. If both are not found, because
-      ``<lib-target-name>_FOUND_RELEASE`` and ``<lib-target-name>_FOUND_DEBUG``
-      are set to false, it is set to value ``<lib-target-name>_LIBRARY-NOTFOUND``.
+      ``<lib-target-fullname>_FOUND_RELEASE`` and ``<lib-target-fullname>_FOUND_DEBUG``
+      are set to false, it is set to value ``<lib-target-fullname>_LIBRARY-NOTFOUND``.
 
       If the :cmake:manual:`CMake Generator <cmake:manual:cmake-generators(7)>`
       in use supports build configurations, then this variable will be a list
@@ -352,15 +356,15 @@ Usage
       use does not support build configurations, then this variable value will
       not contain these keywords.
 
-    ``<lib-target-name>_LIBRARIES``
-      The same value as the ``<lib-target-name>_LIBRARY`` variable.
+    ``<lib-target-fullname>_LIBRARIES``
+      The same value as the ``<lib-target-fullname>_LIBRARY`` variable.
 
-    ``<lib-target-name>_ROOT_DIR``
+    ``<lib-target-fullname>_ROOT_DIR``
       The base directory absolute path where to look for the
-      ``<lib-target-name>`` files. The value is set to the ``FIND_ROOT_DIR``
+      ``<lib-target-fullname>`` files. The value is set to the ``FIND_ROOT_DIR``
       argument.
 
-  No library is added if ``<lib-target-name>_FOUND`` is set to false.
+  No library is added if ``<lib-target-fullname>_FOUND`` is set to false.
 
   Example usage:
 
@@ -588,7 +592,7 @@ Usage
     )
 
     # Set include directories for shared lib
-    dependency(ADD_INCLUDE_DIRECTORIES "my_shared_lib" SET
+    dependency(ADD_INCLUDE_DIRECTORIES "<PROJECT_NAME>_my_shared_lib" SET
       INTERFACE
         "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include/mylib>"
         "$<INSTALL_INTERFACE:include/mylib>"
@@ -601,7 +605,7 @@ Usage
     )
 
     # Set include directories for static lib
-    dependency(ADD_INCLUDE_DIRECTORIES "my_static_lib" SET
+    dependency(ADD_INCLUDE_DIRECTORIES "<PROJECT_NAME>_my_static_lib" SET
       INTERFACE
         "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include/mylib>"
         "$<INSTALL_INTERFACE:include/mylib>"
@@ -695,13 +699,13 @@ Usage
     )
 
     # Set imported location for shared lib
-    dependency(SET_IMPORTED_LOCATION "my_shared_lib"
+    dependency(SET_IMPORTED_LOCATION "<PROJECT_NAME>_my_shared_lib"
       CONFIGURATION RELEASE
       INTERFACE
         "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/mylib_1.11.0.dll>"
         "$<INSTALL_INTERFACE:lib/mylib_1.11.0.dll>"
     )
-    dependency(SET_IMPORTED_LOCATION "my_shared_lib"
+    dependency(SET_IMPORTED_LOCATION "<PROJECT_NAME>_my_shared_lib"
       CONFIGURATION DEBUG
       INTERFACE
         "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/mylibd_1.11.0.dll>"
@@ -709,13 +713,13 @@ Usage
     )
 
     # Set include directories for static lib
-    dependency(SET_IMPORTED_LOCATION "my_static_lib"
+    dependency(SET_IMPORTED_LOCATION "<PROJECT_NAME>_my_static_lib"
       CONFIGURATION RELEASE
       INTERFACE
         "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/mylib_1.11.0.lib>"
         "$<INSTALL_INTERFACE:lib/mylib_1.11.0.lib>"
     )
-    dependency(SET_IMPORTED_LOCATION "my_static_lib"
+    dependency(SET_IMPORTED_LOCATION "<PROJECT_NAME>_my_static_lib"
       CONFIGURATION DEBUG
       INTERFACE
         "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/mylibd_1.11.0.lib>"
@@ -783,7 +787,7 @@ Usage
       FIND_RELEASE_FILE "mylib_1.11.0"
       FIND_DEBUG_FILE "mylibd_1.11.0"
     )
-    dependency(ADD_INCLUDE_DIRECTORIES "my_shared_lib" SET
+    dependency(ADD_INCLUDE_DIRECTORIES "<PROJECT_NAME>_my_shared_lib" SET
       INTERFACE
         "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include/mylib>"
         "$<INSTALL_INTERFACE:include/mylib>"
@@ -794,14 +798,14 @@ Usage
       FIND_RELEASE_FILE "mylib_1.11.0"
       FIND_DEBUG_FILE "mylibd_1.11.0"
     )
-    dependency(ADD_INCLUDE_DIRECTORIES "my_static_lib" SET
+    dependency(ADD_INCLUDE_DIRECTORIES "<PROJECT_NAME>_my_static_lib" SET
       INTERFACE
         "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include/mylib>"
         "$<INSTALL_INTERFACE:include/mylib>"
     )
 
     # Export from Build-Tree
-    dependency(EXPORT "my_shared_lib" "my_static_lib"
+    dependency(EXPORT "<PROJECT_NAME>_my_shared_lib" "<PROJECT_NAME>_my_static_lib"
       BUILD_TREE
       OUTPUT_FILE_NAME "InternalDependencyTargets.cmake"
     )
@@ -813,7 +817,7 @@ Usage
 
     # Exporting from Install-Tree
     set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/install")
-    dependency(EXPORT "my_shared_lib" "my_static_lib"
+    dependency(EXPORT "<PROJECT_NAME>_my_shared_lib" "<PROJECT_NAME>_my_static_lib"
       INSTALL_TREE
       OUTPUT_FILE_NAME "InternalDependencyTargets.cmake"
     )
@@ -937,8 +941,11 @@ macro(_dependency_import)
       OR ("${arg_IMPORT}" STREQUAL ""))
     message(FATAL_ERROR "${current_command} requires the keyword IMPORT to be provided with a non-empty string value!")
   endif()
-  if(TARGET "${arg_IMPORT}")
-    message(FATAL_ERROR "${current_command} requires the target \"${arg_IMPORT}\" does not already exist!")
+  if(TARGET "${PROJECT_NAME}_${arg_IMPORT}")
+    message(FATAL_ERROR "${current_command} requires the target \"${PROJECT_NAME}_${arg_IMPORT}\" does not already exist!")
+  endif()
+  if(TARGET "${PROJECT_NAME}::${arg_IMPORT}")
+    message(FATAL_ERROR "${current_command} requires the aliased target \"${PROJECT_NAME}::${arg_IMPORT}\" does not already exist!")
   endif()
   if((NOT DEFINED arg_TYPE)
       OR (NOT ${arg_TYPE} MATCHES "^(SHARED|STATIC)$"))
@@ -959,17 +966,19 @@ macro(_dependency_import)
     message(FATAL_ERROR "${current_command} requires FIND_DEBUG_FILE to be a non-empty string value!")
   endif()
 
+  set(lib_target_fullname "${PROJECT_NAME}_${arg_IMPORT}")
+  set(lib_target_aliasname "${PROJECT_NAME}::${arg_IMPORT}")
   set(return_vars
-    "${arg_IMPORT}_LIBRARY_RELEASE"
-    "${arg_IMPORT}_LIBRARY_DEBUG"
-    "${arg_IMPORT}_IMP_LIBRARY_RELEASE"
-    "${arg_IMPORT}_IMP_LIBRARY_DEBUG"
-    "${arg_IMPORT}_LIBRARY"
-    "${arg_IMPORT}_LIBRARIES"
-    "${arg_IMPORT}_ROOT_DIR"
-    "${arg_IMPORT}_FOUND"
-    "${arg_IMPORT}_FOUND_RELEASE"
-    "${arg_IMPORT}_FOUND_DEBUG"
+    "${lib_target_fullname}_LIBRARY_RELEASE"
+    "${lib_target_fullname}_LIBRARY_DEBUG"
+    "${lib_target_fullname}_IMP_LIBRARY_RELEASE"
+    "${lib_target_fullname}_IMP_LIBRARY_DEBUG"
+    "${lib_target_fullname}_LIBRARY"
+    "${lib_target_fullname}_LIBRARIES"
+    "${lib_target_fullname}_ROOT_DIR"
+    "${lib_target_fullname}_FOUND"
+    "${lib_target_fullname}_FOUND_RELEASE"
+    "${lib_target_fullname}_FOUND_DEBUG"
   )
 
   # Find and get library and import library each build type (RELEASE or DEBUG)
@@ -979,9 +988,9 @@ macro(_dependency_import)
       continue()
     endif()
 
-    set(${arg_IMPORT}_FOUND_${build_type} false)
-    directory(FIND_LIB ${arg_IMPORT}_LIBRARY_${build_type}
-      FIND_IMPLIB ${arg_IMPORT}_IMP_LIBRARY_${build_type}
+    set(${lib_target_fullname}_FOUND_${build_type} false)
+    directory(FIND_LIB ${lib_target_fullname}_LIBRARY_${build_type}
+      FIND_IMPLIB ${lib_target_fullname}_IMP_LIBRARY_${build_type}
       NAME "${arg_FIND_${build_type}_FILE}"
       "${arg_TYPE}"
       RELATIVE false
@@ -991,14 +1000,14 @@ macro(_dependency_import)
     # implib is always equals to `implib-NOTFOUND` for other cases, so the value is
     # replaced to empty only for these other cases.
     if(NOT (WIN32 AND ("${arg_TYPE}" STREQUAL "SHARED")))
-      if(NOT ${arg_IMPORT}_IMP_LIBRARY_${build_type})
-        set(${arg_IMPORT}_IMP_LIBRARY_${build_type} "")
+      if(NOT ${lib_target_fullname}_IMP_LIBRARY_${build_type})
+        set(${lib_target_fullname}_IMP_LIBRARY_${build_type} "")
       endif()
     endif()
 
-    if((NOT "${${arg_IMPORT}_LIBRARY_${build_type}}" MATCHES "-NOTFOUND$")
-        AND (NOT "${${arg_IMPORT}_IMP_LIBRARY_${build_type}}" MATCHES "-NOTFOUND$"))
-      set(${arg_IMPORT}_FOUND_${build_type} true)
+    if((NOT "${${lib_target_fullname}_LIBRARY_${build_type}}" MATCHES "-NOTFOUND$")
+        AND (NOT "${${lib_target_fullname}_IMP_LIBRARY_${build_type}}" MATCHES "-NOTFOUND$"))
+      set(${lib_target_fullname}_FOUND_${build_type} true)
     endif()
   endforeach()
 
@@ -1006,41 +1015,41 @@ macro(_dependency_import)
   # configurations. This code copies the behavior of the CMake module
   # `SelectLibraryConfigurations`.)
   get_property(is_multi_config GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
-  if(${arg_IMPORT}_FOUND_RELEASE AND ${arg_IMPORT}_FOUND_DEBUG
-      AND (NOT "${${arg_IMPORT}_LIBRARY_RELEASE}" STREQUAL "${${arg_IMPORT}_LIBRARY_DEBUG}")
+  if(${lib_target_fullname}_FOUND_RELEASE AND ${lib_target_fullname}_FOUND_DEBUG
+      AND (NOT "${${lib_target_fullname}_LIBRARY_RELEASE}" STREQUAL "${${lib_target_fullname}_LIBRARY_DEBUG}")
       AND (is_multi_config OR CMAKE_BUILD_TYPE))
     # If the generator is multi-config or if CMAKE_BUILD_TYPE is set for
     # single-config generators, set optimized and debug libraries
-    set(${arg_IMPORT}_LIBRARY "")
-    list(APPEND ${arg_IMPORT}_LIBRARY optimized "${${arg_IMPORT}_LIBRARY_RELEASE}")
-    list(APPEND ${arg_IMPORT}_LIBRARY debug "${${arg_IMPORT}_LIBRARY_DEBUG}")
-  elseif(${arg_IMPORT}_FOUND_RELEASE)
-    set(${arg_IMPORT}_LIBRARY "${${arg_IMPORT}_LIBRARY_RELEASE}")
-  elseif(${arg_IMPORT}_FOUND_DEBUG)
-    set(${arg_IMPORT}_LIBRARY "${${arg_IMPORT}_LIBRARY_DEBUG}")
+    set(${lib_target_fullname}_LIBRARY "")
+    list(APPEND ${lib_target_fullname}_LIBRARY optimized "${${lib_target_fullname}_LIBRARY_RELEASE}")
+    list(APPEND ${lib_target_fullname}_LIBRARY debug "${${lib_target_fullname}_LIBRARY_DEBUG}")
+  elseif(${lib_target_fullname}_FOUND_RELEASE)
+    set(${lib_target_fullname}_LIBRARY "${${lib_target_fullname}_LIBRARY_RELEASE}")
+  elseif(${lib_target_fullname}_FOUND_DEBUG)
+    set(${lib_target_fullname}_LIBRARY "${${lib_target_fullname}_LIBRARY_DEBUG}")
   else()
-    set(${arg_IMPORT}_LIBRARY "${arg_IMPORT}_LIBRARY-NOTFOUND")
+    set(${lib_target_fullname}_LIBRARY "${lib_target_fullname}_LIBRARY-NOTFOUND")
   endif()
 
-  set(${arg_IMPORT}_ROOT_DIR "${arg_FIND_ROOT_DIR}")
-  set(${arg_IMPORT}_LIBRARIES "${${arg_IMPORT}_LIBRARY}")
-  if(DEFINED ${arg_IMPORT}_FOUND_RELEASE AND NOT ${${arg_IMPORT}_FOUND_RELEASE}
-      OR DEFINED ${arg_IMPORT}_FOUND_DEBUG AND NOT ${${arg_IMPORT}_FOUND_DEBUG})
-    set(${arg_IMPORT}_FOUND false)
+  set(${lib_target_fullname}_ROOT_DIR "${arg_FIND_ROOT_DIR}")
+  set(${lib_target_fullname}_LIBRARIES "${${lib_target_fullname}_LIBRARY}")
+  if((DEFINED ${lib_target_fullname}_FOUND_RELEASE AND NOT ${${lib_target_fullname}_FOUND_RELEASE})
+      OR (DEFINED ${lib_target_fullname}_FOUND_DEBUG AND NOT ${${lib_target_fullname}_FOUND_DEBUG}))
+    set(${lib_target_fullname}_FOUND false)
   else()
-    set(${arg_IMPORT}_FOUND true)
+    set(${lib_target_fullname}_FOUND true)
   endif()
 
   # Exit the function if no lib or implib has been found for one or both build
   # types
-  if(NOT ${arg_IMPORT}_FOUND)
+  if(NOT ${lib_target_fullname}_FOUND)
     return(PROPAGATE ${return_vars})
   endif()
 
   # Create target
-  add_library("${arg_IMPORT}" "${arg_TYPE}" IMPORTED)
-  add_library("${arg_IMPORT}::${arg_IMPORT}" ALIAS "${arg_IMPORT}")
-  set_target_properties("${arg_IMPORT}" PROPERTIES
+  add_library("${lib_target_fullname}" "${arg_TYPE}" IMPORTED)
+  add_library("${lib_target_aliasname}" ALIAS "${lib_target_fullname}")
+  set_target_properties("${lib_target_fullname}" PROPERTIES
     # For usage from source-tree
     INTERFACE_INCLUDE_DIRECTORIES ""
     # Custom property for usage from build-tree
@@ -1052,23 +1061,23 @@ macro(_dependency_import)
   # Add library properties for each build type (RELEASE or DEBUG)
   foreach(build_type IN ITEMS "RELEASE" "DEBUG")
     # Skip the loop if lib or implib is not found or build type is not set
-    if(NOT ${arg_IMPORT}_FOUND_${build_type})
+    if(NOT ${lib_target_fullname}_FOUND_${build_type})
       continue()
     endif()
 
-    cmake_path(GET ${arg_IMPORT}_LIBRARY_${build_type} FILENAME lib_file_name)
-    set_target_properties("${arg_IMPORT}" PROPERTIES
+    cmake_path(GET ${lib_target_fullname}_LIBRARY_${build_type} FILENAME lib_file_name)
+    set_target_properties("${lib_target_fullname}" PROPERTIES
       # Only for '.so|.dll|.a|.lib'. For usage from source-tree
-      IMPORTED_LOCATION_${build_type} "${${arg_IMPORT}_LIBRARY_${build_type}}"
+      IMPORTED_LOCATION_${build_type} "${${lib_target_fullname}_LIBRARY_${build_type}}"
       # Custom property for usage from build-tree
       IMPORTED_LOCATION_BUILD_${build_type} ""
       # Custom property for usage from install-tree
       IMPORTED_LOCATION_INSTALL_${build_type} ""
       # Only for '.dll.a|.a|.lib' on DLL platforms
-      IMPORTED_IMPLIB_${build_type} "${${arg_IMPORT}_IMP_LIBRARY_${build_type}}"
+      IMPORTED_IMPLIB_${build_type} "${${lib_target_fullname}_IMP_LIBRARY_${build_type}}"
       IMPORTED_SONAME_${build_type} "${lib_file_name}"
     )
-    set_property(TARGET "${arg_IMPORT}"
+    set_property(TARGET "${lib_target_fullname}"
       APPEND PROPERTY IMPORTED_CONFIGURATIONS "${build_type}"
     )
   endforeach()

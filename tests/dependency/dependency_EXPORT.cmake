@@ -33,6 +33,10 @@ function(${CMAKETEST_TEST})
   import_full_mock_lib("imp_shared_mock_lib" "shared_mock_lib${build_type_suffix}"
     SHARED SKIP_IF_EXISTS)
 
+    # Set global test variables
+  set(static_target_fullname "${PROJECT_NAME}_imp_static_mock_lib")
+  set(shared_target_fullname "${PROJECT_NAME}_imp_shared_mock_lib")
+
   # Functionalities checking [!! OUTDATED !!]
   # Since dependency() generates the “part” files created during the generation phase and the final file during the build phase from the “part” files created during the generation phase, it is not possible to test the results of several calls to dependency() during the test phase. Therefore, tests on result are commented.
   # ct_add_section(NAME "export_from_build_tree")
@@ -370,7 +374,7 @@ function(${CMAKETEST_TEST})
 
   ct_add_section(NAME "throws_if_arg_target_is_twice_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    dependency(EXPORT "imp_static_mock_lib" "imp_static_mock_lib"
+    dependency(EXPORT "${static_target_fullname}" "${static_target_fullname}"
       BUILD_TREE
       OUTPUT_FILE "ImpMockLibTargets.cmake"
     )
@@ -378,11 +382,11 @@ function(${CMAKETEST_TEST})
 
   ct_add_section(NAME "throws_if_arg_target_is_twice_2" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    dependency(EXPORT "imp_static_mock_lib"
+    dependency(EXPORT "${static_target_fullname}"
       BUILD_TREE
       OUTPUT_FILE "ImpMockLibTargets.cmake"
     )
-    dependency(EXPORT "imp_static_mock_lib"
+    dependency(EXPORT "${static_target_fullname}"
       APPEND
       BUILD_TREE
       OUTPUT_FILE "ImpMockLibTargets.cmake"
@@ -391,7 +395,7 @@ function(${CMAKETEST_TEST})
 
   ct_add_section(NAME "throws_if_arg_target_does_not_exist" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    dependency(EXPORT "imp_static_mock_lib" "unknown_lib"
+    dependency(EXPORT "${static_target_fullname}" "unknown_lib"
       BUILD_TREE
       OUTPUT_FILE "ImpMockLibTargets.cmake"
     )
@@ -408,11 +412,11 @@ function(${CMAKETEST_TEST})
 
   ct_add_section(NAME "throws_if_arg_append_is_missing_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    dependency(EXPORT "imp_static_mock_lib"
+    dependency(EXPORT "${static_target_fullname}"
       BUILD_TREE
       OUTPUT_FILE "ImpMockLibTargets.cmake"
     )
-    dependency(EXPORT "imp_shared_mock_lib"
+    dependency(EXPORT "${shared_target_fullname}"
       BUILD_TREE
       OUTPUT_FILE "ImpMockLibTargets.cmake"
     )
@@ -420,12 +424,12 @@ function(${CMAKETEST_TEST})
 
   ct_add_section(NAME "throws_if_arg_append_is_missing_2" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    dependency(EXPORT "imp_static_mock_lib"
+    dependency(EXPORT "${static_target_fullname}"
       APPEND
       BUILD_TREE
       OUTPUT_FILE "ImpMockLibTargets.cmake"
     )
-    dependency(EXPORT "imp_shared_mock_lib"
+    dependency(EXPORT "${shared_target_fullname}"
       BUILD_TREE
       OUTPUT_FILE "ImpMockLibTargets.cmake"
     )
@@ -433,7 +437,7 @@ function(${CMAKETEST_TEST})
 
   ct_add_section(NAME "throws_if_arg_tree_type_is_missing_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    dependency(EXPORT "imp_static_mock_lib" "imp_shared_mock_lib"
+    dependency(EXPORT "${static_target_fullname}" "${shared_target_fullname}"
       APPEND
       OUTPUT_FILE "ImpMockLibTargets.cmake"
     )
@@ -441,7 +445,7 @@ function(${CMAKETEST_TEST})
 
   ct_add_section(NAME "throws_if_arg_tree_type_is_twice" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    dependency(EXPORT "imp_static_mock_lib" "imp_shared_mock_lib"
+    dependency(EXPORT "${static_target_fullname}" "${shared_target_fullname}"
       APPEND
       BUILD_TREE INSTALL_TREE
       OUTPUT_FILE "ImpMockLibTargets.cmake"
@@ -450,7 +454,7 @@ function(${CMAKETEST_TEST})
 
   ct_add_section(NAME "throws_if_arg_output_file_is_missing_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    dependency(EXPORT "imp_static_mock_lib" "imp_shared_mock_lib"
+    dependency(EXPORT "${static_target_fullname}" "${shared_target_fullname}"
       APPEND
       BUILD_TREE
     )
@@ -458,7 +462,7 @@ function(${CMAKETEST_TEST})
 
   ct_add_section(NAME "throws_if_arg_output_file_is_missing_2" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    dependency(EXPORT "imp_static_mock_lib" "imp_shared_mock_lib"
+    dependency(EXPORT "${static_target_fullname}" "${shared_target_fullname}"
       APPEND
       BUILD_TREE
       OUTPUT_FILE
@@ -466,7 +470,7 @@ function(${CMAKETEST_TEST})
   endfunction()
   ct_add_section(NAME "throws_if_arg_output_file_is_missing_3" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    dependency(EXPORT "imp_static_mock_lib" "imp_shared_mock_lib"
+    dependency(EXPORT "${static_target_fullname}" "${shared_target_fullname}"
       APPEND
       BUILD_TREE
       OUTPUT_FILE ""
@@ -476,7 +480,7 @@ function(${CMAKETEST_TEST})
   ct_add_section(NAME "throws_if_build_type_var_is_not_set_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     unset(CMAKE_BUILD_TYPE)
-    dependency(EXPORT "imp_static_mock_lib"
+    dependency(EXPORT "${static_target_fullname}"
       BUILD_TREE
       OUTPUT_FILE "ImpMockLibTargets.cmake"
     )
@@ -485,7 +489,7 @@ function(${CMAKETEST_TEST})
   ct_add_section(NAME "throws_if_build_type_var_is_not_set_2" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
     set(CMAKE_BUILD_TYPE "")
-    dependency(EXPORT "imp_static_mock_lib"
+    dependency(EXPORT "${static_target_fullname}"
       BUILD_TREE
       OUTPUT_FILE "ImpMockLibTargets.cmake"
     )

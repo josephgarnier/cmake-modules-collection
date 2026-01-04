@@ -20,37 +20,37 @@ function(${CMAKETEST_TEST})
   add_mock_lib("new_static_mock_lib" STATIC SKIP_IF_EXISTS)
   add_mock_lib("new_shared_mock_lib" SHARED SKIP_IF_EXISTS)
 
-  # To call before each test
-  macro(_set_up_test)
-    # Reset properties used by `binary_target(ADD_PRECOMPILE_HEADER)`
-    set_property(TARGET "new_static_mock_lib" PROPERTY PRECOMPILE_HEADERS)
-    set_property(TARGET "new_static_mock_lib" PROPERTY INTERFACE_PRECOMPILE_HEADERS)
-
-    set_property(TARGET "new_shared_mock_lib" PROPERTY PRECOMPILE_HEADERS)
-    set_property(TARGET "new_shared_mock_lib" PROPERTY INTERFACE_PRECOMPILE_HEADERS)
-  endmacro()
-
   # Set global test variables
   set(input_pch_header "${TESTS_DATA_DIR}/include/include_pch.h")
+  set(new_static_mock_lib "${PROJECT_NAME}_new_static_mock_lib")
+  set(new_shared_mock_lib "${PROJECT_NAME}_new_shared_mock_lib")
+
+  # To call before each test
+  macro(_set_up_test mock_target)
+    # Reset properties used by `binary_target(ADD_PRECOMPILE_HEADER)`
+    set_property(TARGET "${mock_target}" PROPERTY PRECOMPILE_HEADERS)
+    set_property(TARGET "${mock_target}" PROPERTY INTERFACE_PRECOMPILE_HEADERS)
+  endmacro()
 
   # Functionalities checking
   ct_add_section(NAME "add_pch_header_file")
   function(${CMAKETEST_SECTION})
-    _set_up_test()
-    binary_target(ADD_PRECOMPILE_HEADER "new_static_mock_lib" HEADER_FILE "${input_pch_header}")
-    get_target_property(output_bin_property "new_static_mock_lib"
+    _set_up_test("${new_static_mock_lib}")
+    binary_target(ADD_PRECOMPILE_HEADER "${new_static_mock_lib}" HEADER_FILE "${input_pch_header}")
+    get_target_property(output_bin_property "${new_static_mock_lib}"
       PRECOMPILE_HEADERS)
     ct_assert_string(output_bin_property)
     ct_assert_equal(output_bin_property "${input_pch_header}")
-    ct_assert_target_does_not_have_property("new_static_mock_lib"
+    ct_assert_target_does_not_have_property("${new_static_mock_lib}"
       INTERFACE_PRECOMPILE_HEADERS)
 
-    binary_target(ADD_PRECOMPILE_HEADER "new_shared_mock_lib" HEADER_FILE "${input_pch_header}")
-    get_target_property(output_bin_property "new_shared_mock_lib"
+    _set_up_test("${new_shared_mock_lib}")
+    binary_target(ADD_PRECOMPILE_HEADER "${new_shared_mock_lib}" HEADER_FILE "${input_pch_header}")
+    get_target_property(output_bin_property "${new_shared_mock_lib}"
       PRECOMPILE_HEADERS)
     ct_assert_string(output_bin_property)
     ct_assert_equal(output_bin_property "${input_pch_header}")
-    ct_assert_target_does_not_have_property("new_shared_mock_lib"
+    ct_assert_target_does_not_have_property("${new_shared_mock_lib}"
       INTERFACE_PRECOMPILE_HEADERS)
   endfunction()
 
@@ -72,26 +72,26 @@ function(${CMAKETEST_TEST})
 
   ct_add_section(NAME "throws_if_arg_header_file_is_missing_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    binary_target(ADD_PRECOMPILE_HEADER "new_static_mock_lib")
+    binary_target(ADD_PRECOMPILE_HEADER "${new_shared_mock_lib}")
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_header_file_is_missing_2" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    binary_target(ADD_PRECOMPILE_HEADER "new_static_mock_lib" HEADER_FILE)
+    binary_target(ADD_PRECOMPILE_HEADER "${new_shared_mock_lib}" HEADER_FILE)
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_header_file_is_missing_3" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    binary_target(ADD_PRECOMPILE_HEADER "new_static_mock_lib" HEADER_FILE "")
+    binary_target(ADD_PRECOMPILE_HEADER "${new_shared_mock_lib}" HEADER_FILE "")
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_header_file_is_not_a_dir" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    binary_target(ADD_PRECOMPILE_HEADER "new_static_mock_lib" HEADER_FILE "${TESTS_DATA_DIR}")
+    binary_target(ADD_PRECOMPILE_HEADER "${new_shared_mock_lib}" HEADER_FILE "${TESTS_DATA_DIR}")
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_header_file_does_not_exist" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    binary_target(ADD_PRECOMPILE_HEADER "new_static_mock_lib" HEADER_FILE "${TESTS_DATA_DIR}/fake/directory/file.cpp")
+    binary_target(ADD_PRECOMPILE_HEADER "${new_shared_mock_lib}" HEADER_FILE "${TESTS_DATA_DIR}/fake/directory/file.cpp")
   endfunction()
 endfunction()

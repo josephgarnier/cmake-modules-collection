@@ -18,6 +18,7 @@
 ct_add_test(NAME "test_dependency_import_operation")
 function(${CMAKETEST_TEST})
   include(Dependency)
+  include(${TESTS_DATA_DIR}/cmake/Common.cmake)
   string(TOUPPER "${CMAKE_BUILD_TYPE}" cmake_build_type_upper)
 
   # To call before each test
@@ -38,7 +39,9 @@ function(${CMAKETEST_TEST})
   # Functionalities checking
   ct_add_section(NAME "import_static_lib")
   function(${CMAKETEST_SECTION})
-    set(lib_target_name "imp_static_mock_lib-1")
+    set(lib_target_name "imp_static_mock_lib_1")
+    set(lib_target_fullname "${PROJECT_NAME}_${lib_target_name}")
+    set(lib_target_aliasname "${PROJECT_NAME}::${lib_target_name}")
     _set_up_test("${lib_target_name}")
     set(lib_file_basename "")
     set(dep_import_find_args "")
@@ -59,81 +62,84 @@ function(${CMAKETEST_TEST})
     )
     cmake_path(GET expected_lib_file_path FILENAME expected_lib_file_name)
 
-    ct_assert_target_does_not_exist("${lib_target_name}")
+    ct_assert_target_does_not_exist("${lib_target_fullname}")
+    ct_assert_target_does_not_exist("${lib_target_aliasname}")
     dependency(IMPORT "${lib_target_name}"
       TYPE STATIC
       FIND_ROOT_DIR "${TESTS_DATA_DIR}/bin"
       ${dep_import_find_args}
     )
-    ct_assert_target_exists("${lib_target_name}")
-    ct_assert_target_exists("${lib_target_name}::${lib_target_name}")
-    ct_assert_target_does_not_have_property("${lib_target_name}"
+    ct_assert_target_exists("${lib_target_fullname}")
+    ct_assert_target_exists("${lib_target_aliasname}")
+    ct_assert_target_does_not_have_property("${lib_target_fullname}"
       INTERFACE_INCLUDE_DIRECTORIES)
-    get_property(output_lib_property TARGET "${lib_target_name}"
+    get_property(output_lib_property TARGET "${lib_target_fullname}"
       PROPERTY INTERFACE_INCLUDE_DIRECTORIES SET)
     ct_assert_true(output_lib_property)
-    ct_assert_target_does_not_have_property("${lib_target_name}"
+    ct_assert_target_does_not_have_property("${lib_target_fullname}"
       INTERFACE_INCLUDE_DIRECTORIES_BUILD)
-    get_property(output_lib_property TARGET "${lib_target_name}"
+    get_property(output_lib_property TARGET "${lib_target_fullname}"
       PROPERTY INTERFACE_INCLUDE_DIRECTORIES_BUILD SET)
     ct_assert_true(output_lib_property)
-    ct_assert_target_does_not_have_property("${lib_target_name}"
+    ct_assert_target_does_not_have_property("${lib_target_fullname}"
       INTERFACE_INCLUDE_DIRECTORIES_INSTALL)
-    get_property(output_lib_property TARGET "${lib_target_name}"
+    get_property(output_lib_property TARGET "${lib_target_fullname}"
       PROPERTY INTERFACE_INCLUDE_DIRECTORIES_INSTALL SET)
     ct_assert_true(output_lib_property)
-    get_target_property(output_lib_property "${lib_target_name}"
+    get_target_property(output_lib_property "${lib_target_fullname}"
       IMPORTED_LOCATION_${cmake_build_type_upper})
     ct_assert_equal(output_lib_property "${expected_lib_file_path}")
-    ct_assert_target_does_not_have_property("${lib_target_name}"
+    ct_assert_target_does_not_have_property("${lib_target_fullname}"
       IMPORTED_LOCATION_BUILD_${cmake_build_type_upper})
-    get_property(output_lib_property TARGET "${lib_target_name}"
+    get_property(output_lib_property TARGET "${lib_target_fullname}"
       PROPERTY IMPORTED_LOCATION_BUILD_${cmake_build_type_upper} SET)
     ct_assert_true(output_lib_property)
-    ct_assert_target_does_not_have_property("${lib_target_name}"
+    ct_assert_target_does_not_have_property("${lib_target_fullname}"
       IMPORTED_LOCATION_INSTALL_${cmake_build_type_upper})
-    get_property(output_lib_property TARGET "${lib_target_name}"
+    get_property(output_lib_property TARGET "${lib_target_fullname}"
       PROPERTY IMPORTED_LOCATION_INSTALL_${cmake_build_type_upper} SET)
     ct_assert_true(output_lib_property)
-    ct_assert_target_does_not_have_property("${lib_target_name}"
+    ct_assert_target_does_not_have_property("${lib_target_fullname}"
       IMPORTED_IMPLIB_${cmake_build_type_upper})
-    get_target_property(output_lib_property "${lib_target_name}"
+    get_target_property(output_lib_property "${lib_target_fullname}"
       IMPORTED_IMPLIB_${cmake_build_type_upper})
     ct_assert_equal(output_lib_property "")
-    get_property(output_lib_property TARGET "${lib_target_name}"
+    get_property(output_lib_property TARGET "${lib_target_fullname}"
       PROPERTY IMPORTED_IMPLIB_${cmake_build_type_upper} SET)
     ct_assert_true(output_lib_property)
-    get_target_property(output_lib_property "${lib_target_name}"
+    get_target_property(output_lib_property "${lib_target_fullname}"
       IMPORTED_SONAME_${cmake_build_type_upper})
     ct_assert_equal(output_lib_property "${expected_lib_file_name}")
-    get_target_property(output_lib_property "${lib_target_name}"
+    get_target_property(output_lib_property "${lib_target_fullname}"
       IMPORTED_CONFIGURATIONS)
     ct_assert_equal(output_lib_property "${cmake_build_type_upper}")
 
     if("${cmake_build_type_upper}" STREQUAL "RELEASE")
-      ct_assert_equal("${lib_target_name}_LIBRARY_RELEASE" "${expected_lib_file_path}")
-      ct_assert_not_defined(${lib_target_name}_LIBRARY_DEBUG)
-      ct_assert_equal("${lib_target_name}_IMP_LIBRARY_RELEASE" "")
-      ct_assert_not_defined(${lib_target_name}_IMP_LIBRARY_DEBUG)
-      ct_assert_equal("${lib_target_name}_FOUND_RELEASE" true)
-      ct_assert_not_defined(${lib_target_name}_FOUND_DEBUG)
+      ct_assert_equal("${lib_target_fullname}_LIBRARY_RELEASE" "${expected_lib_file_path}")
+      ct_assert_not_defined(${lib_target_fullname}_LIBRARY_DEBUG)
+      ct_assert_equal("${lib_target_fullname}_IMP_LIBRARY_RELEASE" "")
+      ct_assert_not_defined(${lib_target_fullname}_IMP_LIBRARY_DEBUG)
+      ct_assert_equal("${lib_target_fullname}_FOUND_RELEASE" true)
+      ct_assert_not_defined(${lib_target_fullname}_FOUND_DEBUG)
     elseif("${cmake_build_type_upper}" STREQUAL "DEBUG")
-      ct_assert_not_defined(${lib_target_name}_LIBRARY_RELEASE)
-      ct_assert_equal("${lib_target_name}_LIBRARY_DEBUG" "${expected_lib_file_path}")
-      ct_assert_not_defined(${lib_target_name}_IMP_LIBRARY_RELEASE)
-      ct_assert_equal("${lib_target_name}_IMP_LIBRARY_DEBUG" "")
-      ct_assert_not_defined(${lib_target_name}_FOUND_RELEASE)
-      ct_assert_equal("${lib_target_name}_FOUND_DEBUG" true)
+      ct_assert_not_defined(${lib_target_fullname}_LIBRARY_RELEASE)
+      ct_assert_equal("${lib_target_fullname}_LIBRARY_DEBUG" "${expected_lib_file_path}")
+      ct_assert_not_defined(${lib_target_fullname}_IMP_LIBRARY_RELEASE)
+      ct_assert_equal("${lib_target_fullname}_IMP_LIBRARY_DEBUG" "")
+      ct_assert_not_defined(${lib_target_fullname}_FOUND_RELEASE)
+      ct_assert_equal("${lib_target_fullname}_FOUND_DEBUG" true)
     endif()
-    ct_assert_equal("${lib_target_name}_LIBRARY" "${expected_lib_file_path}")
-    ct_assert_equal("${lib_target_name}_LIBRARIES" "${expected_lib_file_path}")
-    ct_assert_equal("${lib_target_name}_ROOT_DIR" "${TESTS_DATA_DIR}/bin")
-    ct_assert_equal("${lib_target_name}_FOUND" true)
+    ct_assert_equal("${lib_target_fullname}_LIBRARY" "${expected_lib_file_path}")
+    ct_assert_equal("${lib_target_fullname}_LIBRARIES" "${expected_lib_file_path}")
+    ct_assert_equal("${lib_target_fullname}_ROOT_DIR" "${TESTS_DATA_DIR}/bin")
+    ct_assert_equal("${lib_target_fullname}_FOUND" true)
   endfunction()
 
   ct_add_section(NAME "import_nonexistent_static_lib_and_implib")
   function(${CMAKETEST_SECTION})
-    set(lib_target_name "imp_static_mock_lib-2")
+    set(lib_target_name "imp_static_mock_lib_2")
+    set(lib_target_fullname "${PROJECT_NAME}_${lib_target_name}")
+    set(lib_target_aliasname "${PROJECT_NAME}::${lib_target_name}")
     _set_up_test("${lib_target_name}")
     set(lib_file_basename "")
     set(dep_import_find_args "")
@@ -153,39 +159,42 @@ function(${CMAKETEST_TEST})
       ROOT_DIR "${TESTS_DATA_DIR}/bin"
     )
 
-    ct_assert_target_does_not_exist("${lib_target_name}")
+    ct_assert_target_does_not_exist("${lib_target_fullname}")
+    ct_assert_target_does_not_exist("${lib_target_aliasname}")
     dependency(IMPORT "${lib_target_name}"
       TYPE STATIC
       FIND_ROOT_DIR "${TESTS_DATA_DIR}/bin"
       ${dep_import_find_args}
     )
-    ct_assert_target_does_not_exist("${lib_target_name}")
-    ct_assert_target_does_not_exist("${lib_target_name}::${lib_target_name}")
+    ct_assert_target_does_not_exist("${lib_target_fullname}")
+    ct_assert_target_does_not_exist("${lib_target_aliasname}")
 
     if("${cmake_build_type_upper}" STREQUAL "RELEASE")
-      ct_assert_equal("${lib_target_name}_LIBRARY_RELEASE" "${lib_target_name}_LIBRARY_RELEASE-NOTFOUND")
-      ct_assert_not_defined(${lib_target_name}_LIBRARY_DEBUG)
-      ct_assert_equal("${lib_target_name}_IMP_LIBRARY_RELEASE" "")
-      ct_assert_not_defined(${lib_target_name}_IMP_LIBRARY_DEBUG)
-      ct_assert_equal("${lib_target_name}_FOUND_RELEASE" false)
-      ct_assert_not_defined(${lib_target_name}_FOUND_DEBUG)
+      ct_assert_equal("${lib_target_fullname}_LIBRARY_RELEASE" "${lib_target_fullname}_LIBRARY_RELEASE-NOTFOUND")
+      ct_assert_not_defined(${lib_target_fullname}_LIBRARY_DEBUG)
+      ct_assert_equal("${lib_target_fullname}_IMP_LIBRARY_RELEASE" "")
+      ct_assert_not_defined(${lib_target_fullname}_IMP_LIBRARY_DEBUG)
+      ct_assert_equal("${lib_target_fullname}_FOUND_RELEASE" false)
+      ct_assert_not_defined(${lib_target_fullname}_FOUND_DEBUG)
     elseif("${cmake_build_type_upper}" STREQUAL "DEBUG")
-      ct_assert_not_defined(${lib_target_name}_LIBRARY_RELEASE)
-      ct_assert_equal("${lib_target_name}_LIBRARY_DEBUG" "${lib_target_name}_LIBRARY_DEBUG-NOTFOUND")
-      ct_assert_not_defined(${lib_target_name}_IMP_LIBRARY_RELEASE)
-      ct_assert_equal("${lib_target_name}_IMP_LIBRARY_DEBUG" "")
-      ct_assert_not_defined(${lib_target_name}_FOUND_RELEASE)
-      ct_assert_equal("${lib_target_name}_FOUND_DEBUG" false)
+      ct_assert_not_defined(${lib_target_fullname}_LIBRARY_RELEASE)
+      ct_assert_equal("${lib_target_fullname}_LIBRARY_DEBUG" "${lib_target_fullname}_LIBRARY_DEBUG-NOTFOUND")
+      ct_assert_not_defined(${lib_target_fullname}_IMP_LIBRARY_RELEASE)
+      ct_assert_equal("${lib_target_fullname}_IMP_LIBRARY_DEBUG" "")
+      ct_assert_not_defined(${lib_target_fullname}_FOUND_RELEASE)
+      ct_assert_equal("${lib_target_fullname}_FOUND_DEBUG" false)
     endif()
-    ct_assert_equal("${lib_target_name}_LIBRARY" "${lib_target_name}_LIBRARY-NOTFOUND")
-    ct_assert_equal("${lib_target_name}_LIBRARIES" "${lib_target_name}_LIBRARY-NOTFOUND")
-    ct_assert_equal("${lib_target_name}_ROOT_DIR" "${TESTS_DATA_DIR}/bin")
-    ct_assert_equal("${lib_target_name}_FOUND" false)
+    ct_assert_equal("${lib_target_fullname}_LIBRARY" "${lib_target_fullname}_LIBRARY-NOTFOUND")
+    ct_assert_equal("${lib_target_fullname}_LIBRARIES" "${lib_target_fullname}_LIBRARY-NOTFOUND")
+    ct_assert_equal("${lib_target_fullname}_ROOT_DIR" "${TESTS_DATA_DIR}/bin")
+    ct_assert_equal("${lib_target_fullname}_FOUND" false)
   endfunction()
 
   ct_add_section(NAME "import_nonexistent_static_lib")
   function(${CMAKETEST_SECTION})
-    set(lib_target_name "imp_static_mock_lib-3")
+    set(lib_target_name "imp_static_mock_lib_3")
+    set(lib_target_fullname "${PROJECT_NAME}_${lib_target_name}")
+    set(lib_target_aliasname "${PROJECT_NAME}::${lib_target_name}")
     _set_up_test("${lib_target_name}")
     set(lib_file_basename "")
     set(dep_import_find_args "")
@@ -211,40 +220,43 @@ function(${CMAKETEST_TEST})
       ROOT_DIR "${TESTS_DATA_DIR}/bin_import_nonexistent_static_lib"
     )
 
-    ct_assert_target_does_not_exist("${lib_target_name}")
+    ct_assert_target_does_not_exist("${lib_target_fullname}")
+    ct_assert_target_does_not_exist("${lib_target_aliasname}")
     dependency(IMPORT "${lib_target_name}"
       TYPE STATIC
       FIND_ROOT_DIR "${TESTS_DATA_DIR}/bin_import_nonexistent_static_lib"
       ${dep_import_find_args}
     )
-    ct_assert_target_does_not_exist("${lib_target_name}")
-    ct_assert_target_does_not_exist("${lib_target_name}::${lib_target_name}")
+    ct_assert_target_does_not_exist("${lib_target_fullname}")
+    ct_assert_target_does_not_exist("${lib_target_aliasname}")
 
     if("${cmake_build_type_upper}" STREQUAL "RELEASE")
-      ct_assert_equal("${lib_target_name}_LIBRARY_RELEASE" "${lib_target_name}_LIBRARY_RELEASE-NOTFOUND")
-      ct_assert_not_defined(${lib_target_name}_LIBRARY_DEBUG)
-      ct_assert_equal("${lib_target_name}_IMP_LIBRARY_RELEASE" "")
-      ct_assert_not_defined(${lib_target_name}_IMP_LIBRARY_DEBUG)
-      ct_assert_equal("${lib_target_name}_FOUND_RELEASE" false)
-      ct_assert_not_defined(${lib_target_name}_FOUND_DEBUG)
+      ct_assert_equal("${lib_target_fullname}_LIBRARY_RELEASE" "${lib_target_fullname}_LIBRARY_RELEASE-NOTFOUND")
+      ct_assert_not_defined(${lib_target_fullname}_LIBRARY_DEBUG)
+      ct_assert_equal("${lib_target_fullname}_IMP_LIBRARY_RELEASE" "")
+      ct_assert_not_defined(${lib_target_fullname}_IMP_LIBRARY_DEBUG)
+      ct_assert_equal("${lib_target_fullname}_FOUND_RELEASE" false)
+      ct_assert_not_defined(${lib_target_fullname}_FOUND_DEBUG)
     elseif("${cmake_build_type_upper}" STREQUAL "DEBUG")
-      ct_assert_not_defined(${lib_target_name}_LIBRARY_RELEASE)
-      ct_assert_equal("${lib_target_name}_LIBRARY_DEBUG" "${lib_target_name}_LIBRARY_DEBUG-NOTFOUND")
-      ct_assert_not_defined(${lib_target_name}_IMP_LIBRARY_RELEASE)
-      ct_assert_equal("${lib_target_name}_IMP_LIBRARY_DEBUG" "")
-      ct_assert_not_defined(${lib_target_name}_FOUND_RELEASE)
-      ct_assert_equal("${lib_target_name}_FOUND_DEBUG" false)
+      ct_assert_not_defined(${lib_target_fullname}_LIBRARY_RELEASE)
+      ct_assert_equal("${lib_target_fullname}_LIBRARY_DEBUG" "${lib_target_fullname}_LIBRARY_DEBUG-NOTFOUND")
+      ct_assert_not_defined(${lib_target_fullname}_IMP_LIBRARY_RELEASE)
+      ct_assert_equal("${lib_target_fullname}_IMP_LIBRARY_DEBUG" "")
+      ct_assert_not_defined(${lib_target_fullname}_FOUND_RELEASE)
+      ct_assert_equal("${lib_target_fullname}_FOUND_DEBUG" false)
     endif()
-    ct_assert_equal("${lib_target_name}_LIBRARY" "${lib_target_name}_LIBRARY-NOTFOUND")
-    ct_assert_equal("${lib_target_name}_LIBRARIES" "${lib_target_name}_LIBRARY-NOTFOUND")
-    ct_assert_equal("${lib_target_name}_ROOT_DIR" "${TESTS_DATA_DIR}/bin_import_nonexistent_static_lib")
-    ct_assert_equal("${lib_target_name}_FOUND" false)
+    ct_assert_equal("${lib_target_fullname}_LIBRARY" "${lib_target_fullname}_LIBRARY-NOTFOUND")
+    ct_assert_equal("${lib_target_fullname}_LIBRARIES" "${lib_target_fullname}_LIBRARY-NOTFOUND")
+    ct_assert_equal("${lib_target_fullname}_ROOT_DIR" "${TESTS_DATA_DIR}/bin_import_nonexistent_static_lib")
+    ct_assert_equal("${lib_target_fullname}_FOUND" false)
     file(REMOVE_RECURSE "${TESTS_DATA_DIR}/bin_import_nonexistent_static_lib")
   endfunction()
 
   ct_add_section(NAME "import_shared_lib")
   function(${CMAKETEST_SECTION})
-    set(lib_target_name "imp_shared_mock_lib-1")
+    set(lib_target_name "imp_shared_mock_lib_1")
+    set(lib_target_fullname "${PROJECT_NAME}_${lib_target_name}")
+    set(lib_target_aliasname "${PROJECT_NAME}::${lib_target_name}")
     _set_up_test("${lib_target_name}")
     set(lib_file_basename "")
     set(dep_import_find_args "")
@@ -265,76 +277,79 @@ function(${CMAKETEST_TEST})
     )
     cmake_path(GET expected_lib_file_path FILENAME expected_lib_file_name)
 
-    ct_assert_target_does_not_exist("${lib_target_name}")
+    ct_assert_target_does_not_exist("${lib_target_fullname}")
+    ct_assert_target_does_not_exist("${lib_target_aliasname}")
     dependency(IMPORT "${lib_target_name}"
       TYPE SHARED
       FIND_ROOT_DIR "${TESTS_DATA_DIR}/bin"
       ${dep_import_find_args}
     )
-    ct_assert_target_exists("${lib_target_name}")
-    ct_assert_target_exists("${lib_target_name}::${lib_target_name}")
-    ct_assert_target_does_not_have_property("${lib_target_name}"
+    ct_assert_target_exists("${lib_target_fullname}")
+    ct_assert_target_exists("${lib_target_aliasname}")
+    ct_assert_target_does_not_have_property("${lib_target_fullname}"
       INTERFACE_INCLUDE_DIRECTORIES)
-    get_property(output_lib_property TARGET "${lib_target_name}"
+    get_property(output_lib_property TARGET "${lib_target_fullname}"
       PROPERTY INTERFACE_INCLUDE_DIRECTORIES SET)
     ct_assert_true(output_lib_property)
-    ct_assert_target_does_not_have_property("${lib_target_name}"
+    ct_assert_target_does_not_have_property("${lib_target_fullname}"
       INTERFACE_INCLUDE_DIRECTORIES_BUILD)
-    get_property(output_lib_property TARGET "${lib_target_name}"
+    get_property(output_lib_property TARGET "${lib_target_fullname}"
       PROPERTY INTERFACE_INCLUDE_DIRECTORIES_BUILD SET)
     ct_assert_true(output_lib_property)
-    ct_assert_target_does_not_have_property("${lib_target_name}"
+    ct_assert_target_does_not_have_property("${lib_target_fullname}"
       INTERFACE_INCLUDE_DIRECTORIES_INSTALL)
-    get_property(output_lib_property TARGET "${lib_target_name}"
+    get_property(output_lib_property TARGET "${lib_target_fullname}"
       PROPERTY INTERFACE_INCLUDE_DIRECTORIES_INSTALL SET)
     ct_assert_true(output_lib_property)
-    get_target_property(output_lib_property "${lib_target_name}"
+    get_target_property(output_lib_property "${lib_target_fullname}"
       IMPORTED_LOCATION_${cmake_build_type_upper})
     ct_assert_equal(output_lib_property "${expected_lib_file_path}")
-    ct_assert_target_does_not_have_property("${lib_target_name}"
+    ct_assert_target_does_not_have_property("${lib_target_fullname}"
       IMPORTED_LOCATION_BUILD_${cmake_build_type_upper})
-    get_property(output_lib_property TARGET "${lib_target_name}"
+    get_property(output_lib_property TARGET "${lib_target_fullname}"
       PROPERTY IMPORTED_LOCATION_BUILD_${cmake_build_type_upper} SET)
     ct_assert_true(output_lib_property)
-    ct_assert_target_does_not_have_property("${lib_target_name}"
+    ct_assert_target_does_not_have_property("${lib_target_fullname}"
       IMPORTED_LOCATION_INSTALL_${cmake_build_type_upper})
-    get_property(output_lib_property TARGET "${lib_target_name}"
+    get_property(output_lib_property TARGET "${lib_target_fullname}"
       PROPERTY IMPORTED_LOCATION_INSTALL_${cmake_build_type_upper} SET)
     ct_assert_true(output_lib_property)
-    get_target_property(output_lib_property "${lib_target_name}"
+    get_target_property(output_lib_property "${lib_target_fullname}"
       IMPORTED_IMPLIB_${cmake_build_type_upper})
     ct_assert_equal(output_lib_property "${expected_implib_file_path}")
-    get_target_property(output_lib_property "${lib_target_name}"
+    get_target_property(output_lib_property "${lib_target_fullname}"
       IMPORTED_SONAME_${cmake_build_type_upper})
     ct_assert_equal(output_lib_property "${expected_lib_file_name}")
-    get_target_property(output_lib_property "${lib_target_name}"
+    get_target_property(output_lib_property "${lib_target_fullname}"
       IMPORTED_CONFIGURATIONS)
     ct_assert_equal(output_lib_property "${cmake_build_type_upper}")
 
     if("${cmake_build_type_upper}" STREQUAL "RELEASE")
-      ct_assert_equal("${lib_target_name}_LIBRARY_RELEASE" "${expected_lib_file_path}")
-      ct_assert_not_defined(${lib_target_name}_LIBRARY_DEBUG)
-      ct_assert_equal("${lib_target_name}_IMP_LIBRARY_RELEASE" "${expected_implib_file_path}")
-      ct_assert_not_defined(${lib_target_name}_IMP_LIBRARY_DEBUG)
-      ct_assert_equal("${lib_target_name}_FOUND_RELEASE" true)
-      ct_assert_not_defined(${lib_target_name}_FOUND_DEBUG)
+      ct_assert_equal("${lib_target_fullname}_LIBRARY_RELEASE" "${expected_lib_file_path}")
+      ct_assert_not_defined(${lib_target_fullname}_LIBRARY_DEBUG)
+      ct_assert_equal("${lib_target_fullname}_IMP_LIBRARY_RELEASE" "${expected_implib_file_path}")
+      ct_assert_not_defined(${lib_target_fullname}_IMP_LIBRARY_DEBUG)
+      ct_assert_equal("${lib_target_fullname}_FOUND_RELEASE" true)
+      ct_assert_not_defined(${lib_target_fullname}_FOUND_DEBUG)
     elseif("${cmake_build_type_upper}" STREQUAL "DEBUG")
-      ct_assert_not_defined(${lib_target_name}_LIBRARY_RELEASE)
-      ct_assert_equal("${lib_target_name}_LIBRARY_DEBUG" "${expected_lib_file_path}")
-      ct_assert_not_defined(${lib_target_name}_IMP_LIBRARY_RELEASE)
-      ct_assert_equal("${lib_target_name}_IMP_LIBRARY_DEBUG" "${expected_implib_file_path}")
-      ct_assert_not_defined(${lib_target_name}_FOUND_RELEASE)
-      ct_assert_equal("${lib_target_name}_FOUND_DEBUG" true)
+      ct_assert_not_defined(${lib_target_fullname}_LIBRARY_RELEASE)
+      ct_assert_equal("${lib_target_fullname}_LIBRARY_DEBUG" "${expected_lib_file_path}")
+      ct_assert_not_defined(${lib_target_fullname}_IMP_LIBRARY_RELEASE)
+      ct_assert_equal("${lib_target_fullname}_IMP_LIBRARY_DEBUG" "${expected_implib_file_path}")
+      ct_assert_not_defined(${lib_target_fullname}_FOUND_RELEASE)
+      ct_assert_equal("${lib_target_fullname}_FOUND_DEBUG" true)
     endif()
-    ct_assert_equal("${lib_target_name}_LIBRARY" "${expected_lib_file_path}")
-    ct_assert_equal("${lib_target_name}_LIBRARIES" "${expected_lib_file_path}")
-    ct_assert_equal("${lib_target_name}_ROOT_DIR" "${TESTS_DATA_DIR}/bin")
-    ct_assert_equal("${lib_target_name}_FOUND" true)
+    ct_assert_equal("${lib_target_fullname}_LIBRARY" "${expected_lib_file_path}")
+    ct_assert_equal("${lib_target_fullname}_LIBRARIES" "${expected_lib_file_path}")
+    ct_assert_equal("${lib_target_fullname}_ROOT_DIR" "${TESTS_DATA_DIR}/bin")
+    ct_assert_equal("${lib_target_fullname}_FOUND" true)
   endfunction()
 
   ct_add_section(NAME "import_nonexistent_shared_lib_and_implib")
   function(${CMAKETEST_SECTION})
-    set(lib_target_name "imp_shared_mock_lib-2")
+    set(lib_target_name "imp_shared_mock_lib_2")
+    set(lib_target_fullname "${PROJECT_NAME}_${lib_target_name}")
+    set(lib_target_aliasname "${PROJECT_NAME}::${lib_target_name}")
     _set_up_test("${lib_target_name}")
     set(lib_file_basename "")
     set(dep_import_find_args "")
@@ -354,39 +369,42 @@ function(${CMAKETEST_TEST})
       ROOT_DIR "${TESTS_DATA_DIR}/bin"
     )
 
-    ct_assert_target_does_not_exist("${lib_target_name}")
+    ct_assert_target_does_not_exist("${lib_target_fullname}")
+    ct_assert_target_does_not_exist("${lib_target_aliasname}")
     dependency(IMPORT "${lib_target_name}"
       TYPE SHARED
       FIND_ROOT_DIR "${TESTS_DATA_DIR}/bin"
       ${dep_import_find_args}
     )
-    ct_assert_target_does_not_exist("${lib_target_name}")
-    ct_assert_target_does_not_exist("${lib_target_name}::${lib_target_name}")
+    ct_assert_target_does_not_exist("${lib_target_fullname}")
+    ct_assert_target_does_not_exist("${lib_target_aliasname}")
 
     if("${cmake_build_type_upper}" STREQUAL "RELEASE")
-      ct_assert_equal("${lib_target_name}_LIBRARY_RELEASE" "${lib_target_name}_LIBRARY_RELEASE-NOTFOUND")
-      ct_assert_not_defined(${lib_target_name}_LIBRARY_DEBUG)
-      ct_assert_equal("${lib_target_name}_IMP_LIBRARY_RELEASE" "${lib_target_name}_IMP_LIBRARY_RELEASE-NOTFOUND")
-      ct_assert_not_defined(${lib_target_name}_IMP_LIBRARY_DEBUG)
-      ct_assert_equal("${lib_target_name}_FOUND_RELEASE" false)
-      ct_assert_not_defined(${lib_target_name}_FOUND_DEBUG)
+      ct_assert_equal("${lib_target_fullname}_LIBRARY_RELEASE" "${lib_target_fullname}_LIBRARY_RELEASE-NOTFOUND")
+      ct_assert_not_defined(${lib_target_fullname}_LIBRARY_DEBUG)
+      ct_assert_equal("${lib_target_fullname}_IMP_LIBRARY_RELEASE" "${lib_target_fullname}_IMP_LIBRARY_RELEASE-NOTFOUND")
+      ct_assert_not_defined(${lib_target_fullname}_IMP_LIBRARY_DEBUG)
+      ct_assert_equal("${lib_target_fullname}_FOUND_RELEASE" false)
+      ct_assert_not_defined(${lib_target_fullname}_FOUND_DEBUG)
     elseif("${cmake_build_type_upper}" STREQUAL "DEBUG")
-      ct_assert_not_defined(${lib_target_name}_LIBRARY_RELEASE)
-      ct_assert_equal("${lib_target_name}_LIBRARY_DEBUG" "${lib_target_name}_LIBRARY_DEBUG-NOTFOUND")
-      ct_assert_not_defined(${lib_target_name}_IMP_LIBRARY_RELEASE)
-      ct_assert_equal("${lib_target_name}_IMP_LIBRARY_DEBUG" "${lib_target_name}_IMP_LIBRARY_DEBUG-NOTFOUND")
-      ct_assert_not_defined(${lib_target_name}_FOUND_RELEASE)
-      ct_assert_equal("${lib_target_name}_FOUND_DEBUG" false)
+      ct_assert_not_defined(${lib_target_fullname}_LIBRARY_RELEASE)
+      ct_assert_equal("${lib_target_fullname}_LIBRARY_DEBUG" "${lib_target_fullname}_LIBRARY_DEBUG-NOTFOUND")
+      ct_assert_not_defined(${lib_target_fullname}_IMP_LIBRARY_RELEASE)
+      ct_assert_equal("${lib_target_fullname}_IMP_LIBRARY_DEBUG" "${lib_target_fullname}_IMP_LIBRARY_DEBUG-NOTFOUND")
+      ct_assert_not_defined(${lib_target_fullname}_FOUND_RELEASE)
+      ct_assert_equal("${lib_target_fullname}_FOUND_DEBUG" false)
     endif()
-    ct_assert_equal("${lib_target_name}_LIBRARY" "${lib_target_name}_LIBRARY-NOTFOUND")
-    ct_assert_equal("${lib_target_name}_LIBRARIES" "${lib_target_name}_LIBRARY-NOTFOUND")
-    ct_assert_equal("${lib_target_name}_ROOT_DIR" "${TESTS_DATA_DIR}/bin")
-    ct_assert_equal("${lib_target_name}_FOUND" false)
+    ct_assert_equal("${lib_target_fullname}_LIBRARY" "${lib_target_fullname}_LIBRARY-NOTFOUND")
+    ct_assert_equal("${lib_target_fullname}_LIBRARIES" "${lib_target_fullname}_LIBRARY-NOTFOUND")
+    ct_assert_equal("${lib_target_fullname}_ROOT_DIR" "${TESTS_DATA_DIR}/bin")
+    ct_assert_equal("${lib_target_fullname}_FOUND" false)
   endfunction()
 
   ct_add_section(NAME "import_nonexistent_shared_lib")
   function(${CMAKETEST_SECTION})
-    set(lib_target_name "imp_shared_mock_lib-3")
+    set(lib_target_name "imp_shared_mock_lib_3")
+    set(lib_target_fullname "${PROJECT_NAME}_${lib_target_name}")
+    set(lib_target_aliasname "${PROJECT_NAME}::${lib_target_name}")
     _set_up_test("${lib_target_name}")
     set(lib_file_basename "")
     set(dep_import_find_args "")
@@ -412,40 +430,43 @@ function(${CMAKETEST_TEST})
       ROOT_DIR "${TESTS_DATA_DIR}/bin_import_nonexistent_shared_lib"
     )
 
-    ct_assert_target_does_not_exist("${lib_target_name}")
+    ct_assert_target_does_not_exist("${lib_target_fullname}")
+    ct_assert_target_does_not_exist("${lib_target_aliasname}")
     dependency(IMPORT "${lib_target_name}"
       TYPE SHARED
       FIND_ROOT_DIR "${TESTS_DATA_DIR}/bin_import_nonexistent_shared_lib"
       ${dep_import_find_args}
     )
-    ct_assert_target_does_not_exist("${lib_target_name}")
-    ct_assert_target_does_not_exist("${lib_target_name}::${lib_target_name}")
+    ct_assert_target_does_not_exist("${lib_target_fullname}")
+    ct_assert_target_does_not_exist("${lib_target_aliasname}")
 
     if("${cmake_build_type_upper}" STREQUAL "RELEASE")
-      ct_assert_equal("${lib_target_name}_LIBRARY_RELEASE" "${lib_target_name}_LIBRARY_RELEASE-NOTFOUND")
-      ct_assert_not_defined(${lib_target_name}_LIBRARY_DEBUG)
-      ct_assert_equal("${lib_target_name}_IMP_LIBRARY_RELEASE" "${expected_implib_file_path}")
-      ct_assert_not_defined(${lib_target_name}_IMP_LIBRARY_DEBUG)
-      ct_assert_equal("${lib_target_name}_FOUND_RELEASE" false)
-      ct_assert_not_defined(${lib_target_name}_FOUND_DEBUG)
+      ct_assert_equal("${lib_target_fullname}_LIBRARY_RELEASE" "${lib_target_fullname}_LIBRARY_RELEASE-NOTFOUND")
+      ct_assert_not_defined(${lib_target_fullname}_LIBRARY_DEBUG)
+      ct_assert_equal("${lib_target_fullname}_IMP_LIBRARY_RELEASE" "${expected_implib_file_path}")
+      ct_assert_not_defined(${lib_target_fullname}_IMP_LIBRARY_DEBUG)
+      ct_assert_equal("${lib_target_fullname}_FOUND_RELEASE" false)
+      ct_assert_not_defined(${lib_target_fullname}_FOUND_DEBUG)
     elseif("${cmake_build_type_upper}" STREQUAL "DEBUG")
-      ct_assert_not_defined(${lib_target_name}_LIBRARY_RELEASE)
-      ct_assert_equal("${lib_target_name}_LIBRARY_DEBUG" "${lib_target_name}_LIBRARY_DEBUG-NOTFOUND")
-      ct_assert_not_defined(${lib_target_name}_IMP_LIBRARY_RELEASE)
-      ct_assert_equal("${lib_target_name}_IMP_LIBRARY_DEBUG" "${expected_implib_file_path}")
-      ct_assert_not_defined(${lib_target_name}_FOUND_RELEASE)
-      ct_assert_equal("${lib_target_name}_FOUND_DEBUG" false)
+      ct_assert_not_defined(${lib_target_fullname}_LIBRARY_RELEASE)
+      ct_assert_equal("${lib_target_fullname}_LIBRARY_DEBUG" "${lib_target_fullname}_LIBRARY_DEBUG-NOTFOUND")
+      ct_assert_not_defined(${lib_target_fullname}_IMP_LIBRARY_RELEASE)
+      ct_assert_equal("${lib_target_fullname}_IMP_LIBRARY_DEBUG" "${expected_implib_file_path}")
+      ct_assert_not_defined(${lib_target_fullname}_FOUND_RELEASE)
+      ct_assert_equal("${lib_target_fullname}_FOUND_DEBUG" false)
     endif()
-    ct_assert_equal("${lib_target_name}_LIBRARY" "${lib_target_name}_LIBRARY-NOTFOUND")
-    ct_assert_equal("${lib_target_name}_LIBRARIES" "${lib_target_name}_LIBRARY-NOTFOUND")
-    ct_assert_equal("${lib_target_name}_ROOT_DIR" "${TESTS_DATA_DIR}/bin_import_nonexistent_shared_lib")
-    ct_assert_equal("${lib_target_name}_FOUND" false)
+    ct_assert_equal("${lib_target_fullname}_LIBRARY" "${lib_target_fullname}_LIBRARY-NOTFOUND")
+    ct_assert_equal("${lib_target_fullname}_LIBRARIES" "${lib_target_fullname}_LIBRARY-NOTFOUND")
+    ct_assert_equal("${lib_target_fullname}_ROOT_DIR" "${TESTS_DATA_DIR}/bin_import_nonexistent_shared_lib")
+    ct_assert_equal("${lib_target_fullname}_FOUND" false)
     file(REMOVE_RECURSE "${TESTS_DATA_DIR}/bin_import_nonexistent_shared_lib")
   endfunction()
 
   ct_add_section(NAME "import_nonexistent_shared_implib")
   function(${CMAKETEST_SECTION})
-    set(lib_target_name "imp_shared_mock_lib-4")
+    set(lib_target_name "imp_shared_mock_lib_4")
+    set(lib_target_fullname "${PROJECT_NAME}_${lib_target_name}")
+    set(lib_target_aliasname "${PROJECT_NAME}::${lib_target_name}")
     _set_up_test("${lib_target_name}")
     set(lib_file_basename "")
     set(dep_import_find_args "")
@@ -476,34 +497,35 @@ function(${CMAKETEST_TEST})
       ROOT_DIR "${TESTS_DATA_DIR}/bin_import_nonexistent_shared_implib"
     )
 
-    ct_assert_target_does_not_exist("${lib_target_name}")
+    ct_assert_target_does_not_exist("${lib_target_fullname}")
+    ct_assert_target_does_not_exist("${lib_target_aliasname}")
     dependency(IMPORT "${lib_target_name}"
       TYPE SHARED
       FIND_ROOT_DIR "${TESTS_DATA_DIR}/bin_import_nonexistent_shared_implib"
       ${dep_import_find_args}
     )
-    ct_assert_target_does_not_exist("${lib_target_name}")
-    ct_assert_target_does_not_exist("${lib_target_name}::${lib_target_name}")
+    ct_assert_target_does_not_exist("${lib_target_fullname}")
+    ct_assert_target_does_not_exist("${lib_target_aliasname}")
 
     if("${cmake_build_type_upper}" STREQUAL "RELEASE")
-      ct_assert_equal("${lib_target_name}_LIBRARY_RELEASE" "${expected_lib_file_path}")
-      ct_assert_not_defined(${lib_target_name}_LIBRARY_DEBUG)
-      ct_assert_equal("${lib_target_name}_IMP_LIBRARY_RELEASE" "${lib_target_name}_IMP_LIBRARY_RELEASE-NOTFOUND")
-      ct_assert_not_defined(${lib_target_name}_IMP_LIBRARY_DEBUG)
-      ct_assert_equal("${lib_target_name}_FOUND_RELEASE" false)
-      ct_assert_not_defined(${lib_target_name}_FOUND_DEBUG)
+      ct_assert_equal("${lib_target_fullname}_LIBRARY_RELEASE" "${expected_lib_file_path}")
+      ct_assert_not_defined(${lib_target_fullname}_LIBRARY_DEBUG)
+      ct_assert_equal("${lib_target_fullname}_IMP_LIBRARY_RELEASE" "${lib_target_fullname}_IMP_LIBRARY_RELEASE-NOTFOUND")
+      ct_assert_not_defined(${lib_target_fullname}_IMP_LIBRARY_DEBUG)
+      ct_assert_equal("${lib_target_fullname}_FOUND_RELEASE" false)
+      ct_assert_not_defined(${lib_target_fullname}_FOUND_DEBUG)
     elseif("${cmake_build_type_upper}" STREQUAL "DEBUG")
-      ct_assert_not_defined(${lib_target_name}_LIBRARY_RELEASE)
-      ct_assert_equal("${lib_target_name}_LIBRARY_DEBUG" "${expected_lib_file_path}")
-      ct_assert_not_defined(${lib_target_name}_IMP_LIBRARY_RELEASE)
-      ct_assert_equal("${lib_target_name}_IMP_LIBRARY_DEBUG" "${lib_target_name}_IMP_LIBRARY_DEBUG-NOTFOUND")
-      ct_assert_not_defined(${lib_target_name}_FOUND_RELEASE)
-      ct_assert_equal("${lib_target_name}_FOUND_DEBUG" false)
+      ct_assert_not_defined(${lib_target_fullname}_LIBRARY_RELEASE)
+      ct_assert_equal("${lib_target_fullname}_LIBRARY_DEBUG" "${expected_lib_file_path}")
+      ct_assert_not_defined(${lib_target_fullname}_IMP_LIBRARY_RELEASE)
+      ct_assert_equal("${lib_target_fullname}_IMP_LIBRARY_DEBUG" "${lib_target_fullname}_IMP_LIBRARY_DEBUG-NOTFOUND")
+      ct_assert_not_defined(${lib_target_fullname}_FOUND_RELEASE)
+      ct_assert_equal("${lib_target_fullname}_FOUND_DEBUG" false)
     endif()
-    ct_assert_equal("${lib_target_name}_LIBRARY" "${lib_target_name}_LIBRARY-NOTFOUND")
-    ct_assert_equal("${lib_target_name}_LIBRARIES" "${lib_target_name}_LIBRARY-NOTFOUND")
-    ct_assert_equal("${lib_target_name}_ROOT_DIR" "${TESTS_DATA_DIR}/bin_import_nonexistent_shared_implib")
-    ct_assert_equal("${lib_target_name}_FOUND" false)
+    ct_assert_equal("${lib_target_fullname}_LIBRARY" "${lib_target_fullname}_LIBRARY-NOTFOUND")
+    ct_assert_equal("${lib_target_fullname}_LIBRARIES" "${lib_target_fullname}_LIBRARY-NOTFOUND")
+    ct_assert_equal("${lib_target_fullname}_ROOT_DIR" "${TESTS_DATA_DIR}/bin_import_nonexistent_shared_implib")
+    ct_assert_equal("${lib_target_fullname}_FOUND" false)
     file(REMOVE_RECURSE "${TESTS_DATA_DIR}/bin_import_nonexistent_shared_implib")
   endfunction()
 
@@ -538,7 +560,19 @@ function(${CMAKETEST_TEST})
 
   ct_add_section(NAME "throws_if_arg_target_already_exists" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    dependency(IMPORT "imp_shared_mock_lib-1"
+    add_mock_lib("imp_shared_mock_lib_5" SHARED)
+    dependency(IMPORT "imp_shared_mock_lib_5"
+      TYPE SHARED
+      FIND_ROOT_DIR "${TESTS_DATA_DIR}/bin"
+      ${dep_import_find_args}
+    )
+  endfunction()
+
+  ct_add_section(NAME "throws_if_arg_target_alias_already_exists" EXPECTFAIL)
+  function(${CMAKETEST_SECTION})
+    add_mock_lib("imp_shared_mock_lib_6" SHARED)
+    add_library("${PROJECT_NAME}::imp_shared_mock_lib_7" ALIAS "${PROJECT_NAME}_imp_shared_mock_lib_6")
+    dependency(IMPORT "imp_shared_mock_lib_7"
       TYPE SHARED
       FIND_ROOT_DIR "${TESTS_DATA_DIR}/bin"
       ${dep_import_find_args}

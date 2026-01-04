@@ -30,27 +30,21 @@ function(${CMAKETEST_TEST})
     SHARED SKIP_IF_EXISTS)
 
   # Set global test variables
-  get_target_property(static_lib_file_path "imp_static_mock_lib"
+  set(static_target_fullname "${PROJECT_NAME}_imp_static_mock_lib")
+  set(shared_target_fullname "${PROJECT_NAME}_imp_shared_mock_lib")
+  get_target_property(static_lib_file_path "${static_target_fullname}"
     IMPORTED_LOCATION_${cmake_build_type_upper})
-  get_target_property(static_lib_file_name "imp_static_mock_lib"
+  get_target_property(static_lib_file_name "${static_target_fullname}"
     IMPORTED_SONAME_${cmake_build_type_upper})
-  get_target_property(shared_lib_file_path "imp_shared_mock_lib"
+  get_target_property(shared_lib_file_path "${shared_target_fullname}"
     IMPORTED_LOCATION_${cmake_build_type_upper})
-  get_target_property(shared_lib_file_name "imp_shared_mock_lib"
+  get_target_property(shared_lib_file_name "${shared_target_fullname}"
     IMPORTED_SONAME_${cmake_build_type_upper})
 
   # To call before each test
-  macro(_set_up_test)
+  macro(_set_up_test imported_target)
     # Set to empty the properties changed by `dependency(SET_IMPORTED_LOCATION)`
-    set_target_properties("imp_static_mock_lib" PROPERTIES
-      IMPORTED_LOCATION_RELEASE ""
-      IMPORTED_LOCATION_BUILD_RELEASE ""
-      IMPORTED_LOCATION_INSTALL_RELEASE ""
-      IMPORTED_LOCATION_DEBUG ""
-      IMPORTED_LOCATION_BUILD_DEBUG ""
-      IMPORTED_LOCATION_INSTALL_DEBUG ""
-    )
-    set_target_properties("imp_shared_mock_lib" PROPERTIES
+    set_target_properties("${imported_target}" PROPERTIES
       IMPORTED_LOCATION_RELEASE ""
       IMPORTED_LOCATION_BUILD_RELEASE ""
       IMPORTED_LOCATION_INSTALL_RELEASE ""
@@ -66,136 +60,138 @@ function(${CMAKETEST_TEST})
 
     ct_add_section(NAME "no_build_type")
     function(${CMAKETEST_SECTION})
-      _set_up_test()
-      set_target_properties("imp_static_mock_lib" PROPERTIES
+      _set_up_test("${static_target_fullname}")
+      set_target_properties("${static_target_fullname}" PROPERTIES
         IMPORTED_CONFIGURATIONS "")
-      dependency(SET_IMPORTED_LOCATION "imp_static_mock_lib"
+      dependency(SET_IMPORTED_LOCATION "${static_target_fullname}"
         INTERFACE
           "$<BUILD_INTERFACE:${static_lib_file_path}>"
           "$<INSTALL_INTERFACE:lib/${static_lib_file_name}>"
       )
-      ct_assert_target_does_not_have_property("imp_static_mock_lib"
+      ct_assert_target_does_not_have_property("${static_target_fullname}"
         IMPORTED_LOCATION_RELEASE)
-      get_property(output_lib_property TARGET "imp_static_mock_lib"
+      get_property(output_lib_property TARGET "${static_target_fullname}"
         PROPERTY IMPORTED_LOCATION_RELEASE SET)
       ct_assert_true(output_lib_property)
-      ct_assert_target_does_not_have_property("imp_static_mock_lib"
+      ct_assert_target_does_not_have_property("${static_target_fullname}"
         IMPORTED_LOCATION_BUILD_RELEASE)
-      get_property(output_lib_property TARGET "imp_static_mock_lib"
+      get_property(output_lib_property TARGET "${static_target_fullname}"
         PROPERTY IMPORTED_LOCATION_BUILD_RELEASE SET)
       ct_assert_true(output_lib_property)
-      ct_assert_target_does_not_have_property("imp_static_mock_lib"
+      ct_assert_target_does_not_have_property("${static_target_fullname}"
         IMPORTED_LOCATION_INSTALL_RELEASE)
-      get_property(output_lib_property TARGET "imp_static_mock_lib"
+      get_property(output_lib_property TARGET "${static_target_fullname}"
         PROPERTY IMPORTED_LOCATION_INSTALL_RELEASE SET)
       ct_assert_true(output_lib_property)
-      ct_assert_target_does_not_have_property("imp_static_mock_lib"
+      ct_assert_target_does_not_have_property("${static_target_fullname}"
         IMPORTED_LOCATION_DEBUG)
-      get_property(output_lib_property TARGET "imp_static_mock_lib"
+      get_property(output_lib_property TARGET "${static_target_fullname}"
         PROPERTY IMPORTED_LOCATION_DEBUG SET)
       ct_assert_true(output_lib_property)
-      ct_assert_target_does_not_have_property("imp_static_mock_lib"
+      ct_assert_target_does_not_have_property("${static_target_fullname}"
         IMPORTED_LOCATION_BUILD_DEBUG)
-      get_property(output_lib_property TARGET "imp_static_mock_lib"
+      get_property(output_lib_property TARGET "${static_target_fullname}"
         PROPERTY IMPORTED_LOCATION_BUILD_DEBUG SET)
       ct_assert_true(output_lib_property)
-      ct_assert_target_does_not_have_property("imp_static_mock_lib"
+      ct_assert_target_does_not_have_property("${static_target_fullname}"
         IMPORTED_LOCATION_INSTALL_DEBUG)
-      get_property(output_lib_property TARGET "imp_static_mock_lib"
+      get_property(output_lib_property TARGET "${static_target_fullname}"
         PROPERTY IMPORTED_LOCATION_INSTALL_DEBUG SET)
       ct_assert_true(output_lib_property)
     
-      set_target_properties("imp_shared_mock_lib" PROPERTIES
+      _set_up_test("${shared_target_fullname}")
+      set_target_properties("${shared_target_fullname}" PROPERTIES
         IMPORTED_CONFIGURATIONS "")
-      dependency(SET_IMPORTED_LOCATION "imp_shared_mock_lib"
+      dependency(SET_IMPORTED_LOCATION "${shared_target_fullname}"
         INTERFACE
           "$<BUILD_INTERFACE:${shared_lib_file_path}>"
           "$<INSTALL_INTERFACE:lib/${shared_lib_file_name}>"
       )
-      ct_assert_target_does_not_have_property("imp_shared_mock_lib"
+      ct_assert_target_does_not_have_property("${shared_target_fullname}"
         IMPORTED_LOCATION_RELEASE)
-      get_property(output_lib_property TARGET "imp_shared_mock_lib"
+      get_property(output_lib_property TARGET "${shared_target_fullname}"
         PROPERTY IMPORTED_LOCATION_RELEASE SET)
       ct_assert_true(output_lib_property)
-      ct_assert_target_does_not_have_property("imp_shared_mock_lib"
+      ct_assert_target_does_not_have_property("${shared_target_fullname}"
         IMPORTED_LOCATION_BUILD_RELEASE)
-      get_property(output_lib_property TARGET "imp_shared_mock_lib"
+      get_property(output_lib_property TARGET "${shared_target_fullname}"
         PROPERTY IMPORTED_LOCATION_BUILD_RELEASE SET)
       ct_assert_true(output_lib_property)
-      ct_assert_target_does_not_have_property("imp_shared_mock_lib"
+      ct_assert_target_does_not_have_property("${shared_target_fullname}"
         IMPORTED_LOCATION_INSTALL_RELEASE)
-      get_property(output_lib_property TARGET "imp_shared_mock_lib"
+      get_property(output_lib_property TARGET "${shared_target_fullname}"
         PROPERTY IMPORTED_LOCATION_INSTALL_RELEASE SET)
       ct_assert_true(output_lib_property)
-      ct_assert_target_does_not_have_property("imp_shared_mock_lib"
+      ct_assert_target_does_not_have_property("${shared_target_fullname}"
         IMPORTED_LOCATION_DEBUG)
-      get_property(output_lib_property TARGET "imp_shared_mock_lib"
+      get_property(output_lib_property TARGET "${shared_target_fullname}"
         PROPERTY IMPORTED_LOCATION_DEBUG SET)
       ct_assert_true(output_lib_property)
-      ct_assert_target_does_not_have_property("imp_shared_mock_lib"
+      ct_assert_target_does_not_have_property("${shared_target_fullname}"
         IMPORTED_LOCATION_BUILD_DEBUG)
-      get_property(output_lib_property TARGET "imp_shared_mock_lib"
+      get_property(output_lib_property TARGET "${shared_target_fullname}"
         PROPERTY IMPORTED_LOCATION_BUILD_DEBUG SET)
       ct_assert_true(output_lib_property)
-      ct_assert_target_does_not_have_property("imp_shared_mock_lib"
+      ct_assert_target_does_not_have_property("${shared_target_fullname}"
         IMPORTED_LOCATION_INSTALL_DEBUG)
-      get_property(output_lib_property TARGET "imp_shared_mock_lib"
+      get_property(output_lib_property TARGET "${shared_target_fullname}"
         PROPERTY IMPORTED_LOCATION_INSTALL_DEBUG SET)
       ct_assert_true(output_lib_property)
     endfunction()
     
     ct_add_section(NAME "all_build_type")
     function(${CMAKETEST_SECTION})
-      _set_up_test()
-      set_target_properties("imp_static_mock_lib" PROPERTIES
+      _set_up_test("${static_target_fullname}")
+      set_target_properties("${static_target_fullname}" PROPERTIES
         IMPORTED_CONFIGURATIONS "RELEASE;DEBUG")
-      dependency(SET_IMPORTED_LOCATION "imp_static_mock_lib"
+      dependency(SET_IMPORTED_LOCATION "${static_target_fullname}"
         INTERFACE
           "$<BUILD_INTERFACE:${static_lib_file_path}>"
           "$<INSTALL_INTERFACE:lib/${static_lib_file_name}>"
       )
-      get_target_property(output_lib_property "imp_static_mock_lib"
+      get_target_property(output_lib_property "${static_target_fullname}"
         IMPORTED_LOCATION_RELEASE)
       ct_assert_equal(output_lib_property "${static_lib_file_path}")
-      get_target_property(output_lib_property "imp_static_mock_lib"
+      get_target_property(output_lib_property "${static_target_fullname}"
         IMPORTED_LOCATION_BUILD_RELEASE)
       ct_assert_equal(output_lib_property "${static_lib_file_path}")
-      get_target_property(output_lib_property "imp_static_mock_lib"
+      get_target_property(output_lib_property "${static_target_fullname}"
         IMPORTED_LOCATION_INSTALL_RELEASE)
       ct_assert_equal(output_lib_property "lib/${static_lib_file_name}")
-      get_target_property(output_lib_property "imp_static_mock_lib"
+      get_target_property(output_lib_property "${static_target_fullname}"
         IMPORTED_LOCATION_DEBUG)
       ct_assert_equal(output_lib_property "${static_lib_file_path}")
-      get_target_property(output_lib_property "imp_static_mock_lib"
+      get_target_property(output_lib_property "${static_target_fullname}"
         IMPORTED_LOCATION_BUILD_DEBUG)
       ct_assert_equal(output_lib_property "${static_lib_file_path}")
-      get_target_property(output_lib_property "imp_static_mock_lib"
+      get_target_property(output_lib_property "${static_target_fullname}"
         IMPORTED_LOCATION_INSTALL_DEBUG)
       ct_assert_equal(output_lib_property "lib/${static_lib_file_name}")
     
-      set_target_properties("imp_shared_mock_lib" PROPERTIES
+      _set_up_test("${shared_target_fullname}")
+      set_target_properties("${shared_target_fullname}" PROPERTIES
         IMPORTED_CONFIGURATIONS "RELEASE;DEBUG")
-      dependency(SET_IMPORTED_LOCATION "imp_shared_mock_lib"
+      dependency(SET_IMPORTED_LOCATION "${shared_target_fullname}"
         INTERFACE
           "$<BUILD_INTERFACE:${shared_lib_file_path}>"
           "$<INSTALL_INTERFACE:lib/${shared_lib_file_name}>"
       )
-      get_target_property(output_lib_property "imp_shared_mock_lib"
+      get_target_property(output_lib_property "${shared_target_fullname}"
         IMPORTED_LOCATION_RELEASE)
       ct_assert_equal(output_lib_property "${shared_lib_file_path}")
-      get_target_property(output_lib_property "imp_shared_mock_lib"
+      get_target_property(output_lib_property "${shared_target_fullname}"
         IMPORTED_LOCATION_BUILD_RELEASE)
       ct_assert_equal(output_lib_property "${shared_lib_file_path}")
-      get_target_property(output_lib_property "imp_shared_mock_lib"
+      get_target_property(output_lib_property "${shared_target_fullname}"
         IMPORTED_LOCATION_INSTALL_RELEASE)
       ct_assert_equal(output_lib_property "lib/${shared_lib_file_name}")
-      get_target_property(output_lib_property "imp_shared_mock_lib"
+      get_target_property(output_lib_property "${shared_target_fullname}"
         IMPORTED_LOCATION_DEBUG)
       ct_assert_equal(output_lib_property "${shared_lib_file_path}")
-      get_target_property(output_lib_property "imp_shared_mock_lib"
+      get_target_property(output_lib_property "${shared_target_fullname}"
         IMPORTED_LOCATION_BUILD_DEBUG)
       ct_assert_equal(output_lib_property "${shared_lib_file_path}")
-      get_target_property(output_lib_property "imp_shared_mock_lib"
+      get_target_property(output_lib_property "${shared_target_fullname}"
         IMPORTED_LOCATION_INSTALL_DEBUG)
       ct_assert_equal(output_lib_property "lib/${shared_lib_file_name}")
     endfunction()
@@ -206,218 +202,221 @@ function(${CMAKETEST_TEST})
   
     ct_add_section(NAME "set_all_interfaces")
     function(${CMAKETEST_SECTION})
-      _set_up_test()
-      set_target_properties("imp_static_mock_lib" PROPERTIES
+      _set_up_test("${static_target_fullname}")
+      set_target_properties("${static_target_fullname}" PROPERTIES
         IMPORTED_CONFIGURATIONS "RELEASE;DEBUG")
-      dependency(SET_IMPORTED_LOCATION "imp_static_mock_lib"
+      dependency(SET_IMPORTED_LOCATION "${static_target_fullname}"
         CONFIGURATION "RELEASE"
         INTERFACE
           "$<BUILD_INTERFACE:${static_lib_file_path}>"
           "$<INSTALL_INTERFACE:lib/${static_lib_file_name}>"
       )
-      get_target_property(output_lib_property "imp_static_mock_lib"
+      get_target_property(output_lib_property "${static_target_fullname}"
         IMPORTED_LOCATION_RELEASE)
       ct_assert_equal(output_lib_property "${static_lib_file_path}")
-      get_target_property(output_lib_property "imp_static_mock_lib"
+      get_target_property(output_lib_property "${static_target_fullname}"
         IMPORTED_LOCATION_BUILD_RELEASE)
       ct_assert_equal(output_lib_property "${static_lib_file_path}")
-      get_target_property(output_lib_property "imp_static_mock_lib"
+      get_target_property(output_lib_property "${static_target_fullname}"
         IMPORTED_LOCATION_INSTALL_RELEASE)
       ct_assert_equal(output_lib_property "lib/${static_lib_file_name}")
-      ct_assert_target_does_not_have_property("imp_static_mock_lib"
+      ct_assert_target_does_not_have_property("${static_target_fullname}"
         IMPORTED_LOCATION_DEBUG)
-      get_property(output_lib_property TARGET "imp_static_mock_lib"
+      get_property(output_lib_property TARGET "${static_target_fullname}"
         PROPERTY IMPORTED_LOCATION_DEBUG SET)
       ct_assert_true(output_lib_property)
-      ct_assert_target_does_not_have_property("imp_static_mock_lib"
+      ct_assert_target_does_not_have_property("${static_target_fullname}"
         IMPORTED_LOCATION_BUILD_DEBUG)
-      get_property(output_lib_property TARGET "imp_static_mock_lib"
+      get_property(output_lib_property TARGET "${static_target_fullname}"
         PROPERTY IMPORTED_LOCATION_BUILD_DEBUG SET)
       ct_assert_true(output_lib_property)
-      ct_assert_target_does_not_have_property("imp_static_mock_lib"
+      ct_assert_target_does_not_have_property("${static_target_fullname}"
         IMPORTED_LOCATION_INSTALL_DEBUG)
-      get_property(output_lib_property TARGET "imp_static_mock_lib"
+      get_property(output_lib_property TARGET "${static_target_fullname}"
         PROPERTY IMPORTED_LOCATION_INSTALL_DEBUG SET)
       ct_assert_true(output_lib_property)
 
-      set_target_properties("imp_shared_mock_lib" PROPERTIES
+      _set_up_test("${shared_target_fullname}")
+      set_target_properties("${shared_target_fullname}" PROPERTIES
         IMPORTED_CONFIGURATIONS "RELEASE;DEBUG")
-      dependency(SET_IMPORTED_LOCATION "imp_shared_mock_lib"
+      dependency(SET_IMPORTED_LOCATION "${shared_target_fullname}"
         CONFIGURATION "RELEASE"
         INTERFACE
           "$<BUILD_INTERFACE:${shared_lib_file_path}>"
           "$<INSTALL_INTERFACE:lib/${shared_lib_file_name}>"
       )
-      get_target_property(output_lib_property "imp_shared_mock_lib"
+      get_target_property(output_lib_property "${shared_target_fullname}"
         IMPORTED_LOCATION_RELEASE)
       ct_assert_equal(output_lib_property "${shared_lib_file_path}")
-      get_target_property(output_lib_property "imp_shared_mock_lib"
+      get_target_property(output_lib_property "${shared_target_fullname}"
         IMPORTED_LOCATION_BUILD_RELEASE)
       ct_assert_equal(output_lib_property "${shared_lib_file_path}")
-      get_target_property(output_lib_property "imp_shared_mock_lib"
+      get_target_property(output_lib_property "${shared_target_fullname}"
         IMPORTED_LOCATION_INSTALL_RELEASE)
       ct_assert_equal(output_lib_property "lib/${shared_lib_file_name}")
-      ct_assert_target_does_not_have_property("imp_shared_mock_lib"
+      ct_assert_target_does_not_have_property("${shared_target_fullname}"
         IMPORTED_LOCATION_DEBUG)
-      get_property(output_lib_property TARGET "imp_shared_mock_lib"
+      get_property(output_lib_property TARGET "${shared_target_fullname}"
         PROPERTY IMPORTED_LOCATION_DEBUG SET)
       ct_assert_true(output_lib_property)
-      ct_assert_target_does_not_have_property("imp_shared_mock_lib"
+      ct_assert_target_does_not_have_property("${shared_target_fullname}"
         IMPORTED_LOCATION_BUILD_DEBUG)
-      get_property(output_lib_property TARGET "imp_shared_mock_lib"
+      get_property(output_lib_property TARGET "${shared_target_fullname}"
         PROPERTY IMPORTED_LOCATION_BUILD_DEBUG SET)
       ct_assert_true(output_lib_property)
-      ct_assert_target_does_not_have_property("imp_shared_mock_lib"
+      ct_assert_target_does_not_have_property("${shared_target_fullname}"
         IMPORTED_LOCATION_INSTALL_DEBUG)
-      get_property(output_lib_property TARGET "imp_shared_mock_lib"
+      get_property(output_lib_property TARGET "${shared_target_fullname}"
         PROPERTY IMPORTED_LOCATION_INSTALL_DEBUG SET)
       ct_assert_true(output_lib_property)
     endfunction()
 
     ct_add_section(NAME "set_build_interfaces")
     function(${CMAKETEST_SECTION})
-      _set_up_test()
-      set_target_properties("imp_static_mock_lib" PROPERTIES
+      _set_up_test("${static_target_fullname}")
+      set_target_properties("${static_target_fullname}" PROPERTIES
         IMPORTED_CONFIGURATIONS "RELEASE;DEBUG")
-      dependency(SET_IMPORTED_LOCATION "imp_static_mock_lib"
+      dependency(SET_IMPORTED_LOCATION "${static_target_fullname}"
         CONFIGURATION "RELEASE"
         INTERFACE
           "$<BUILD_INTERFACE:${static_lib_file_path}>"
       )
-      get_target_property(output_lib_property "imp_static_mock_lib"
+      get_target_property(output_lib_property "${static_target_fullname}"
         IMPORTED_LOCATION_RELEASE)
       ct_assert_equal(output_lib_property "${static_lib_file_path}")
-      get_target_property(output_lib_property "imp_static_mock_lib"
+      get_target_property(output_lib_property "${static_target_fullname}"
         IMPORTED_LOCATION_BUILD_RELEASE)
       ct_assert_equal(output_lib_property "${static_lib_file_path}")
-      ct_assert_target_does_not_have_property("imp_static_mock_lib"
+      ct_assert_target_does_not_have_property("${static_target_fullname}"
         IMPORTED_LOCATION_INSTALL_RELEASE)
-      get_property(output_lib_property TARGET "imp_static_mock_lib"
+      get_property(output_lib_property TARGET "${static_target_fullname}"
         PROPERTY IMPORTED_LOCATION_INSTALL_RELEASE SET)
       ct_assert_true(output_lib_property)
-      ct_assert_target_does_not_have_property("imp_static_mock_lib"
+      ct_assert_target_does_not_have_property("${static_target_fullname}"
         IMPORTED_LOCATION_DEBUG)
-      get_property(output_lib_property TARGET "imp_static_mock_lib"
+      get_property(output_lib_property TARGET "${static_target_fullname}"
         PROPERTY IMPORTED_LOCATION_DEBUG SET)
       ct_assert_true(output_lib_property)
-      ct_assert_target_does_not_have_property("imp_static_mock_lib"
+      ct_assert_target_does_not_have_property("${static_target_fullname}"
         IMPORTED_LOCATION_BUILD_DEBUG)
-      get_property(output_lib_property TARGET "imp_static_mock_lib"
+      get_property(output_lib_property TARGET "${static_target_fullname}"
         PROPERTY IMPORTED_LOCATION_BUILD_DEBUG SET)
       ct_assert_true(output_lib_property)
-      ct_assert_target_does_not_have_property("imp_static_mock_lib"
+      ct_assert_target_does_not_have_property("${static_target_fullname}"
         IMPORTED_LOCATION_INSTALL_DEBUG)
-      get_property(output_lib_property TARGET "imp_static_mock_lib"
+      get_property(output_lib_property TARGET "${static_target_fullname}"
         PROPERTY IMPORTED_LOCATION_INSTALL_DEBUG SET)
       ct_assert_true(output_lib_property)
     
-      set_target_properties("imp_shared_mock_lib" PROPERTIES
+      _set_up_test("${shared_target_fullname}")
+      set_target_properties("${shared_target_fullname}" PROPERTIES
         IMPORTED_CONFIGURATIONS "RELEASE;DEBUG")
-      dependency(SET_IMPORTED_LOCATION "imp_shared_mock_lib"
+      dependency(SET_IMPORTED_LOCATION "${shared_target_fullname}"
         CONFIGURATION "RELEASE"
         INTERFACE
           "$<BUILD_INTERFACE:${shared_lib_file_path}>"
       )
-      get_target_property(output_lib_property "imp_shared_mock_lib"
+      get_target_property(output_lib_property "${shared_target_fullname}"
         IMPORTED_LOCATION_RELEASE)
       ct_assert_equal(output_lib_property "${shared_lib_file_path}")
-      get_target_property(output_lib_property "imp_shared_mock_lib"
+      get_target_property(output_lib_property "${shared_target_fullname}"
         IMPORTED_LOCATION_BUILD_RELEASE)
       ct_assert_equal(output_lib_property "${shared_lib_file_path}")
-      ct_assert_target_does_not_have_property("imp_shared_mock_lib"
+      ct_assert_target_does_not_have_property("${shared_target_fullname}"
         IMPORTED_LOCATION_INSTALL_RELEASE)
-      get_property(output_lib_property TARGET "imp_shared_mock_lib"
+      get_property(output_lib_property TARGET "${shared_target_fullname}"
         PROPERTY IMPORTED_LOCATION_INSTALL_RELEASE SET)
       ct_assert_true(output_lib_property)
-      ct_assert_target_does_not_have_property("imp_shared_mock_lib"
+      ct_assert_target_does_not_have_property("${shared_target_fullname}"
         IMPORTED_LOCATION_DEBUG)
-      get_property(output_lib_property TARGET "imp_shared_mock_lib"
+      get_property(output_lib_property TARGET "${shared_target_fullname}"
         PROPERTY IMPORTED_LOCATION_DEBUG SET)
       ct_assert_true(output_lib_property)
-      ct_assert_target_does_not_have_property("imp_shared_mock_lib"
+      ct_assert_target_does_not_have_property("${shared_target_fullname}"
         IMPORTED_LOCATION_BUILD_DEBUG)
-      get_property(output_lib_property TARGET "imp_shared_mock_lib"
+      get_property(output_lib_property TARGET "${shared_target_fullname}"
         PROPERTY IMPORTED_LOCATION_BUILD_DEBUG SET)
       ct_assert_true(output_lib_property)
-      ct_assert_target_does_not_have_property("imp_shared_mock_lib"
+      ct_assert_target_does_not_have_property("${shared_target_fullname}"
         IMPORTED_LOCATION_INSTALL_DEBUG)
-      get_property(output_lib_property TARGET "imp_shared_mock_lib"
+      get_property(output_lib_property TARGET "${shared_target_fullname}"
         PROPERTY IMPORTED_LOCATION_INSTALL_DEBUG SET)
       ct_assert_true(output_lib_property)
     endfunction()
 
     ct_add_section(NAME "set_install_interfaces")
     function(${CMAKETEST_SECTION})
-      _set_up_test()
-      set_target_properties("imp_static_mock_lib" PROPERTIES
+      _set_up_test("${static_target_fullname}")
+      set_target_properties("${static_target_fullname}" PROPERTIES
         IMPORTED_CONFIGURATIONS "RELEASE;DEBUG")
-      dependency(SET_IMPORTED_LOCATION "imp_static_mock_lib"
+      dependency(SET_IMPORTED_LOCATION "${static_target_fullname}"
         CONFIGURATION "RELEASE"
         INTERFACE
           "$<INSTALL_INTERFACE:lib/${static_lib_file_name}>"
       )
-      ct_assert_target_does_not_have_property("imp_static_mock_lib"
+      ct_assert_target_does_not_have_property("${static_target_fullname}"
         IMPORTED_LOCATION_RELEASE)
-      get_property(output_lib_property TARGET "imp_static_mock_lib"
+      get_property(output_lib_property TARGET "${static_target_fullname}"
         PROPERTY IMPORTED_LOCATION_RELEASE SET)
       ct_assert_true(output_lib_property)
-      ct_assert_target_does_not_have_property("imp_static_mock_lib"
+      ct_assert_target_does_not_have_property("${static_target_fullname}"
         IMPORTED_LOCATION_BUILD_RELEASE)
-      get_property(output_lib_property TARGET "imp_static_mock_lib"
+      get_property(output_lib_property TARGET "${static_target_fullname}"
         PROPERTY IMPORTED_LOCATION_BUILD_RELEASE SET)
       ct_assert_true(output_lib_property)
-      get_target_property(output_lib_property "imp_static_mock_lib"
+      get_target_property(output_lib_property "${static_target_fullname}"
         IMPORTED_LOCATION_INSTALL_RELEASE)
       ct_assert_equal(output_lib_property "lib/${static_lib_file_name}")
-      ct_assert_target_does_not_have_property("imp_static_mock_lib"
+      ct_assert_target_does_not_have_property("${static_target_fullname}"
         IMPORTED_LOCATION_DEBUG)
-      get_property(output_lib_property TARGET "imp_static_mock_lib"
+      get_property(output_lib_property TARGET "${static_target_fullname}"
         PROPERTY IMPORTED_LOCATION_DEBUG SET)
       ct_assert_true(output_lib_property)
-      ct_assert_target_does_not_have_property("imp_static_mock_lib"
+      ct_assert_target_does_not_have_property("${static_target_fullname}"
         IMPORTED_LOCATION_BUILD_DEBUG)
-      get_property(output_lib_property TARGET "imp_static_mock_lib"
+      get_property(output_lib_property TARGET "${static_target_fullname}"
         PROPERTY IMPORTED_LOCATION_BUILD_DEBUG SET)
       ct_assert_true(output_lib_property)
-      ct_assert_target_does_not_have_property("imp_static_mock_lib"
+      ct_assert_target_does_not_have_property("${static_target_fullname}"
         IMPORTED_LOCATION_INSTALL_DEBUG)
-      get_property(output_lib_property TARGET "imp_static_mock_lib"
+      get_property(output_lib_property TARGET "${static_target_fullname}"
         PROPERTY IMPORTED_LOCATION_INSTALL_DEBUG SET)
       ct_assert_true(output_lib_property)
     
-      set_target_properties("imp_shared_mock_lib" PROPERTIES
+      _set_up_test("${shared_target_fullname}")
+      set_target_properties("${shared_target_fullname}" PROPERTIES
         IMPORTED_CONFIGURATIONS "RELEASE;DEBUG")
-      dependency(SET_IMPORTED_LOCATION "imp_shared_mock_lib"
+      dependency(SET_IMPORTED_LOCATION "${shared_target_fullname}"
         CONFIGURATION "RELEASE"
         INTERFACE
           "$<INSTALL_INTERFACE:lib/${shared_lib_file_name}>"
       )
-      ct_assert_target_does_not_have_property("imp_shared_mock_lib"
+      ct_assert_target_does_not_have_property("${shared_target_fullname}"
         IMPORTED_LOCATION_RELEASE)
-      get_property(output_lib_property TARGET "imp_shared_mock_lib"
+      get_property(output_lib_property TARGET "${shared_target_fullname}"
         PROPERTY IMPORTED_LOCATION_RELEASE SET)
       ct_assert_true(output_lib_property)
-      ct_assert_target_does_not_have_property("imp_shared_mock_lib"
+      ct_assert_target_does_not_have_property("${shared_target_fullname}"
         IMPORTED_LOCATION_BUILD_RELEASE)
-      get_property(output_lib_property TARGET "imp_shared_mock_lib"
+      get_property(output_lib_property TARGET "${shared_target_fullname}"
         PROPERTY IMPORTED_LOCATION_BUILD_RELEASE SET)
       ct_assert_true(output_lib_property)
-      get_target_property(output_lib_property "imp_shared_mock_lib"
+      get_target_property(output_lib_property "${shared_target_fullname}"
         IMPORTED_LOCATION_INSTALL_RELEASE)
       ct_assert_equal(output_lib_property "lib/${shared_lib_file_name}")
-      ct_assert_target_does_not_have_property("imp_shared_mock_lib"
+      ct_assert_target_does_not_have_property("${shared_target_fullname}"
         IMPORTED_LOCATION_DEBUG)
-      get_property(output_lib_property TARGET "imp_shared_mock_lib"
+      get_property(output_lib_property TARGET "${shared_target_fullname}"
         PROPERTY IMPORTED_LOCATION_DEBUG SET)
       ct_assert_true(output_lib_property)
-      ct_assert_target_does_not_have_property("imp_shared_mock_lib"
+      ct_assert_target_does_not_have_property("${shared_target_fullname}"
         IMPORTED_LOCATION_BUILD_DEBUG)
-      get_property(output_lib_property TARGET "imp_shared_mock_lib"
+      get_property(output_lib_property TARGET "${shared_target_fullname}"
         PROPERTY IMPORTED_LOCATION_BUILD_DEBUG SET)
       ct_assert_true(output_lib_property)
-      ct_assert_target_does_not_have_property("imp_shared_mock_lib"
+      ct_assert_target_does_not_have_property("${shared_target_fullname}"
         IMPORTED_LOCATION_INSTALL_DEBUG)
-      get_property(output_lib_property TARGET "imp_shared_mock_lib"
+      get_property(output_lib_property TARGET "${shared_target_fullname}"
         PROPERTY IMPORTED_LOCATION_INSTALL_DEBUG SET)
       ct_assert_true(output_lib_property)
     endfunction()
@@ -456,9 +455,9 @@ function(${CMAKETEST_TEST})
 
   ct_add_section(NAME "throws_if_arg_configuration_is_unsupported" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    set_target_properties("imp_shared_mock_lib" PROPERTIES
+    set_target_properties("${shared_target_fullname}" PROPERTIES
         IMPORTED_CONFIGURATIONS "DEBUG")
-    dependency(SET_IMPORTED_LOCATION "imp_shared_mock_lib"
+    dependency(SET_IMPORTED_LOCATION "${shared_target_fullname}"
       CONFIGURATION "RELEASE"
       INTERFACE
         "$<BUILD_INTERFACE:${shared_lib_file_path}>"
@@ -468,7 +467,7 @@ function(${CMAKETEST_TEST})
 
   ct_add_section(NAME "throws_if_arg_configuration_is_missing_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    dependency(SET_IMPORTED_LOCATION "imp_shared_mock_lib"
+    dependency(SET_IMPORTED_LOCATION "${shared_target_fullname}"
       CONFIGURATION
       INTERFACE
         "$<BUILD_INTERFACE:${shared_lib_file_path}>"
@@ -478,7 +477,7 @@ function(${CMAKETEST_TEST})
 
   ct_add_section(NAME "throws_if_arg_configuration_is_missing_2" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    dependency(SET_IMPORTED_LOCATION "imp_shared_mock_lib"
+    dependency(SET_IMPORTED_LOCATION "${shared_target_fullname}"
       CONFIGURATION ""
       INTERFACE
         "$<BUILD_INTERFACE:${shared_lib_file_path}>"
@@ -488,14 +487,14 @@ function(${CMAKETEST_TEST})
 
   ct_add_section(NAME "throws_if_arg_interface_is_missing_1" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    dependency(SET_IMPORTED_LOCATION "imp_shared_mock_lib"
+    dependency(SET_IMPORTED_LOCATION "${shared_target_fullname}"
       CONFIGURATION "RELEASE"
     )
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_interface_is_missing_2" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    dependency(SET_IMPORTED_LOCATION "imp_shared_mock_lib"
+    dependency(SET_IMPORTED_LOCATION "${shared_target_fullname}"
       CONFIGURATION "RELEASE"
       INTERFACE
     )
@@ -503,7 +502,7 @@ function(${CMAKETEST_TEST})
 
   ct_add_section(NAME "throws_if_arg_interface_is_missing_3" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    dependency(SET_IMPORTED_LOCATION "imp_shared_mock_lib"
+    dependency(SET_IMPORTED_LOCATION "${shared_target_fullname}"
       CONFIGURATION "RELEASE"
       INTERFACE ""
     )

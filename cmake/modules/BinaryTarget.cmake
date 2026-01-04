@@ -33,9 +33,15 @@ Usage
 .. signature::
   binary_target(CREATE <target-name> <STATIC|SHARED|HEADER|EXEC>)
 
-  Create a binary target named ``<target-name>`` and add it to the current
-  CMake project, according to the specified binary type: ``STATIC``, ``SHARED``
-  , ``HEADER``, ``EXEC``.
+  Create a binary target named ``<PROJECT_NAME>_<target-name>`` and add it to
+  the current CMake project, according to the specified binary type: ``STATIC``
+  , ``SHARED``, ``HEADER``, ``EXEC``. Note that the logical name of the target
+  ``<target-name>`` is prefixed with ``<PROJECT_NAME>_`` in order to follow
+  best practices. That is also why an aliased target is created with the name
+  ``<PROJECT_NAME>::<target-name>``, and the target properties
+  :cmake:prop_tgt:`OUTPUT_NAME <cmake:prop_tgt:OUTPUT_NAME>` and
+  :cmake:prop_tgt:`EXPORT_NAME <cmake:prop_tgt:EXPORT_NAME>` are set to
+  ``<target-name>``.
 
   A ``STATIC`` library forces ``BUILD_SHARED_LIBS`` to ``off`` and a ``SHARED``
   library sets visibility and export-related variables before creating the
@@ -107,7 +113,7 @@ Usage
   .. code-block:: cmake
 
     binary_target(CREATE "my_shared_lib" SHARED)
-    binary_target(CONFIGURE_SETTINGS "my_shared_lib"
+    binary_target(CONFIGURE_SETTINGS "<PROJECT_NAME>_my_shared_lib"
       COMPILE_FEATURES "cxx_std_20" "cxx_thread_local" "cxx_trailing_return_types"
       COMPILE_DEFINITIONS "DEFINE_ONE=1" "DEFINE_TWO=2" "OPTION_1"
       COMPILE_OPTIONS "-Wall" "-Wextra"
@@ -152,7 +158,7 @@ Usage
   .. code-block:: cmake
 
     binary_target(CREATE "my_static_lib" STATIC)
-    binary_target(ADD_SOURCES "my_static_lib"
+    binary_target(ADD_SOURCES "<PROJECT_NAME>_my_static_lib"
       SOURCE_FILES "src/main.cpp" "src/util.cpp" "src/source_1.cpp"
       PRIVATE_HEADER_FILES "src/util.h" "src/source_1.h"
       PUBLIC_HEADER_FILES "include/lib_1.h" "include/lib_2.h"
@@ -169,7 +175,7 @@ Usage
       PRIVATE_HEADER_DIR private_header_dir
       PRIVATE_HEADER_FILES private_headers
     )
-    binary_target(ADD_SOURCES "my_static_lib"
+    binary_target(ADD_SOURCES "<PROJECT_NAME>_my_static_lib"
       SOURCE_FILES "${private_sources}"
       PRIVATE_HEADER_FILES "${private_headers}"
       PUBLIC_HEADER_FILES "${public_headers}"
@@ -194,7 +200,7 @@ Usage
   .. code-block:: cmake
 
     binary_target(CREATE "my_static_lib" STATIC)
-    binary_target(ADD_PRECOMPILE_HEADER "my_static_lib"
+    binary_target(ADD_PRECOMPILE_HEADER "<PROJECT_NAME>_my_static_lib"
       HEADER_FILE "src/header_pch.h"
     )
 
@@ -248,13 +254,13 @@ Usage
 
     # With target name
     binary_target(CREATE "my_static_lib" STATIC)
-    binary_target(ADD_LINK_LIBRARIES "my_static_lib"
+    binary_target(ADD_LINK_LIBRARIES "<PROJECT_NAME>_my_static_lib"
       PUBLIC "dep_1" "dep_2"
     )
 
     # With generator expression
     binary_target(CREATE "my_static_lib" STATIC)
-    binary_target(ADD_LINK_LIBRARIES "my_static_lib"
+    binary_target(ADD_LINK_LIBRARIES "<PROJECT_NAME>_my_static_lib"
       PUBLIC
         "$<BUILD_INTERFACE:dep_1;dep_2>"
         "$<INSTALL_INTERFACE:dep_1;dep_2>"
@@ -410,8 +416,11 @@ macro(_binary_target_create)
       OR ("${arg_CREATE}" STREQUAL ""))
     message(FATAL_ERROR "${current_command} requires the keyword CREATE to be provided with a non-empty string value!")
   endif()
-  if(TARGET "${arg_CREATE}")
-    message(FATAL_ERROR "${current_command} requires the target \"${arg_CREATE}\" does not already exist!")
+  if(TARGET "${PROJECT_NAME}_${arg_CREATE}")
+    message(FATAL_ERROR "${current_command} requires the target \"${PROJECT_NAME}_${arg_CREATE}\" does not already exist!")
+  endif()
+  if(TARGET "${PROJECT_NAME}::${arg_CREATE}")
+    message(FATAL_ERROR "${current_command} requires the aliased target \"${PROJECT_NAME}::${arg_CREATE}\" does not already exist!")
   endif()
   if((NOT ${arg_STATIC})
       AND (NOT ${arg_SHARED})
@@ -423,11 +432,14 @@ macro(_binary_target_create)
     message(FATAL_ERROR "${current_command} requires SHARED, STATIC, HEADER and EXEC not to be used together, they are mutually exclusive!")
   endif()
 
+  set(bin_target_fullname "${PROJECT_NAME}_${arg_CREATE}")
+  set(bin_target_aliasname "${PROJECT_NAME}::${arg_CREATE}")
   if(${arg_STATIC})
     # All libraries will be built static unless the library was explicitly
     # added as a shared library
     set(BUILD_SHARED_LIBS off)
-    add_library("${arg_CREATE}" STATIC)
+    add_library("${bin_target_fullname}" STATIC)
+    add_library("${bin_target_aliasname}" ALIAS "${bin_target_fullname}")
   elseif(${arg_SHARED})
     # All libraries will be built shared unless the library was explicitly
     # added as a static library
@@ -436,14 +448,21 @@ macro(_binary_target_create)
     set(CMAKE_CXX_VISIBILITY_PRESET        "hidden")
     set(CMAKE_VISIBILITY_INLINES_HIDDEN    on)
     message(VERBOSE "Symbol visibility is configured as: no automatic exports, hidden by default, inline hidden")
-    add_library("${arg_CREATE}" SHARED)
+    add_library("${bin_target_fullname}" SHARED)
+    add_library("${bin_target_aliasname}" ALIAS "${bin_target_fullname}")
   elseif(${arg_HEADER})
-    add_library("${arg_CREATE}" INTERFACE)
+    add_library("${bin_target_fullname}" INTERFACE)
+    add_library("${bin_target_aliasname}" ALIAS "${bin_target_fullname}")
   elseif(${arg_EXEC})
-    add_executable("${arg_CREATE}")
+    add_executable("${bin_target_fullname}")
+    add_executable("${bin_target_aliasname}" ALIAS "${bin_target_fullname}")
   else()
     message(FATAL_ERROR "${current_command} called with an invalid binary type: expected STATIC, SHARED, HEADER or EXEC!")
   endif()
+  set_target_properties("${bin_target_fullname}" PROPERTIES
+    OUTPUT_NAME "${arg_CREATE}"
+    EXPORT_NAME "${arg_CREATE}"
+  )
 endmacro()
 
 #------------------------------------------------------------------------------
@@ -711,7 +730,7 @@ macro(_binary_target_create_fully)
   _binary_target_create()
 
   # Call binary_target(CONFIGURE_SETTINGS)
-  set(arg_CONFIGURE_SETTINGS "${arg_CREATE_FULLY}")
+  set(arg_CONFIGURE_SETTINGS "${PROJECT_NAME}_${arg_CREATE_FULLY}")
   if(NOT DEFINED arg_COMPILE_FEATURES)
     list(APPEND arg_KEYWORDS_MISSING_VALUES "COMPILE_FEATURES")
   endif()
@@ -727,24 +746,24 @@ macro(_binary_target_create_fully)
   _binary_target_config_settings()
 
   # Call binary_target(ADD_SOURCES)
-  set(arg_ADD_SOURCES "${arg_CREATE_FULLY}")
+  set(arg_ADD_SOURCES "${PROJECT_NAME}_${arg_CREATE_FULLY}")
   _binary_target_add_sources()
 
   # Call binary_target(ADD_PRECOMPILE_HEADER)
   if(DEFINED arg_PRECOMPILE_HEADER_FILE)
-    set(arg_ADD_PRECOMPILE_HEADER "${arg_CREATE_FULLY}")
+    set(arg_ADD_PRECOMPILE_HEADER "${PROJECT_NAME}_${arg_CREATE_FULLY}")
     set(arg_HEADER_FILE "${arg_PRECOMPILE_HEADER_FILE}")
     _binary_target_add_pre_header()
   endif()
 
   # Call binary_target(ADD_INCLUDE_DIRECTORIES)
-  set(arg_ADD_INCLUDE_DIRECTORIES "${arg_CREATE_FULLY}")
+  set(arg_ADD_INCLUDE_DIRECTORIES "${PROJECT_NAME}_${arg_CREATE_FULLY}")
   set(arg_PRIVATE "${arg_INCLUDE_DIRECTORIES}")
   _binary_target_add_include_dirs()
 
   # Call binary_target(ADD_LINK_LIBRARIES)
   if(DEFINED arg_LINK_LIBRARIES)
-    set(arg_ADD_LINK_LIBRARIES "${arg_CREATE_FULLY}")
+    set(arg_ADD_LINK_LIBRARIES "${PROJECT_NAME}_${arg_CREATE_FULLY}")
     set(arg_PUBLIC "${arg_LINK_LIBRARIES}")
     _binary_target_add_link_libraries()
   endif()
