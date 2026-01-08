@@ -1,12 +1,12 @@
-[submodule "external/CMakeTest"]
-  path = external/CMakeTest
+[submodule "third_party/CMakeTest"]
+  path = third_party/CMakeTest
   url = https://github.com/josephgarnier/CMakeTest.git
-[submodule "external/CMaize"]
-  path = external/CMaize
+[submodule "third_party/CMaize"]
+  path = third_party/CMaize
   url = https://github.com/josephgarnier/CMaize.git
-[submodule "external/CMakePPLang"]
-  path = external/CMakePPLang
+[submodule "third_party/CMakePPLang"]
+  path = third_party/CMakePPLang
   url = https://github.com/josephgarnier/CMakePPLang.git
-[submodule "external/ModernCMakeSphinxDomain"]
-  path = external/ModernCMakeSphinxDomain
+[submodule "third_party/ModernCMakeSphinxDomain"]
+  path = third_party/ModernCMakeSphinxDomain
   url = https://github.com/josephgarnier/moderncmakedomain

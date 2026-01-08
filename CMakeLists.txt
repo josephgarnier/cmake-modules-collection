@@ -41,8 +41,8 @@ list(APPEND CMAKE_MODULE_PATH
   "${${PROJECT_NAME}_CMAKE_MODULES_EXT_DIR}"
   "${${PROJECT_NAME}_CMAKE_TOOLCHAINS_DIR}")
 set(${PROJECT_NAME}_DOCS_DIR               "${${PROJECT_NAME}_PROJECT_DIR}/docs")
-set(${PROJECT_NAME}_EXTERNAL_DIR           "${${PROJECT_NAME}_PROJECT_DIR}/external")
 set(${PROJECT_NAME}_TESTS_DIR              "${${PROJECT_NAME}_PROJECT_DIR}/tests")
+set(${PROJECT_NAME}_THIRD_PARTY_DIR        "${${PROJECT_NAME}_PROJECT_DIR}/third_party")
 
 list(APPEND ${PROJECT_NAME}_PROJECT_DIRS
   "${${PROJECT_NAME}_BUILD_DIR}"
@@ -51,8 +51,8 @@ list(APPEND ${PROJECT_NAME}_PROJECT_DIRS
   "${${PROJECT_NAME}_CMAKE_MODULES_EXT_DIR}"
   "${${PROJECT_NAME}_CMAKE_TOOLCHAINS_DIR}"
   "${${PROJECT_NAME}_DOCS_DIR}"
-  "${${PROJECT_NAME}_EXTERNAL_DIR}"
-  "${${PROJECT_NAME}_TESTS_DIR}")
+  "${${PROJECT_NAME}_TESTS_DIR}"
+  "${${PROJECT_NAME}_THIRD_PARTY_DIR}")
 
 foreach(folder IN ITEMS ${${PROJECT_NAME}_PROJECT_DIRS})
   if((NOT EXISTS "${folder}") OR (NOT IS_DIRECTORY "${folder}"))
@@ -81,7 +81,7 @@ endif()
 message(STATUS "Build type set to ${CMAKE_BUILD_TYPE}")
 
 ####################### Import dependencies ###################################
-include("${${PROJECT_NAME}_EXTERNAL_DIR}/dependencies.cmake")
+include("${${PROJECT_NAME}_THIRD_PARTY_DIR}/dependencies.cmake")
 
 ####################### Add tests #############################################
 if(${BUILD_TESTS} AND ${cmake_test_FOUND})
