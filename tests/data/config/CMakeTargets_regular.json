@@ -20,12 +20,13 @@
       "extDependencies": {
         "AppleLib": {
           "rulesFile": "generic",
+          "minVersion": "1.15.0",
+          "integrationMethod": "FIND_AND_FETCH",
           "packageLocation": {
             "windows": "C:/Program Files/libs/apple/1.15.0",
             "unix": "/opt/apple/1.15.0",
             "macos": "/opt/apple/1.15.0"
           },
-          "minVersion": "1.15.0",
           "fetchInfo": {
             "autodownload": true,
             "kind": "git",

@@ -54,12 +54,13 @@ function(${CMAKETEST_TEST})
       "extDependencies": {
         "AppleLib": {
           "rulesFile": "generic",
+          "minVersion": "1.15.0",
+          "integrationMethod": "FIND_AND_FETCH",
           "packageLocation": {
             "windows": "C:/Program Files/libs/apple/1.15.0",
             "unix": "/opt/apple/1.15.0",
             "macos": "/opt/apple/1.15.0"
           },
-          "minVersion": "1.15.0",
           "fetchInfo": {
             "autodownload": true,
             "kind": "git",
@@ -158,6 +159,7 @@ function(${CMAKETEST_TEST})
       "extDependencies:AppleLib|BananaLib|CarrotLib|OrangeLib|PineappleLib"
       "extDependencies.AppleLib.rulesFile:generic"
       "extDependencies.AppleLib.minVersion:1.15.0"
+      "extDependencies.AppleLib.integrationMethod:FIND_AND_FETCH"
       "extDependencies.AppleLib.optional:OFF"
       "extDependencies.AppleLib.packageLocation.windows:C:/Program Files/libs/apple/1.15.0"
       "extDependencies.AppleLib.packageLocation.unix:/opt/apple/1.15.0"
@@ -268,12 +270,13 @@ function(${CMAKETEST_TEST})
       "extDependencies": {
         "AppleLib": {
           "rulesFile": "generic",
+          "minVersion": "1.15.0",
+          "integrationMethod": "FIND_AND_FETCH",
           "packageLocation": {
             "windows": "C:/Program Files/libs/apple/1.15.0",
             "unix": "/opt/apple/1.15.0",
             "macos": "/opt/apple/1.15.0"
           },
-          "minVersion": "1.15.0",
           "fetchInfo": {
             "autodownload": true,
             "kind": "git",
@@ -375,6 +378,7 @@ function(${CMAKETEST_TEST})
       "extDependencies:AppleLib|BananaLib|CarrotLib|OrangeLib|PineappleLib"
       "extDependencies.AppleLib.rulesFile:generic"
       "extDependencies.AppleLib.minVersion:1.15.0"
+      "extDependencies.AppleLib.integrationMethod:FIND_AND_FETCH"
       "extDependencies.AppleLib.optional:OFF"
       "extDependencies.AppleLib.packageLocation.windows:C:/Program Files/libs/apple/1.15.0"
       "extDependencies.AppleLib.packageLocation.unix:/opt/apple/1.15.0"

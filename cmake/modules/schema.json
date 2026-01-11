@@ -145,6 +145,20 @@
                         }
                       ]
                     },
+                    "minVersion": {
+                      "description": "The minimum acceptable version of the dependency (only required if rulesFile is 'generic')",
+                      "type": "string"
+                    },
+                    "integrationMethod": {
+                      "description": "The method used to find the dependency (only required if rulesFile is 'generic')",
+                      "type": "string",
+                      "enum": [
+                        "FIND_PACKAGE",
+                        "FETCH_CONTENT",
+                        "FIND_AND_FETCH",
+                        "EXTERNAL_PROJECT"
+                      ]
+                    },
                     "packageLocation": {
                       "description": "Additional location to search for the dependency package (only required if rulesFile is 'generic')",
                       "type": "object",
@@ -167,10 +181,6 @@
                       },
                       "required": [],
                       "additionalProperties": false
-                    },
-                    "minVersion": {
-                      "description": "The minimum acceptable version of the dependency (only required if rulesFile is 'generic')",
-                      "type": "string"
                     },
                     "fetchInfo": {
                       "description": "The information required to download the dependency package (only required if rulesFile is 'generic')",
@@ -332,9 +342,8 @@
                       },
                       "then": {
                         "required": [
-                          "packageLocation",
                           "minVersion",
-                          "fetchInfo",
+                          "integrationMethod",
                           "optional",
                           "build"
                         ],
@@ -348,6 +357,47 @@
                             ]
                           }
                         }
+                      }
+                    },
+                    {
+                      "if": {
+                        "properties": {
+                          "rulesFile": {
+                            "const": "generic"
+                          },
+                          "integrationMethod": {
+                            "enum": [
+                              "FIND_PACKAGE",
+                              "FIND_AND_FETCH"
+                            ]
+                          }
+                        }
+                      },
+                      "then": {
+                        "required": [
+                          "packageLocation"
+                        ]
+                      }
+                    },
+                    {
+                      "if": {
+                        "properties": {
+                          "rulesFile": {
+                            "const": "generic"
+                          },
+                          "integrationMethod": {
+                            "enum": [
+                              "FETCH_CONTENT",
+                              "FIND_AND_FETCH",
+                              "EXTERNAL_PROJECT"
+                            ]
+                          }
+                        }
+                      },
+                      "then": {
+                        "required": [
+                          "fetchInfo"
+                        ]
                       }
                     }
                   ],

@@ -108,10 +108,10 @@ The root object recognizes the following fields:
     A required string specifying the kind of binary to generate for this
     target. Valid values are:
 
-      * ``staticLib`` - a static library.
-      * ``sharedLib`` - a shared (dynamic) library.
-      * ``interfaceLib`` - a header-only library.
-      * ``executable`` - an executable program.
+    * ``staticLib`` - a static library.
+    * ``sharedLib`` - a shared (dynamic) library.
+    * ``interfaceLib`` - a header-only library.
+    * ``executable`` - an executable program.
 
     The type influences how the target is built and linked by the consuming
     CMake logic.
@@ -172,10 +172,10 @@ The root object recognizes the following fields:
         a single common folder or whether public headers are separated from
         private headers. Valid values are:
 
-          * ``split`` - public headers are stored in a different folder
-            (e.g., ``include/``) than private headers (e.g., ``src/``).
-          * ``merged`` - public and private headers are in the same folder
-            (e.g., ``src/``).
+        * ``split`` - public headers are stored in a different folder
+          (e.g., ``include/``) than private headers (e.g., ``src/``).
+        * ``merged`` - public and private headers are in the same folder
+          (e.g., ``src/``).
 
       ``includeDir``
         Required only if ``mode`` is ``split``. A path relative to the project
@@ -204,6 +204,23 @@ The root object recognizes the following fields:
       * a relative path to a ``.cmake`` file - the file must exist and contain
         the logic for handling the dependency.
 
+    ``minVersion``
+      A required string when ``rulesFile`` is ``generic``, otherwise optional,
+      specifying the minimum acceptable version of the dependency. This value
+      is intended to be used as the ``VERSION`` argument to
+      :cmake:command:`find_package() <cmake:command:find_package>`
+      calls for that dependency.
+
+    ``integrationMethod``
+      A required string when ``rulesFile`` is ``generic``, otherwise optional.
+      It specifies the integration method to use for bringing the external
+      dependency files. Valid values are:
+
+      * ``FIND_PACKAGE`` - bring the files with :cmake:command:`find_package() <cmake:command:find_package>`.
+      * ``FETCH_CONTENT`` - bring the files with :cmake:module:`FetchContent <cmake:module:FetchContent>`.
+      * ``FIND_AND_FETCH`` - bring the files with :cmake:module:`FetchContent <cmake:module:FetchContent>` in using the ``FIND_PACKAGE_ARGS`` option.
+      * ``EXTERNAL_PROJECT`` - bring the files with :cmake:module:`ExternalProject <cmake:module:ExternalProject>`.
+
     ``packageLocation``
       A required object when ``rulesFile`` is ``generic``, otherwise optional.
       It defines the location where the dependency package can be found. These
@@ -222,13 +239,6 @@ The root object recognizes the following fields:
       ``macos``
         An optional string representing the path to a directory containing
         the package for macOS. Whitespace is not allowed.
-
-    ``minVersion``
-      A required string when ``rulesFile`` is ``generic``, otherwise optional,
-      specifying the minimum acceptable version of the dependency. This value
-      is intended to be used as the ``VERSION`` argument to
-      :cmake:command:`find_package() <cmake:command:find_package>`
-      calls for that dependency.
 
     ``fetchInfo``
       A required object when ``rulesFile`` is ``generic``, otherwise optional.
@@ -602,7 +612,9 @@ Querying
 
   Try to retrieve the value associated to a specific setting key
   ``<setting-name>`` defined for a given target configuration in the global
-  property ``TARGETS_CONFIG_<target-dir-path>``.
+  property ``TARGETS_CONFIG_<target-dir-path>``. Contrary to
+  :command:`cmake_targets_file(GET_VALUE)`, no error is raised if the ``KEY``
+  does not exist in the target configuration.
 
   The ``<target-dir-path>`` specifies the directory path of the target whose
   configuration setting should be retrieved. This must correspond to a path
@@ -845,7 +857,7 @@ macro(_cmake_targets_file_load)
       _get_json_value(dep_rules_file "${dep_json_block}" "rulesFile" "STRING" true)
       _validate_json_string(PROP_PATH "rulesFile" PROP_VALUE "${dep_rules_file}" PATTERN "^((.+/)?[^/]+\\.cmake|generic)$")
       map(ADD target_config_map "extDependencies.${dep_name}.rulesFile" "${dep_rules_file}")
-      # Required flag (true/false depending on rulesFile)
+      # "Required" flag (true/false) depending on 'rulesFile' value
       set(is_generic false)
       if("${dep_rules_file}" STREQUAL "generic")
         set(is_generic true)
@@ -856,14 +868,42 @@ macro(_cmake_targets_file_load)
       if(NOT "${dep_min_version}" MATCHES "-NOTFOUND$")
         map(ADD target_config_map "extDependencies.${dep_name}.minVersion" "${dep_min_version}")
       endif()
+
+      _get_json_value(dep_integration_method "${dep_json_block}" "integrationMethod" "STRING" ${is_generic})
+      if(NOT "${dep_integration_method}" MATCHES "-NOTFOUND$")
+        _validate_json_string(PROP_PATH "integrationMethod" PROP_VALUE "${dep_integration_method}" PATTERN "^(FIND_PACKAGE|FETCH_CONTENT|FIND_AND_FETCH|EXTERNAL_PROJECT)$")
+        map(ADD target_config_map "extDependencies.${dep_name}.integrationMethod" "${dep_integration_method}")
+      endif()
+
       _get_json_value(dep_optional "${dep_json_block}" "optional" "BOOLEAN" ${is_generic})
       if(NOT "${dep_optional}" MATCHES "-NOTFOUND$")
         map(ADD target_config_map "extDependencies.${dep_name}.optional" "${dep_optional}")
       endif()
 
-      # Extract nested 'packageLocation' object properties
+      # "Required" flag (true/false) depending on 'integrationMethod' value
+      set(is_find_package_method false)
+      set(is_fetch_content_method false)
+      set(is_find_and_fetch_method false)
+      set(is_external_project_method false)
+      if("${dep_integration_method}" STREQUAL "FIND_PACKAGE")
+        set(is_find_package_method true)
+      elseif("${dep_integration_method}" STREQUAL "FETCH_CONTENT")
+        set(is_fetch_content_method true)
+      elseif("${dep_integration_method}" STREQUAL "FIND_AND_FETCH")
+        set(is_find_and_fetch_method true)
+      elseif("${dep_integration_method}" STREQUAL "EXTERNAL_PROJECT")
+        set(is_external_project_method true)
+      endif()
+
+      # Extract nested 'packageLocation' object properties. This property is
+      # required if 'integrationMethod' is 'FIND_PACKAGE' or 'FIND_AND_FETCH'
+      set(is_package_location_required false)
+      if(${is_generic}
+          AND (${is_find_package_method} OR ${is_find_and_fetch_method}))
+        set(is_package_location_required true)
+      endif()
       _get_json_value(dep_package_loc_json_block
-        "${dep_json_block}" "packageLocation" "OBJECT" ${is_generic})
+        "${dep_json_block}" "packageLocation" "OBJECT" ${is_package_location_required})
       if(NOT "${dep_package_loc_json_block}" MATCHES "-NOTFOUND$")
         foreach(prop_key "windows" "unix" "macos")
           _get_json_value(prop_value
@@ -889,8 +929,15 @@ macro(_cmake_targets_file_load)
         endforeach()
       endif()
 
-      # Extract nested 'fetchInfo' object properties
-      _get_json_value(dep_fetch_info_json_block "${dep_json_block}" "fetchInfo" "OBJECT" ${is_generic})
+      # Extract nested 'fetchInfo' object properties. This property is
+      # required if 'integrationMethod' is 'FETCH_CONTENT' or 'FIND_AND_FETCH'
+      # or 'EXTERNAL_PROJECT'
+      set(is_fetch_info_required false)
+      if(${is_generic}
+          AND (${is_fetch_content_method} OR ${is_find_and_fetch_method} OR ${is_external_project_method}))
+        set(is_fetch_info_required true)
+      endif()
+      _get_json_value(dep_fetch_info_json_block "${dep_json_block}" "fetchInfo" "OBJECT" ${is_fetch_info_required})
       if(NOT "${dep_fetch_info_json_block}" MATCHES "-NOTFOUND$")
         # Only 'autodownload' is required in fetchInfo when rulesFile is 'generic',
         # others properties are required only if autodownload is 'true'
@@ -899,7 +946,7 @@ macro(_cmake_targets_file_load)
           map(ADD target_config_map "extDependencies.${dep_name}.fetchInfo.autodownload" "${dep_fetch_autodownload}")
         endif()
 
-        # Required flag (true/false depending on autodownload)
+        # "Required" flag (true/false) depending on 'autodownload' value
         set(is_autodownload_true false)
         if(${dep_fetch_autodownload})
           set(is_autodownload_true true)
