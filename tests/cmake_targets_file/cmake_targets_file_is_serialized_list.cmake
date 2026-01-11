@@ -75,6 +75,7 @@ function(${CMAKETEST_TEST})
       "lemon"
       "watermelon"
       "peach"
+      ""
     )
     ct_assert_list(input_cmake_list)
     _is_serialized_list(is_serialized "${input_cmake_list}")
@@ -95,6 +96,7 @@ function(${CMAKETEST_TEST})
       "lemon"
       "watermelon"
       "peach"
+      ""
     )
     ct_assert_list(input_cmake_list)
     _is_serialized_list(is_serialized "${input_cmake_list}")

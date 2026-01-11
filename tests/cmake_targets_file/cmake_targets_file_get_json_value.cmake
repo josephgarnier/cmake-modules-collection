@@ -51,7 +51,8 @@ function(${CMAKETEST_TEST})
     "",
     "lemon",
     "watermelon",
-    "peach"
+    "peach",
+    ""
   ]
   ]=])
 
@@ -138,7 +139,8 @@ function(${CMAKETEST_TEST})
   "",
   "lemon",
   "watermelon",
-  "peach"
+  "peach",
+  ""
 ]]=]
       )
       string(JSON json_block_type TYPE "${input_json_array}")
@@ -246,7 +248,8 @@ function(${CMAKETEST_TEST})
   "",
   "lemon",
   "watermelon",
-  "peach"
+  "peach",
+  ""
 ]]=]
       )
       string(JSON json_block_type TYPE "${input_json_array}")
