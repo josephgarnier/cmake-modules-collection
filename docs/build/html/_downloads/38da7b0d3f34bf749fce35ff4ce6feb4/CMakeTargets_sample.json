@@ -28,7 +28,6 @@
             "macos": "/opt/apple/1.15.0"
           },
           "fetchInfo": {
-            "autodownload": true,
             "kind": "git",
             "repository": "https://github.com/lib/apple.git",
             "tag": "1234567"
@@ -44,15 +43,12 @@
         "BananaLib": {
           "rulesFile": "cmake/rules/RulesBananaLib.cmake",
           "minVersion": "4",
-          "fetchInfo": {
-            "autodownload": false
-          },
+          "fetchInfo": {},
           "optional": true
         },
         "CarrotLib": {
           "rulesFile": "cmake/rules/RulesCarrotLib.cmake",
           "fetchInfo": {
-            "autodownload": true,
             "kind": "svn",
             "repository": "svn://svn.carrot.lib.org/links/trunk",
             "revision": "1234567"
@@ -61,7 +57,6 @@
         "OrangeLib": {
           "rulesFile": "cmake/rules/RulesOrangeLib.cmake",
           "fetchInfo": {
-            "autodownload": true,
             "kind": "mercurial",
             "repository": "https://hg.example.com/RulesOrangeLib",
             "tag": "1234567"
@@ -70,7 +65,6 @@
         "PineappleLib": {
           "rulesFile": "cmake/rules/RulesPineappleLib.cmake",
           "fetchInfo": {
-            "autodownload": true,
             "kind": "url",
             "repository": "https://example.com/PineappleLib.zip",
             "hash": "1234567"

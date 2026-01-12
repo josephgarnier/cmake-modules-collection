@@ -35,7 +35,6 @@ function(${CMAKETEST_TEST})
     "extDependencies.AppleLib.packageLocation.windows:C:/Program Files/libs/apple/1.15.0"
     "extDependencies.AppleLib.packageLocation.unix:/opt/apple/1.15.0"
     "extDependencies.AppleLib.packageLocation.macos:/opt/apple/1.15.0"
-    "extDependencies.AppleLib.fetchInfo.autodownload:ON"
     "extDependencies.AppleLib.fetchInfo.kind:git"
     "extDependencies.AppleLib.fetchInfo.repository:https://github.com/lib/apple.git"
     "extDependencies.AppleLib.fetchInfo.tag:1234567"
@@ -46,19 +45,15 @@ function(${CMAKETEST_TEST})
     "extDependencies.BananaLib.rulesFile:RulesBananaLib.cmake"
     "extDependencies.BananaLib.minVersion:4"
     "extDependencies.BananaLib.optional:ON"
-    "extDependencies.BananaLib.fetchInfo.autodownload:OFF"
     "extDependencies.CarrotLib.rulesFile:RulesCarrotLib.cmake"
-    "extDependencies.CarrotLib.fetchInfo.autodownload:ON"
     "extDependencies.CarrotLib.fetchInfo.kind:svn"
     "extDependencies.CarrotLib.fetchInfo.repository:svn://svn.carrot.lib.org/links/trunk"
     "extDependencies.CarrotLib.fetchInfo.revision:1234567"
     "extDependencies.OrangeLib.rulesFile:RulesOrangeLib.cmake"
-    "extDependencies.OrangeLib.fetchInfo.autodownload:ON"
     "extDependencies.OrangeLib.fetchInfo.kind:mercurial"
     "extDependencies.OrangeLib.fetchInfo.repository:https://hg.example.com/RulesOrangeLib"
     "extDependencies.OrangeLib.fetchInfo.tag:1234567"
     "extDependencies.PineappleLib.rulesFile:RulesPineappleLib.cmake"
-    "extDependencies.PineappleLib.fetchInfo.autodownload:ON"
     "extDependencies.PineappleLib.fetchInfo.kind:url"
     "extDependencies.PineappleLib.fetchInfo.repository:https://example.com/PineappleLib.zip"
     "extDependencies.PineappleLib.fetchInfo.hash:1234567"
@@ -91,9 +86,6 @@ function(${CMAKETEST_TEST})
     ct_assert_equal(output "1.15.0")
     
     # Get boolean values
-    cmake_targets_file(TRY_GET_VALUE output TARGET "src" KEY "extDependencies.AppleLib.fetchInfo.autodownload")
-    ct_assert_true(output)
-    ct_assert_equal(output "ON")
     cmake_targets_file(TRY_GET_VALUE output TARGET "src" KEY "extDependencies.AppleLib.optional")
     ct_assert_false(output)
     ct_assert_equal(output "OFF")
