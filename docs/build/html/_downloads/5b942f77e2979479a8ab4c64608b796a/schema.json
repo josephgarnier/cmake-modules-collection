@@ -182,7 +182,7 @@
                       "required": [],
                       "additionalProperties": false
                     },
-                    "fetchInfo": {
+                    "downloadInfo": {
                       "description": "The information required to download the dependency package (only required if rulesFile is 'generic')",
                       "type": "object",
                       "properties": {
@@ -285,7 +285,7 @@
                               "linkOptions"
                             ]
                           },
-                          "fetchInfo": {
+                          "downloadInfo": {
                             "required": [
                               "kind",
                               "repository"
@@ -387,7 +387,7 @@
                       },
                       "then": {
                         "required": [
-                          "fetchInfo"
+                          "downloadInfo"
                         ]
                       }
                     }

@@ -61,7 +61,7 @@ function(${CMAKETEST_TEST})
             "unix": "/opt/apple/1.15.0",
             "macos": "/opt/apple/1.15.0"
           },
-          "fetchInfo": {
+          "downloadInfo": {
             "kind": "git",
             "repository": "https://github.com/lib/apple.git",
             "tag": "1234567"
@@ -77,12 +77,12 @@ function(${CMAKETEST_TEST})
         "BananaLib": {
           "rulesFile": "cmake/rules/RulesBananaLib.cmake",
           "minVersion": "4",
-          "fetchInfo": {},
+          "downloadInfo": {},
           "optional": true
         },
         "CarrotLib": {
           "rulesFile": "cmake/rules/RulesCarrotLib.cmake",
-          "fetchInfo": {
+          "downloadInfo": {
             "kind": "svn",
             "repository": "svn://svn.carrot.lib.org/links/trunk",
             "revision": "1234567"
@@ -90,7 +90,7 @@ function(${CMAKETEST_TEST})
         },
         "OrangeLib": {
           "rulesFile": "cmake/rules/RulesOrangeLib.cmake",
-          "fetchInfo": {
+          "downloadInfo": {
             "kind": "mercurial",
             "repository": "https://hg.example.com/RulesOrangeLib",
             "tag": "1234567"
@@ -98,7 +98,7 @@ function(${CMAKETEST_TEST})
         },
         "PineappleLib": {
           "rulesFile": "cmake/rules/RulesPineappleLib.cmake",
-          "fetchInfo": {
+          "downloadInfo": {
             "kind": "url",
             "repository": "https://example.com/PineappleLib.zip",
             "hash": "1234567"
@@ -158,9 +158,9 @@ function(${CMAKETEST_TEST})
       "extDependencies.AppleLib.packageLocation.windows:C:/Program Files/libs/apple/1.15.0"
       "extDependencies.AppleLib.packageLocation.unix:/opt/apple/1.15.0"
       "extDependencies.AppleLib.packageLocation.macos:/opt/apple/1.15.0"
-      "extDependencies.AppleLib.fetchInfo.kind:git"
-      "extDependencies.AppleLib.fetchInfo.repository:https://github.com/lib/apple.git"
-      "extDependencies.AppleLib.fetchInfo.tag:1234567"
+      "extDependencies.AppleLib.downloadInfo.kind:git"
+      "extDependencies.AppleLib.downloadInfo.repository:https://github.com/lib/apple.git"
+      "extDependencies.AppleLib.downloadInfo.tag:1234567"
       "extDependencies.AppleLib.build.compileFeatures:cxx_std_20"
       "extDependencies.AppleLib.build.compileDefinitions:DEFINE_ONE=1"
       "extDependencies.AppleLib.build.compileOptions:-Wall"
@@ -169,17 +169,17 @@ function(${CMAKETEST_TEST})
       "extDependencies.BananaLib.minVersion:4"
       "extDependencies.BananaLib.optional:ON"
       "extDependencies.CarrotLib.rulesFile:cmake/rules/RulesCarrotLib.cmake"
-      "extDependencies.CarrotLib.fetchInfo.kind:svn"
-      "extDependencies.CarrotLib.fetchInfo.repository:svn://svn.carrot.lib.org/links/trunk"
-      "extDependencies.CarrotLib.fetchInfo.revision:1234567"
+      "extDependencies.CarrotLib.downloadInfo.kind:svn"
+      "extDependencies.CarrotLib.downloadInfo.repository:svn://svn.carrot.lib.org/links/trunk"
+      "extDependencies.CarrotLib.downloadInfo.revision:1234567"
       "extDependencies.OrangeLib.rulesFile:cmake/rules/RulesOrangeLib.cmake"
-      "extDependencies.OrangeLib.fetchInfo.kind:mercurial"
-      "extDependencies.OrangeLib.fetchInfo.repository:https://hg.example.com/RulesOrangeLib"
-      "extDependencies.OrangeLib.fetchInfo.tag:1234567"
+      "extDependencies.OrangeLib.downloadInfo.kind:mercurial"
+      "extDependencies.OrangeLib.downloadInfo.repository:https://hg.example.com/RulesOrangeLib"
+      "extDependencies.OrangeLib.downloadInfo.tag:1234567"
       "extDependencies.PineappleLib.rulesFile:cmake/rules/RulesPineappleLib.cmake"
-      "extDependencies.PineappleLib.fetchInfo.kind:url"
-      "extDependencies.PineappleLib.fetchInfo.repository:https://example.com/PineappleLib.zip"
-      "extDependencies.PineappleLib.fetchInfo.hash:1234567"
+      "extDependencies.PineappleLib.downloadInfo.kind:url"
+      "extDependencies.PineappleLib.downloadInfo.repository:https://example.com/PineappleLib.zip"
+      "extDependencies.PineappleLib.downloadInfo.hash:1234567"
     )
     set(expected_src_apple_config_output
       "name:apple"
@@ -266,7 +266,7 @@ function(${CMAKETEST_TEST})
             "unix": "/opt/apple/1.15.0",
             "macos": "/opt/apple/1.15.0"
           },
-          "fetchInfo": {
+          "downloadInfo": {
             "kind": "git",
             "repository": "https://github.com/lib/apple.git",
             "tag": "1234567"
@@ -283,13 +283,13 @@ function(${CMAKETEST_TEST})
         "BananaLib": {
           "rulesFile": "cmake/rules/RulesBananaLib.cmake",
           "minVersion": "4",
-          "fetchInfo": {},
+          "downloadInfo": {},
           "optional": true,
           "extraDepKey": "extraValue"
         },
         "CarrotLib": {
           "rulesFile": "cmake/rules/RulesCarrotLib.cmake",
-          "fetchInfo": {
+          "downloadInfo": {
             "kind": "svn",
             "repository": "svn://svn.carrot.lib.org/links/trunk",
             "revision": "1234567"
@@ -297,7 +297,7 @@ function(${CMAKETEST_TEST})
         },
         "OrangeLib": {
           "rulesFile": "cmake/rules/RulesOrangeLib.cmake",
-          "fetchInfo": {
+          "downloadInfo": {
             "kind": "mercurial",
             "repository": "https://hg.example.com/RulesOrangeLib",
             "tag": "1234567"
@@ -305,7 +305,7 @@ function(${CMAKETEST_TEST})
         },
         "PineappleLib": {
           "rulesFile": "cmake/rules/RulesPineappleLib.cmake",
-          "fetchInfo": {
+          "downloadInfo": {
             "kind": "url",
             "repository": "https://example.com/PineappleLib.zip",
             "hash": "1234567"
@@ -366,9 +366,9 @@ function(${CMAKETEST_TEST})
       "extDependencies.AppleLib.packageLocation.windows:C:/Program Files/libs/apple/1.15.0"
       "extDependencies.AppleLib.packageLocation.unix:/opt/apple/1.15.0"
       "extDependencies.AppleLib.packageLocation.macos:/opt/apple/1.15.0"
-      "extDependencies.AppleLib.fetchInfo.kind:git"
-      "extDependencies.AppleLib.fetchInfo.repository:https://github.com/lib/apple.git"
-      "extDependencies.AppleLib.fetchInfo.tag:1234567"
+      "extDependencies.AppleLib.downloadInfo.kind:git"
+      "extDependencies.AppleLib.downloadInfo.repository:https://github.com/lib/apple.git"
+      "extDependencies.AppleLib.downloadInfo.tag:1234567"
       "extDependencies.AppleLib.build.compileFeatures:cxx_std_20"
       "extDependencies.AppleLib.build.compileDefinitions:DEFINE_ONE=1"
       "extDependencies.AppleLib.build.compileOptions:-Wall"
@@ -377,17 +377,17 @@ function(${CMAKETEST_TEST})
       "extDependencies.BananaLib.minVersion:4"
       "extDependencies.BananaLib.optional:ON"
       "extDependencies.CarrotLib.rulesFile:cmake/rules/RulesCarrotLib.cmake"
-      "extDependencies.CarrotLib.fetchInfo.kind:svn"
-      "extDependencies.CarrotLib.fetchInfo.repository:svn://svn.carrot.lib.org/links/trunk"
-      "extDependencies.CarrotLib.fetchInfo.revision:1234567"
+      "extDependencies.CarrotLib.downloadInfo.kind:svn"
+      "extDependencies.CarrotLib.downloadInfo.repository:svn://svn.carrot.lib.org/links/trunk"
+      "extDependencies.CarrotLib.downloadInfo.revision:1234567"
       "extDependencies.OrangeLib.rulesFile:cmake/rules/RulesOrangeLib.cmake"
-      "extDependencies.OrangeLib.fetchInfo.kind:mercurial"
-      "extDependencies.OrangeLib.fetchInfo.repository:https://hg.example.com/RulesOrangeLib"
-      "extDependencies.OrangeLib.fetchInfo.tag:1234567"
+      "extDependencies.OrangeLib.downloadInfo.kind:mercurial"
+      "extDependencies.OrangeLib.downloadInfo.repository:https://hg.example.com/RulesOrangeLib"
+      "extDependencies.OrangeLib.downloadInfo.tag:1234567"
       "extDependencies.PineappleLib.rulesFile:cmake/rules/RulesPineappleLib.cmake"
-      "extDependencies.PineappleLib.fetchInfo.kind:url"
-      "extDependencies.PineappleLib.fetchInfo.repository:https://example.com/PineappleLib.zip"
-      "extDependencies.PineappleLib.fetchInfo.hash:1234567"
+      "extDependencies.PineappleLib.downloadInfo.kind:url"
+      "extDependencies.PineappleLib.downloadInfo.repository:https://example.com/PineappleLib.zip"
+      "extDependencies.PineappleLib.downloadInfo.hash:1234567"
     )
     set(expected_src_apple_config_output
       "name:apple"

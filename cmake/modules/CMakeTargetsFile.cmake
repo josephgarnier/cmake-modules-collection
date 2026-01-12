@@ -240,7 +240,7 @@ The root object recognizes the following fields:
         An optional string representing the path to a directory containing
         the package for macOS. Whitespace is not allowed.
 
-    ``fetchInfo``
+    ``downloadInfo``
       A required object when ``rulesFile`` is ``generic``, otherwise optional.
       It provides the information needed to download the dependency package if
       it is not available locally. Theses informations are intended to be used
@@ -926,7 +926,7 @@ macro(_cmake_targets_file_load)
         endforeach()
       endif()
 
-      # Extract nested 'fetchInfo' object properties. This property is required
+      # Extract nested 'downloadInfo' object properties. This property is required
       # if rulesFile is 'generic' and if integrationMethod is 'FETCH_CONTENT'
       # or 'FIND_AND_FETCH' or 'EXTERNAL_PROJECT'
       set(is_fetch_info_required false)
@@ -936,31 +936,31 @@ macro(_cmake_targets_file_load)
                   OR ${is_external_project_method}))
         set(is_fetch_info_required true)
       endif()
-      _get_json_value(dep_fetch_info_json_block "${dep_json_block}" "fetchInfo" "OBJECT" ${is_fetch_info_required})
+      _get_json_value(dep_fetch_info_json_block "${dep_json_block}" "downloadInfo" "OBJECT" ${is_fetch_info_required})
       if(NOT "${dep_fetch_info_json_block}" MATCHES "-NOTFOUND$")
         _get_json_value(dep_fetch_kind "${dep_fetch_info_json_block}" "kind" "STRING" ${is_generic})
         if(NOT "${dep_fetch_kind}" MATCHES "-NOTFOUND$")
-            _validate_json_string(PROP_PATH "fetchInfo;kind" PROP_VALUE "${dep_fetch_kind}" PATTERN "^(url|git|svn|mercurial)$")
-            map(ADD target_config_map "extDependencies.${dep_name}.fetchInfo.kind" "${dep_fetch_kind}")
+            _validate_json_string(PROP_PATH "downloadInfo;kind" PROP_VALUE "${dep_fetch_kind}" PATTERN "^(url|git|svn|mercurial)$")
+            map(ADD target_config_map "extDependencies.${dep_name}.downloadInfo.kind" "${dep_fetch_kind}")
 
             if("${dep_fetch_kind}" MATCHES "^(git|mercurial)$")
               foreach(prop_key "repository" "tag")
                 _get_json_value(prop_value "${dep_fetch_info_json_block}" "${prop_key}" "STRING" ${is_generic})
-                map(ADD target_config_map "extDependencies.${dep_name}.fetchInfo.${prop_key}" "${prop_value}")
+                map(ADD target_config_map "extDependencies.${dep_name}.downloadInfo.${prop_key}" "${prop_value}")
               endforeach()
             endif()
 
             if("${dep_fetch_kind}" STREQUAL "url")
               foreach(prop_key "repository" "hash")
                 _get_json_value(prop_value "${dep_fetch_info_json_block}" "${prop_key}" "STRING" ${is_generic})
-                map(ADD target_config_map "extDependencies.${dep_name}.fetchInfo.${prop_key}" "${prop_value}")
+                map(ADD target_config_map "extDependencies.${dep_name}.downloadInfo.${prop_key}" "${prop_value}")
               endforeach()
             endif()
 
             if("${dep_fetch_kind}" STREQUAL "svn")
               foreach(prop_key "repository" "revision")
                 _get_json_value(prop_value "${dep_fetch_info_json_block}" "${prop_key}" "STRING" ${is_generic})
-                map(ADD target_config_map "extDependencies.${dep_name}.fetchInfo.${prop_key}" "${prop_value}")
+                map(ADD target_config_map "extDependencies.${dep_name}.downloadInfo.${prop_key}" "${prop_value}")
               endforeach()
             endif()
         endif()
@@ -1785,7 +1785,7 @@ macro(_cmake_targets_file_print_target_config)
   _deserialize_list(dep_names "${dep_names}")
   foreach(dep_name IN ITEMS ${dep_names})
     message(STATUS "    ${dep_name}:")
-    foreach(dep_prop_key "rulesFile" "packageLocation.windows" "packageLocation.unix" "packageLocation.macos" "minVersion" "integrationMethod" "fetchInfo.kind" "fetchInfo.repository" "fetchInfo.tag" "fetchInfo.hash" "fetchInfo.revision" "optional" "build.compileFeatures" "build.compileDefinitions" "build.compileOptions" "build.linkOptions")
+    foreach(dep_prop_key "rulesFile" "packageLocation.windows" "packageLocation.unix" "packageLocation.macos" "minVersion" "integrationMethod" "downloadInfo.kind" "downloadInfo.repository" "downloadInfo.tag" "downloadInfo.hash" "downloadInfo.revision" "optional" "build.compileFeatures" "build.compileDefinitions" "build.compileOptions" "build.linkOptions")
       map(HAS_KEY target_config_map "extDependencies.${dep_name}.${dep_prop_key}" has_setting_key)
       if(${has_setting_key})
         map(GET target_config_map "extDependencies.${dep_name}.${dep_prop_key}" dep_prop_value)
