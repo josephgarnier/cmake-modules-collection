@@ -30,30 +30,28 @@ if (${BUILD_TESTS})
 
     # Store whether we are building tests or not, then turn off the tests
     set(build_testing_old "${BUILD_TESTING}")
-    set(BUILD_TESTING off CACHE BOOL "" FORCE)
+    set(BUILD_TESTING OFF CACHE BOOL "" FORCE)
 
     # Download CMakeTest and bring it into scope
     include(FetchContent)
-    set(FETCHCONTENT_QUIET off)
     FetchContent_Declare(
       cmake_test
       GIT_REPOSITORY https://github.com/josephgarnier/CMakeTest.git
-      GIT_SHALLOW on
-      GIT_PROGRESS on
+      GIT_SHALLOW ON
+      GIT_PROGRESS ON
+      DOWNLOAD_NO_PROGRESS OFF
+      LOG_DOWNLOAD ON
+      LOG_UPDATE ON
+      LOG_PATCH ON
+      LOG_CONFIGURE ON
+      LOG_BUILD ON
+      LOG_INSTALL ON
+      LOG_TEST ON
+      LOG_MERGED_STDOUTERR ON
+      LOG_OUTPUT_ON_FAILURE ON
+      USES_TERMINAL_DOWNLOAD ON
       EXCLUDE_FROM_ALL
       SYSTEM
-      STAMP_DIR "${${PROJECT_NAME}_BUILD_DIR}"
-      DOWNLOAD_NO_PROGRESS off
-      LOG_DOWNLOAD on
-      LOG_UPDATE on
-      LOG_PATCH on
-      LOG_CONFIGURE on
-      LOG_BUILD on
-      LOG_INSTALL on
-      LOG_TEST on
-      LOG_MERGED_STDOUTERR on
-      LOG_OUTPUT_ON_FAILURE on
-      USES_TERMINAL_DOWNLOAD on
     )
     FetchContent_MakeAvailable(cmake_test)
 
