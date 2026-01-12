@@ -90,9 +90,9 @@ target_link_options("${static_mock_lib_fullname}"
 )
 target_sources("${static_mock_lib_fullname}"
   PRIVATE
-    "${SOURCE_FILES}"
-    "${PUBLIC_HEADER_FILES}"
-    "${PRIVATE_HEADER_FILES}"
+    ${SOURCE_FILES}
+    ${PUBLIC_HEADER_FILES}
+    ${PRIVATE_HEADER_FILES}
 )
 target_precompile_headers("${static_mock_lib_fullname}"
   PRIVATE
@@ -146,9 +146,9 @@ target_link_options("${shared_mock_lib_fullname}"
 )
 target_sources("${shared_mock_lib_fullname}"
   PRIVATE
-    "${SOURCE_FILES}"
-    "${PUBLIC_HEADER_FILES}"
-    "${PRIVATE_HEADER_FILES}"
+    ${SOURCE_FILES}
+    ${PUBLIC_HEADER_FILES}
+    ${PRIVATE_HEADER_FILES}
 )
 target_precompile_headers("${shared_mock_lib_fullname}"
   PRIVATE
