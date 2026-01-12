@@ -39,7 +39,6 @@ if (${BUILD_TESTS})
       GIT_REPOSITORY https://github.com/josephgarnier/CMakeTest.git
       GIT_SHALLOW ON
       GIT_PROGRESS ON
-      DOWNLOAD_NO_PROGRESS OFF
       LOG_DOWNLOAD ON
       LOG_UPDATE ON
       LOG_PATCH ON
