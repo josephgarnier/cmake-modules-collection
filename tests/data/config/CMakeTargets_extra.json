@@ -20,8 +20,9 @@
       "extDependencies": {
         "AppleLib": {
           "rulesFile": "generic",
+          "optional": false,
           "minVersion": "1.15.0",
-          "integrationMethod": "FIND_AND_FETCH",
+          "integrationMethod": "FIND_THEN_FETCH",
           "packageLocation": {
             "windows": "C:/Program Files/libs/apple/1.15.0",
             "unix": "/opt/apple/1.15.0",
@@ -32,7 +33,6 @@
             "repository": "https://github.com/lib/apple.git",
             "tag": "1234567"
           },
-          "optional": false,
           "build": {
             "compileFeatures": ["cxx_std_20"],
             "compileDefinitions": ["DEFINE_ONE=1"],
@@ -43,9 +43,9 @@
         },
         "BananaLib": {
           "rulesFile": "cmake/rules/RulesBananaLib.cmake",
+          "optional": true,
           "minVersion": "4",
           "downloadInfo": {},
-          "optional": true,
           "extraDepKey": "extraValue"
         },
         "CarrotLib": {
@@ -75,8 +75,8 @@
       },
       "extraKey": "extraValue"
     },
-    "src/apple": {
-      "name": "apple",
+    "src/grape": {
+      "name": "grape",
       "type": "staticLib",
       "build": {
         "compileFeatures": [],
@@ -84,14 +84,14 @@
         "compileOptions": [],
         "linkOptions": []
       },
-      "mainFile": "src/apple/main.cpp",
+      "mainFile": "src/grape/main.cpp",
       "headerPolicy": {
         "mode": "merged"
       },
       "extDependencies": {}
     },
-    "src/banana": {
-      "name": "banana",
+    "src/lemon": {
+      "name": "lemon",
       "type": "staticLib",
       "build": {
         "compileFeatures": [],
@@ -99,7 +99,7 @@
         "compileOptions": [],
         "linkOptions": []
       },
-      "mainFile": "src/banana/main.cpp",
+      "mainFile": "src/lemon/main.cpp",
       "headerPolicy": {
         "mode": "merged"
       },

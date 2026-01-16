@@ -29,9 +29,9 @@ function(${CMAKETEST_TEST})
     "headerPolicy.includeDir:include"
     "extDependencies:AppleLib|BananaLib|CarrotLib|OrangeLib|PineappleLib"
     "extDependencies.AppleLib.rulesFile:generic"
-    "extDependencies.AppleLib.minVersion:1.15.0"
-    "extDependencies.AppleLib.integrationMethod:FIND_AND_FETCH"
     "extDependencies.AppleLib.optional:OFF"
+    "extDependencies.AppleLib.minVersion:1.15.0"
+    "extDependencies.AppleLib.integrationMethod:FIND_THEN_FETCH"
     "extDependencies.AppleLib.packageLocation.windows:C:/Program Files/libs/apple/1.15.0"
     "extDependencies.AppleLib.packageLocation.unix:/opt/apple/1.15.0"
     "extDependencies.AppleLib.packageLocation.macos:/opt/apple/1.15.0"
@@ -43,8 +43,8 @@ function(${CMAKETEST_TEST})
     "extDependencies.AppleLib.build.compileOptions:-Wall"
     "extDependencies.AppleLib.build.linkOptions:-s"
     "extDependencies.BananaLib.rulesFile:RulesBananaLib.cmake"
-    "extDependencies.BananaLib.minVersion:4"
     "extDependencies.BananaLib.optional:ON"
+    "extDependencies.BananaLib.minVersion:4"
     "extDependencies.CarrotLib.rulesFile:RulesCarrotLib.cmake"
     "extDependencies.CarrotLib.downloadInfo.kind:svn"
     "extDependencies.CarrotLib.downloadInfo.repository:svn://svn.carrot.lib.org/links/trunk"
@@ -60,10 +60,10 @@ function(${CMAKETEST_TEST})
     "invalid"
     ":invalid"
   )
-  set(input_src_apple_config
-    "name:apple"
+  set(input_src_grape_config
+    "name:grape"
     "type:staticLib"
-    "mainFile:src/apple/main.cpp"
+    "mainFile:src/grape/main.cpp"
     "build.compileFeatures:"
     "build.compileDefinitions:"
     "build.compileOptions:"
@@ -73,10 +73,10 @@ function(${CMAKETEST_TEST})
     "invalid"
     ":invalid"
   )
-  set(input_src_banana_config
-    "name:banana"
+  set(input_src_lemon_config
+    "name:lemon"
     "type:staticLib"
-    "mainFile:src/banana/main.cpp"
+    "mainFile:src/lemon/main.cpp"
     "build.compileFeatures:"
     "build.compileDefinitions:"
     "build.compileOptions:"
@@ -92,8 +92,8 @@ function(${CMAKETEST_TEST})
     # Reset properties used by `cmake_targets_file(PRINT_TARGET_CONFIG)`
     set_property(GLOBAL PROPERTY TARGETS_CONFIG_LOADED)
     set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src")
-    set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/apple")
-    set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/banana")
+    set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/grape")
+    set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/lemon")
   endmacro()
   
   # Functionalities checking
@@ -104,11 +104,11 @@ function(${CMAKETEST_TEST})
     set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src" "${input_src_config}")
     cmake_targets_file(PRINT_TARGET_CONFIG "src")
 
-    set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/apple" "${input_src_apple_config}")
-    cmake_targets_file(PRINT_TARGET_CONFIG "src/apple")
+    set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/grape" "${input_src_grape_config}")
+    cmake_targets_file(PRINT_TARGET_CONFIG "src/grape")
 
-    set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/banana" "${input_src_banana_config}")
-    cmake_targets_file(PRINT_TARGET_CONFIG "src/banana")
+    set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/lemon" "${input_src_lemon_config}")
+    cmake_targets_file(PRINT_TARGET_CONFIG "src/lemon")
   endfunction()
 
   # Errors checking
@@ -157,7 +157,7 @@ function(${CMAKETEST_TEST})
 
       ct_add_section(NAME "throws_if_global_property_is_different_target_inner" EXPECTFAIL)
       function(${CMAKETEST_SECTION})
-        cmake_targets_file(PRINT_TARGET_CONFIG "src/apple")
+        cmake_targets_file(PRINT_TARGET_CONFIG "src/grape")
       endfunction()
     endfunction()
   endfunction()

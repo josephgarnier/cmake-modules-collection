@@ -22,8 +22,8 @@ function(${CMAKETEST_TEST})
     set_property(GLOBAL PROPERTY TARGETS_CONFIG_LIST)
     set_property(GLOBAL PROPERTY TARGETS_CONFIG_LOADED)
     set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src")
-    set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/apple")
-    set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/banana")
+    set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/grape")
+    set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/lemon")
   endmacro()
 
   # Functionalities checking
@@ -54,8 +54,9 @@ function(${CMAKETEST_TEST})
       "extDependencies": {
         "AppleLib": {
           "rulesFile": "generic",
+          "optional": false,
           "minVersion": "1.15.0",
-          "integrationMethod": "FIND_AND_FETCH",
+          "integrationMethod": "FIND_THEN_FETCH",
           "packageLocation": {
             "windows": "C:/Program Files/libs/apple/1.15.0",
             "unix": "/opt/apple/1.15.0",
@@ -66,7 +67,6 @@ function(${CMAKETEST_TEST})
             "repository": "https://github.com/lib/apple.git",
             "tag": "1234567"
           },
-          "optional": false,
           "build": {
             "compileFeatures": ["cxx_std_20"],
             "compileDefinitions": ["DEFINE_ONE=1"],
@@ -76,9 +76,9 @@ function(${CMAKETEST_TEST})
         },
         "BananaLib": {
           "rulesFile": "cmake/rules/RulesBananaLib.cmake",
+          "optional": true,
           "minVersion": "4",
-          "downloadInfo": {},
-          "optional": true
+          "downloadInfo": {}
         },
         "CarrotLib": {
           "rulesFile": "cmake/rules/RulesCarrotLib.cmake",
@@ -106,8 +106,8 @@ function(${CMAKETEST_TEST})
         }
       }
     },
-    "src/apple": {
-      "name": "apple",
+    "src/grape": {
+      "name": "grape",
       "type": "staticLib",
       "build": {
         "compileFeatures": [],
@@ -115,14 +115,14 @@ function(${CMAKETEST_TEST})
         "compileOptions": [],
         "linkOptions": []
       },
-      "mainFile": "src/apple/main.cpp",
+      "mainFile": "src/grape/main.cpp",
       "headerPolicy": {
         "mode": "merged"
       },
       "extDependencies": {}
     },
-    "src/banana": {
-      "name": "banana",
+    "src/lemon": {
+      "name": "lemon",
       "type": "staticLib",
       "build": {
         "compileFeatures": [],
@@ -130,7 +130,7 @@ function(${CMAKETEST_TEST})
         "compileOptions": [],
         "linkOptions": []
       },
-      "mainFile": "src/banana/main.cpp",
+      "mainFile": "src/lemon/main.cpp",
       "headerPolicy": {
         "mode": "merged"
       },
@@ -152,9 +152,9 @@ function(${CMAKETEST_TEST})
       "headerPolicy.includeDir:include"
       "extDependencies:AppleLib|BananaLib|CarrotLib|OrangeLib|PineappleLib"
       "extDependencies.AppleLib.rulesFile:generic"
-      "extDependencies.AppleLib.minVersion:1.15.0"
-      "extDependencies.AppleLib.integrationMethod:FIND_AND_FETCH"
       "extDependencies.AppleLib.optional:OFF"
+      "extDependencies.AppleLib.minVersion:1.15.0"
+      "extDependencies.AppleLib.integrationMethod:FIND_THEN_FETCH"
       "extDependencies.AppleLib.packageLocation.windows:C:/Program Files/libs/apple/1.15.0"
       "extDependencies.AppleLib.packageLocation.unix:/opt/apple/1.15.0"
       "extDependencies.AppleLib.packageLocation.macos:/opt/apple/1.15.0"
@@ -166,8 +166,8 @@ function(${CMAKETEST_TEST})
       "extDependencies.AppleLib.build.compileOptions:-Wall"
       "extDependencies.AppleLib.build.linkOptions:-s"
       "extDependencies.BananaLib.rulesFile:cmake/rules/RulesBananaLib.cmake"
-      "extDependencies.BananaLib.minVersion:4"
       "extDependencies.BananaLib.optional:ON"
+      "extDependencies.BananaLib.minVersion:4"
       "extDependencies.CarrotLib.rulesFile:cmake/rules/RulesCarrotLib.cmake"
       "extDependencies.CarrotLib.downloadInfo.kind:svn"
       "extDependencies.CarrotLib.downloadInfo.repository:svn://svn.carrot.lib.org/links/trunk"
@@ -181,10 +181,10 @@ function(${CMAKETEST_TEST})
       "extDependencies.PineappleLib.downloadInfo.repository:https://example.com/PineappleLib.zip"
       "extDependencies.PineappleLib.downloadInfo.hash:1234567"
     )
-    set(expected_src_apple_config_output
-      "name:apple"
+    set(expected_src_grape_config_output
+      "name:grape"
       "type:staticLib"
-      "mainFile:src/apple/main.cpp"
+      "mainFile:src/grape/main.cpp"
       "build.compileFeatures:"
       "build.compileDefinitions:"
       "build.compileOptions:"
@@ -192,10 +192,10 @@ function(${CMAKETEST_TEST})
       "headerPolicy.mode:merged"
       "extDependencies:"
     )
-    set(expected_src_banana_config_output
-      "name:banana"
+    set(expected_src_lemon_config_output
+      "name:lemon"
       "type:staticLib"
-      "mainFile:src/banana/main.cpp"
+      "mainFile:src/lemon/main.cpp"
       "build.compileFeatures:"
       "build.compileDefinitions:"
       "build.compileOptions:"
@@ -212,7 +212,7 @@ function(${CMAKETEST_TEST})
 
     get_property(output_property GLOBAL PROPERTY "TARGETS_CONFIG_LIST")
     ct_assert_list(output_property)
-    ct_assert_equal(output_property "src;src/apple;src/banana")
+    ct_assert_equal(output_property "src;src/grape;src/lemon")
 
     get_property(output_property GLOBAL PROPERTY "TARGETS_CONFIG_LOADED")
     ct_assert_string(output_property)
@@ -223,13 +223,13 @@ function(${CMAKETEST_TEST})
     ct_assert_list(output_property)
     ct_assert_equal(output_property "${expected_src_config_output}")
 
-    get_property(output_property GLOBAL PROPERTY "TARGETS_CONFIG_src/apple")
+    get_property(output_property GLOBAL PROPERTY "TARGETS_CONFIG_src/grape")
     ct_assert_list(output_property)
-    ct_assert_equal(output_property "${expected_src_apple_config_output}")
+    ct_assert_equal(output_property "${expected_src_grape_config_output}")
 
-    get_property(output_property GLOBAL PROPERTY "TARGETS_CONFIG_src/banana")
+    get_property(output_property GLOBAL PROPERTY "TARGETS_CONFIG_src/lemon")
     ct_assert_list(output_property)
-    ct_assert_equal(output_property "${expected_src_banana_config_output}")
+    ct_assert_equal(output_property "${expected_src_lemon_config_output}")
   endfunction()
 
   ct_add_section(NAME "load_config_file_with_extras")
@@ -259,8 +259,9 @@ function(${CMAKETEST_TEST})
       "extDependencies": {
         "AppleLib": {
           "rulesFile": "generic",
+          "optional": false,
           "minVersion": "1.15.0",
-          "integrationMethod": "FIND_AND_FETCH",
+          "integrationMethod": "FIND_THEN_FETCH",
           "packageLocation": {
             "windows": "C:/Program Files/libs/apple/1.15.0",
             "unix": "/opt/apple/1.15.0",
@@ -271,7 +272,6 @@ function(${CMAKETEST_TEST})
             "repository": "https://github.com/lib/apple.git",
             "tag": "1234567"
           },
-          "optional": false,
           "build": {
             "compileFeatures": ["cxx_std_20"],
             "compileDefinitions": ["DEFINE_ONE=1"],
@@ -282,9 +282,9 @@ function(${CMAKETEST_TEST})
         },
         "BananaLib": {
           "rulesFile": "cmake/rules/RulesBananaLib.cmake",
+          "optional": true,
           "minVersion": "4",
           "downloadInfo": {},
-          "optional": true,
           "extraDepKey": "extraValue"
         },
         "CarrotLib": {
@@ -314,8 +314,8 @@ function(${CMAKETEST_TEST})
       },
       "extraKey": "extraValue"
     },
-    "src/apple": {
-      "name": "apple",
+    "src/grape": {
+      "name": "grape",
       "type": "staticLib",
       "build": {
         "compileFeatures": [],
@@ -323,14 +323,14 @@ function(${CMAKETEST_TEST})
         "compileOptions": [],
         "linkOptions": []
       },
-      "mainFile": "src/apple/main.cpp",
+      "mainFile": "src/grape/main.cpp",
       "headerPolicy": {
         "mode": "merged"
       },
       "extDependencies": {}
     },
-    "src/banana": {
-      "name": "banana",
+    "src/lemon": {
+      "name": "lemon",
       "type": "staticLib",
       "build": {
         "compileFeatures": [],
@@ -338,7 +338,7 @@ function(${CMAKETEST_TEST})
         "compileOptions": [],
         "linkOptions": []
       },
-      "mainFile": "src/banana/main.cpp",
+      "mainFile": "src/lemon/main.cpp",
       "headerPolicy": {
         "mode": "merged"
       },
@@ -360,9 +360,9 @@ function(${CMAKETEST_TEST})
       "headerPolicy.includeDir:include"
       "extDependencies:AppleLib|BananaLib|CarrotLib|OrangeLib|PineappleLib"
       "extDependencies.AppleLib.rulesFile:generic"
-      "extDependencies.AppleLib.minVersion:1.15.0"
-      "extDependencies.AppleLib.integrationMethod:FIND_AND_FETCH"
       "extDependencies.AppleLib.optional:OFF"
+      "extDependencies.AppleLib.minVersion:1.15.0"
+      "extDependencies.AppleLib.integrationMethod:FIND_THEN_FETCH"
       "extDependencies.AppleLib.packageLocation.windows:C:/Program Files/libs/apple/1.15.0"
       "extDependencies.AppleLib.packageLocation.unix:/opt/apple/1.15.0"
       "extDependencies.AppleLib.packageLocation.macos:/opt/apple/1.15.0"
@@ -374,8 +374,8 @@ function(${CMAKETEST_TEST})
       "extDependencies.AppleLib.build.compileOptions:-Wall"
       "extDependencies.AppleLib.build.linkOptions:-s"
       "extDependencies.BananaLib.rulesFile:cmake/rules/RulesBananaLib.cmake"
-      "extDependencies.BananaLib.minVersion:4"
       "extDependencies.BananaLib.optional:ON"
+      "extDependencies.BananaLib.minVersion:4"
       "extDependencies.CarrotLib.rulesFile:cmake/rules/RulesCarrotLib.cmake"
       "extDependencies.CarrotLib.downloadInfo.kind:svn"
       "extDependencies.CarrotLib.downloadInfo.repository:svn://svn.carrot.lib.org/links/trunk"
@@ -389,10 +389,10 @@ function(${CMAKETEST_TEST})
       "extDependencies.PineappleLib.downloadInfo.repository:https://example.com/PineappleLib.zip"
       "extDependencies.PineappleLib.downloadInfo.hash:1234567"
     )
-    set(expected_src_apple_config_output
-      "name:apple"
+    set(expected_src_grape_config_output
+      "name:grape"
       "type:staticLib"
-      "mainFile:src/apple/main.cpp"
+      "mainFile:src/grape/main.cpp"
       "build.compileFeatures:"
       "build.compileDefinitions:"
       "build.compileOptions:"
@@ -400,10 +400,10 @@ function(${CMAKETEST_TEST})
       "headerPolicy.mode:merged"
       "extDependencies:"
     )
-    set(expected_src_banana_config_output
-      "name:banana"
+    set(expected_src_lemon_config_output
+      "name:lemon"
       "type:staticLib"
-      "mainFile:src/banana/main.cpp"
+      "mainFile:src/lemon/main.cpp"
       "build.compileFeatures:"
       "build.compileDefinitions:"
       "build.compileOptions:"
@@ -420,7 +420,7 @@ function(${CMAKETEST_TEST})
 
     get_property(output_property GLOBAL PROPERTY "TARGETS_CONFIG_LIST")
     ct_assert_list(output_property)
-    ct_assert_equal(output_property "src;src/apple;src/banana")
+    ct_assert_equal(output_property "src;src/grape;src/lemon")
 
     get_property(output_property GLOBAL PROPERTY "TARGETS_CONFIG_LOADED")
     ct_assert_string(output_property)
@@ -433,13 +433,13 @@ function(${CMAKETEST_TEST})
     message("expected_src_config_output : ${expected_src_config_output}")
     ct_assert_equal(output_property "${expected_src_config_output}")
 
-    get_property(output_property GLOBAL PROPERTY "TARGETS_CONFIG_src/apple")
+    get_property(output_property GLOBAL PROPERTY "TARGETS_CONFIG_src/grape")
     ct_assert_list(output_property)
-    ct_assert_equal(output_property "${expected_src_apple_config_output}")
+    ct_assert_equal(output_property "${expected_src_grape_config_output}")
 
-    get_property(output_property GLOBAL PROPERTY "TARGETS_CONFIG_src/banana")
+    get_property(output_property GLOBAL PROPERTY "TARGETS_CONFIG_src/lemon")
     ct_assert_list(output_property)
-    ct_assert_equal(output_property "${expected_src_banana_config_output}")
+    ct_assert_equal(output_property "${expected_src_lemon_config_output}")
   endfunction()
 
   # Errors checking

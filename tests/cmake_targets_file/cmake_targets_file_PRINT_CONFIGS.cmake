@@ -29,9 +29,9 @@ function(${CMAKETEST_TEST})
     "headerPolicy.includeDir:include"
     "extDependencies:AppleLib|BananaLib|CarrotLib|OrangeLib|PineappleLib"
     "extDependencies.AppleLib.rulesFile:generic"
-    "extDependencies.AppleLib.minVersion:1.15.0"
-    "extDependencies.AppleLib.integrationMethod:FIND_AND_FETCH"
     "extDependencies.AppleLib.optional:OFF"
+    "extDependencies.AppleLib.minVersion:1.15.0"
+    "extDependencies.AppleLib.integrationMethod:FIND_THEN_FETCH"
     "extDependencies.AppleLib.packageLocation.windows:C:/Program Files/libs/apple/1.15.0"
     "extDependencies.AppleLib.packageLocation.unix:/opt/apple/1.15.0"
     "extDependencies.AppleLib.packageLocation.macos:/opt/apple/1.15.0"
@@ -43,8 +43,8 @@ function(${CMAKETEST_TEST})
     "extDependencies.AppleLib.build.compileOptions:-Wall"
     "extDependencies.AppleLib.build.linkOptions:-s"
     "extDependencies.BananaLib.rulesFile:RulesBananaLib.cmake"
-    "extDependencies.BananaLib.minVersion:4"
     "extDependencies.BananaLib.optional:ON"
+    "extDependencies.BananaLib.minVersion:4"
     "extDependencies.CarrotLib.rulesFile:RulesCarrotLib.cmake"
     "extDependencies.CarrotLib.downloadInfo.kind:svn"
     "extDependencies.CarrotLib.downloadInfo.repository:svn://svn.carrot.lib.org/links/trunk"
@@ -60,10 +60,10 @@ function(${CMAKETEST_TEST})
     "invalid"
     ":invalid"
   )
-  set(input_src_apple_config
-    "name:apple"
+  set(input_src_grape_config
+    "name:grape"
     "type:staticLib"
-    "mainFile:src/apple/main.cpp"
+    "mainFile:src/grape/main.cpp"
     "build.compileFeatures:"
     "build.compileDefinitions:"
     "build.compileOptions:"
@@ -73,10 +73,10 @@ function(${CMAKETEST_TEST})
     "invalid"
     ":invalid"
   )
-  set(input_src_banana_config
-    "name:banana"
+  set(input_src_lemon_config
+    "name:lemon"
     "type:staticLib"
-    "mainFile:src/banana/main.cpp"
+    "mainFile:src/lemon/main.cpp"
     "build.compileFeatures:"
     "build.compileDefinitions:"
     "build.compileOptions:"
@@ -93,8 +93,8 @@ function(${CMAKETEST_TEST})
     set_property(GLOBAL PROPERTY TARGETS_CONFIG_LOADED)
     set_property(GLOBAL PROPERTY TARGETS_CONFIG_LIST)
     set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src")
-    set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/apple")
-    set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/banana")
+    set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/grape")
+    set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/lemon")
   endmacro()
 
   # Functionalities checking
@@ -102,10 +102,10 @@ function(${CMAKETEST_TEST})
   function(${CMAKETEST_SECTION})
     _set_up_test()
     set_property(GLOBAL PROPERTY TARGETS_CONFIG_LOADED "true")
-    set_property(GLOBAL PROPERTY TARGETS_CONFIG_LIST "src;src/apple;src/banana")
+    set_property(GLOBAL PROPERTY TARGETS_CONFIG_LIST "src;src/grape;src/lemon")
     set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src" "${input_src_config}")
-    set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/apple" "${input_src_apple_config}")
-    set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/banana" "${input_src_banana_config}")
+    set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/grape" "${input_src_grape_config}")
+    set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/lemon" "${input_src_lemon_config}")
     cmake_targets_file(PRINT_CONFIGS)
   endfunction()
 
@@ -122,10 +122,10 @@ function(${CMAKETEST_TEST})
       get_property(output_property GLOBAL PROPERTY "TARGETS_CONFIG_LOADED")
       ct_assert_equal(output_property "")
       ct_assert_not_defined(output_property)
-      set_property(GLOBAL PROPERTY TARGETS_CONFIG_LIST "src;src/apple;src/banana")
+      set_property(GLOBAL PROPERTY TARGETS_CONFIG_LIST "src;src/grape;src/lemon")
       set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src" "${input_src_config}")
-      set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/apple" "${input_src_apple_config}")
-      set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/banana" "${input_src_banana_config}")
+      set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/grape" "${input_src_grape_config}")
+      set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/lemon" "${input_src_lemon_config}")
 
       ct_add_section(NAME "throws_if_global_property_not_set_1_inner" EXPECTFAIL)
       function(${CMAKETEST_SECTION})
@@ -144,8 +144,8 @@ function(${CMAKETEST_TEST})
       ct_assert_equal(output_property "")
       ct_assert_not_defined(output_property)
       set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src" "${input_src_config}")
-      set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/apple" "${input_src_apple_config}")
-      set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/banana" "${input_src_banana_config}")
+      set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/grape" "${input_src_grape_config}")
+      set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/lemon" "${input_src_lemon_config}")
 
       ct_add_section(NAME "throws_if_global_property_not_set_2_inner" EXPECTFAIL)
       function(${CMAKETEST_SECTION})
@@ -158,14 +158,14 @@ function(${CMAKETEST_TEST})
       _set_up_test()
 
       set_property(GLOBAL PROPERTY TARGETS_CONFIG_LOADED "true")
-      set_property(GLOBAL PROPERTY TARGETS_CONFIG_LIST "src;src/apple;src/banana")
+      set_property(GLOBAL PROPERTY TARGETS_CONFIG_LIST "src;src/grape;src/lemon")
       get_property(output_property GLOBAL PROPERTY "TARGETS_CONFIG_src" SET)
       ct_assert_false(output_property)
       get_property(output_property GLOBAL PROPERTY "TARGETS_CONFIG_src")
       ct_assert_equal(output_property "")
       ct_assert_not_defined(output_property)
-      set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/apple" "${input_src_apple_config}")
-      set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/banana" "${input_src_banana_config}")
+      set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/grape" "${input_src_grape_config}")
+      set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/lemon" "${input_src_lemon_config}")
 
       ct_add_section(NAME "throws_if_global_property_not_set_3_inner" EXPECTFAIL)
       function(${CMAKETEST_SECTION})
@@ -177,10 +177,10 @@ function(${CMAKETEST_TEST})
     function(${CMAKETEST_SECTION})
       _set_up_test()
       set_property(GLOBAL PROPERTY TARGETS_CONFIG_LOADED "")
-      set_property(GLOBAL PROPERTY TARGETS_CONFIG_LIST "src;src/apple;src/banana")
+      set_property(GLOBAL PROPERTY TARGETS_CONFIG_LIST "src;src/grape;src/lemon")
       set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src" "${input_src_config}")
-      set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/apple" "${input_src_apple_config}")
-      set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/banana" "${input_src_banana_config}")
+      set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/grape" "${input_src_grape_config}")
+      set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/lemon" "${input_src_lemon_config}")
     
       ct_add_section(NAME "throws_if_global_property_is_empty_1_inner" EXPECTFAIL)
       function(${CMAKETEST_SECTION})
@@ -194,8 +194,8 @@ function(${CMAKETEST_TEST})
       set_property(GLOBAL PROPERTY TARGETS_CONFIG_LOADED "true")
       set_property(GLOBAL PROPERTY TARGETS_CONFIG_LIST "")
       set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src" "${input_src_config}")
-      set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/apple" "${input_src_apple_config}")
-      set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/banana" "${input_src_banana_config}")
+      set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/grape" "${input_src_grape_config}")
+      set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/lemon" "${input_src_lemon_config}")
     
       ct_add_section(NAME "throws_if_global_property_is_empty_2_inner" EXPECTFAIL)
       function(${CMAKETEST_SECTION})
@@ -207,10 +207,10 @@ function(${CMAKETEST_TEST})
     function(${CMAKETEST_SECTION})
       _set_up_test()
       set_property(GLOBAL PROPERTY TARGETS_CONFIG_LOADED "true")
-      set_property(GLOBAL PROPERTY TARGETS_CONFIG_LIST "src;src/apple;src/banana")
+      set_property(GLOBAL PROPERTY TARGETS_CONFIG_LIST "src;src/grape;src/lemon")
       set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src" "")
-      set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/apple" "${input_src_apple_config}")
-      set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/banana" "${input_src_banana_config}")
+      set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/grape" "${input_src_grape_config}")
+      set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/lemon" "${input_src_lemon_config}")
     
       ct_add_section(NAME "throws_if_global_property_is_empty_3_inner" EXPECTFAIL)
       function(${CMAKETEST_SECTION})
@@ -222,10 +222,10 @@ function(${CMAKETEST_TEST})
     function(${CMAKETEST_SECTION})
       _set_up_test()
       set_property(GLOBAL PROPERTY TARGETS_CONFIG_LOADED "not-bool")
-      set_property(GLOBAL PROPERTY TARGETS_CONFIG_LIST "src;src/apple;src/banana")
+      set_property(GLOBAL PROPERTY TARGETS_CONFIG_LIST "src;src/grape;src/lemon")
       set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src" "${input_src_config}")
-      set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/apple" "${input_src_apple_config}")
-      set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/banana" "${input_src_banana_config}")
+      set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/grape" "${input_src_grape_config}")
+      set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/lemon" "${input_src_lemon_config}")
     
       ct_add_section(NAME "throws_if_global_property_is_not_bool_inner" EXPECTFAIL)
       function(${CMAKETEST_SECTION})
@@ -237,10 +237,10 @@ function(${CMAKETEST_TEST})
     function(${CMAKETEST_SECTION})
       _set_up_test()
       set_property(GLOBAL PROPERTY TARGETS_CONFIG_LOADED "false")
-      set_property(GLOBAL PROPERTY TARGETS_CONFIG_LIST "src;src/apple;src/banana")
+      set_property(GLOBAL PROPERTY TARGETS_CONFIG_LIST "src;src/grape;src/lemon")
       set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src" "${input_src_config}")
-      set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/apple" "${input_src_apple_config}")
-      set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/banana" "${input_src_banana_config}")
+      set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/grape" "${input_src_grape_config}")
+      set_property(GLOBAL PROPERTY "TARGETS_CONFIG_src/lemon" "${input_src_lemon_config}")
 
       ct_add_section(NAME "throws_if_global_property_is_false_inner" EXPECTFAIL)
       function(${CMAKETEST_SECTION})

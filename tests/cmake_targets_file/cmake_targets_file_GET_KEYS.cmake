@@ -29,9 +29,9 @@ function(${CMAKETEST_TEST})
     "headerPolicy.includeDir:include"
     "extDependencies:AppleLib|BananaLib|CarrotLib|OrangeLib|PineappleLib"
     "extDependencies.AppleLib.rulesFile:generic"
-    "extDependencies.AppleLib.minVersion:1.15.0"
-    "extDependencies.AppleLib.integrationMethod:FIND_AND_FETCH"
     "extDependencies.AppleLib.optional:OFF"
+    "extDependencies.AppleLib.minVersion:1.15.0"
+    "extDependencies.AppleLib.integrationMethod:FIND_THEN_FETCH"
     "extDependencies.AppleLib.packageLocation.windows:C:/Program Files/libs/apple/1.15.0"
     "extDependencies.AppleLib.packageLocation.unix:/opt/apple/1.15.0"
     "extDependencies.AppleLib.packageLocation.macos:/opt/apple/1.15.0"
@@ -43,8 +43,8 @@ function(${CMAKETEST_TEST})
     "extDependencies.AppleLib.build.compileOptions:-Wall"
     "extDependencies.AppleLib.build.linkOptions:-s"
     "extDependencies.BananaLib.rulesFile:RulesBananaLib.cmake"
-    "extDependencies.BananaLib.minVersion:4"
     "extDependencies.BananaLib.optional:ON"
+    "extDependencies.BananaLib.minVersion:4"
     "extDependencies.CarrotLib.rulesFile:RulesCarrotLib.cmake"
     "extDependencies.CarrotLib.downloadInfo.kind:svn"
     "extDependencies.CarrotLib.downloadInfo.repository:svn://svn.carrot.lib.org/links/trunk"
@@ -85,9 +85,9 @@ function(${CMAKETEST_TEST})
       "headerPolicy.includeDir"
       "extDependencies"
       "extDependencies.AppleLib.rulesFile"
+      "extDependencies.AppleLib.optional"
       "extDependencies.AppleLib.minVersion"
       "extDependencies.AppleLib.integrationMethod"
-      "extDependencies.AppleLib.optional"
       "extDependencies.AppleLib.packageLocation.windows"
       "extDependencies.AppleLib.packageLocation.unix"
       "extDependencies.AppleLib.packageLocation.macos"
@@ -99,8 +99,8 @@ function(${CMAKETEST_TEST})
       "extDependencies.AppleLib.build.compileOptions"
       "extDependencies.AppleLib.build.linkOptions"
       "extDependencies.BananaLib.rulesFile"
-      "extDependencies.BananaLib.minVersion"
       "extDependencies.BananaLib.optional"
+      "extDependencies.BananaLib.minVersion"
       "extDependencies.CarrotLib.rulesFile"
       "extDependencies.CarrotLib.downloadInfo.kind"
       "extDependencies.CarrotLib.downloadInfo.repository"
@@ -208,7 +208,7 @@ function(${CMAKETEST_TEST})
 
       ct_add_section(NAME "throws_if_global_property_is_different_target_inner" EXPECTFAIL)
       function(${CMAKETEST_SECTION})
-        cmake_targets_file(GET_KEYS output TARGET "src/apple")
+        cmake_targets_file(GET_KEYS output TARGET "src/grape")
       endfunction()
     endfunction()
   endfunction()
