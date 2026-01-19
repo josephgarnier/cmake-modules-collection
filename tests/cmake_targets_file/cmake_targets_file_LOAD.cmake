@@ -51,7 +51,7 @@ function(${CMAKETEST_TEST})
         "mode": "split",
         "includeDir": "include"
       },
-      "extDependencies": {
+      "externalDeps": {
         "AppleLib": {
           "rulesFile": "generic",
           "optional": false,
@@ -119,7 +119,7 @@ function(${CMAKETEST_TEST})
       "headerPolicy": {
         "mode": "merged"
       },
-      "extDependencies": {}
+      "externalDeps": {}
     },
     "src/lemon": {
       "name": "lemon",
@@ -134,7 +134,7 @@ function(${CMAKETEST_TEST})
       "headerPolicy": {
         "mode": "merged"
       },
-      "extDependencies": {}
+      "externalDeps": {}
     }
   }
 }]=]
@@ -150,36 +150,36 @@ function(${CMAKETEST_TEST})
       "build.linkOptions:-s|-z"
       "headerPolicy.mode:split"
       "headerPolicy.includeDir:include"
-      "extDependencies:AppleLib|BananaLib|CarrotLib|OrangeLib|PineappleLib"
-      "extDependencies.AppleLib.rulesFile:generic"
-      "extDependencies.AppleLib.optional:OFF"
-      "extDependencies.AppleLib.minVersion:1.15.0"
-      "extDependencies.AppleLib.integrationMethod:FIND_THEN_FETCH"
-      "extDependencies.AppleLib.packageLocation.windows:C:/Program Files/libs/apple/1.15.0"
-      "extDependencies.AppleLib.packageLocation.unix:/opt/apple/1.15.0"
-      "extDependencies.AppleLib.packageLocation.macos:/opt/apple/1.15.0"
-      "extDependencies.AppleLib.downloadInfo.kind:git"
-      "extDependencies.AppleLib.downloadInfo.repository:https://github.com/lib/apple.git"
-      "extDependencies.AppleLib.downloadInfo.tag:1234567"
-      "extDependencies.AppleLib.build.compileFeatures:cxx_std_20"
-      "extDependencies.AppleLib.build.compileDefinitions:DEFINE_ONE=1"
-      "extDependencies.AppleLib.build.compileOptions:-Wall"
-      "extDependencies.AppleLib.build.linkOptions:-s"
-      "extDependencies.BananaLib.rulesFile:cmake/rules/RulesBananaLib.cmake"
-      "extDependencies.BananaLib.optional:ON"
-      "extDependencies.BananaLib.minVersion:4"
-      "extDependencies.CarrotLib.rulesFile:cmake/rules/RulesCarrotLib.cmake"
-      "extDependencies.CarrotLib.downloadInfo.kind:svn"
-      "extDependencies.CarrotLib.downloadInfo.repository:svn://svn.carrot.lib.org/links/trunk"
-      "extDependencies.CarrotLib.downloadInfo.revision:1234567"
-      "extDependencies.OrangeLib.rulesFile:cmake/rules/RulesOrangeLib.cmake"
-      "extDependencies.OrangeLib.downloadInfo.kind:mercurial"
-      "extDependencies.OrangeLib.downloadInfo.repository:https://hg.example.com/RulesOrangeLib"
-      "extDependencies.OrangeLib.downloadInfo.tag:1234567"
-      "extDependencies.PineappleLib.rulesFile:cmake/rules/RulesPineappleLib.cmake"
-      "extDependencies.PineappleLib.downloadInfo.kind:url"
-      "extDependencies.PineappleLib.downloadInfo.repository:https://example.com/PineappleLib.zip"
-      "extDependencies.PineappleLib.downloadInfo.hash:1234567"
+      "externalDeps:AppleLib|BananaLib|CarrotLib|OrangeLib|PineappleLib"
+      "externalDeps.AppleLib.rulesFile:generic"
+      "externalDeps.AppleLib.optional:OFF"
+      "externalDeps.AppleLib.minVersion:1.15.0"
+      "externalDeps.AppleLib.integrationMethod:FIND_THEN_FETCH"
+      "externalDeps.AppleLib.packageLocation.windows:C:/Program Files/libs/apple/1.15.0"
+      "externalDeps.AppleLib.packageLocation.unix:/opt/apple/1.15.0"
+      "externalDeps.AppleLib.packageLocation.macos:/opt/apple/1.15.0"
+      "externalDeps.AppleLib.downloadInfo.kind:git"
+      "externalDeps.AppleLib.downloadInfo.repository:https://github.com/lib/apple.git"
+      "externalDeps.AppleLib.downloadInfo.tag:1234567"
+      "externalDeps.AppleLib.build.compileFeatures:cxx_std_20"
+      "externalDeps.AppleLib.build.compileDefinitions:DEFINE_ONE=1"
+      "externalDeps.AppleLib.build.compileOptions:-Wall"
+      "externalDeps.AppleLib.build.linkOptions:-s"
+      "externalDeps.BananaLib.rulesFile:cmake/rules/RulesBananaLib.cmake"
+      "externalDeps.BananaLib.optional:ON"
+      "externalDeps.BananaLib.minVersion:4"
+      "externalDeps.CarrotLib.rulesFile:cmake/rules/RulesCarrotLib.cmake"
+      "externalDeps.CarrotLib.downloadInfo.kind:svn"
+      "externalDeps.CarrotLib.downloadInfo.repository:svn://svn.carrot.lib.org/links/trunk"
+      "externalDeps.CarrotLib.downloadInfo.revision:1234567"
+      "externalDeps.OrangeLib.rulesFile:cmake/rules/RulesOrangeLib.cmake"
+      "externalDeps.OrangeLib.downloadInfo.kind:mercurial"
+      "externalDeps.OrangeLib.downloadInfo.repository:https://hg.example.com/RulesOrangeLib"
+      "externalDeps.OrangeLib.downloadInfo.tag:1234567"
+      "externalDeps.PineappleLib.rulesFile:cmake/rules/RulesPineappleLib.cmake"
+      "externalDeps.PineappleLib.downloadInfo.kind:url"
+      "externalDeps.PineappleLib.downloadInfo.repository:https://example.com/PineappleLib.zip"
+      "externalDeps.PineappleLib.downloadInfo.hash:1234567"
     )
     set(expected_src_grape_config_output
       "name:grape"
@@ -190,7 +190,7 @@ function(${CMAKETEST_TEST})
       "build.compileOptions:"
       "build.linkOptions:"
       "headerPolicy.mode:merged"
-      "extDependencies:"
+      "externalDeps:"
     )
     set(expected_src_lemon_config_output
       "name:lemon"
@@ -201,7 +201,7 @@ function(${CMAKETEST_TEST})
       "build.compileOptions:"
       "build.linkOptions:"
       "headerPolicy.mode:merged"
-      "extDependencies:"
+      "externalDeps:"
     )
 
     cmake_targets_file(LOAD "${TESTS_DATA_DIR}/config/CMakeTargets_regular.json")
@@ -256,7 +256,7 @@ function(${CMAKETEST_TEST})
         "mode": "split",
         "includeDir": "include"
       },
-      "extDependencies": {
+      "externalDeps": {
         "AppleLib": {
           "rulesFile": "generic",
           "optional": false,
@@ -327,7 +327,7 @@ function(${CMAKETEST_TEST})
       "headerPolicy": {
         "mode": "merged"
       },
-      "extDependencies": {}
+      "externalDeps": {}
     },
     "src/lemon": {
       "name": "lemon",
@@ -342,7 +342,7 @@ function(${CMAKETEST_TEST})
       "headerPolicy": {
         "mode": "merged"
       },
-      "extDependencies": {}
+      "externalDeps": {}
     }
   }
 }]=]
@@ -358,36 +358,36 @@ function(${CMAKETEST_TEST})
       "build.linkOptions:-s|-z"
       "headerPolicy.mode:split"
       "headerPolicy.includeDir:include"
-      "extDependencies:AppleLib|BananaLib|CarrotLib|OrangeLib|PineappleLib"
-      "extDependencies.AppleLib.rulesFile:generic"
-      "extDependencies.AppleLib.optional:OFF"
-      "extDependencies.AppleLib.minVersion:1.15.0"
-      "extDependencies.AppleLib.integrationMethod:FIND_THEN_FETCH"
-      "extDependencies.AppleLib.packageLocation.windows:C:/Program Files/libs/apple/1.15.0"
-      "extDependencies.AppleLib.packageLocation.unix:/opt/apple/1.15.0"
-      "extDependencies.AppleLib.packageLocation.macos:/opt/apple/1.15.0"
-      "extDependencies.AppleLib.downloadInfo.kind:git"
-      "extDependencies.AppleLib.downloadInfo.repository:https://github.com/lib/apple.git"
-      "extDependencies.AppleLib.downloadInfo.tag:1234567"
-      "extDependencies.AppleLib.build.compileFeatures:cxx_std_20"
-      "extDependencies.AppleLib.build.compileDefinitions:DEFINE_ONE=1"
-      "extDependencies.AppleLib.build.compileOptions:-Wall"
-      "extDependencies.AppleLib.build.linkOptions:-s"
-      "extDependencies.BananaLib.rulesFile:cmake/rules/RulesBananaLib.cmake"
-      "extDependencies.BananaLib.optional:ON"
-      "extDependencies.BananaLib.minVersion:4"
-      "extDependencies.CarrotLib.rulesFile:cmake/rules/RulesCarrotLib.cmake"
-      "extDependencies.CarrotLib.downloadInfo.kind:svn"
-      "extDependencies.CarrotLib.downloadInfo.repository:svn://svn.carrot.lib.org/links/trunk"
-      "extDependencies.CarrotLib.downloadInfo.revision:1234567"
-      "extDependencies.OrangeLib.rulesFile:cmake/rules/RulesOrangeLib.cmake"
-      "extDependencies.OrangeLib.downloadInfo.kind:mercurial"
-      "extDependencies.OrangeLib.downloadInfo.repository:https://hg.example.com/RulesOrangeLib"
-      "extDependencies.OrangeLib.downloadInfo.tag:1234567"
-      "extDependencies.PineappleLib.rulesFile:cmake/rules/RulesPineappleLib.cmake"
-      "extDependencies.PineappleLib.downloadInfo.kind:url"
-      "extDependencies.PineappleLib.downloadInfo.repository:https://example.com/PineappleLib.zip"
-      "extDependencies.PineappleLib.downloadInfo.hash:1234567"
+      "externalDeps:AppleLib|BananaLib|CarrotLib|OrangeLib|PineappleLib"
+      "externalDeps.AppleLib.rulesFile:generic"
+      "externalDeps.AppleLib.optional:OFF"
+      "externalDeps.AppleLib.minVersion:1.15.0"
+      "externalDeps.AppleLib.integrationMethod:FIND_THEN_FETCH"
+      "externalDeps.AppleLib.packageLocation.windows:C:/Program Files/libs/apple/1.15.0"
+      "externalDeps.AppleLib.packageLocation.unix:/opt/apple/1.15.0"
+      "externalDeps.AppleLib.packageLocation.macos:/opt/apple/1.15.0"
+      "externalDeps.AppleLib.downloadInfo.kind:git"
+      "externalDeps.AppleLib.downloadInfo.repository:https://github.com/lib/apple.git"
+      "externalDeps.AppleLib.downloadInfo.tag:1234567"
+      "externalDeps.AppleLib.build.compileFeatures:cxx_std_20"
+      "externalDeps.AppleLib.build.compileDefinitions:DEFINE_ONE=1"
+      "externalDeps.AppleLib.build.compileOptions:-Wall"
+      "externalDeps.AppleLib.build.linkOptions:-s"
+      "externalDeps.BananaLib.rulesFile:cmake/rules/RulesBananaLib.cmake"
+      "externalDeps.BananaLib.optional:ON"
+      "externalDeps.BananaLib.minVersion:4"
+      "externalDeps.CarrotLib.rulesFile:cmake/rules/RulesCarrotLib.cmake"
+      "externalDeps.CarrotLib.downloadInfo.kind:svn"
+      "externalDeps.CarrotLib.downloadInfo.repository:svn://svn.carrot.lib.org/links/trunk"
+      "externalDeps.CarrotLib.downloadInfo.revision:1234567"
+      "externalDeps.OrangeLib.rulesFile:cmake/rules/RulesOrangeLib.cmake"
+      "externalDeps.OrangeLib.downloadInfo.kind:mercurial"
+      "externalDeps.OrangeLib.downloadInfo.repository:https://hg.example.com/RulesOrangeLib"
+      "externalDeps.OrangeLib.downloadInfo.tag:1234567"
+      "externalDeps.PineappleLib.rulesFile:cmake/rules/RulesPineappleLib.cmake"
+      "externalDeps.PineappleLib.downloadInfo.kind:url"
+      "externalDeps.PineappleLib.downloadInfo.repository:https://example.com/PineappleLib.zip"
+      "externalDeps.PineappleLib.downloadInfo.hash:1234567"
     )
     set(expected_src_grape_config_output
       "name:grape"
@@ -398,7 +398,7 @@ function(${CMAKETEST_TEST})
       "build.compileOptions:"
       "build.linkOptions:"
       "headerPolicy.mode:merged"
-      "extDependencies:"
+      "externalDeps:"
     )
     set(expected_src_lemon_config_output
       "name:lemon"
@@ -409,7 +409,7 @@ function(${CMAKETEST_TEST})
       "build.compileOptions:"
       "build.linkOptions:"
       "headerPolicy.mode:merged"
-      "extDependencies:"
+      "externalDeps:"
     )
 
     cmake_targets_file(LOAD "${TESTS_DATA_DIR}/config/CMakeTargets_extra.json")

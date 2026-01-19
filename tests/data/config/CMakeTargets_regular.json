@@ -17,7 +17,7 @@
         "mode": "split",
         "includeDir": "include"
       },
-      "extDependencies": {
+      "externalDeps": {
         "AppleLib": {
           "rulesFile": "generic",
           "optional": false,
@@ -85,7 +85,7 @@
       "headerPolicy": {
         "mode": "merged"
       },
-      "extDependencies": {}
+      "externalDeps": {}
     },
     "src/lemon": {
       "name": "lemon",
@@ -100,7 +100,7 @@
       "headerPolicy": {
         "mode": "merged"
       },
-      "extDependencies": {}
+      "externalDeps": {}
     }
   }
 }

@@ -81,14 +81,14 @@
         "compileOptions": [],
         "linkOptions": []
       },
-      "mainFile": "src/apple/main.cpp",
+      "mainFile": "src/grape/main.cpp",
       "headerPolicy": {
         "mode": "merged"
       },
-      "dependencies": {}
+      "dependencies": []
     },
-    "src/banana": {
-      "name": "banana",
+    "src/lemon": {
+      "name": "lemon",
       "type": "staticLib",
       "build": {
         "compileFeatures": [],
@@ -96,7 +96,7 @@
         "compileOptions": [],
         "linkOptions": []
       },
-      "mainFile": "src/banana/main.cpp",
+      "mainFile": "src/lemon/main.cpp",
       "headerPolicy": {
         "mode": "merged"
       },

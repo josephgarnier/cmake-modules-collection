@@ -392,7 +392,7 @@ Loading
   derived from the JSON property names. Nested properties are flattened by
   concatenating their successive parent keys, separated by a dot (``.``). For
   example, the JSON key ``rulesFile`` from the above example is stored in the
-  map as ``extDependencies.AppleLib.rulesFile``. The list of all keys for a
+  map as ``externalDeps.remotes.AppleLib.rulesFile``. The list of all keys for a
   target's map can be retrieved using the :command:`cmake_targets_file(GET_KEYS)`
   command.
 
@@ -415,8 +415,8 @@ Loading
     get_property(raw_json GLOBAL PROPERTY "TARGETS_CONFIG_RAW_JSON")
     get_property(is_loaded GLOBAL PROPERTY "TARGETS_CONFIG_LOADED")
     get_property(paths_list GLOBAL PROPERTY "TARGETS_CONFIG_LIST")
-    get_property(apple_config GLOBAL PROPERTY "TARGETS_CONFIG_src/apple")
-    get_property(banana_config GLOBAL PROPERTY "TARGETS_CONFIG_src/banana")
+    get_property(grape_config GLOBAL PROPERTY "TARGETS_CONFIG_src/grape")
+    get_property(lemon_config GLOBAL PROPERTY "TARGETS_CONFIG_src/lemon")
     get_property(src_config GLOBAL PROPERTY "TARGETS_CONFIG_src")
     message("'src' array is: ${src_config}")
     # Output:
@@ -597,10 +597,10 @@ Querying
     # Output:
     #   setting_value (build.compileDefinitions): DEFINE_ONE=1;DEFINE_TWO=2;
     #   OPTION_1
-    cmake_targets_file(GET_VALUE setting_value TARGET "src" KEY "extDependencies")
-    message("setting_value (extDependencies): ${setting_value}")
+    cmake_targets_file(GET_VALUE setting_value TARGET "src" KEY "externalDeps.remotes")
+    message("setting_value (externalDeps.remotes): ${setting_value}")
     # Output:
-    #   setting_value (extDependencies): AppleLib;BananaLib;CarrotLib;OrangeLib;
+    #   setting_value (externalDeps.remotes): AppleLib;BananaLib;CarrotLib;OrangeLib;
     #   PineappleLib
 
 .. signature::
@@ -643,10 +643,10 @@ Querying
     # Output:
     #   setting_value (build.compileDefinitions): DEFINE_ONE=1;DEFINE_TWO=2;
     #   OPTION_1
-    cmake_targets_file(TRY_GET_VALUE setting_value TARGET "src" KEY "extDependencies")
-    message("setting_value (extDependencies): ${setting_value}")
+    cmake_targets_file(TRY_GET_VALUE setting_value TARGET "src" KEY "externalDeps")
+    message("setting_value (externalDeps): ${setting_value}")
     # Output:
-    #   setting_value (extDependencies): AppleLib;BananaLib;CarrotLib;OrangeLib;
+    #   setting_value (externalDeps): AppleLib;BananaLib;CarrotLib;OrangeLib;
     #   PineappleLib
     cmake_targets_file(TRY_GET_VALUE setting_value TARGET "src" KEY "nonexistent.setting")
     message("setting_value (nonexistent.setting): ${setting_value}")
@@ -837,22 +837,22 @@ macro(_cmake_targets_file_load)
       map(ADD target_config_map "headerPolicy.includeDir" "${include_dir}")
     endif()
 
-    # Extract nested 'extDependencies' object properties.
-    # Use '_get_json_object' because the property keys of 'extDependencies'
+    # Extract nested 'externalDeps' object properties.
+    # Use '_get_json_object' because the property keys of 'externalDeps'
     # (dep. names) are of type 'pattern property' (set by user)
-    _get_json_object(deps_map "${target_json_block}" "extDependencies" true)
+    _get_json_object(deps_map "${target_json_block}" "externalDeps" true)
     map(KEYS deps_map dep_names)
     _serialize_list(serialized_dep_names "${dep_names}")
-    map(ADD target_config_map "extDependencies" "${serialized_dep_names}")
+    map(ADD target_config_map "externalDeps" "${serialized_dep_names}")
     foreach(dep_name IN ITEMS ${dep_names})
-      _validate_json_string(PROP_PATH "extDependencies;${dep_name}" PROP_VALUE "${target_path}" PATTERN "^[^ \t\r\n]+$")
+      _validate_json_string(PROP_PATH "externalDeps;${dep_name}" PROP_VALUE "${target_path}" PATTERN "^[^ \t\r\n]+$")
       map(GET deps_map "${dep_name}" dep_json_block)
 
       # Only 'rulesFile' is required, others properties are required only if
       # rulesFile is 'generic'
       _get_json_value(dep_rules_file "${dep_json_block}" "rulesFile" "STRING" true)
       _validate_json_string(PROP_PATH "rulesFile" PROP_VALUE "${dep_rules_file}" PATTERN "^((.+/)?[^/]+\\.cmake|generic)$")
-      map(ADD target_config_map "extDependencies.${dep_name}.rulesFile" "${dep_rules_file}")
+      map(ADD target_config_map "externalDeps.${dep_name}.rulesFile" "${dep_rules_file}")
       # "Required" flag (true/false) depending on 'rulesFile' value
       set(is_generic false)
       if("${dep_rules_file}" STREQUAL "generic")
@@ -860,43 +860,43 @@ macro(_cmake_targets_file_load)
       endif()
 
       # Extract all top-level primitive properties
+      _get_json_value(dep_optional "${dep_json_block}" "optional" "BOOLEAN" ${is_generic})
+      if(NOT "${dep_optional}" MATCHES "-NOTFOUND$")
+        map(ADD target_config_map "externalDeps.${dep_name}.optional" "${dep_optional}")
+      endif()
+
       _get_json_value(dep_min_version "${dep_json_block}" "minVersion" "STRING" ${is_generic})
       if(NOT "${dep_min_version}" MATCHES "-NOTFOUND$")
-        map(ADD target_config_map "extDependencies.${dep_name}.minVersion" "${dep_min_version}")
+        map(ADD target_config_map "externalDeps.${dep_name}.minVersion" "${dep_min_version}")
       endif()
 
       _get_json_value(dep_integration_method "${dep_json_block}" "integrationMethod" "STRING" ${is_generic})
       if(NOT "${dep_integration_method}" MATCHES "-NOTFOUND$")
-        _validate_json_string(PROP_PATH "integrationMethod" PROP_VALUE "${dep_integration_method}" PATTERN "^(FIND_PACKAGE|FETCH_CONTENT|FIND_AND_FETCH|EXTERNAL_PROJECT)$")
-        map(ADD target_config_map "extDependencies.${dep_name}.integrationMethod" "${dep_integration_method}")
-      endif()
-
-      _get_json_value(dep_optional "${dep_json_block}" "optional" "BOOLEAN" ${is_generic})
-      if(NOT "${dep_optional}" MATCHES "-NOTFOUND$")
-        map(ADD target_config_map "extDependencies.${dep_name}.optional" "${dep_optional}")
+        _validate_json_string(PROP_PATH "integrationMethod" PROP_VALUE "${dep_integration_method}" PATTERN "^(FIND_PACKAGE|FETCH_CONTENT|FIND_THEN_FETCH|EXTERNAL_PROJECT)$")
+        map(ADD target_config_map "externalDeps.${dep_name}.integrationMethod" "${dep_integration_method}")
       endif()
 
       # "Required" flag (true/false) depending on 'integrationMethod' value
       set(is_find_package_method false)
       set(is_fetch_content_method false)
-      set(is_find_and_fetch_method false)
+      set(is_find_then_fetch_method false)
       set(is_external_project_method false)
       if("${dep_integration_method}" STREQUAL "FIND_PACKAGE")
         set(is_find_package_method true)
       elseif("${dep_integration_method}" STREQUAL "FETCH_CONTENT")
         set(is_fetch_content_method true)
-      elseif("${dep_integration_method}" STREQUAL "FIND_AND_FETCH")
-        set(is_find_and_fetch_method true)
+      elseif("${dep_integration_method}" STREQUAL "FIND_THEN_FETCH")
+        set(is_find_then_fetch_method true)
       elseif("${dep_integration_method}" STREQUAL "EXTERNAL_PROJECT")
         set(is_external_project_method true)
       endif()
 
       # Extract nested 'packageLocation' object properties. This property is
       # required if rulesFile is 'generic' and if integrationMethod is
-      # 'FIND_PACKAGE' or 'FIND_AND_FETCH'
+      # 'FIND_PACKAGE' or 'FIND_THEN_FETCH'
       set(is_package_location_required false)
       if(${is_generic}
-          AND (${is_find_package_method} OR ${is_find_and_fetch_method}))
+          AND (${is_find_package_method} OR ${is_find_then_fetch_method}))
         set(is_package_location_required true)
       endif()
       _get_json_value(dep_package_loc_json_block
@@ -907,32 +907,32 @@ macro(_cmake_targets_file_load)
             "${dep_package_loc_json_block}" "windows" "STRING" false)
           if(NOT "${prop_value}" MATCHES "-NOTFOUND$")
             _validate_json_string(PROP_PATH "packageLocation.windows" PROP_VALUE "${prop_value}" PATTERN "^[A-Za-z]:[/]([^<>:\"/\\\\|?*]+[/]?)*$")
-            map(ADD target_config_map "extDependencies.${dep_name}.packageLocation.windows" "${prop_value}")
+            map(ADD target_config_map "externalDeps.${dep_name}.packageLocation.windows" "${prop_value}")
           endif()
 
           _get_json_value(prop_value
             "${dep_package_loc_json_block}" "unix" "STRING" false)
           if(NOT "${prop_value}" MATCHES "-NOTFOUND$")
             _validate_json_string(PROP_PATH "packageLocation.unix" PROP_VALUE "${prop_value}" PATTERN "^(/[^/ \t\r\n]+)+/?$")
-            map(ADD target_config_map "extDependencies.${dep_name}.packageLocation.unix" "${prop_value}")
+            map(ADD target_config_map "externalDeps.${dep_name}.packageLocation.unix" "${prop_value}")
           endif()
 
           _get_json_value(prop_value
             "${dep_package_loc_json_block}" "macos" "STRING" false)
           if(NOT "${prop_value}" MATCHES "-NOTFOUND$")
             _validate_json_string(PROP_PATH "packageLocation.macos" PROP_VALUE "${prop_value}" PATTERN "^(/[^/ \t\r\n]+)+/?$")
-            map(ADD target_config_map "extDependencies.${dep_name}.packageLocation.macos" "${prop_value}")
+            map(ADD target_config_map "externalDeps.${dep_name}.packageLocation.macos" "${prop_value}")
           endif()
         endforeach()
       endif()
 
       # Extract nested 'downloadInfo' object properties. This property is required
       # if rulesFile is 'generic' and if integrationMethod is 'FETCH_CONTENT'
-      # or 'FIND_AND_FETCH' or 'EXTERNAL_PROJECT'
+      # or 'FIND_THEN_FETCH' or 'EXTERNAL_PROJECT'
       set(is_fetch_info_required false)
       if(${is_generic}
           AND (${is_fetch_content_method}
-              OR ${is_find_and_fetch_method}
+              OR ${is_find_then_fetch_method}
                   OR ${is_external_project_method}))
         set(is_fetch_info_required true)
       endif()
@@ -941,26 +941,26 @@ macro(_cmake_targets_file_load)
         _get_json_value(dep_dl_kind "${dep_dl_info_json_block}" "kind" "STRING" ${is_generic})
         if(NOT "${dep_dl_kind}" MATCHES "-NOTFOUND$")
             _validate_json_string(PROP_PATH "downloadInfo;kind" PROP_VALUE "${dep_dl_kind}" PATTERN "^(url|git|svn|mercurial)$")
-            map(ADD target_config_map "extDependencies.${dep_name}.downloadInfo.kind" "${dep_dl_kind}")
+            map(ADD target_config_map "externalDeps.${dep_name}.downloadInfo.kind" "${dep_dl_kind}")
 
             if("${dep_dl_kind}" MATCHES "^(git|mercurial)$")
               foreach(prop_key "repository" "tag")
                 _get_json_value(prop_value "${dep_dl_info_json_block}" "${prop_key}" "STRING" ${is_generic})
-                map(ADD target_config_map "extDependencies.${dep_name}.downloadInfo.${prop_key}" "${prop_value}")
+                map(ADD target_config_map "externalDeps.${dep_name}.downloadInfo.${prop_key}" "${prop_value}")
               endforeach()
             endif()
 
             if("${dep_dl_kind}" STREQUAL "url")
               foreach(prop_key "repository" "hash")
                 _get_json_value(prop_value "${dep_dl_info_json_block}" "${prop_key}" "STRING" ${is_generic})
-                map(ADD target_config_map "extDependencies.${dep_name}.downloadInfo.${prop_key}" "${prop_value}")
+                map(ADD target_config_map "externalDeps.${dep_name}.downloadInfo.${prop_key}" "${prop_value}")
               endforeach()
             endif()
 
             if("${dep_dl_kind}" STREQUAL "svn")
               foreach(prop_key "repository" "revision")
                 _get_json_value(prop_value "${dep_dl_info_json_block}" "${prop_key}" "STRING" ${is_generic})
-                map(ADD target_config_map "extDependencies.${dep_name}.downloadInfo.${prop_key}" "${prop_value}")
+                map(ADD target_config_map "externalDeps.${dep_name}.downloadInfo.${prop_key}" "${prop_value}")
               endforeach()
             endif()
         endif()
@@ -973,7 +973,7 @@ macro(_cmake_targets_file_load)
           _get_json_array(dep_configs_list "${dep_config_json_block}" "${prop_key}" ${is_generic})
           if(NOT "${dep_configs_list}" MATCHES "-NOTFOUND$")
             _serialize_list(serialized_list "${dep_configs_list}")
-            map(ADD target_config_map "extDependencies.${dep_name}.build.${prop_key}" "${serialized_list}")
+            map(ADD target_config_map "externalDeps.${dep_name}.build.${prop_key}" "${serialized_list}")
           endif()
         endforeach()
       endif()
@@ -1779,16 +1779,16 @@ macro(_cmake_targets_file_print_target_config)
     endif()
   endforeach()
 
-  # Print nested 'extDependencies' object properties
-  message(STATUS "  ExtDependencies:")
-  map(GET target_config_map "extDependencies" dep_names)
+  # Print nested 'externalDeps' object properties
+  message(STATUS "  externalDeps:")
+  map(GET target_config_map "externalDeps" dep_names)
   _deserialize_list(dep_names "${dep_names}")
   foreach(dep_name IN ITEMS ${dep_names})
     message(STATUS "    ${dep_name}:")
-    foreach(dep_prop_key "rulesFile" "packageLocation.windows" "packageLocation.unix" "packageLocation.macos" "minVersion" "integrationMethod" "downloadInfo.kind" "downloadInfo.repository" "downloadInfo.tag" "downloadInfo.hash" "downloadInfo.revision" "optional" "build.compileFeatures" "build.compileDefinitions" "build.compileOptions" "build.linkOptions")
-      map(HAS_KEY target_config_map "extDependencies.${dep_name}.${dep_prop_key}" has_setting_key)
+    foreach(dep_prop_key "rulesFile" "packageLocation.windows" "packageLocation.unix" "packageLocation.macos" "optional" "minVersion" "integrationMethod" "downloadInfo.kind" "downloadInfo.repository" "downloadInfo.tag" "downloadInfo.hash" "downloadInfo.revision" "build.compileFeatures" "build.compileDefinitions" "build.compileOptions" "build.linkOptions")
+      map(HAS_KEY target_config_map "externalDeps.${dep_name}.${dep_prop_key}" has_setting_key)
       if(${has_setting_key})
-        map(GET target_config_map "extDependencies.${dep_name}.${dep_prop_key}" dep_prop_value)
+        map(GET target_config_map "externalDeps.${dep_name}.${dep_prop_key}" dep_prop_value)
         message(STATUS "      ${dep_prop_key}: ${dep_prop_value}")
       endif()
     endforeach()
