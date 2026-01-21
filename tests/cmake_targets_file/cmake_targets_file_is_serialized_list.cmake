@@ -66,6 +66,24 @@ function(${CMAKETEST_TEST})
       "banana"
       "orange"
       "pineapple"
+      "carrot"
+      "strawberry"
+      "pineapple"
+      "grape"
+      "lemon"
+      "watermelon"
+      "peach"
+    )
+    ct_assert_list(input_cmake_list)
+    _is_serialized_list("${input_cmake_list}" is_serialized)
+    ct_assert_equal(is_serialized "false")
+    ct_assert_false(is_serialized)
+
+    set(input_cmake_list
+      "apple"
+      "banana"
+      "orange"
+      "pineapple"
       "carrot\\|"
       "strawberry\\|"
       ""
@@ -106,6 +124,14 @@ function(${CMAKETEST_TEST})
 
   ct_add_section(NAME "check_in_string")
   function(${CMAKETEST_SECTION})
+    set(input_string
+      "apple"
+    )
+    ct_assert_not_list(input_string)
+    _is_serialized_list("${input_string}" is_serialized)
+    ct_assert_equal(is_serialized "false")
+    ct_assert_false(is_serialized)
+
     set(input_string
       "apple banana orange pineapple carrot\\| strawberry\\| pineapple grape "
     )
