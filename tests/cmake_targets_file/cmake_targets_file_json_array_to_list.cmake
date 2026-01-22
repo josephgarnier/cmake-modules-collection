@@ -10,7 +10,7 @@
 
 #-------------------------------------------------------------------------------
 # Test of [CMakeTargetsFile module::_json_array_to_list internal function]:
-#    _json_array_to_list(<output-list-var> <json-array>)
+#    _json_array_to_list(<json-array> <output-list-var>)
 ct_add_test(NAME "test_cmake_targets_file_json_array_to_list_internal_function")
 function(${CMAKETEST_TEST})
   include(CMakeTargetsFile)
@@ -56,14 +56,14 @@ function(${CMAKETEST_TEST})
     )
     string(JSON json_block_type TYPE "${input_json_array}")
     ct_assert_equal(json_block_type "ARRAY")
-    _json_array_to_list(output "${input_json_array}")
+    _json_array_to_list("${input_json_array}" output)
     ct_assert_list(output)
     ct_assert_equal(output "${expected_output}")
   endfunction()
 
   ct_add_section(NAME "convert_empty_array")
   function(${CMAKETEST_SECTION})
-    _json_array_to_list(output "[]")
+    _json_array_to_list("[]" output)
     ct_assert_equal(output "")
   endfunction()
 
@@ -75,22 +75,7 @@ function(${CMAKETEST_TEST})
 
   ct_add_section(NAME "throws_if_too_many_args_are_passed" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    _json_array_to_list(output "${input_json_array}" "too" "many" "args")
-  endfunction()
-
-  ct_add_section(NAME "throws_if_arg_output_list_var_is_missing_1" EXPECTFAIL)
-  function(${CMAKETEST_SECTION})
-    _json_array_to_list("${input_json_array}")
-  endfunction()
-
-  ct_add_section(NAME "throws_if_arg_output_list_var_is_missing_2" EXPECTFAIL)
-  function(${CMAKETEST_SECTION})
-    _json_array_to_list("" "${input_json_array}")
-  endfunction()
-
-  ct_add_section(NAME "throws_if_arg_output_list_var_is_missing_3" EXPECTFAIL)
-  function(${CMAKETEST_SECTION})
-    _json_array_to_list("output" "${input_json_array}")
+    _json_array_to_list("${input_json_array}" output "too" "many" "args")
   endfunction()
 
   ct_add_section(NAME "throws_if_arg_json_array_is_missing" EXPECTFAIL)
@@ -100,6 +85,21 @@ function(${CMAKETEST_TEST})
 
   ct_add_section(NAME "throws_if_arg_json_array_is_not_a_json_array" EXPECTFAIL)
   function(${CMAKETEST_SECTION})
-    _json_array_to_list(output "invalid json")
+    _json_array_to_list("invalid json" output)
+  endfunction()
+
+  ct_add_section(NAME "throws_if_arg_output_list_var_is_missing_1" EXPECTFAIL)
+  function(${CMAKETEST_SECTION})
+    _json_array_to_list("${input_json_array}")
+  endfunction()
+
+  ct_add_section(NAME "throws_if_arg_output_list_var_is_missing_2" EXPECTFAIL)
+  function(${CMAKETEST_SECTION})
+    _json_array_to_list("${input_json_array}" "")
+  endfunction()
+
+  ct_add_section(NAME "throws_if_arg_output_list_var_is_missing_3" EXPECTFAIL)
+  function(${CMAKETEST_SECTION})
+    _json_array_to_list("${input_json_array}" "output")
   endfunction()
 endfunction()
