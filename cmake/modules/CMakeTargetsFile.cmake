@@ -898,6 +898,7 @@ function(_extract_remote_dep_props remote_dep_json_block output_map_var)
       "optional" "${dep_optional}"
     )
   endif()
+
   _get_json_value("${remote_dep_json_block}"
     "minVersion" "STRING" ${is_generic} dep_min_version
   )
@@ -906,6 +907,7 @@ function(_extract_remote_dep_props remote_dep_json_block output_map_var)
       "minVersion" "${dep_min_version}"
     )
   endif()
+
   _get_json_value("${remote_dep_json_block}"
     "integrationMethod" "STRING" ${is_generic} dep_integration_method
   )
@@ -1041,8 +1043,129 @@ function(_extract_remote_dep_props remote_dep_json_block output_map_var)
   return(PROPAGATE "${output_map_var}")
 endfunction()
 
-  set_property(GLOBAL PROPERTY TARGETS_CONFIG_LOADED true)
-endmacro()
+#------------------------------------------------------------------------------
+# [Internal use only]
+function(_extract_target_props target_json_block output_map_var)
+  if(NOT ${ARGC} EQUAL 2)
+    message(FATAL_ERROR "${CMAKE_CURRENT_FUNCTION}() requires exactly 2 arguments, got ${ARGC}!")
+  endif()
+  if("${target_json_block}" STREQUAL "")
+    message(FATAL_ERROR "${CMAKE_CURRENT_FUNCTION}() requires 'target_json_block' argument to be a non-empty string value!")
+  endif()
+  string(JSON json_block_type TYPE "${target_json_block}")
+  if(NOT "${json_block_type}" STREQUAL "OBJECT")
+    message(FATAL_ERROR "${CMAKE_CURRENT_FUNCTION}() requires 'target_json_block' JSON block to be an OBJECT, but it is a ${json_block_type}!")
+  endif()
+  if("${output_map_var}" STREQUAL "")
+    message(FATAL_ERROR "${CMAKE_CURRENT_FUNCTION}() requires 'output_map_var' argument to be a non-empty string value!")
+  endif()
+
+  # Extract all top-level and required primitive properties
+  set(${output_map_var} "")
+  _get_json_value("${target_json_block}"
+    "name" "STRING" true target_name
+  )
+  _validate_json_string(
+    PROP_PATH "name"
+    PROP_VALUE "${target_name}"
+    MIN_LENGTH "1"
+  )
+  map(ADD ${output_map_var}
+    "name" "${target_name}"
+  )
+
+  _get_json_value("${target_json_block}"
+    "type" "STRING" true target_type
+  )
+  _validate_json_string(
+    PROP_PATH "type"
+    PROP_VALUE "${target_type}"
+    PATTERN "^(staticLib|sharedLib|interfaceLib|executable)$"
+  )
+  map(ADD ${output_map_var}
+    "type" "${target_type}"
+  )
+
+  _get_json_value("${target_json_block}"
+    "mainFile" "STRING" true target_main_file
+  )
+  _validate_json_string(
+    PROP_PATH "mainFile"
+    PROP_VALUE "${target_main_file}"
+    PATTERN "(.+/)?[^/]+\\.(cpp|cc|cxx)$"
+  )
+  map(ADD ${output_map_var}
+    "mainFile" "${target_main_file}"
+  )
+
+  _get_json_array("${target_json_block}"
+    "dependencies" true target_dependencies
+  )
+  if(NOT "${target_dependencies}" MATCHES "-NOTFOUND$")
+    _serialize_list(target_dependencies serialized_list)
+    map(ADD ${output_map_var}
+      "dependencies" "${serialized_list}"
+    )
+  endif()
+
+  # Extract all top-level and optional primitive properties
+  _get_json_value("${target_json_block}"
+    "pchFile" "STRING" false target_pch_file
+  )
+  if(NOT "${target_pch_file}" MATCHES "-NOTFOUND$")
+    _validate_json_string(
+      PROP_PATH "pchFile"
+      PROP_VALUE "${target_pch_file}"
+      PATTERN "(.+/)?[^/]+\\.(h|hpp|hxx|inl|tpp)$"
+    )
+    map(ADD ${output_map_var}
+      "pchFile" "${target_pch_file}"
+    )
+  endif()
+
+  # Extract nested 'build' object properties
+  _get_json_value("${target_json_block}"
+    "build" "OBJECT" true build_json_block
+  )
+  foreach(prop_key "compileFeatures" "compileDefinitions" "compileOptions" "linkOptions")
+    _get_json_array("${build_json_block}"
+      "${prop_key}" true prop_value
+    )
+    _serialize_list(prop_value serialized_list)
+    map(ADD ${output_map_var}
+      "build.${prop_key}" "${serialized_list}"
+    )
+  endforeach()
+
+  # Extract nested 'header policy' object properties
+  _get_json_value("${target_json_block}"
+    "headerPolicy;mode" "STRING" true header_policy_mode
+  )
+  _validate_json_string(
+    PROP_PATH "headerPolicy" "mode"
+    PROP_VALUE "${header_policy_mode}"
+    PATTERN "^(split|merged)$"
+  )
+  map(ADD ${output_map_var}
+    "headerPolicy.mode" "${header_policy_mode}"
+  )
+  if("${header_policy_mode}" STREQUAL "split")
+    # 'includeDir' is required when mode is 'split'
+    _get_json_value("${target_json_block}"
+      "headerPolicy;includeDir" "STRING" true include_dir
+    )
+    _validate_json_string(
+      PROP_PATH "headerPolicy" "includeDir"
+      PROP_VALUE "${include_dir}"
+      PATTERN "^include(/.+)?$"
+    )
+    map(ADD ${output_map_var}
+      "headerPolicy.includeDir" "${include_dir}"
+    )
+  endif()
+
+  return(PROPAGATE "${output_map_var}")
+endfunction()
 
 #------------------------------------------------------------------------------
 # [Internal use only]
