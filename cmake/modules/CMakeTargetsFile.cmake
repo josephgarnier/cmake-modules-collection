@@ -848,145 +848,199 @@ macro(_cmake_targets_file_load)
       _validate_json_string(PROP_PATH "externalDeps;${dep_name}" PROP_VALUE "${target_path}" PATTERN "^[^ \t\r\n]+$")
       map(GET deps_map "${dep_name}" dep_json_block)
 
-      # Only 'rulesFile' is required, others properties are required only if
-      # rulesFile is 'generic'
-      _get_json_value(dep_rules_file "${dep_json_block}" "rulesFile" "STRING" true)
-      _validate_json_string(PROP_PATH "rulesFile" PROP_VALUE "${dep_rules_file}" PATTERN "^((.+/)?[^/]+\\.cmake|generic)$")
-      map(ADD target_config_map "externalDeps.${dep_name}.rulesFile" "${dep_rules_file}")
-      # "Required" flag (true/false) depending on 'rulesFile' value
-      set(is_generic false)
-      if("${dep_rules_file}" STREQUAL "generic")
-        set(is_generic true)
-      endif()
 
-      # Extract all top-level primitive properties
-      _get_json_value(dep_optional "${dep_json_block}" "optional" "BOOLEAN" ${is_generic})
-      if(NOT "${dep_optional}" MATCHES "-NOTFOUND$")
-        map(ADD target_config_map "externalDeps.${dep_name}.optional" "${dep_optional}")
-      endif()
+#------------------------------------------------------------------------------
+# [Internal use only]
+function(_extract_remote_dep_props remote_dep_json_block output_map_var)
+  if(NOT ${ARGC} EQUAL 2)
+    message(FATAL_ERROR "${CMAKE_CURRENT_FUNCTION}() requires exactly 2 arguments, got ${ARGC}!")
+  endif()
+  if("${remote_dep_json_block}" STREQUAL "")
+    message(FATAL_ERROR "${CMAKE_CURRENT_FUNCTION}() requires 'remote_dep_json_block' argument to be a non-empty string value!")
+  endif()
+  string(JSON json_block_type TYPE "${remote_dep_json_block}")
+  if(NOT "${json_block_type}" STREQUAL "OBJECT")
+    message(FATAL_ERROR "${CMAKE_CURRENT_FUNCTION}() requires 'remote_dep_json_block' JSON block to be an OBJECT, but it is a ${json_block_type}!")
+  endif()
+  if("${output_map_var}" STREQUAL "")
+    message(FATAL_ERROR "${CMAKE_CURRENT_FUNCTION}() requires 'output_map_var' argument to be a non-empty string value!")
+  endif()
 
-      _get_json_value(dep_min_version "${dep_json_block}" "minVersion" "STRING" ${is_generic})
-      if(NOT "${dep_min_version}" MATCHES "-NOTFOUND$")
-        map(ADD target_config_map "externalDeps.${dep_name}.minVersion" "${dep_min_version}")
-      endif()
+  # Extract 'rulesFile' property
+  set(${output_map_var} "")
+  _get_json_value("${remote_dep_json_block}"
+    "rulesFile" "STRING" true dep_rules_file
+  )
+  _validate_json_string(
+    PROP_PATH "rulesFile"
+    PROP_VALUE "${dep_rules_file}"
+    PATTERN "^((.+/)?[^/]+\\.cmake|generic)$"
+  )
+  map(ADD ${output_map_var}
+    "rulesFile" "${dep_rules_file}"
+  )
 
-      _get_json_value(dep_integration_method "${dep_json_block}" "integrationMethod" "STRING" ${is_generic})
-      if(NOT "${dep_integration_method}" MATCHES "-NOTFOUND$")
-        _validate_json_string(PROP_PATH "integrationMethod" PROP_VALUE "${dep_integration_method}" PATTERN "^(FIND_PACKAGE|FETCH_CONTENT|FIND_THEN_FETCH|EXTERNAL_PROJECT)$")
-        map(ADD target_config_map "externalDeps.${dep_name}.integrationMethod" "${dep_integration_method}")
-      endif()
+  # "Required" flag (true/false) depending on 'rulesFile' value
+  # Only the 'rulesFile' property is always required, others properties are
+  # required only if rulesFile is 'generic'
+  set(is_generic false)
+  if("${dep_rules_file}" STREQUAL "generic")
+    set(is_generic true)
+  endif()
 
-      # "Required" flag (true/false) depending on 'integrationMethod' value
-      set(is_find_package_method false)
-      set(is_fetch_content_method false)
-      set(is_find_then_fetch_method false)
-      set(is_external_project_method false)
-      if("${dep_integration_method}" STREQUAL "FIND_PACKAGE")
-        set(is_find_package_method true)
-      elseif("${dep_integration_method}" STREQUAL "FETCH_CONTENT")
-        set(is_fetch_content_method true)
-      elseif("${dep_integration_method}" STREQUAL "FIND_THEN_FETCH")
-        set(is_find_then_fetch_method true)
-      elseif("${dep_integration_method}" STREQUAL "EXTERNAL_PROJECT")
-        set(is_external_project_method true)
-      endif()
+  # Extract top-level primitive properties: 'optional', 'minVersion',
+  # 'integrationMethod'
+  _get_json_value("${remote_dep_json_block}" 
+    "optional" "BOOLEAN" ${is_generic} dep_optional
+  )
+  if(NOT "${dep_optional}" MATCHES "-NOTFOUND$")
+    map(ADD ${output_map_var}
+      "optional" "${dep_optional}"
+    )
+  endif()
+  _get_json_value("${remote_dep_json_block}"
+    "minVersion" "STRING" ${is_generic} dep_min_version
+  )
+  if(NOT "${dep_min_version}" MATCHES "-NOTFOUND$")
+    map(ADD ${output_map_var}
+      "minVersion" "${dep_min_version}"
+    )
+  endif()
+  _get_json_value("${remote_dep_json_block}"
+    "integrationMethod" "STRING" ${is_generic} dep_integration_method
+  )
+  if(NOT "${dep_integration_method}" MATCHES "-NOTFOUND$")
+    _validate_json_string(
+      PROP_PATH "integrationMethod"
+      PROP_VALUE "${dep_integration_method}"
+      PATTERN "^(FIND_PACKAGE|FETCH_CONTENT|FIND_THEN_FETCH|EXTERNAL_PROJECT)$"
+    )
+    map(ADD ${output_map_var}
+      "integrationMethod" "${dep_integration_method}"
+    )
+  endif()
 
-      # Extract nested 'packageLocation' object properties. This property is
-      # required if rulesFile is 'generic' and if integrationMethod is
-      # 'FIND_PACKAGE' or 'FIND_THEN_FETCH'
-      set(is_package_location_required false)
-      if(${is_generic}
-          AND (${is_find_package_method} OR ${is_find_then_fetch_method}))
-        set(is_package_location_required true)
-      endif()
-      _get_json_value(dep_package_loc_json_block
-        "${dep_json_block}" "packageLocation" "OBJECT" ${is_package_location_required})
-      if(NOT "${dep_package_loc_json_block}" MATCHES "-NOTFOUND$")
-        foreach(prop_key "windows" "unix" "macos")
-          _get_json_value(prop_value
-            "${dep_package_loc_json_block}" "windows" "STRING" false)
-          if(NOT "${prop_value}" MATCHES "-NOTFOUND$")
-            _validate_json_string(PROP_PATH "packageLocation.windows" PROP_VALUE "${prop_value}" PATTERN "^[A-Za-z]:[/]([^<>:\"/\\\\|?*]+[/]?)*$")
-            map(ADD target_config_map "externalDeps.${dep_name}.packageLocation.windows" "${prop_value}")
-          endif()
-
-          _get_json_value(prop_value
-            "${dep_package_loc_json_block}" "unix" "STRING" false)
-          if(NOT "${prop_value}" MATCHES "-NOTFOUND$")
-            _validate_json_string(PROP_PATH "packageLocation.unix" PROP_VALUE "${prop_value}" PATTERN "^(/[^/ \t\r\n]+)+/?$")
-            map(ADD target_config_map "externalDeps.${dep_name}.packageLocation.unix" "${prop_value}")
-          endif()
-
-          _get_json_value(prop_value
-            "${dep_package_loc_json_block}" "macos" "STRING" false)
-          if(NOT "${prop_value}" MATCHES "-NOTFOUND$")
-            _validate_json_string(PROP_PATH "packageLocation.macos" PROP_VALUE "${prop_value}" PATTERN "^(/[^/ \t\r\n]+)+/?$")
-            map(ADD target_config_map "externalDeps.${dep_name}.packageLocation.macos" "${prop_value}")
-          endif()
-        endforeach()
-      endif()
-
-      # Extract nested 'downloadInfo' object properties. This property is required
-      # if rulesFile is 'generic' and if integrationMethod is 'FETCH_CONTENT'
-      # or 'FIND_THEN_FETCH' or 'EXTERNAL_PROJECT'
-      set(is_fetch_info_required false)
-      if(${is_generic}
-          AND (${is_fetch_content_method}
-              OR ${is_find_then_fetch_method}
-                  OR ${is_external_project_method}))
-        set(is_fetch_info_required true)
-      endif()
-      _get_json_value(dep_dl_info_json_block "${dep_json_block}" "downloadInfo" "OBJECT" ${is_fetch_info_required})
-      if(NOT "${dep_dl_info_json_block}" MATCHES "-NOTFOUND$")
-        _get_json_value(dep_dl_kind "${dep_dl_info_json_block}" "kind" "STRING" ${is_generic})
-        if(NOT "${dep_dl_kind}" MATCHES "-NOTFOUND$")
-            _validate_json_string(PROP_PATH "downloadInfo;kind" PROP_VALUE "${dep_dl_kind}" PATTERN "^(url|git|svn|mercurial)$")
-            map(ADD target_config_map "externalDeps.${dep_name}.downloadInfo.kind" "${dep_dl_kind}")
-
-            if("${dep_dl_kind}" MATCHES "^(git|mercurial)$")
-              foreach(prop_key "repository" "tag")
-                _get_json_value(prop_value "${dep_dl_info_json_block}" "${prop_key}" "STRING" ${is_generic})
-                map(ADD target_config_map "externalDeps.${dep_name}.downloadInfo.${prop_key}" "${prop_value}")
-              endforeach()
-            endif()
-
-            if("${dep_dl_kind}" STREQUAL "url")
-              foreach(prop_key "repository" "hash")
-                _get_json_value(prop_value "${dep_dl_info_json_block}" "${prop_key}" "STRING" ${is_generic})
-                map(ADD target_config_map "externalDeps.${dep_name}.downloadInfo.${prop_key}" "${prop_value}")
-              endforeach()
-            endif()
-
-            if("${dep_dl_kind}" STREQUAL "svn")
-              foreach(prop_key "repository" "revision")
-                _get_json_value(prop_value "${dep_dl_info_json_block}" "${prop_key}" "STRING" ${is_generic})
-                map(ADD target_config_map "externalDeps.${dep_name}.downloadInfo.${prop_key}" "${prop_value}")
-              endforeach()
-            endif()
+  # Extract nested 'packageLocation' object properties
+  # Required if 'rulesFile' is 'generic' and 'integrationMethod' is
+  # 'FIND_PACKAGE' or 'FIND_THEN_FETCH'
+  set(package_loc_methods FIND_PACKAGE FIND_THEN_FETCH)
+  set(is_package_loc_required false)
+  if(${is_generic}
+      AND ("${dep_integration_method}" IN_LIST package_loc_methods))
+    set(is_package_loc_required true)
+  endif()
+  _get_json_value("${remote_dep_json_block}"
+    "packageLocation" "OBJECT" ${is_package_loc_required} dep_package_loc_json_block
+  )
+  if(NOT "${dep_package_loc_json_block}" MATCHES "-NOTFOUND$")
+    foreach(platform "windows" "unix" "macos")
+      _get_json_value("${dep_package_loc_json_block}"
+        "${platform}" "STRING" false prop_value
+      )
+      if(NOT "${prop_value}" MATCHES "-NOTFOUND$")
+        set(pattern "^(/[^/ \t\r\n]+)+/?$")
+        if("${platform}" STREQUAL "windows")
+          set(pattern "^[A-Za-z]:[/]([^<>:\"/\\\\|?*]+[/]?)*$")
         endif()
-      endif()
-
-      # Extract nested 'build' object properties
-      _get_json_value(dep_config_json_block "${dep_json_block}" "build" "OBJECT" ${is_generic})
-      if(NOT "${dep_config_json_block}" MATCHES "-NOTFOUND$")
-        foreach(prop_key "compileFeatures" "compileDefinitions" "compileOptions" "linkOptions")
-          _get_json_array(dep_configs_list "${dep_config_json_block}" "${prop_key}" ${is_generic})
-          if(NOT "${dep_configs_list}" MATCHES "-NOTFOUND$")
-            _serialize_list(serialized_list "${dep_configs_list}")
-            map(ADD target_config_map "externalDeps.${dep_name}.build.${prop_key}" "${serialized_list}")
-          endif()
-        endforeach()
+        _validate_json_string(
+          PROP_PATH "packageLocation" "${platform}"
+          PROP_VALUE "${prop_value}"
+          PATTERN "${pattern}"
+        )
+        map(ADD ${output_map_var}
+          "packageLocation.${platform}" "${prop_value}"
+        )
       endif()
     endforeach()
+  endif()
 
-    # Store the target configuration
-    set_property(GLOBAL PROPERTY "TARGETS_CONFIG_${target_path}" "${target_config_map}")
-  endforeach()
+  # Extract nested 'downloadInfo' object properties
+  # Required if 'rulesFile' is 'generic' and 'integrationMethod' is
+  # 'FETCH_CONTENT' or 'FIND_THEN_FETCH' or 'EXTERNAL_PROJECT'
+  set(download_methods FETCH_CONTENT FIND_THEN_FETCH EXTERNAL_PROJECT)
+  set(is_dl_info_required false)
+  if(${is_generic}
+      AND ("${dep_integration_method}" IN_LIST download_methods))
+    set(is_dl_info_required true)
+  endif()
+  _get_json_value("${remote_dep_json_block}"
+    "downloadInfo" "OBJECT" ${is_dl_info_required} dep_dl_info_json_block
+  )
+  if(NOT "${dep_dl_info_json_block}" MATCHES "-NOTFOUND$")
+    _get_json_value("${dep_dl_info_json_block}"
+      "kind" "STRING" ${is_generic} dep_dl_kind
+    )
+    if(NOT "${dep_dl_kind}" MATCHES "-NOTFOUND$")
+        _validate_json_string(
+          PROP_PATH "downloadInfo" "kind"
+          PROP_VALUE "${dep_dl_kind}"
+          PATTERN "^(url|git|svn|mercurial)$"
+        )
+        map(ADD ${output_map_var}
+          "downloadInfo.kind" "${dep_dl_kind}"
+        )
+        _get_json_value("${dep_dl_info_json_block}"
+          "repository" "STRING" ${is_generic} dep_dl_repo
+        )
+        if(NOT "${dep_dl_repo}" MATCHES "-NOTFOUND$")
+          map(ADD ${output_map_var}
+            "downloadInfo.repository" "${dep_dl_repo}"
+          )
+        endif()
+        if("${dep_dl_kind}" MATCHES "^(git|mercurial)$")
+          _get_json_value("${dep_dl_info_json_block}"
+            "tag" "STRING" ${is_generic} dep_dl_tag
+          )
+          if(NOT "${dep_dl_tag}" MATCHES "-NOTFOUND$")
+            map(ADD ${output_map_var}
+              "downloadInfo.tag" "${dep_dl_tag}"
+            )
+          endif()
+        endif()
+        if("${dep_dl_kind}" STREQUAL "url")
+          _get_json_value("${dep_dl_info_json_block}"
+            "hash" "STRING" ${is_generic} dep_dl_hash
+          )
+          if(NOT "${dep_dl_hash}" MATCHES "-NOTFOUND$")
+            map(ADD ${output_map_var}
+              "downloadInfo.hash" "${dep_dl_hash}"
+            )
+          endif()
+        endif()
+        if("${dep_dl_kind}" STREQUAL "svn")
+          _get_json_value("${dep_dl_info_json_block}"
+            "revision" "STRING" ${is_generic} dep_dl_revision
+          )
+          if(NOT "${dep_dl_revision}" MATCHES "-NOTFOUND$")
+            map(ADD ${output_map_var}
+              "downloadInfo.revision" "${dep_dl_revision}"
+            )
+          endif()
+        endif()
+    endif()
+  endif()
 
-  # Mark the configuration as loaded and store the raw JSON content and the
-  # list of targets
-  set_property(GLOBAL PROPERTY TARGETS_CONFIG_RAW_JSON "${json_file_content}")
-  set_property(GLOBAL PROPERTY TARGETS_CONFIG_LIST "${target_paths}")
+  # Extract nested 'build' object properties
+  _get_json_value("${remote_dep_json_block}"
+    "build" "OBJECT" ${is_generic} dep_build_json_block
+  )
+  if(NOT "${dep_build_json_block}" MATCHES "-NOTFOUND$")
+    foreach(prop_key "compileFeatures" "compileDefinitions" "compileOptions" "linkOptions")
+      _get_json_array("${dep_build_json_block}"
+        "${prop_key}" ${is_generic} prop_value
+      )
+      if(NOT "${prop_value}" MATCHES "-NOTFOUND$")
+        _serialize_list(prop_value serialized_list)
+        map(ADD ${output_map_var}
+          "build.${prop_key}" "${serialized_list}"
+        )
+      endif()
+    endforeach()
+  endif()
+
+  return(PROPAGATE "${output_map_var}")
+endfunction()
+
   set_property(GLOBAL PROPERTY TARGETS_CONFIG_LOADED true)
 endmacro()
 
