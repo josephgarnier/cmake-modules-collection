@@ -86,7 +86,7 @@ function(${CMAKETEST_TEST})
 
   ct_add_section(NAME "extract_from_extra_config_file")
   function(${CMAKETEST_SECTION})
-      set(expected_src_config_output
+    set(expected_src_config_output
       "name:fruit-salad"
       "type:executable"
       "mainFile:src/main.cpp"
@@ -149,7 +149,7 @@ function(${CMAKETEST_TEST})
 
   ct_add_section(NAME "extract_from_minimal_config_file")
   function(${CMAKETEST_SECTION})
-      set(expected_src_config_output
+    set(expected_src_config_output
       "name:fruit-salad"
       "type:executable"
       "mainFile:src/main.cpp"

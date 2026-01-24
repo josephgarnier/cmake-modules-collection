@@ -36,7 +36,7 @@ if (${BUILD_TESTS})
     include(FetchContent)
     FetchContent_Declare(
       cmake_test
-      GIT_REPOSITORY https://github.com/josephgarnier/CMakeTest.git
+      GIT_REPOSITORY "https://github.com/josephgarnier/CMakeTest.git"
       GIT_SHALLOW ON
       GIT_PROGRESS ON
       LOG_DOWNLOAD ON
