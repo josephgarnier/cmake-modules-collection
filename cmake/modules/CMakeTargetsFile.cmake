@@ -27,11 +27,14 @@ One option could be to declare the configuration with variables in the JSON of
 possible to have structured properties and they would be difficult to read.
 
 The purpose of this module is to simplify the automated creation of binary
-targets by allowing their settings to be declared in a standardized JSON
-configuration file. Thus, the `build specification <https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html#target-build-specification>`_ of a target and its `usage
-requirements <https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html#target-usage-requirements>`_ can be easily defined. The structure of this file is defined
-using a `JSON schema <https://json-schema.org/>`_. Various commands are
-provided to read and interpret this configuration file.
+targets and depdencies by allowing their settings to be declared in a
+standardized JSON configuration file. Thus, the `build specification
+<https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html#target-build-specification>`_
+of a target and its `usage requirements
+<https://cmake.org/cmake/help/latest/manual/cmake-buildsystem.7.html#target-usage-requirements>`_
+can be easily defined. The structure of this file is defined using a `JSON
+schema <https://json-schema.org/>`_. Various commands are provided to read and
+interpret this configuration file.
 
 The configuration file must be named ``CMakeTargets.json`` and can reside
 anywhere in the project's directory.
@@ -41,8 +44,8 @@ anywhere in the project's directory.
   CMake is currently developing the
   `Common Package Specification <https://cps-org.github.io/cps/index.html>`_
   to standardize the way packages are declared and to improve their
-  integration via the
-  `System Package Registry <https://cmake.org/cmake/help/git-master/manual/cmake-packages.7.html#system-package-registry>`_.
+  integration via the `System Package Registry
+  <https://cmake.org/cmake/help/git-master/manual/cmake-packages.7.html#system-package-registry>`_.
   It is therefore possible that this module may become obsolete in the
   future. In the meantime, it will continue to evolve to reflect updates
   introduced in upcoming versions.
@@ -56,7 +59,9 @@ root (:download:`click to download <../../../cmake/modules/CMakeTargets_sample.j
 .. literalinclude:: ../../../cmake/modules/CMakeTargets_sample.json
   :language: json
 
-The JSON document must be conformed to the :download:`CMakeTargets.json schema <../../../cmake/modules/schema.json>` described below.
+The JSON document must be conformed to the :download:`CMakeTargets.json schema <../../../cmake/modules/schema.json>`
+described below. All properties are required by default, unless explicitly
+marked as optional under certain conditions.
 
 The root object recognizes the following fields:
 
@@ -78,123 +83,26 @@ The root object recognizes the following fields:
   different schema documents. The module stores this property but does not
   interpret or enforce any semantics associated with ``$id``.
 
-``targets``
-  The required root property containing the set of targets defined in the
-  file. Its value is an object whose keys are unique directory paths that
-  identify the parent folder containing the source files for each target.
-  For example: ``src``, ``src/apple``.
+``externalDeps``
+  A required root property that defines the set of third-party dependencies
+  whose targets are neither maintained by the project nor included in its
+  lifecycle. It is defined by three properties whose keys correspond to the
+  three types of dependencies: *remotes*, *vendored sources* and *vendored
+  binaries*.
 
-  Each path must be relative to the project root and must not include a
-  trailing slash. The directory path serves as the unique identifier for
-  the target within the file because it is assumed that there can be no
-  more than one target defined per folder.
-
-  The value for each key is a target definition object as described in the
-  following subsections. The key name (directory path) can be used internally
-  to organize and retrieve target configurations during the CMake building
-  process.
-
-  Each entry of a ``targets`` is a JSON object that may contain the following
-  properties:
-
-  ``name``
-    A required string specifying the human-meaningful name of the target.
-    This name must be unique across all targets listed in the same
-    ``targets`` object. Two targets within the same file must not share
-    the same name, even if their directory paths differ. The name is used to
-    create a CMake target.
-
-  ``type``
-    A required string specifying the kind of binary to generate for this
-    target. Valid values are:
-
-    * ``staticLib`` - a static library.
-    * ``sharedLib`` - a shared (dynamic) library.
-    * ``interfaceLib`` - a header-only library.
-    * ``executable`` - an executable program.
-
-    The type influences how the target is built and linked by the consuming
-    CMake logic.
-
-  ``build``
-    A required object describing build settings. It contains the following
-    array properties:
-
-      ``compileFeatures``
-        A list of compile features to pass to the target. Example:
-        ``["cxx_std_20", "cxx_thread_local", "cxx_trailing_return_types"]``.
-        It is intended to be used as a parameter for the
-        :cmake:command:`target_compile_features() <cmake:command:target_compile_features>`
-        command. The property is required, but the array can be empty.
-
-      ``compileDefinitions``
-        A list of preprocessor definitions applied when compiling this target.
-        Example: ``["DEFINE_ONE=1", "DEFINE_TWO=2", "OPTION_1"]``. It is
-        intended to be used as a parameter for the
-        :cmake:command:`target_compile_definitions() <cmake:command:target_compile_definitions>`
-        command. The property is required, but the array can be empty.
-
-      ``compileOptions``
-        A list of compiler options to pass when building this target. Example:
-        ``["-Wall", "-Wextra", "/W4"]``. It is intended to be used as a
-        parameter for the
-        :cmake:command:`target_compile_options() <cmake:command:target_compile_options>`
-        command. The property is required, but the array can be empty.
-
-      ``linkOptions``
-        A list of linker options to pass when building this target. Example:
-        ``["-s", "-z", "/INCREMENTAL:NO"]``. It is intended to be used as a
-        parameter for the
-        :cmake:command:`target_link_options() <cmake:command:target_link_options>`
-        command. The property is required, but the array can be empty.
-
-    All four properties must be present. Lists may be empty to indicate no
-    entries.
-
-  ``mainFile``
-    A required string specifying the path to the main source file for this
-    target. The path must be relative to the project root. The file must exist
-    and have a ``.cpp``, ``.cc``, or ``.cxx`` extension.
-
-  ``pchFile``
-    An optional string specifying the path to the precompiled header file
-    (PCH) for this target. The path must be relative to the project root. If
-    present, it must have one of the following extensions: ``.h``, ``.hpp``,
-    ``.hxx``, ``.inl``, ``.tpp``. If not specified, the target is considered to
-    have no PCH.
-
-  ``headerPolicy``
-    A required object describing how header files are organized within the
-    project. It has the following properties:
-
-      ``mode``
-        A required string specifying whether all header files are grouped in a
-        a single common folder or whether public headers are separated from
-        private headers. Valid values are:
-
-        * ``split`` - public headers are stored in a different folder
-          (e.g., ``include/``) than private headers (e.g., ``src/``).
-        * ``merged`` - public and private headers are in the same folder
-          (e.g., ``src/``).
-
-      ``includeDir``
-        Required only if ``mode`` is ``split``. A path relative to the project
-        root specifying the folder in ``include/`` where the public
-        headers are located. The path must start with ``include`` (e.g.,
-        ``include``, ``include/mylib``) and must not include a trailing slash.
-
-  ``extDependencies``
-    The required object property specifying the set of dependencies outside of
-    the project and needed by the target. Its value is an object whose keys are
-    the names of the dependencies. A name is intended to be used as
-    ``PackageName`` argument to find the file 'Find<PackageName>.cmake' with
+  ``remotes``
+    A required root property that defines the dependencies whose sources or
+    binaries are not stored in the project directories. The property value is
+    an object whose keys are the names of the dependencies. A name is intended
+    to be used as ``PackageName`` argument to find the file
+    'Find<PackageName>.cmake' with
     :cmake:command:`find_package() <cmake:command:find_package>`. It must
     therefore be compatible with CMake's ``PackageName`` requirements. Each
-    name must be unique within the ``extDependencies`` object and cannot
-    contain a space.
+    name must be unique within the CMakeTargets.json file and cannot contain a
+    space.
 
-    Each entry of a ``extDependencies`` object is a JSON object that may
-    contain the following properties:
+    Each entry of a ``externalDeps`` object is a JSON object that may contain
+    the following properties:
 
     ``rulesFile``
       A required property that specifies how to integrate the dependency into
@@ -203,6 +111,11 @@ The root object recognizes the following fields:
       * ``generic`` - use the predefined generic rules for integration.
       * a relative path to a ``.cmake`` file - the file must exist and contain
         the logic for handling the dependency.
+
+    ``optional``
+      A required boolean when ``rulesFile`` is ``generic``, otherwise optional,
+      indicating whether the dependency is optional (``true``) or required
+      (``false``).
 
     ``minVersion``
       A required string when ``rulesFile`` is ``generic``, otherwise optional,
@@ -218,103 +131,224 @@ The root object recognizes the following fields:
 
       * ``FIND_PACKAGE`` - bring the files with :cmake:command:`find_package() <cmake:command:find_package>`.
       * ``FETCH_CONTENT`` - bring the files with :cmake:module:`FetchContent <cmake:module:FetchContent>`.
-      * ``FIND_AND_FETCH`` - bring the files with :cmake:module:`FetchContent <cmake:module:FetchContent>` in using the ``FIND_PACKAGE_ARGS`` option.
+      * ``FIND_THEN_FETCH`` - bring the files with :cmake:module:`FetchContent <cmake:module:FetchContent>` in using the ``FIND_PACKAGE_ARGS`` option.
       * ``EXTERNAL_PROJECT`` - bring the files with :cmake:module:`ExternalProject <cmake:module:ExternalProject>`.
 
     ``packageLocation``
-      A required object when ``rulesFile`` is ``generic``, otherwise optional.
-      It defines the location where the dependency package can be found. These
-      values are intended to be used to set the ``<PackageName>_DIR`` variable
-      for :cmake:command:`find_package() <cmake:command:find_package>`. It
-      may contain the following properties:
+      A required object when ``rulesFile`` is ``generic`` and
+      ``integrationMethod`` is ``FIND_PACKAGE`` or ``FIND_THEN_FETCH``,
+      otherwise optional. It defines the location where the dependency package
+      can be found. These values are intended to be used to set the
+      ``<PackageName>_DIR`` variable for :cmake:command:`find_package() <cmake:command:find_package>`.
+      It may contain the following properties:
 
       ``windows``
-        An optional string representing the path to a directory containing
-        the package for Windows.
+        An optional string representing an additional search path to the
+        directory containing the package for Windows.
 
       ``unix``
-        An optional string representing the path to a directory containing
-        the package for Unix. Whitespace is not allowed.
+        An optional string representing an additional search path to the
+        directory containing the package for Unix. Whitespace is not allowed.
 
       ``macos``
-        An optional string representing the path to a directory containing
-        the package for macOS. Whitespace is not allowed.
+        An optional string representing an additional search path to the
+        directory containing the package for macOS. Whitespace is not allowed.
 
     ``downloadInfo``
-      A required object when ``rulesFile`` is ``generic``, otherwise optional.
-      It provides the information needed to download the dependency package if
-      it is not available locally. Theses informations are intended to be used
-      as argument to :cmake:command:`FetchContent_Declare() <cmake:command:FetchContent_Declare>`
+      A required object when ``rulesFile`` is ``generic`` and
+      ``integrationMethod`` is ``FETCH_CONTENT`` or ``FIND_THEN_FETCH`` or
+      ``EXTERNAL_PROJECT``, otherwise optional. It provides the information
+      needed to download the dependency package if it is not available locally.
+      Theses informations are intended to be used as argument to
+      :cmake:command:`FetchContent_Declare() <cmake:command:FetchContent_Declare>`
       or :cmake:command:`ExternalProject_Add() <cmake:command:ExternalProject_Add>`.
       It has the following properties:
 
-        ``kind``
-          An required string specifying the download method to use when
-          when ``rulesFile`` is ``generic``` (otherwise optional). Valid values
-          are ``url``, ``git``, ``svn``, and ``mercurial``. It support all
-          download methods supported by `External Project <https://cmake.org/cmake/help/latest/module/ExternalProject.html#download-step-options>`_.
+      ``kind``
+        An required string defining the download method to use when ``rulesFile``
+        is ``generic``` (otherwise optional). Valid values are ``url``, ``git``,
+        ``svn``, and ``mercurial``. It support all download methods supported by
+        `External Project <https://cmake.org/cmake/help/latest/module/ExternalProject.html#download-step-options>`_.
 
-        ``repository``
-          A required URL to the repository to use when when ``rulesFile`` is
-          ``generic`` (otherwise optional).
+      ``repository``
+        A required URL to the repository to use when ``rulesFile`` is
+        ``generic`` (otherwise optional).
 
-        ``tag``
-          A required string specifying a branch name, tag, or commit identifier
-          to checkout when ``kind`` is ``git`` or ``mercurial`` (otherwise
-          optional).
+      ``tag``
+        A required string defining a branch name, tag, or commit identifier to
+        checkout when ``kind`` is ``git`` or ``mercurial`` (otherwise optional).
 
-        ``hash``
-          A required string specifying a hash of the file to be downloaded when
-          ``kind`` is ``url`` (otherwise optional).
+      ``hash``
+        A required string defining a hash of the file to be downloaded when
+        ``kind`` is ``url`` (otherwise optional).
 
-        ``revision``
-          A required string specifying a revision to checkout when ``kind`` is
-          ``svn`` (otherwise optional).
-
-    ``optional``
-      A required boolean when ``rulesFile`` is ``generic``, otherwise optional,
-      indicating whether the dependency is optional (``true``) or required
-      (``false``).
+      ``revision``
+        A required string defining a revision to checkout when ``kind`` is
+        ``svn`` (otherwise optional).
 
     ``build``
       A required object when ``rulesFile`` is ``generic``, otherwise optional,
-      specifying some additional settings applied to the dependency during
+      defining some additional settings applied to the dependency during
       building. It contains the following array properties:
 
-        ``compileFeatures``
-          A list of compile features that must be enabled or disabled when
-          compiling code that consumes the dependency. Example:
-          ``["cxx_std_20", "cxx_thread_local", "cxx_trailing_return_types"]``.
-          It is intended to be used as a parameter for the
-          :cmake:command:`target_compile_features() <cmake:command:target_compile_features>`
-          command. The property is required when ``rulesFile`` is ``generic``,
-          otherwise optional, but the array can be empty.
+      ``compileFeatures``
+        A list of compile features that must be enabled or disabled when
+        compiling code that consumes the dependency. Example:
+        ``["cxx_std_20", "cxx_thread_local", "cxx_trailing_return_types"]``.
+        It is intended to be used as a parameter for the
+        :cmake:command:`target_compile_features() <cmake:command:target_compile_features>`
+        command. The property is required when ``rulesFile`` is ``generic``,
+        otherwise optional, but the array can be empty.
 
-        ``compileDefinitions``
-          A list of compile definitions that must be defined when compiling
-          code that consumes the dependency. Example: ``["DEFINE_ONE=1",
-          "DEFINE_TWO=2", "OPTION_1"]``. It is intended to be used as a
-          parameter for the
-          :cmake:command:`target_compile_definitions() <cmake:command:target_compile_definitions>`
-          command. The property is required when ``rulesFile`` is ``generic``,
-          otherwise optional, but the array can be empty.
+      ``compileDefinitions``
+        A list of compile definitions that must be defined when compiling code
+        that consumes the dependency. Example: ``["DEFINE_ONE=1", "DEFINE_TWO=2",
+        "OPTION_1"]``. It is intended to be used as a parameter for the
+        :cmake:command:`target_compile_definitions() <cmake:command:target_compile_definitions>`
+        command. The property is required when ``rulesFile`` is ``generic``,
+        otherwise optional, but the array can be empty.
 
-        ``compileOptions``
-          A list of compiler options that must be supplied to the compiler when
-          compiling code that consumes the dependency. Example: ``["-Wall",
-          "-Wextra", "/W4"]``. It is intended to be used as a parameter for the
-          :cmake:command:`target_compile_options() <cmake:command:target_compile_options>`
-          command. The property is required when ``rulesFile`` is ``generic``,
-          otherwise optional, but the array can be empty.
+      ``compileOptions``
+        A list of compiler options that must be supplied to the compiler when
+        compiling code that consumes the dependency. Example: ``["-Wall",
+        "-Wextra", "/W4"]``. It is intended to be used as a parameter for the
+        :cmake:command:`target_compile_options() <cmake:command:target_compile_options>`
+        command. The property is required when ``rulesFile`` is ``generic``,
+        otherwise optional, but the array can be empty.
 
-        ``linkOptions``
-          A list of linker options that must be enabled or disabled when
-          linking code that consumes the dependency. Example: ``["-s", "-z",
-          "/INCREMENTAL:NO"]``. It is intended to be used as a parameter for
-          the
-          :cmake:command:`target_link_options() <cmake:command:target_link_options>`
-          command. The property is required when ``rulesFile`` is ``generic``,
-          otherwise optional, but the array can be empty.
+      ``linkOptions``
+        A list of linker options that must be enabled or disabled when linking
+        code that consumes the dependency. Example: ``["-s", "-z",
+        "/INCREMENTAL:NO"]``. It is intended to be used as a parameter for
+        the
+        :cmake:command:`target_link_options() <cmake:command:target_link_options>`
+        command. The property is required when ``rulesFile`` is ``generic``,
+        otherwise optional, but the array can be empty.
+
+  ``vendoredBinaries``
+    A required root property that defines the dependencies whose precompiled
+    binaries are stored within the project directories and integrated into the
+    project as imported targets. The property value is an object whose keys are
+    the names of the dependencies. Each name must be unique within the
+    CMakeTargets.json file and cannot contain a space.
+
+  ``vendoredSources``
+    A required root property that defines the dependencies whose source files
+    are stored within the project directories and must be built as part of the
+    project. The property value is an object whose keys are the names of the
+    dependencies. Each name must be unique within the CMakeTargets.json file
+    and cannot contain a space.
+
+``targets``
+  A required root property containing the set targets specific to the project
+  and which are therefore not third-party dependencies. Its value is an object
+  whose keys are unique directory paths that identify the parent folder
+  containing the source files for each target. For example: ``src``,
+  ``src/grape``.
+
+  Each path must be relative to the project root and must not include a
+  trailing slash. The directory path serves as the unique identifier for
+  the target within the file because it is assumed that there can be no
+  more than one target defined per folder.
+
+  The value for each key is a target definition object as described in the
+  following subsections. The key name (directory path) can be used internally
+  to organize and retrieve target configurations during the CMake building
+  process.
+
+  Each entry of a ``targets`` is a JSON object that may contain the following
+  properties:
+
+  ``name``
+    A required string defining the human-meaningful name of the target.
+    This name must be unique across all targets listed in the same
+    ``targets`` object. Two targets within the same file must not share
+    the same name, even if their directory paths differ. The name is used to
+    create a CMake target.
+
+  ``type``
+    A required string defining the kind of binary to generate for this
+    target. Valid values are:
+
+    * ``staticLib`` - a static library.
+    * ``sharedLib`` - a shared (dynamic) library.
+    * ``interfaceLib`` - a header-only library.
+    * ``executable`` - an executable program.
+
+    The type influences how the target is built and linked by the consuming
+    CMake logic.
+
+  ``build``
+    A required object describing build settings. It contains the following
+    array properties:
+
+    ``compileFeatures``
+      A list of compile features to pass to the target. Example:
+      ``["cxx_std_20", "cxx_thread_local", "cxx_trailing_return_types"]``.
+      It is intended to be used as a parameter for the
+      :cmake:command:`target_compile_features() <cmake:command:target_compile_features>`
+      command. The property is required, but the array can be empty.
+
+    ``compileDefinitions``
+      A list of preprocessor definitions applied when compiling this target.
+      Example: ``["DEFINE_ONE=1", "DEFINE_TWO=2", "OPTION_1"]``. It is intended
+      to be used as a parameter for the
+      :cmake:command:`target_compile_definitions() <cmake:command:target_compile_definitions>`
+      command. The property is required, but the array can be empty.
+
+    ``compileOptions``
+      A list of compiler options to pass when building this target. Example:
+      ``["-Wall", "-Wextra", "/W4"]``. It is intended to be used as a
+      parameter for the
+      :cmake:command:`target_compile_options() <cmake:command:target_compile_options>`
+      command. The property is required, but the array can be empty.
+
+    ``linkOptions``
+      A list of linker options to pass when building this target. Example:
+      ``["-s", "-z", "/INCREMENTAL:NO"]``. It is intended to be used as a
+      parameter for the
+      :cmake:command:`target_link_options() <cmake:command:target_link_options>`
+      command. The property is required, but the array can be empty.
+
+    All four properties must be present. Lists may be empty to indicate no
+    entries.
+
+  ``mainFile``
+    A required string defining the path to the main source file for this
+    target. The path must be relative to the project root. The file must exist
+    and have a ``.cpp``, ``.cc``, or ``.cxx`` extension.
+
+  ``pchFile``
+    An optional string defining the path to the precompiled header file
+    (PCH) for this target. The path must be relative to the project root. If
+    present, it must have one of the following extensions: ``.h``, ``.hpp``,
+    ``.hxx``, ``.inl``, ``.tpp``. If not specified, the target is considered to
+    have no PCH.
+
+  ``headerPolicy``
+    A required object describing how header files are organized within the
+    project. It has the following properties:
+
+    ``mode``
+      A required string specifying whether all header files are grouped in a
+      single common folder or whether public headers are separated from private
+      headers. Valid values are:
+
+      * ``split`` - public headers are stored in a different folder (e.g.,
+        ``include/``) than private headers (e.g., ``src/``).
+      * ``merged`` - public and private headers are in the same folder (e.g.,
+        ``src/``).
+
+    ``includeDir``
+      Required only if ``mode`` is ``split``. A path relative to the project
+      root defining the folder in ``include/`` where the public headers are
+      located. The path must start with ``include`` (e.g., ``include``,
+      ``include/mylib``) and must not include a trailing slash.
+
+  ``dependencies``
+    An required array of third-party dependency names that this target depends
+    on. These names must come from the ``externalDeps`` objects and other
+    targets in ``targets``. The array may be empty to indicate no dependencies.
 
 Schema
 ^^^^^^
@@ -350,55 +384,71 @@ Loading
 .. signature::
   cmake_targets_file(LOAD <json-file-path>)
 
-  Load and parses a targets configuration file in `JSON schema <https://json-schema.org/>`_.
+  Load and parses a targets configuration file in
+  `JSON schema <https://json-schema.org/>`_.
 
   The ``<json-file-path>`` specifies the location of the configuration file to
   load. It must refer to an existing file on disk and must have a ``.json``
-  extension. The file must conform to the :download:`CMakeTargets.json schema <../../../cmake/modules/schema.json>`.
+  extension. The file must conform to the
+  :download:`CMakeTargets.json schema <../../../cmake/modules/schema.json>`.
   During loading, the command verifies that the JSON file if conform to the
   JSON schema.
 
   When this command is invoked, the JSON content is read into memory and stored
-  in global properties for later retrieval. Each target entry described in the
-  JSON file is parsed into an independent configuration :module:`Map`, keyed by its
-  directory path. Both the original raw JSON and the list of target directory
-  paths are preserved.
+  in global properties for later retrieval. Each dependency or target entry
+  described in the JSON file is parsed into an independent configuration
+  :module:`Map`, keyed by its directory path. Both the original raw JSON and
+  the list of target directory paths are preserved.
 
   The following global properties are initialized:
 
-    ``TARGETS_CONFIG_<target-dir-path>``
-      For each target directory path in the configuration file, stores the
-      serialized key-value :module:`Map` of its parsed properties.
+  ``TARGETS_CONFIG_RAW_JSON``
+    Contains the loaded JSON file as text.
 
-    ``TARGETS_CONFIG_RAW_JSON``
-      Contains the loaded JSON file as text.
+  ``TARGETS_CONFIG_LOADED``
+    Set to ``true`` once the configuration is successfully loaded, otherwise
+    to ``false``.
 
-    ``TARGETS_CONFIG_LIST``
-      Holds the list of all target directory paths defined in the file. They
-      serve as value to get the target configurations stored in
-      ``TARGETS_CONFIG_<target-dir-path>``.
+  ``TARGETS_CONFIG_REMOTE_DEPS``
+    Holds the list of all external remote dependencies defined in the file.
+    They serve as value to get the dependency configurations stored in
+    ``TARGETS_CONFIG_DEP_<dep-name>``.
 
-    ``TARGETS_CONFIG_LOADED``
-      Set to ``true`` once the configuration is successfully loaded, otherwise
-      to ``false``.
+  ``TARGETS_CONFIG_DEP_<dep-name>``
+    For each external dependency name in the object ``externalDeps`` of the
+    configuration file, stores the serialized key-value :module:`Map` of its
+    parsed properties.
 
-  This command must be called exactly once before using any other
-  module operation. If the configuration is already loaded, calling :command:`cmake_targets_file(LOAD)`
-  again will replace the current configuration in memory.
+  ``TARGETS_CONFIG_TARGETS``
+    Holds the list of all target directory paths defined in the file. They
+    serve as value to get the target configurations stored in
+    ``TARGETS_CONFIG_<target-dir-path>``.
 
-  Each target's configuration is stored separately in a global property
-  named ``TARGETS_CONFIG_<target-dir-path>`` as a :module:`Map`, where each
-  target JSON block is represented as a *flat tree* list. Keys in the map are
-  derived from the JSON property names. Nested properties are flattened by
+  ``TARGETS_CONFIG_<target-dir-path>``
+    For each target directory path in the object ``targets`` of the
+    configuration file, stores the serialized key-value :module:`Map` of its
+    parsed properties.
+
+  This command must be called exactly once before using any other module
+  operation. If the configuration is already loaded, calling
+  :command:`cmake_targets_file(LOAD)` again will replace the current
+  configuration in memory.
+
+  Each dependency's and target's configurations are stored separately in a
+  global property named ``TARGETS_CONFIG_DEP_<dep-name>`` and
+  ``TARGETS_CONFIG_<target-dir-path>``  as a :module:`Map`, where each target
+  JSON block is represented as a *flat tree* list. Keys in the map are derived
+  from the JSON property names. Nested properties are flattened by
   concatenating their successive parent keys, separated by a dot (``.``). For
-  example, the JSON key ``rulesFile`` from the above example is stored in the
-  map as ``externalDeps.remotes.AppleLib.rulesFile``. The list of all keys for a
-  target's map can be retrieved using the :command:`cmake_targets_file(GET_KEYS)`
-  command.
+  example, the JSON key ``kind`` of the AppleLib dependency from the sample
+  JSON file is stored in the map as ``downloadInfo.kind``. The list of all
+  keys for a target's or dependency's map can be retrieved using the
+  :command:`cmake_targets_file(GET_KEYS)` command.
 
   In this context, a setting is a key/value pair, and the set of settings for
-  a target represents the configuration for that target. The key of a setting
-  is named "setting name" and its value is named "setting value".
+  a dependency or a target represents the configuration for that dependency or
+  target. The key of a setting is named "setting name" and its value is named
+  "setting value".
 
   Since CMake does not support two-dimensional arrays, and because a :module:`Map`
   is itself a particular type of list, JSON arrays are serialized before being
@@ -414,17 +464,24 @@ Loading
     cmake_targets_file(LOAD "${CMAKE_SOURCE_DIR}/CMakeTargets.json")
     get_property(raw_json GLOBAL PROPERTY "TARGETS_CONFIG_RAW_JSON")
     get_property(is_loaded GLOBAL PROPERTY "TARGETS_CONFIG_LOADED")
-    get_property(paths_list GLOBAL PROPERTY "TARGETS_CONFIG_LIST")
+    get_property(dep_names GLOBAL PROPERTY "TARGETS_CONFIG_REMOTE_DEPS")
+    get_property(apple_dep_config GLOBAL PROPERTY "TARGETS_CONFIG_DEP_AppleLib")
+    get_property(banana_dep_config GLOBAL PROPERTY "TARGETS_CONFIG_DEP_BananaLib")
+    get_property(carrot_dep_config GLOBAL PROPERTY "TARGETS_CONFIG_DEP_CarrotLib")
+    get_property(orange_dep_config GLOBAL PROPERTY "TARGETS_CONFIG_DEP_OrangeLib")
+    get_property(pineapple_dep_config GLOBAL PROPERTY "TARGETS_CONFIG_DEP_PineappleLib")
+    get_property(target_path_list GLOBAL PROPERTY "TARGETS_CONFIG_TARGETS")
     get_property(grape_config GLOBAL PROPERTY "TARGETS_CONFIG_src/grape")
     get_property(lemon_config GLOBAL PROPERTY "TARGETS_CONFIG_src/lemon")
     get_property(src_config GLOBAL PROPERTY "TARGETS_CONFIG_src")
     message("'src' array is: ${src_config}")
     # Output:
     #   'src' array is: name:fruit-salad;type:executable;mainFile:src/main.cpp;
-    #   pchFile:include/fruit_salad_pch.h;build.compileFeatures:cxx_std_20;
-    #   build.compileDefinitions:DEFINE_ONE=1|DEFINE_TWO=2|
-    #   OPTION_1;build.compileOptions:;build.linkOptions:;
-    #   headerPolicy.mode:split;...
+    #   dependencies:grape|lemon|AppleLib|BananaLib|CarrotLib|OrangeLib|PineappleLib;
+    #   pchFile:include/fruit_salad_pch.h;build.compileFeatures:cxx_std_20|
+    #   cxx_thread_local|cxx_trailing_return_types;build.compileDefinitions:
+    #   DEFINE_ONE=1|DEFINE_TWO=2|OPTION_1;build.compileOptions:-Wall|-Wextra;
+    #   build.linkOptions:-s|-z;headerPolicy.mode:split;...
 
 .. signature::
   cmake_targets_file(IS_LOADED <output-var>)
@@ -495,7 +552,7 @@ Querying
 
   The ``<target-dir-path>`` specifies the directory path of the target whose
   configuration settings should be retrieved. This must correspond to a path
-  listed in the global property ``TARGETS_CONFIG_LIST``, and must match one
+  listed in the global property ``TARGETS_CONFIG_TARGETS``, and must match one
   of the keys in the ``targets`` JSON object of the loaded configuration file.
 
   The result is stored in ``<output-var>`` as a :module:`Map`. The **values
@@ -540,7 +597,7 @@ Querying
 
   The ``<target-dir-path>`` specifies the directory path of the target whose
   configuration settings should be retrieved. This must correspond to a path
-  listed in the global property ``TARGETS_CONFIG_LIST``, and must match one
+  listed in the global property ``TARGETS_CONFIG_TARGETS``, and must match one
   of the keys in the ``targets`` JSON object of the loaded configuration file.
 
   The result is stored in ``<output-var>`` as a semicolon-separated list.
@@ -569,7 +626,7 @@ Querying
 
   The ``<target-dir-path>`` specifies the directory path of the target whose
   configuration setting should be retrieved. This must correspond to a path
-  listed in the global property ``TARGETS_CONFIG_LIST``, and must match one
+  listed in the global property ``TARGETS_CONFIG_TARGETS``, and must match one
   of the keys in the ``targets`` JSON object of the loaded configuration file.
 
   The ``<setting-name>`` specifies the flattened key name as stored in the
@@ -614,7 +671,7 @@ Querying
 
   The ``<target-dir-path>`` specifies the directory path of the target whose
   configuration setting should be retrieved. This must correspond to a path
-  listed in the global property ``TARGETS_CONFIG_LIST``, and must match one
+  listed in the global property ``TARGETS_CONFIG_TARGETS``, and must match one
   of the keys in the ``targets`` JSON object of the loaded configuration file.
 
   The ``<setting-name>`` specifies the flattened key name as stored in the
@@ -692,7 +749,7 @@ Debugging
 
   The ``<target-dir-path>`` specifies the directory path of the target whose
   configuration setting should be retrieved. This must correspond to a path
-  listed in the global property ``TARGETS_CONFIG_LIST``, and must match one
+  listed in the global property ``TARGETS_CONFIG_TARGETS``, and must match one
   of the keys in the ``targets`` JSON object of the loaded configuration file.
 
   An error is raised if no configuration file has been previously loaded with
@@ -786,68 +843,58 @@ macro(_cmake_targets_file_load)
   # Read the JSON file
   file(READ "${arg_LOAD}" json_file_content)
 
-  # Extract and parse the list of target paths (keys of the "targets" object)
-  # Use '_get_json_object' because the property keys of 'targets'
-  # (target paths) are of type 'pattern property' (set by user)
-  _get_json_object(target_map "${json_file_content}" "targets" true)
+  # Extract 'externalDeps' property
+  _get_json_value("${json_file_content}"
+    "externalDeps" "OBJECT" true ext_deps_json_block
+  )
+
+  # Extract nested 'remotes' object properties
+  # '_get_json_object' should be used instead of '_get_json_value' because the
+  # keys of the "remotes" properties are defined by the user and therefore only
+  # known at runtime
+  _get_json_object("${ext_deps_json_block}" "remotes" true remote_dep_map)
+  map(KEYS remote_dep_map remote_dep_names)
+  foreach(remote_dep_name IN ITEMS ${remote_dep_names})
+    _validate_json_string(
+      PROP_PATH "externalDeps" "remotes" "${remote_dep_name}"
+      PROP_VALUE "${remote_dep_name}"
+      PATTERN "^[^ \t\r\n]+$"
+    )
+    map(GET remote_dep_map "${remote_dep_name}" remote_dep_json_block)
+    _extract_remote_dep_props("${remote_dep_json_block}" remote_dep_config_map)
+    # Store the remote external dep configuration
+    set_property(GLOBAL PROPERTY "TARGETS_CONFIG_DEP_${remote_dep_name}"
+      "${remote_dep_config_map}"
+    )
+  endforeach()
+
+  # Extract nested 'targets' object properties
+  # '_get_json_object' should be used instead of '_get_json_value' because the
+  # keys of the "targets" properties are defined by the user and therefore only
+  # known at runtime
+  _get_json_object("${json_file_content}" "targets" true target_map)
   map(KEYS target_map target_paths)
   foreach(target_path IN ITEMS ${target_paths})
-    _validate_json_string(PROP_PATH "targets;${target_path}" PROP_VALUE "${target_path}" PATTERN "^[A-Za-z0-9_]+(/.+)?$")
-
-    set(target_config_map "")
+    _validate_json_string(
+      PROP_PATH "targets" "${target_path}"
+      PROP_VALUE "${target_path}"
+      PATTERN "^[A-Za-z0-9_]+(/.+)?$"
+    )
     map(GET target_map "${target_path}" target_json_block)
+    _extract_target_props("${target_json_block}" target_config_map)
+    # Store the target configuration
+    set_property(GLOBAL PROPERTY "TARGETS_CONFIG_${target_path}"
+      "${target_config_map}"
+    )
+  endforeach()
 
-    # Extract all top-level and required primitive properties
-    _get_json_value(name "${target_json_block}" "name" "STRING" true)
-    _validate_json_string(PROP_PATH "name" PROP_VALUE "${name}" MIN_LENGTH "1")
-    map(ADD target_config_map "name" "${name}")
-
-    _get_json_value(type "${target_json_block}" "type" "STRING" true)
-    _validate_json_string(PROP_PATH "type" PROP_VALUE "${type}" PATTERN "^(staticLib|sharedLib|interfaceLib|executable)$")
-    map(ADD target_config_map "type" "${type}")
-
-    _get_json_value(main_file "${target_json_block}" "mainFile" "STRING" true)
-    _validate_json_string(PROP_PATH "mainFile" PROP_VALUE "${main_file}" PATTERN "(.+/)?[^/]+\\.(cpp|cc|cxx)$")
-    map(ADD target_config_map "mainFile" "${main_file}")
-
-    # Extract all top-level and optional primitive properties
-    _get_json_value(pch_file "${target_json_block}" "pchFile" "STRING" false)
-    if(NOT "${pch_file}" MATCHES "-NOTFOUND$")
-      _validate_json_string(PROP_PATH "pchFile" PROP_VALUE "${pch_file}" PATTERN "(.+/)?[^/]+\\.(h|hpp|hxx|inl|tpp)$")
-      map(ADD target_config_map "pchFile" "${pch_file}")
-    endif()
-
-    # Extract nested 'build' object properties
-    _get_json_value(build_json_block "${target_json_block}" "build" "OBJECT" true)
-    foreach(prop_key "compileFeatures" "compileDefinitions" "compileOptions" "linkOptions")
-      _get_json_array(build_settings_list "${build_json_block}" "${prop_key}" true)
-      _serialize_list(build_settings_list serialized_list)
-      map(ADD target_config_map "build.${prop_key}" "${serialized_list}")
-    endforeach()
-
-    # Extract nested 'header policy' object properties
-    _get_json_value(header_policy_mode "${target_json_block}" "headerPolicy;mode" "STRING" true)
-    _validate_json_string(PROP_PATH "headerPolicy;mode" PROP_VALUE "${header_policy_mode}" PATTERN "^(split|merged)$")
-    map(ADD target_config_map "headerPolicy.mode" "${header_policy_mode}")
-    if("${header_policy_mode}" STREQUAL "split")
-      # 'includeDir' is required when mode is 'split'
-      _get_json_value(include_dir
-        "${target_json_block}" "headerPolicy;includeDir" "STRING" true)
-      _validate_json_string(PROP_PATH "headerPolicy;includeDir" PROP_VALUE "${include_dir}" PATTERN "^include(/.+)?$")
-      map(ADD target_config_map "headerPolicy.includeDir" "${include_dir}")
-    endif()
-
-    # Extract nested 'externalDeps' object properties.
-    # Use '_get_json_object' because the property keys of 'externalDeps'
-    # (dep. names) are of type 'pattern property' (set by user)
-    _get_json_object(deps_map "${target_json_block}" "externalDeps" true)
-    map(KEYS deps_map dep_names)
-    _serialize_list(serialized_dep_names "${dep_names}")
-    map(ADD target_config_map "externalDeps" "${serialized_dep_names}")
-    foreach(dep_name IN ITEMS ${dep_names})
-      _validate_json_string(PROP_PATH "externalDeps;${dep_name}" PROP_VALUE "${target_path}" PATTERN "^[^ \t\r\n]+$")
-      map(GET deps_map "${dep_name}" dep_json_block)
-
+  # Mark the configuration as loaded and store the raw JSON content, the
+  # list of targets and the list of dependencies
+  set_property(GLOBAL PROPERTY TARGETS_CONFIG_RAW_JSON "${json_file_content}")
+  set_property(GLOBAL PROPERTY TARGETS_CONFIG_REMOTE_DEPS "${remote_dep_names}")
+  set_property(GLOBAL PROPERTY TARGETS_CONFIG_TARGETS "${target_paths}")
+  set_property(GLOBAL PROPERTY TARGETS_CONFIG_LOADED true)
+endmacro()
 
 #------------------------------------------------------------------------------
 # [Internal use only]
@@ -888,8 +935,7 @@ function(_extract_remote_dep_props remote_dep_json_block output_map_var)
     set(is_generic true)
   endif()
 
-  # Extract top-level primitive properties: 'optional', 'minVersion',
-  # 'integrationMethod'
+  # Extract all top-level primitive properties
   _get_json_value("${remote_dep_json_block}" 
     "optional" "BOOLEAN" ${is_generic} dep_optional
   )
@@ -1936,7 +1982,7 @@ macro(_cmake_targets_file_print_configs)
   endif()
   _assert_config_file_loaded()
 
-  get_property(target_paths GLOBAL PROPERTY "TARGETS_CONFIG_LIST")
+  get_property(target_paths GLOBAL PROPERTY "TARGETS_CONFIG_TARGETS")
   foreach(target_path IN ITEMS ${target_paths})
     set(arg_PRINT_TARGET_CONFIG "${target_path}")
     _cmake_targets_file_print_target_config()

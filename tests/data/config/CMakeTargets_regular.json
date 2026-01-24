@@ -1,6 +1,64 @@
 {
   "$schema": "../../../cmake/modules/schema.json",
   "$id": "schema.json",
+  "externalDeps": {
+    "remotes": {
+      "AppleLib": {
+        "rulesFile": "generic",
+        "optional": false,
+        "minVersion": "1.15.0",
+        "integrationMethod": "FIND_THEN_FETCH",
+        "packageLocation": {
+          "windows": "C:/Program Files/libs/apple/1.15.0",
+          "unix": "/opt/apple/1.15.0",
+          "macos": "/opt/apple/1.15.0"
+        },
+        "downloadInfo": {
+          "kind": "git",
+          "repository": "https://github.com/lib/apple.git",
+          "tag": "1234567"
+        },
+        "build": {
+          "compileFeatures": ["cxx_std_20"],
+          "compileDefinitions": ["DEFINE_ONE=1"],
+          "compileOptions": ["-Wall"],
+          "linkOptions": ["-s"]
+        }
+      },
+      "BananaLib": {
+        "rulesFile": "cmake/rules/RulesBananaLib.cmake",
+        "optional": true,
+        "minVersion": "4",
+        "downloadInfo": {}
+      },
+      "CarrotLib": {
+        "rulesFile": "cmake/rules/RulesCarrotLib.cmake",
+        "downloadInfo": {
+          "kind": "svn",
+          "repository": "svn://svn.carrot.lib.org/links/trunk",
+          "revision": "1234567"
+        }
+      },
+      "OrangeLib": {
+        "rulesFile": "cmake/rules/RulesOrangeLib.cmake",
+        "downloadInfo": {
+          "kind": "mercurial",
+          "repository": "https://hg.example.com/RulesOrangeLib",
+          "tag": "1234567"
+        }
+      },
+      "PineappleLib": {
+        "rulesFile": "cmake/rules/RulesPineappleLib.cmake",
+        "downloadInfo": {
+          "kind": "url",
+          "repository": "https://example.com/PineappleLib.zip",
+          "hash": "1234567"
+        }
+      }
+    },
+    "vendoredBinaries": {},
+    "vendoredSources": {}
+  },
   "targets": {
     "src": {
       "name": "fruit-salad",
@@ -17,60 +75,7 @@
         "mode": "split",
         "includeDir": "include"
       },
-      "externalDeps": {
-        "AppleLib": {
-          "rulesFile": "generic",
-          "optional": false,
-          "minVersion": "1.15.0",
-          "integrationMethod": "FIND_THEN_FETCH",
-          "packageLocation": {
-            "windows": "C:/Program Files/libs/apple/1.15.0",
-            "unix": "/opt/apple/1.15.0",
-            "macos": "/opt/apple/1.15.0"
-          },
-          "downloadInfo": {
-            "kind": "git",
-            "repository": "https://github.com/lib/apple.git",
-            "tag": "1234567"
-          },
-          "build": {
-            "compileFeatures": ["cxx_std_20"],
-            "compileDefinitions": ["DEFINE_ONE=1"],
-            "compileOptions": ["-Wall"],
-            "linkOptions": ["-s"]
-          }
-        },
-        "BananaLib": {
-          "rulesFile": "cmake/rules/RulesBananaLib.cmake",
-          "optional": true,
-          "minVersion": "4",
-          "downloadInfo": {}
-        },
-        "CarrotLib": {
-          "rulesFile": "cmake/rules/RulesCarrotLib.cmake",
-          "downloadInfo": {
-            "kind": "svn",
-            "repository": "svn://svn.carrot.lib.org/links/trunk",
-            "revision": "1234567"
-          }
-        },
-        "OrangeLib": {
-          "rulesFile": "cmake/rules/RulesOrangeLib.cmake",
-          "downloadInfo": {
-            "kind": "mercurial",
-            "repository": "https://hg.example.com/RulesOrangeLib",
-            "tag": "1234567"
-          }
-        },
-        "PineappleLib": {
-          "rulesFile": "cmake/rules/RulesPineappleLib.cmake",
-          "downloadInfo": {
-            "kind": "url",
-            "repository": "https://example.com/PineappleLib.zip",
-            "hash": "1234567"
-          }
-        }
-      }
+      "dependencies": ["grape", "lemon", "AppleLib", "BananaLib", "CarrotLib", "OrangeLib", "PineappleLib"]
     },
     "src/grape": {
       "name": "grape",
@@ -85,7 +90,7 @@
       "headerPolicy": {
         "mode": "merged"
       },
-      "externalDeps": {}
+      "dependencies": []
     },
     "src/lemon": {
       "name": "lemon",
@@ -100,7 +105,7 @@
       "headerPolicy": {
         "mode": "merged"
       },
-      "externalDeps": {}
+      "dependencies": []
     }
   }
 }

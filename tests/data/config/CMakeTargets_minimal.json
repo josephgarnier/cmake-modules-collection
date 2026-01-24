@@ -1,0 +1,112 @@
+{
+  "$schema": "../../../cmake/modules/schema.json",
+  "$id": "schema.json",
+  "externalDeps": {
+    "remotes": {
+      "AppleLib": {
+        "rulesFile": "generic",
+        "optional": false,
+        "minVersion": "1.15.0",
+        "integrationMethod": "FIND_THEN_FETCH",
+        "packageLocation": {},
+        "downloadInfo": {
+          "kind": "git",
+          "repository": "https://github.com/lib/apple.git",
+          "tag": ""
+        },
+        "build": {
+          "compileFeatures": [],
+          "compileDefinitions": [],
+          "compileOptions": [],
+          "linkOptions": []
+        }
+      },
+      "BananaLib": {
+        "rulesFile": "generic",
+        "optional": false,
+        "minVersion": "1.15.0",
+        "integrationMethod": "EXTERNAL_PROJECT",
+        "downloadInfo": {
+          "kind": "git",
+          "repository": "https://github.com/lib/banana.git",
+          "tag": ""
+        },
+        "build": {
+          "compileFeatures": [],
+          "compileDefinitions": [],
+          "compileOptions": [],
+          "linkOptions": []
+        }
+      },
+      "CarrotLib": {
+        "rulesFile": "generic",
+        "optional": false,
+        "minVersion": "1.15.0",
+        "integrationMethod": "FETCH_CONTENT",
+        "downloadInfo": {
+          "kind": "git",
+          "repository": "https://github.com/lib/carrot.git",
+          "tag": ""
+        },
+        "build": {
+          "compileFeatures": [],
+          "compileDefinitions": [],
+          "compileOptions": [],
+          "linkOptions": []
+        }
+      },
+      "OrangeLib": {
+        "rulesFile": "generic",
+        "optional": false,
+        "minVersion": "1.15.0",
+        "integrationMethod": "FIND_PACKAGE",
+        "packageLocation": {},
+        "build": {
+          "compileFeatures": [],
+          "compileDefinitions": [],
+          "compileOptions": [],
+          "linkOptions": []
+        }
+      },
+      "PineappleLib": {
+        "rulesFile": "cmake/rules/RulesPineappleLib.cmake"
+      }
+    },
+    "vendoredBinaries": {},
+    "vendoredSources": {}
+  },
+  "targets": {
+    "src": {
+      "name": "fruit-salad",
+      "type": "executable",
+      "build": {
+        "compileFeatures": [],
+        "compileDefinitions": [],
+        "compileOptions": [],
+        "linkOptions": []
+      },
+      "mainFile": "src/main.cpp",
+      "pchFile": "include/fruit_salad_pch.h",
+      "headerPolicy": {
+        "mode": "split",
+        "includeDir": "include"
+      },
+      "dependencies": []
+    },
+    "src/grape": {
+      "name": "grape",
+      "type": "staticLib",
+      "build": {
+        "compileFeatures": [],
+        "compileDefinitions": [],
+        "compileOptions": [],
+        "linkOptions": []
+      },
+      "mainFile": "src/grape/main.cpp",
+      "headerPolicy": {
+        "mode": "merged"
+      },
+      "dependencies": []
+    }
+  }
+}
