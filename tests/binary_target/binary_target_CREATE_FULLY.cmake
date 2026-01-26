@@ -10,18 +10,18 @@
 
 #-------------------------------------------------------------------------------
 # Test of [BinaryTarget module::CREATE_FULLY operation]:
-#    binary_target(CREATE_FULLY <target-name>
-#                  <STATIC|SHARED|HEADER|EXEC>
-#                  [COMPILE_FEATURES <feature>...]
-#                  [COMPILE_DEFINITIONS <definition>...]
-#                  [COMPILE_OPTIONS <option>...]
-#                  [LINK_OPTIONS <option>...]
-#                  SOURCE_FILES [<file-path>...]
-#                  PRIVATE_HEADER_FILES [<file-path>...]
-#                  PUBLIC_HEADER_FILES [<file-path>...]
-#                  [PRECOMPILE_HEADER_FILE <file-path>]
-#                  INCLUDE_DIRECTORIES [<dir-path>...|<gen-expr>...]
-#                  [LINK_LIBRARIES [<target-name>...|<gen-expr>...] ])
+#   binary_target(CREATE_FULLY <target-name>
+#                 <STATIC|SHARED|HEADER|EXEC>
+#                 [COMPILE_FEATURES <feature>...]
+#                 [COMPILE_DEFINITIONS <definition>...]
+#                 [COMPILE_OPTIONS <option>...]
+#                 [LINK_OPTIONS <option>...]
+#                 SOURCE_FILES [<file-path>...]
+#                 PRIVATE_HEADER_FILES [<file-path>...]
+#                 PUBLIC_HEADER_FILES [<file-path>...]
+#                 [PRECOMPILE_HEADER_FILE <file-path>]
+#                 INCLUDE_DIRECTORIES [<dir-path>...|<gen-expr>...]
+#                 [LINK_LIBRARIES [<target-name>...|<gen-expr>...] ])
 ct_add_test(NAME "test_binary_target_create_fully_operation")
 function(${CMAKETEST_TEST})
   include(BinaryTarget)

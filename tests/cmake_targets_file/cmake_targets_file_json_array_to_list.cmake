@@ -10,7 +10,7 @@
 
 #-------------------------------------------------------------------------------
 # Test of [CMakeTargetsFile module::_json_array_to_list internal function]:
-#    _json_array_to_list(<json-array> <output-list-var>)
+#   _json_array_to_list(<json-array> <output-list-var>)
 ct_add_test(NAME "test_cmake_targets_file_json_array_to_list_internal_function")
 function(${CMAKETEST_TEST})
   include(CMakeTargetsFile)

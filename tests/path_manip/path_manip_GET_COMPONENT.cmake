@@ -10,9 +10,9 @@
 
 #-------------------------------------------------------------------------------
 # Test of [PathManip module::GET_COMPONENT operation]:
-#    path_manip(GET_COMPONENT [<file-path>...]
-#               MODE <mode>
-#               OUTPUT_VARIABLE <output-list-var>)
+#   path_manip(GET_COMPONENT [<file-path>...]
+#              MODE <mode>
+#              OUTPUT_VARIABLE <output-list-var>)
 ct_add_test(NAME "test_path_manip_get_component_operation")
 function(${CMAKETEST_TEST})
   include(PathManip)

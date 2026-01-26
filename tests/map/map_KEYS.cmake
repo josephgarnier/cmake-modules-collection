@@ -10,7 +10,7 @@
 
 #-------------------------------------------------------------------------------
 # Test of [Map module::KEYS operation]:
-#    map(KEYS <map-var> <output-list-var>)
+#   map(KEYS <map-var> <output-list-var>)
 ct_add_test(NAME "test_map_keys_operation")
 function(${CMAKETEST_TEST})
   include(Map)

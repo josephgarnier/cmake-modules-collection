@@ -10,7 +10,7 @@
 
 #-------------------------------------------------------------------------------
 # Test of [Map module::_validate_map_key internal function]:
-#    _validate_map_key(<entry> <output-key-var> <output-is-valid-var>)
+#   _validate_map_key(<entry> <output-key-var> <output-is-valid-var>)
 ct_add_test(NAME "test_map_validate_map_entry_internal_function")
 function(${CMAKETEST_TEST})
   include(Map)

@@ -10,11 +10,11 @@
 
 #-------------------------------------------------------------------------------
 # Test of [Directory module::SCAN operation]:
-#    directory(SCAN <output-list-var>
-#              LIST_DIRECTORIES <true|false>
-#              RELATIVE <true|false>
-#              ROOT_DIR <dir-path>
-#              <INCLUDE_REGEX|EXCLUDE_REGEX> <regular-expression>)
+#   directory(SCAN <output-list-var>
+#             LIST_DIRECTORIES <true|false>
+#             RELATIVE <true|false>
+#             ROOT_DIR <dir-path>
+#             <INCLUDE_REGEX|EXCLUDE_REGEX> <regular-expression>)
 ct_add_test(NAME "test_directory_scan_operation")
 function(${CMAKETEST_TEST})
   include(Directory)

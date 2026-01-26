@@ -10,7 +10,7 @@
 
 #-------------------------------------------------------------------------------
 # Test of [BinaryTarget module::CREATE operation]:
-#    binary_target(CREATE <target-name> <STATIC|SHARED|HEADER|EXEC>)
+#   binary_target(CREATE <target-name> <STATIC|SHARED|HEADER|EXEC>)
 ct_add_test(NAME "test_binary_target_create_operation")
 function(${CMAKETEST_TEST})
   include(BinaryTarget)

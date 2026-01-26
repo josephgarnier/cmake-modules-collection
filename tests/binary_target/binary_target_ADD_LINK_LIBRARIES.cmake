@@ -10,7 +10,7 @@
 
 #-------------------------------------------------------------------------------
 # Test of [BinaryTarget module::ADD_LINK_LIBRARIES operation]:
-#    binary_target(ADD_LINK_LIBRARIES <target-name> PUBLIC [<target-name>...|<gen-expr>...])
+#   binary_target(ADD_LINK_LIBRARIES <target-name> PUBLIC [<target-name>...|<gen-expr>...])
 ct_add_test(NAME "test_binary_target_add_link_libraries_operation")
 function(${CMAKETEST_TEST})
   include(BinaryTarget)

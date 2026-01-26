@@ -10,9 +10,9 @@
 
 #-------------------------------------------------------------------------------
 # Test of [Dependency module::IMPORTED_LOCATION operation]:
-#    dependency(SET_IMPORTED_LOCATION <lib-target-name>
-#               [CONFIGURATION <config_type>]
-#               INTERFACE <gen-expr>...)
+#   dependency(SET_IMPORTED_LOCATION <lib-target-name>
+#              [CONFIGURATION <config_type>]
+#              INTERFACE <gen-expr>...)
 ct_add_test(NAME "test_dependency_set_imported_location_operation")
 function(${CMAKETEST_TEST})
   include(Dependency)

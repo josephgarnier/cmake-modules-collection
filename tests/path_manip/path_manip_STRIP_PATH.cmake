@@ -10,9 +10,9 @@
 
 #-------------------------------------------------------------------------------
 # Test of [PathManip module::STRIP_PATH operation]:
-#    path_manip(STRIP_PATH <file-list-var>
-#               BASE_DIR <dir-path>
-#               [OUTPUT_VARIABLE <output-list-var>])
+#   path_manip(STRIP_PATH <file-list-var>
+#              BASE_DIR <dir-path>
+#              [OUTPUT_VARIABLE <output-list-var>])
 ct_add_test(NAME "test_path_manip_strip_path_operation")
 function(${CMAKETEST_TEST})
   include(PathManip)

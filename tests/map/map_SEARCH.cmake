@@ -10,7 +10,7 @@
 
 #-------------------------------------------------------------------------------
 # Test of [Map module::SEARCH operation]:
-#    map(SEARCH <map-var> <value> <output-list-var>)
+#   map(SEARCH <map-var> <value> <output-list-var>)
 ct_add_test(NAME "test_map_search_operation")
 function(${CMAKETEST_TEST})
   include(Map)

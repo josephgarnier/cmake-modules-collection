@@ -10,7 +10,7 @@
 
 #-------------------------------------------------------------------------------
 # Test of [CMakeTargetsFile module::_extract_remote_dep_props internal function]:
-#    _extract_remote_dep_props(<remote-dep-json-block> <output-map-var>)
+#   _extract_remote_dep_props(<remote-dep-json-block> <output-map-var>)
 ct_add_test(NAME "test_cmake_targets_file_extract_remote_dep_props_internal_function")
 function(${CMAKETEST_TEST})
   include(CMakeTargetsFile)

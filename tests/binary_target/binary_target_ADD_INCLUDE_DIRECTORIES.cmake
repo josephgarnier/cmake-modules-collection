@@ -10,7 +10,7 @@
 
 #-------------------------------------------------------------------------------
 # Test of [BinaryTarget module::ADD_INCLUDE_DIRECTORIES operation]:
-#    binary_target(ADD_INCLUDE_DIRECTORIES <target-name> PRIVATE [<dir-path>...|<gen-expr>...])
+#   binary_target(ADD_INCLUDE_DIRECTORIES <target-name> PRIVATE [<dir-path>...|<gen-expr>...])
 ct_add_test(NAME "test_binary_target_add_include_directories_operation")
 function(${CMAKETEST_TEST})
   include(BinaryTarget)

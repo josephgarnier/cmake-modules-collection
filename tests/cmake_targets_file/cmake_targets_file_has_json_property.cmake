@@ -10,7 +10,7 @@
 
 #-------------------------------------------------------------------------------
 # Test of [CMakeTargetsFile module::_has_json_property internal function]:
-#    _has_json_property(<json-block> <json-path-list> <output-var>)
+#   _has_json_property(<json-block> <json-path-list> <output-var>)
 ct_add_test(NAME "test_cmake_targets_file_has_json_property_internal_function")
 function(${CMAKETEST_TEST})
   include(CMakeTargetsFile)

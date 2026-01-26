@@ -10,14 +10,14 @@
 
 #-------------------------------------------------------------------------------
 # Test of [Directory module::COLLECT_SOURCES_BY_POLICY operation]:
-#    directory(COLLECT_SOURCES_BY_POLICY
-#              PUBLIC_HEADERS_SEPARATED <true|false> [<include-dir-path>]
-#              PRIVATE_SOURCE_DIR <dir-path>
-#              PRIVATE_SOURCE_FILES <output-list-var>
-#              PUBLIC_HEADER_DIR <output-var>
-#              PUBLIC_HEADER_FILES <output-list-var>
-#              PRIVATE_HEADER_DIR <output-var>
-#              PRIVATE_HEADER_FILES <output-list-var>)
+#   directory(COLLECT_SOURCES_BY_POLICY
+#             PUBLIC_HEADERS_SEPARATED <true|false> [<include-dir-path>]
+#             PRIVATE_SOURCE_DIR <dir-path>
+#             PRIVATE_SOURCE_FILES <output-list-var>
+#             PUBLIC_HEADER_DIR <output-var>
+#             PUBLIC_HEADER_FILES <output-list-var>
+#             PRIVATE_HEADER_DIR <output-var>
+#             PRIVATE_HEADER_FILES <output-list-var>)
 ct_add_test(NAME "test_directory_collect_sources_by_policy_operation")
 function(${CMAKETEST_TEST})
   include(Directory)

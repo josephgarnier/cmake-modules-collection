@@ -10,7 +10,7 @@
 
 #-------------------------------------------------------------------------------
 # Test of [CMakeTargetsFile module::GET_LOADED_FILE operation]:
-#    cmake_targets_file(GET_LOADED_FILE <output-var>)
+#   cmake_targets_file(GET_LOADED_FILE <output-var>)
 ct_add_test(NAME "test_cmake_targets_file_get_loaded_file_operation")
 function(${CMAKETEST_TEST})
   include(CMakeTargetsFile)

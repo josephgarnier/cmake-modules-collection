@@ -10,7 +10,7 @@
 
 #-------------------------------------------------------------------------------
 # Test of [Map module::SIZE operation]:
-#    map(SIZE <map-var> <output-var>)
+#   map(SIZE <map-var> <output-var>)
 ct_add_test(NAME "test_map_size_operation")
 function(${CMAKETEST_TEST})
   include(Map)

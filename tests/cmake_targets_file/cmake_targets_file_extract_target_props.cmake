@@ -10,7 +10,7 @@
 
 #-------------------------------------------------------------------------------
 # Test of [CMakeTargetsFile module::_extract_target_props internal function]:
-#    _extract_target_props(<target-json-block> <output-map-var>)
+#   _extract_target_props(<target-json-block> <output-map-var>)
 ct_add_test(NAME "test_cmake_targets_file_extract_target_props_internal_function")
 function(${CMAKETEST_TEST})
   include(CMakeTargetsFile)

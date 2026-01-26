@@ -10,11 +10,11 @@
 
 #-------------------------------------------------------------------------------
 # Test of [CMakeTargetsFile module::_validate_json_string internal function]:
-#    _validate_json_string(PROP_PATH [<prop-key>...]
-#                          PROP_VALUE [<string>]
-#                          [MIN_LENGTH <number>]
-#                          [MAX_LENGTH <number>]
-#                          [PATTERN <regex>])
+#   _validate_json_string(PROP_PATH [<prop-key>...]
+#                         PROP_VALUE [<string>]
+#                         [MIN_LENGTH <number>]
+#                         [MAX_LENGTH <number>]
+#                         [PATTERN <regex>])
 ct_add_test(NAME "test_cmake_targets_file_validate_json_string_internal_function")
 function(${CMAKETEST_TEST})
   include(CMakeTargetsFile)

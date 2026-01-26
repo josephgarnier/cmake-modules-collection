@@ -10,7 +10,7 @@
 
 #-------------------------------------------------------------------------------
 # Test of [CMakeTargetsFile module::_get_json_array internal function]:
-#    _get_json_array(<json-block> <json-path-list> <is-required> <output-list-var>)
+#   _get_json_array(<json-block> <json-path-list> <is-required> <output-list-var>)
 ct_add_test(NAME "test_cmake_targets_file_get_json_array_internal_function")
 function(${CMAKETEST_TEST})
   include(CMakeTargetsFile)

@@ -10,7 +10,7 @@
 
 #-------------------------------------------------------------------------------
 # Test of [CMakeTargetsFile module::_serialize_list internal function]:
-#    _serialize_list(<input-list-var> <output-var>)
+#   _serialize_list(<input-list-var> <output-var>)
 ct_add_test(NAME "test_cmake_targets_file_serialize_list_internal_function")
 function(${CMAKETEST_TEST})
   include(CMakeTargetsFile)

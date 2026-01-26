@@ -10,7 +10,7 @@
 
 #-------------------------------------------------------------------------------
 # Test of [BinaryTarget module::ADD_PRECOMPILE_HEADER operation]:
-#    binary_target(ADD_PRECOMPILE_HEADER <target-name> HEADER_FILE <file-path>)
+#   binary_target(ADD_PRECOMPILE_HEADER <target-name> HEADER_FILE <file-path>)
 ct_add_test(NAME "test_binary_target_add_precompile_header_operation")
 function(${CMAKETEST_TEST})
   include(BinaryTarget)

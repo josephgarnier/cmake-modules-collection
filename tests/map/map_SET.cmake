@@ -10,7 +10,7 @@
 
 #-------------------------------------------------------------------------------
 # Test of [Map module::SET operation]:
-#    map(SET <map-var> <key> <value>)
+#   map(SET <map-var> <key> <value>)
 ct_add_test(NAME "test_map_set_operation")
 function(${CMAKETEST_TEST})
   include(Map)

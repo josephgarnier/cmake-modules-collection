@@ -10,7 +10,7 @@
 
 #-------------------------------------------------------------------------------
 # Test of [CMakeTargetsFile module::IS_LOADED operation]:
-#    cmake_targets_file(IS_LOADED <output-var>)
+#   cmake_targets_file(IS_LOADED <output-var>)
 ct_add_test(NAME "test_cmake_targets_file_is_loaded_operation")
 function(${CMAKETEST_TEST})
   include(CMakeTargetsFile)

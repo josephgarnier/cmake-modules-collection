@@ -10,9 +10,9 @@
 
 #-------------------------------------------------------------------------------
 # Test of [FileManip module::RELATIVE_PATH operation]:
-#    file_manip(RELATIVE_PATH <file-list-var>
-#               BASE_DIR <dir-path>
-#               [OUTPUT_VARIABLE <output-list-var>])
+#   file_manip(RELATIVE_PATH <file-list-var>
+#              BASE_DIR <dir-path>
+#              [OUTPUT_VARIABLE <output-list-var>])
 ct_add_test(NAME "test_file_manip_relative_path_operation")
 function(${CMAKETEST_TEST})
   include(FileManip)

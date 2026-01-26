@@ -10,8 +10,8 @@
 
 #-------------------------------------------------------------------------------
 # Test of [CMakeTargetsFile module::_validate_json_boolean internal function]:
-#    _validate_json_boolean(PROP_PATH [<prop-key>...]
-#                           PROP_VALUE <string>)
+#   _validate_json_boolean(PROP_PATH [<prop-key>...]
+#                          PROP_VALUE <string>)
 ct_add_test(NAME "test_cmake_targets_file_validate_json_boolean_internal_function")
 function(${CMAKETEST_TEST})
   include(CMakeTargetsFile)

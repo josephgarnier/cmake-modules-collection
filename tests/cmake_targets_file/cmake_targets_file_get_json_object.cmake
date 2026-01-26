@@ -10,7 +10,7 @@
 
 #-------------------------------------------------------------------------------
 # Test of [CMakeTargetsFile module::_get_json_object internal function]:
-#    _get_json_object(<json-block> <json-path-list> <is-required> <output-map-var>)
+#   _get_json_object(<json-block> <json-path-list> <is-required> <output-map-var>)
 ct_add_test(NAME "test_cmake_targets_file_get_json_object_internal_function")
 function(${CMAKETEST_TEST})
   include(CMakeTargetsFile)

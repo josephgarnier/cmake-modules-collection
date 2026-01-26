@@ -10,11 +10,11 @@
 
 #-------------------------------------------------------------------------------
 # Test of [BinaryTarget module::CONFIGURE_SETTINGS operation]:
-#    binary_target(CONFIGURE_SETTINGS <target-name>
-#                  COMPILE_FEATURES [<feature>...]
-#                  COMPILE_DEFINITIONS [<definition>...]
-#                  COMPILE_OPTIONS [<option>...]
-#                  LINK_OPTIONS [<option>...])
+#   binary_target(CONFIGURE_SETTINGS <target-name>
+#                 COMPILE_FEATURES [<feature>...]
+#                 COMPILE_DEFINITIONS [<definition>...]
+#                 COMPILE_OPTIONS [<option>...]
+#                 LINK_OPTIONS [<option>...])
 ct_add_test(NAME "test_binary_target_configure_settings_operation")
 function(${CMAKETEST_TEST})
   include(BinaryTarget)

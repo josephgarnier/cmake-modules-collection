@@ -10,7 +10,7 @@
 
 #-------------------------------------------------------------------------------
 # Test of [CMakeTargetsFile module::_assert_config_file_loaded internal function]:
-#    _assert_config_file_loaded()
+#   _assert_config_file_loaded()
 ct_add_test(NAME "test_cmake_targets_file_assert_config_file_loaded_internal_function")
 function(${CMAKETEST_TEST})
   include(CMakeTargetsFile)

@@ -10,7 +10,7 @@
 
 #-------------------------------------------------------------------------------
 # Test of [Print module::REL_PATHS operation]:
-#    print([<mode>] REL_PATHS [<file-path>...] [INDENT])
+#   print([<mode>] REL_PATHS [<file-path>...] [INDENT])
 ct_add_test(NAME "test_print_paths_operation")
 function(${CMAKETEST_TEST})
   include(Print)

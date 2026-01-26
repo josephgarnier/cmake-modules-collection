@@ -10,7 +10,7 @@
 
 #-------------------------------------------------------------------------------
 # Test of [Print module::default operation]:
-#    print([<mode>] "message with formated text" <argument>...)
+#   print([<mode>] "message with formated text" <argument>...)
 ct_add_test(NAME "test_print_formated_message_operation")
 function(${CMAKETEST_TEST})
   include(Print)

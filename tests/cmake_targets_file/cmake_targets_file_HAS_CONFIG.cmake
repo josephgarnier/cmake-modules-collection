@@ -10,7 +10,7 @@
 
 #-------------------------------------------------------------------------------
 # Test of [CMakeTargetsFile module::HAS_CONFIG operation]:
-#    cmake_targets_file(HAS_CONFIG <output-var> TARGET <target-dir-path>)
+#   cmake_targets_file(HAS_CONFIG <output-var> DEP <dep-name>|TARGET <target-dir-path>)
 ct_add_test(NAME "test_cmake_targets_file_has_config_operation")
 function(${CMAKETEST_TEST})
   include(CMakeTargetsFile)

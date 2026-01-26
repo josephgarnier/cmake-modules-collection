@@ -10,7 +10,7 @@
 
 #-------------------------------------------------------------------------------
 # Test of [Map module::REMOVE operation]:
-#    map(REMOVE <map-var> <key>)
+#   map(REMOVE <map-var> <key>)
 ct_add_test(NAME "test_map_remove_operation")
 function(${CMAKETEST_TEST})
   include(Map)

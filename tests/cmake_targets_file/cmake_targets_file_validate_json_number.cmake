@@ -10,13 +10,13 @@
 
 #-------------------------------------------------------------------------------
 # Test of [CMakeTargetsFile module::_validate_json_number internal function]:
-#    _validate_json_number(PROP_PATH [<prop-key>...]
-#                          PROP_VALUE <number>
-#                          [MULTIPLE_OF <number>]
-#                          [MIN <number>]
-#                          [EXCLU_MIN <number>]
-#                          [MAX <number>]
-#                          [EXCLU_MAX <number>])
+#   _validate_json_number(PROP_PATH [<prop-key>...]
+#                         PROP_VALUE <number>
+#                         [MULTIPLE_OF <number>]
+#                         [MIN <number>]
+#                         [EXCLU_MIN <number>]
+#                         [MAX <number>]
+#                         [EXCLU_MAX <number>])
 ct_add_test(NAME "test_cmake_targets_file_validate_json_number_internal_function")
 function(${CMAKETEST_TEST})
   include(CMakeTargetsFile)
