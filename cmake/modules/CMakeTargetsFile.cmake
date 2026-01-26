@@ -2042,6 +2042,22 @@ endfunction()
 
 #------------------------------------------------------------------------------
 # [Internal use only]
+function(_assert_dependency_config_exists dep_name)
+  if(NOT ${ARGC} EQUAL 1)
+    message(FATAL_ERROR "${CMAKE_CURRENT_FUNCTION}() requires exactly 1 arguments, got ${ARGC}!")
+  endif()
+  if("${dep_name}" STREQUAL "")
+    message(FATAL_ERROR "${CMAKE_CURRENT_FUNCTION}() requires 'dep_name' argument to be a non-empty string value!")
+  endif()
+
+  get_property(does_config_exist GLOBAL PROPERTY "TARGETS_CONFIG_DEP_${dep_name}" SET)
+  if(NOT ${does_config_exist})
+    message(FATAL_ERROR "${CMAKE_CURRENT_FUNCTION}(): no configuration found with the dependency name ${dep_name}!")
+  endif()
+endfunction()
+
+#------------------------------------------------------------------------------
+# [Internal use only]
 function(_assert_target_config_exists target_dir_path)
   if(NOT ${ARGC} EQUAL 1)
     message(FATAL_ERROR "${CMAKE_CURRENT_FUNCTION}() requires exactly 1 arguments, got ${ARGC}!")
