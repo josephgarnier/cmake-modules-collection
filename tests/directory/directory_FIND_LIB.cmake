@@ -244,6 +244,7 @@ function(${CMAKETEST_TEST})
 
   ct_add_section(NAME "find_nonexistent_shared_lib")
   function(${CMAKETEST_SECTION})
+
     ct_add_section(NAME "get_absolute_path")
     function(${CMAKETEST_SECTION})
       set(lib_name "fake_lib")
