@@ -494,6 +494,7 @@ readable JSON schema for the <code class="docutils literal notranslate"><span cl
 
 <a class="reference internal" href="#querying">Querying</a>
   cmake_targets_file(<a class="reference internal" href="#has-config">HAS_CONFIG</a> &lt;output-var&gt; DEP &lt;dep-name&gt;|TARGET &lt;target-dir-path&gt;)
+  cmake_targets_file(<a class="reference internal" href="#get-config-list">GET_CONFIG_LIST</a> &lt;output-list-var&gt; ALL_DEPS|REMOTE_DEPS|TARGETS)
   cmake_targets_file(<a class="reference internal" href="#get-settings">GET_SETTINGS</a> &lt;output-map-var&gt; DEP &lt;dep-name&gt;|TARGET &lt;target-dir-path&gt;)
   cmake_targets_file(<a class="reference internal" href="#has-setting">HAS_SETTING</a> &lt;output-var&gt; DEP &lt;dep-name&gt;|TARGET &lt;target-dir-path&gt; KEY &lt;setting-name&gt;)
   cmake_targets_file(<a class="reference internal" href="#get-keys">GET_KEYS</a> &lt;output-list-var&gt; DEP &lt;dep-name&gt;|TARGET &lt;target-dir-path&gt;)
@@ -502,8 +503,8 @@ readable JSON schema for the <code class="docutils literal notranslate"><span cl
 
 <a class="reference internal" href="#debugging">Debugging</a>
   cmake_targets_file(<a class="reference internal" href="#print-configs">PRINT_CONFIGS</a> [])
-  cmake_targets_file(<a class="reference internal" href="#print-target-config">PRINT_TARGET_CONFIG</a> &lt;target-dir-path&gt;)
-  cmake_targets_file(<a class="reference internal" href="#print-dep-config">PRINT_DEP_CONFIG</a> &lt;dep-name&gt;)</pre>
+  cmake_targets_file(<a class="reference internal" href="#print-dep-config">PRINT_DEP_CONFIG</a> &lt;dep-name&gt;)
+  cmake_targets_file(<a class="reference internal" href="#print-target-config">PRINT_TARGET_CONFIG</a> &lt;target-dir-path&gt;)</pre>
 </section>
 <section id="loading">
 <h2>Loading<a class="headerlink" href="#loading" title="Link to this heading">¶</a></h2>
@@ -530,16 +531,18 @@ the list of target directory paths are preserved.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_LOADED</span></code></dt><dd><p>Set to <code class="docutils literal notranslate"><span class="pre">true</span></code> once the configuration is successfully loaded, otherwise
 to <code class="docutils literal notranslate"><span class="pre">false</span></code>.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_REMOTE_DEPS</span></code></dt><dd><p>Holds the list of all external remote dependencies defined in the file.
-They serve as value to get the dependency configurations stored in
+<dt><code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_REMOTE_DEPS</span></code></dt><dd><p>Holds the list of all external remote dependencies defined in the object
+<code class="docutils literal notranslate"><span class="pre">externalDeps/remotes</span></code> of the configuration file. They serve as value for
+<code class="docutils literal notranslate"><span class="pre">&lt;dep-name&gt;</span></code> to get the dependency configurations stored in
 <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_DEP_&lt;dep-name&gt;</span></code>.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_DEP_&lt;dep-name&gt;</span></code></dt><dd><p>For each external dependency name in the object <code class="docutils literal notranslate"><span class="pre">externalDeps</span></code> of the
 configuration file, stores the serialized key-value <span class="target" id="index-1-module:Map"></span><a class="reference internal" href="Map.html#module:Map" title="Map"><code class="xref cmake cmake-module docutils literal notranslate"><span class="pre">Map</span></code></a> of its
 parsed properties.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_TARGETS</span></code></dt><dd><p>Holds the list of all target directory paths defined in the file. They
-serve as value to get the target configurations stored in
+<dt><code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_TARGETS</span></code></dt><dd><p>Holds the list of all target directory paths defined in the object
+<code class="docutils literal notranslate"><span class="pre">targets</span></code> of the configuration file. They serve as value for
+<code class="docutils literal notranslate"><span class="pre">&lt;target-dir-path&gt;</span></code> to get the target configurations stored in
 <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_&lt;target-dir-path&gt;</span></code>.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_&lt;target-dir-path&gt;</span></code></dt><dd><p>For each target directory path in the object <code class="docutils literal notranslate"><span class="pre">targets</span></code> of the
@@ -656,26 +659,53 @@ given target directory path <code class="docutils literal notranslate"><span cla
 </dd></dl>
 
 <dl class="cmake signature">
+<dt class="sig sig-object cmake" id="get-config-list">
+<span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">cmake_targets_file(</span></span><span class="no"><span class="pre">GET_CONFIG_LIST</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;output-list-var&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">ALL_DEPS</span></span><span class="p"><span class="pre">|</span></span><span class="no"><span class="pre">REMOTE_DEPS</span></span><span class="p"><span class="pre">|</span></span><span class="no"><span class="pre">TARGETS</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#get-config-list" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves a list of configuration entries stored in global properties and
+store the result in <code class="docutils literal notranslate"><span class="pre">&lt;output-list-var&gt;</span></code>.</p>
+<p>The content of the list depends on the keyword used:</p>
+<ul class="simple">
+<li><p>When <code class="docutils literal notranslate"><span class="pre">ALL_DEPS</span></code> or <code class="docutils literal notranslate"><span class="pre">REMOTE_DEPS</span></code> is specified, the command retrieves the
+list stored in the global property <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_REMOTE_DEPS</span></code>. The list
+contains dependency names that can later be used as arguments for
+<code class="docutils literal notranslate"><span class="pre">DEP</span> <span class="pre">&lt;dep-name&gt;</span></code> in commands that require it.</p></li>
+<li><p>When <code class="docutils literal notranslate"><span class="pre">ARGETS</span></code> is specified, the command retrieves the list stored in the
+global property <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_TARGETS</span></code>. The list contains target
+directory paths that can later be used as arguments for
+<code class="docutils literal notranslate"><span class="pre">TARGET</span> <span class="pre">&lt;target-dir-path&gt;</span></code> in commands that require it.</p></li>
+</ul>
+<p>The result is stored in <code class="docutils literal notranslate"><span class="pre">&lt;output-list-var&gt;</span></code> as a semicolon-separated list.</p>
+<p>Example usage :</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">cmake_targets_file(</span><span class="no">GET_CONFIG_LIST</span><span class="w"> </span><span class="nb">config_indexes</span><span class="w"> </span><span class="no">TARGETS</span><span class="nf">)</span>
+<span class="nf">message(</span><span class="s">&quot;config_indexes (target): ${config_indexes}&quot;</span><span class="nf">)</span>
+<span class="c"># output is:</span>
+<span class="c">#   config_indexes (target): src;src/grape;src/lemon</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="cmake signature">
 <dt class="sig sig-object cmake" id="get-settings">
 <span class="code cmake highlight sig-name descname"><span class="nf"><span class="pre">cmake_targets_file(</span></span><span class="no"><span class="pre">GET_SETTINGS</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;output-map-var&gt;</span></span><span class="w"> </span><span class="no"><span class="pre">DEP</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;dep-name&gt;</span></span><span class="p"><span class="pre">|</span></span><span class="no"><span class="pre">TARGET</span></span><span class="w"> </span><span class="nv"><span class="pre">&lt;target-dir-path&gt;</span></span><span class="nf"><span class="pre">)</span></span></span><a class="headerlink" href="#get-settings" title="Link to this definition">¶</a></dt>
 <dd><p>Retrieves the list of all settings defined for a given dependency or target
 configuration in the global property, respectively,
 <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_DEP_&lt;dep-name&gt;</span></code> or <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_&lt;target-dir-path&gt;</span></code>.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">&lt;dep-name&gt;</span></code> specifies the name of the dependency whose configuration
-settings should be retrieved. This must correspond to a name listed in the
-global property <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_REMOTE_DEPS</span></code>, and must match one of the
+settings should be retrieved. This must correspond to a name returned by
+<span class="target" id="index-4-command:cmake_targets_file"></span><a class="reference internal" href="#get-config-list" title="cmake_targets_file(get_config_list)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(GET_CONFIG_LIST)</span></code></a>, and must match one of the
 keys in the <code class="docutils literal notranslate"><span class="pre">externalDeps/remotes</span></code> JSON object of the loaded configuration
 file.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">&lt;target-dir-path&gt;</span></code> specifies the directory path of the target whose
-configuration settings should be retrieved. This must correspond to a path
-listed in the global property <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_TARGETS</span></code>, and must match one
-of the keys in the <code class="docutils literal notranslate"><span class="pre">targets</span></code> JSON object of the loaded configuration file.</p>
+configuration settings should be retrieved. This must correspond to a
+directory path returned by <span class="target" id="index-5-command:cmake_targets_file"></span><a class="reference internal" href="#get-config-list" title="cmake_targets_file(get_config_list)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(GET_CONFIG_LIST)</span></code></a>,
+and must match one of the keys in the <code class="docutils literal notranslate"><span class="pre">targets</span></code> JSON object of the loaded
+configuration file.</p>
 <p>The result is stored in <code class="docutils literal notranslate"><span class="pre">&lt;output-var&gt;</span></code> as a <span class="target" id="index-5-module:Map"></span><a class="reference internal" href="Map.html#module:Map" title="Map"><code class="xref cmake cmake-module docutils literal notranslate"><span class="pre">Map</span></code></a>. The <strong>values
 are serialized</strong>, so to access a specific value, it is recommended to use
-the <span class="target" id="index-4-command:cmake_targets_file"></span><a class="reference internal" href="#get-value" title="cmake_targets_file(get_value)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(GET_VALUE)</span></code></a> command, which deserializes
+the <span class="target" id="index-6-command:cmake_targets_file"></span><a class="reference internal" href="#get-value" title="cmake_targets_file(get_value)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(GET_VALUE)</span></code></a> command, which deserializes
 the values.</p>
 <p>An error is raised if no configuration file has been previously loaded with
-the <span class="target" id="index-5-command:cmake_targets_file"></span><a class="reference internal" href="#load" title="cmake_targets_file(load)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(LOAD)</span></code></a> command or if the <code class="docutils literal notranslate"><span class="pre">DEP</span></code> or the
+the <span class="target" id="index-7-command:cmake_targets_file"></span><a class="reference internal" href="#load" title="cmake_targets_file(load)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(LOAD)</span></code></a> command or if the <code class="docutils literal notranslate"><span class="pre">DEP</span></code> or the
 <code class="docutils literal notranslate"><span class="pre">TARGET</span></code> does not exist in the loaded configuration file.</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">cmake_targets_file(</span><span class="no">GET_SETTINGS</span><span class="w"> </span><span class="nb">target_config_map</span><span class="w"> </span><span class="no">TARGET</span><span class="w"> </span><span class="s">&quot;src&quot;</span><span class="nf">)</span>
@@ -709,17 +739,18 @@ otherwise.</p>
 configuration in the global property, respectively,
 <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_DEP_&lt;dep-name&gt;</span></code> or <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_&lt;target-dir-path&gt;</span></code>.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">&lt;dep-name&gt;</span></code> specifies the name of the dependency whose configuration
-settings should be retrieved. This must correspond to a name listed in the
-global property <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_REMOTE_DEPS</span></code>, and must match one of the
+settings should be retrieved. This must correspond to a name returned by
+<span class="target" id="index-8-command:cmake_targets_file"></span><a class="reference internal" href="#get-config-list" title="cmake_targets_file(get_config_list)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(GET_CONFIG_LIST)</span></code></a>, and must match one of the
 keys in the <code class="docutils literal notranslate"><span class="pre">externalDeps/remotes</span></code> JSON object of the loaded configuration
 file.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">&lt;target-dir-path&gt;</span></code> specifies the directory path of the target whose
-configuration settings should be retrieved. This must correspond to a path
-listed in the global property <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_TARGETS</span></code>, and must match one
-of the keys in the <code class="docutils literal notranslate"><span class="pre">targets</span></code> JSON object of the loaded configuration file.</p>
-<p>The result is stored in <code class="docutils literal notranslate"><span class="pre">&lt;output-var&gt;</span></code> as a semicolon-separated list.</p>
+configuration settings should be retrieved. This must correspond to a
+directory path returned by <span class="target" id="index-9-command:cmake_targets_file"></span><a class="reference internal" href="#get-config-list" title="cmake_targets_file(get_config_list)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(GET_CONFIG_LIST)</span></code></a>,
+and must match one of the keys in the <code class="docutils literal notranslate"><span class="pre">targets</span></code> JSON object of the loaded
+configuration file.</p>
+<p>The result is stored in <code class="docutils literal notranslate"><span class="pre">output-list-var&gt;</span></code> as a semicolon-separated list.</p>
 <p>An error is raised if no configuration file has been previously loaded with
-the <span class="target" id="index-6-command:cmake_targets_file"></span><a class="reference internal" href="#load" title="cmake_targets_file(load)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(LOAD)</span></code></a> command or if the <code class="docutils literal notranslate"><span class="pre">DEP</span></code> or the
+the <span class="target" id="index-10-command:cmake_targets_file"></span><a class="reference internal" href="#load" title="cmake_targets_file(load)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(LOAD)</span></code></a> command or if the <code class="docutils literal notranslate"><span class="pre">DEP</span></code> or the
 <code class="docutils literal notranslate"><span class="pre">TARGET</span></code> does not exist in the loaded configuration file.</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">cmake_targets_file(</span><span class="no">GET_KEYS</span><span class="w"> </span><span class="nb">setting_keys</span><span class="w"> </span><span class="no">TARGET</span><span class="w"> </span><span class="s">&quot;src&quot;</span><span class="nf">)</span>
@@ -740,21 +771,22 @@ defined for a given dependency or target configuration in the global property
 , respectively, <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_DEP_&lt;dep-name&gt;</span></code> or
 <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_&lt;target-dir-path&gt;</span></code>.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">&lt;dep-name&gt;</span></code> specifies the name of the dependency whose configuration
-settings should be retrieved. This must correspond to a name listed in the
-global property <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_REMOTE_DEPS</span></code>, and must match one of the
+settings should be retrieved. This must correspond to a name returned by
+<span class="target" id="index-11-command:cmake_targets_file"></span><a class="reference internal" href="#get-config-list" title="cmake_targets_file(get_config_list)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(GET_CONFIG_LIST)</span></code></a>, and must match one of the
 keys in the <code class="docutils literal notranslate"><span class="pre">externalDeps/remotes</span></code> JSON object of the loaded configuration
 file.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">&lt;target-dir-path&gt;</span></code> specifies the directory path of the target whose
-configuration setting should be retrieved. This must correspond to a path
-listed in the global property <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_TARGETS</span></code>, and must match one
-of the keys in the <code class="docutils literal notranslate"><span class="pre">targets</span></code> JSON object of the loaded configuration file.</p>
+configuration settings should be retrieved. This must correspond to a
+directory path returned by <span class="target" id="index-12-command:cmake_targets_file"></span><a class="reference internal" href="#get-config-list" title="cmake_targets_file(get_config_list)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(GET_CONFIG_LIST)</span></code></a>,
+and must match one of the keys in the <code class="docutils literal notranslate"><span class="pre">targets</span></code> JSON object of the loaded
+configuration file.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">&lt;setting-name&gt;</span></code> specifies the flattened key name as stored in the
 <span class="target" id="index-6-module:Map"></span><a class="reference internal" href="Map.html#module:Map" title="Map"><code class="xref cmake cmake-module docutils literal notranslate"><span class="pre">Map</span></code></a> <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_DEP_&lt;dep-name&gt;</span></code> or
 <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_&lt;target-dir-path&gt;</span></code>. Nested JSON properties are concatenated
 using a dot (<code class="docutils literal notranslate"><span class="pre">.</span></code>) separator (e.g., <code class="docutils literal notranslate"><span class="pre">build.compileDefinitions</span></code>).</p>
 <p>The result is stored in <code class="docutils literal notranslate"><span class="pre">&lt;output-var&gt;</span></code> as a value or a deserialized list.</p>
 <p>An error is raised if no configuration file has been previously loaded with
-the <span class="target" id="index-7-command:cmake_targets_file"></span><a class="reference internal" href="#load" title="cmake_targets_file(load)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(LOAD)</span></code></a> command or if the <code class="docutils literal notranslate"><span class="pre">DEP</span></code> or the
+the <span class="target" id="index-13-command:cmake_targets_file"></span><a class="reference internal" href="#load" title="cmake_targets_file(load)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(LOAD)</span></code></a> command or if the <code class="docutils literal notranslate"><span class="pre">DEP</span></code> or the
 <code class="docutils literal notranslate"><span class="pre">TARGET</span></code> does not exist in the loaded configuration file or if the <code class="docutils literal notranslate"><span class="pre">KEY</span></code>
 does not exist in the target configuration.</p>
 <p>Example usage:</p>
@@ -783,17 +815,18 @@ does not exist in the target configuration.</p>
 <code class="docutils literal notranslate"><span class="pre">&lt;setting-name&gt;</span></code> defined for a given target configuration in the global
 property, respectively, <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_DEP_&lt;dep-name&gt;</span></code> or
 <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_&lt;target-dir-path&gt;</span></code>. Contrary to
-<span class="target" id="index-8-command:cmake_targets_file"></span><a class="reference internal" href="#get-value" title="cmake_targets_file(get_value)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(GET_VALUE)</span></code></a>, no error is raised if the <code class="docutils literal notranslate"><span class="pre">KEY</span></code>
+<span class="target" id="index-14-command:cmake_targets_file"></span><a class="reference internal" href="#get-value" title="cmake_targets_file(get_value)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(GET_VALUE)</span></code></a>, no error is raised if the <code class="docutils literal notranslate"><span class="pre">KEY</span></code>
 does not exist in the configuration.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">&lt;dep-name&gt;</span></code> specifies the name of the dependency whose configuration
-settings should be retrieved. This must correspond to a name listed in the
-global property <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_REMOTE_DEPS</span></code>, and must match one of the
+settings should be retrieved. This must correspond to a name returned by
+<span class="target" id="index-15-command:cmake_targets_file"></span><a class="reference internal" href="#get-config-list" title="cmake_targets_file(get_config_list)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(GET_CONFIG_LIST)</span></code></a>, and must match one of the
 keys in the <code class="docutils literal notranslate"><span class="pre">externalDeps/remotes</span></code> JSON object of the loaded configuration
 file.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">&lt;target-dir-path&gt;</span></code> specifies the directory path of the target whose
-configuration setting should be retrieved. This must correspond to a path
-listed in the global property <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_TARGETS</span></code>, and must match one
-of the keys in the <code class="docutils literal notranslate"><span class="pre">targets</span></code> JSON object of the loaded configuration file.</p>
+configuration settings should be retrieved. This must correspond to a
+directory path returned by <span class="target" id="index-16-command:cmake_targets_file"></span><a class="reference internal" href="#get-config-list" title="cmake_targets_file(get_config_list)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(GET_CONFIG_LIST)</span></code></a>,
+and must match one of the keys in the <code class="docutils literal notranslate"><span class="pre">targets</span></code> JSON object of the loaded
+configuration file.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">&lt;setting-name&gt;</span></code> specifies the flattened key name as stored in the
 <span class="target" id="index-7-module:Map"></span><a class="reference internal" href="Map.html#module:Map" title="Map"><code class="xref cmake cmake-module docutils literal notranslate"><span class="pre">Map</span></code></a> <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_DEP_&lt;dep-name&gt;</span></code> or 
 <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_&lt;target-dir-path&gt;</span></code>. Nested JSON properties are concatenated
@@ -802,7 +835,7 @@ using a dot (<code class="docutils literal notranslate"><span class="pre">.</spa
 If the <code class="docutils literal notranslate"><span class="pre">KEY</span></code> does not exist in the target configuration, <code class="docutils literal notranslate"><span class="pre">&lt;output-var&gt;</span></code>
 is set to <code class="docutils literal notranslate"><span class="pre">&lt;setting-name&gt;-NOTFOUND</span></code>.</p>
 <p>An error is raised if no configuration file has been previously loaded with
-the <span class="target" id="index-9-command:cmake_targets_file"></span><a class="reference internal" href="#load" title="cmake_targets_file(load)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(LOAD)</span></code></a> command or if the <code class="docutils literal notranslate"><span class="pre">DEP</span></code> or the
+the <span class="target" id="index-17-command:cmake_targets_file"></span><a class="reference internal" href="#load" title="cmake_targets_file(load)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(LOAD)</span></code></a> command or if the <code class="docutils literal notranslate"><span class="pre">DEP</span></code> or the
 <code class="docutils literal notranslate"><span class="pre">TARGET</span></code> does not exist in the loaded configuration file.</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">cmake_targets_file(</span><span class="no">TRY_GET_VALUE</span><span class="w"> </span><span class="nb">setting_value</span><span class="w"> </span><span class="no">TARGET</span><span class="w"> </span><span class="s">&quot;src&quot;</span><span class="w"> </span><span class="no">KEY</span><span class="w"> </span><span class="s">&quot;type&quot;</span><span class="nf">)</span>
@@ -837,7 +870,7 @@ the <span class="target" id="index-9-command:cmake_targets_file"></span><a class
 configuration file. It is primarily intended for debugging or inspecting the
 parsed target settings after loading a configuration file.</p>
 <p>An error is raised if no configuration file has been previously loaded with
-the <span class="target" id="index-10-command:cmake_targets_file"></span><a class="reference internal" href="#load" title="cmake_targets_file(load)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(LOAD)</span></code></a> command</p>
+the <span class="target" id="index-18-command:cmake_targets_file"></span><a class="reference internal" href="#load" title="cmake_targets_file(load)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(LOAD)</span></code></a> command</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">cmake_targets_file(</span><span class="no">PRINT_CONFIGS</span><span class="nf">)</span>
 <span class="c"># Output:</span>
@@ -862,12 +895,12 @@ property <code class="docutils literal notranslate"><span class="pre">TARGETS_CO
 debugging or inspecting a parsed target settings after loading a
 configuration file.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">&lt;dep-name&gt;</span></code> specifies the name of the dependency whose configuration
-settings should be retrieved. This must correspond to a name listed in the
-global property <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_REMOTE_DEPS</span></code>, and must match one of the
+settings should be retrieved. This must correspond to a name returned by
+<span class="target" id="index-19-command:cmake_targets_file"></span><a class="reference internal" href="#get-config-list" title="cmake_targets_file(get_config_list)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(GET_CONFIG_LIST)</span></code></a>, and must match one of the
 keys in the <code class="docutils literal notranslate"><span class="pre">externalDeps/remotes</span></code> JSON object of the loaded configuration
 file.</p>
 <p>An error is raised if no configuration file has been previously loaded with
-the <span class="target" id="index-11-command:cmake_targets_file"></span><a class="reference internal" href="#load" title="cmake_targets_file(load)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(LOAD)</span></code></a> command or if the <code class="docutils literal notranslate"><span class="pre">DEP</span></code> does not
+the <span class="target" id="index-20-command:cmake_targets_file"></span><a class="reference internal" href="#load" title="cmake_targets_file(load)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(LOAD)</span></code></a> command or if the <code class="docutils literal notranslate"><span class="pre">DEP</span></code> does not
 exist in the loaded configuration file.</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">cmake_targets_file(</span><span class="no">PRINT_DEP_CONFIG</span><span class="w"> </span><span class="s">&quot;AppleLib&quot;</span><span class="nf">)</span>
@@ -899,11 +932,12 @@ property <code class="docutils literal notranslate"><span class="pre">TARGETS_CO
 debugging or inspecting a parsed target settings after loading a
 configuration file.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">&lt;target-dir-path&gt;</span></code> specifies the directory path of the target whose
-configuration setting should be retrieved. This must correspond to a path
-listed in the global property <code class="docutils literal notranslate"><span class="pre">TARGETS_CONFIG_TARGETS</span></code>, and must match one
-of the keys in the <code class="docutils literal notranslate"><span class="pre">targets</span></code> JSON object of the loaded configuration file.</p>
+configuration settings should be retrieved. This must correspond to a
+directory path returned by <span class="target" id="index-21-command:cmake_targets_file"></span><a class="reference internal" href="#get-config-list" title="cmake_targets_file(get_config_list)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(GET_CONFIG_LIST)</span></code></a>,
+and must match one of the keys in the <code class="docutils literal notranslate"><span class="pre">targets</span></code> JSON object of the loaded
+configuration file.</p>
 <p>An error is raised if no configuration file has been previously loaded with
-the <span class="target" id="index-12-command:cmake_targets_file"></span><a class="reference internal" href="#load" title="cmake_targets_file(load)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(LOAD)</span></code></a> command.</p>
+the <span class="target" id="index-22-command:cmake_targets_file"></span><a class="reference internal" href="#load" title="cmake_targets_file(load)"><code class="xref cmake cmake-command docutils literal notranslate"><span class="pre">cmake_targets_file(LOAD)</span></code></a> command.</p>
 <p>Example usage:</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nf">cmake_targets_file(</span><span class="no">PRINT_TARGET_CONFIG</span><span class="w"> </span><span class="s">&quot;src&quot;</span><span class="nf">)</span>
 <span class="c"># Output:</span>

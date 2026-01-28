@@ -368,6 +368,7 @@ Synopsis
 
   `Querying`_
     cmake_targets_file(`HAS_CONFIG`_ <output-var> DEP <dep-name>|TARGET <target-dir-path>)
+    cmake_targets_file(`GET_CONFIG_LIST`_ <output-list-var> ALL_DEPS|REMOTE_DEPS|TARGETS)
     cmake_targets_file(`GET_SETTINGS`_ <output-map-var> DEP <dep-name>|TARGET <target-dir-path>)
     cmake_targets_file(`HAS_SETTING`_ <output-var> DEP <dep-name>|TARGET <target-dir-path> KEY <setting-name>)
     cmake_targets_file(`GET_KEYS`_ <output-list-var> DEP <dep-name>|TARGET <target-dir-path>)
@@ -411,8 +412,9 @@ Loading
     to ``false``.
 
   ``TARGETS_CONFIG_REMOTE_DEPS``
-    Holds the list of all external remote dependencies defined in the file.
-    They serve as value to get the dependency configurations stored in
+    Holds the list of all external remote dependencies defined in the object
+    ``externalDeps/remotes`` of the configuration file. They serve as value for
+    ``<dep-name>`` to get the dependency configurations stored in
     ``TARGETS_CONFIG_DEP_<dep-name>``.
 
   ``TARGETS_CONFIG_DEP_<dep-name>``
@@ -421,8 +423,9 @@ Loading
     parsed properties.
 
   ``TARGETS_CONFIG_TARGETS``
-    Holds the list of all target directory paths defined in the file. They
-    serve as value to get the target configurations stored in
+    Holds the list of all target directory paths defined in the object
+    ``targets`` of the configuration file. They serve as value for
+    ``<target-dir-path>`` to get the target configurations stored in
     ``TARGETS_CONFIG_<target-dir-path>``.
 
   ``TARGETS_CONFIG_<target-dir-path>``
@@ -547,6 +550,34 @@ Querying
     #   is_target_configured (src): true
 
 .. signature::
+  cmake_targets_file(GET_CONFIG_LIST <output-list-var> ALL_DEPS|REMOTE_DEPS|TARGETS)
+
+  Retrieves a list of configuration entries stored in global properties and
+  store the result in ``<output-list-var>``.
+
+  The content of the list depends on the keyword used:
+
+  * When ``ALL_DEPS`` or ``REMOTE_DEPS`` is specified, the command retrieves the
+    list stored in the global property ``TARGETS_CONFIG_REMOTE_DEPS``. The list
+    contains dependency names that can later be used as arguments for
+    ``DEP <dep-name>`` in commands that require it.
+  * When ``ARGETS`` is specified, the command retrieves the list stored in the
+    global property ``TARGETS_CONFIG_TARGETS``. The list contains target
+    directory paths that can later be used as arguments for
+    ``TARGET <target-dir-path>`` in commands that require it.
+
+  The result is stored in ``<output-list-var>`` as a semicolon-separated list.
+
+  Example usage :
+
+  .. code-block:: cmake
+
+    cmake_targets_file(GET_CONFIG_LIST config_indexes TARGETS)
+    message("config_indexes (target): ${config_indexes}")
+    # output is:
+    #   config_indexes (target): src;src/grape;src/lemon
+
+.. signature::
   cmake_targets_file(GET_SETTINGS <output-map-var> DEP <dep-name>|TARGET <target-dir-path>)
 
   Retrieves the list of all settings defined for a given dependency or target
@@ -554,15 +585,16 @@ Querying
   ``TARGETS_CONFIG_DEP_<dep-name>`` or ``TARGETS_CONFIG_<target-dir-path>``.
 
   The ``<dep-name>`` specifies the name of the dependency whose configuration
-  settings should be retrieved. This must correspond to a name listed in the
-  global property ``TARGETS_CONFIG_REMOTE_DEPS``, and must match one of the
+  settings should be retrieved. This must correspond to a name returned by
+  :command:`cmake_targets_file(GET_CONFIG_LIST)`, and must match one of the
   keys in the ``externalDeps/remotes`` JSON object of the loaded configuration
   file.
 
   The ``<target-dir-path>`` specifies the directory path of the target whose
-  configuration settings should be retrieved. This must correspond to a path
-  listed in the global property ``TARGETS_CONFIG_TARGETS``, and must match one
-  of the keys in the ``targets`` JSON object of the loaded configuration file.
+  configuration settings should be retrieved. This must correspond to a
+  directory path returned by :command:`cmake_targets_file(GET_CONFIG_LIST)`,
+  and must match one of the keys in the ``targets`` JSON object of the loaded
+  configuration file.
 
   The result is stored in ``<output-var>`` as a :module:`Map`. The **values
   are serialized**, so to access a specific value, it is recommended to use
@@ -607,17 +639,18 @@ Querying
   ``TARGETS_CONFIG_DEP_<dep-name>`` or ``TARGETS_CONFIG_<target-dir-path>``.
 
   The ``<dep-name>`` specifies the name of the dependency whose configuration
-  settings should be retrieved. This must correspond to a name listed in the
-  global property ``TARGETS_CONFIG_REMOTE_DEPS``, and must match one of the
+  settings should be retrieved. This must correspond to a name returned by
+  :command:`cmake_targets_file(GET_CONFIG_LIST)`, and must match one of the
   keys in the ``externalDeps/remotes`` JSON object of the loaded configuration
   file.
 
   The ``<target-dir-path>`` specifies the directory path of the target whose
-  configuration settings should be retrieved. This must correspond to a path
-  listed in the global property ``TARGETS_CONFIG_TARGETS``, and must match one
-  of the keys in the ``targets`` JSON object of the loaded configuration file.
+  configuration settings should be retrieved. This must correspond to a
+  directory path returned by :command:`cmake_targets_file(GET_CONFIG_LIST)`,
+  and must match one of the keys in the ``targets`` JSON object of the loaded
+  configuration file.
 
-  The result is stored in ``<output-var>`` as a semicolon-separated list.
+  The result is stored in ``output-list-var>`` as a semicolon-separated list.
 
   An error is raised if no configuration file has been previously loaded with
   the :command:`cmake_targets_file(LOAD)` command or if the ``DEP`` or the
@@ -643,15 +676,16 @@ Querying
   ``TARGETS_CONFIG_<target-dir-path>``.
 
   The ``<dep-name>`` specifies the name of the dependency whose configuration
-  settings should be retrieved. This must correspond to a name listed in the
-  global property ``TARGETS_CONFIG_REMOTE_DEPS``, and must match one of the
+  settings should be retrieved. This must correspond to a name returned by
+  :command:`cmake_targets_file(GET_CONFIG_LIST)`, and must match one of the
   keys in the ``externalDeps/remotes`` JSON object of the loaded configuration
   file.
 
   The ``<target-dir-path>`` specifies the directory path of the target whose
-  configuration setting should be retrieved. This must correspond to a path
-  listed in the global property ``TARGETS_CONFIG_TARGETS``, and must match one
-  of the keys in the ``targets`` JSON object of the loaded configuration file.
+  configuration settings should be retrieved. This must correspond to a
+  directory path returned by :command:`cmake_targets_file(GET_CONFIG_LIST)`,
+  and must match one of the keys in the ``targets`` JSON object of the loaded
+  configuration file.
 
   The ``<setting-name>`` specifies the flattened key name as stored in the
   :module:`Map` ``TARGETS_CONFIG_DEP_<dep-name>`` or
@@ -695,15 +729,16 @@ Querying
   does not exist in the configuration.
 
   The ``<dep-name>`` specifies the name of the dependency whose configuration
-  settings should be retrieved. This must correspond to a name listed in the
-  global property ``TARGETS_CONFIG_REMOTE_DEPS``, and must match one of the
+  settings should be retrieved. This must correspond to a name returned by
+  :command:`cmake_targets_file(GET_CONFIG_LIST)`, and must match one of the
   keys in the ``externalDeps/remotes`` JSON object of the loaded configuration
   file.
 
   The ``<target-dir-path>`` specifies the directory path of the target whose
-  configuration setting should be retrieved. This must correspond to a path
-  listed in the global property ``TARGETS_CONFIG_TARGETS``, and must match one
-  of the keys in the ``targets`` JSON object of the loaded configuration file.
+  configuration settings should be retrieved. This must correspond to a
+  directory path returned by :command:`cmake_targets_file(GET_CONFIG_LIST)`,
+  and must match one of the keys in the ``targets`` JSON object of the loaded
+  configuration file.
 
   The ``<setting-name>`` specifies the flattened key name as stored in the
   :module:`Map` ``TARGETS_CONFIG_DEP_<dep-name>`` or 
@@ -779,8 +814,8 @@ Debugging
   configuration file.
 
   The ``<dep-name>`` specifies the name of the dependency whose configuration
-  settings should be retrieved. This must correspond to a name listed in the
-  global property ``TARGETS_CONFIG_REMOTE_DEPS``, and must match one of the
+  settings should be retrieved. This must correspond to a name returned by
+  :command:`cmake_targets_file(GET_CONFIG_LIST)`, and must match one of the
   keys in the ``externalDeps/remotes`` JSON object of the loaded configuration
   file.
 
@@ -819,9 +854,10 @@ Debugging
   configuration file.
 
   The ``<target-dir-path>`` specifies the directory path of the target whose
-  configuration setting should be retrieved. This must correspond to a path
-  listed in the global property ``TARGETS_CONFIG_TARGETS``, and must match one
-  of the keys in the ``targets`` JSON object of the loaded configuration file.
+  configuration settings should be retrieved. This must correspond to a
+  directory path returned by :command:`cmake_targets_file(GET_CONFIG_LIST)`,
+  and must match one of the keys in the ``targets`` JSON object of the loaded
+  configuration file.
 
   An error is raised if no configuration file has been previously loaded with
   the :command:`cmake_targets_file(LOAD)` command.
@@ -851,8 +887,8 @@ include(Map)
 #------------------------------------------------------------------------------
 # Public function of this module
 function(cmake_targets_file)
-  set(options PRINT_CONFIGS)
-  set(one_value_args LOAD IS_LOADED GET_LOADED_FILE GET_VALUE TRY_GET_VALUE DEP TARGET KEY GET_SETTINGS GET_KEYS PRINT_TARGET_CONFIG PRINT_DEP_CONFIG HAS_CONFIG HAS_SETTING)
+  set(options PRINT_CONFIGS ALL_DEPS REMOTE_DEPS TARGETS)
+  set(one_value_args LOAD IS_LOADED GET_LOADED_FILE GET_VALUE TRY_GET_VALUE DEP TARGET KEY GET_SETTINGS GET_KEYS PRINT_TARGET_CONFIG PRINT_DEP_CONFIG HAS_CONFIG GET_CONFIG_LIST HAS_SETTING)
   set(multi_value_args "")
   cmake_parse_arguments(PARSE_ARGV 0 arg
     "${options}" "${one_value_args}" "${multi_value_args}"
@@ -873,6 +909,9 @@ function(cmake_targets_file)
   elseif(DEFINED arg_HAS_CONFIG)
     set(current_command "cmake_targets_file(HAS_CONFIG)")
     _cmake_targets_file_has_config()
+  elseif(DEFINED arg_GET_CONFIG_LIST)
+    set(current_command "cmake_targets_file(GET_CONFIG_LIST)")
+    _cmake_targets_file_get_config_list()
   elseif(DEFINED arg_GET_VALUE)
     set(current_command "cmake_targets_file(GET_VALUE)")
     _cmake_targets_file_get_value()
@@ -1927,6 +1966,38 @@ macro(_cmake_targets_file_has_config)
     set(${arg_HAS_CONFIG} false)
   endif()
   return(PROPAGATE "${arg_HAS_CONFIG}")
+endmacro()
+
+#------------------------------------------------------------------------------
+# [Internal use only]
+macro(_cmake_targets_file_get_config_list)
+  if((NOT DEFINED arg_GET_CONFIG_LIST)
+      OR ("${arg_GET_CONFIG_LIST}" STREQUAL ""))
+    message(FATAL_ERROR "${current_command} requires the keyword GET_CONFIG_LIST to be provided with a non-empty string value!")
+  endif()
+  if((NOT ${arg_ALL_DEPS})
+      AND (NOT ${arg_REMOTE_DEPS})
+      AND (NOT ${arg_TARGETS}))
+    message(FATAL_ERROR "${current_command} requires the keyword ALL_DEPS, REMOTE_DEPS or TARGETS to be provided!")
+  endif()
+  if(${arg_ALL_DEPS} AND ${arg_REMOTE_DEPS} AND ${arg_TARGETS})
+    message(FATAL_ERROR "${current_command} requires ALL_DEPS, REMOTE_DEPS and TARGETS not to be used together, they are mutually exclusive!")
+  endif()
+  _assert_config_file_loaded()
+
+  set(${arg_GET_CONFIG_LIST} "")
+  if(${arg_ALL_DEPS})
+    # Futur type of dependency will be added here
+    get_property(${arg_GET_CONFIG_LIST} GLOBAL PROPERTY "TARGETS_CONFIG_REMOTE_DEPS")
+  elseif(${arg_REMOTE_DEPS})
+    get_property(${arg_GET_CONFIG_LIST} GLOBAL PROPERTY "TARGETS_CONFIG_REMOTE_DEPS")
+  elseif(${arg_TARGETS})
+    get_property(${arg_GET_CONFIG_LIST} GLOBAL PROPERTY "TARGETS_CONFIG_TARGETS")
+  else()
+    message(FATAL_ERROR "${current_command} requires the keyword ALL_DEPS, REMOTE_DEPS or TARGETS to be used!")
+  endif()
+
+  return(PROPAGATE "${arg_GET_CONFIG_LIST}")
 endmacro()
 
 #------------------------------------------------------------------------------
