@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/schemas/cmake-targets.json",
-  "description": "The CMake targets file specifies build targets, their configuration, and dependencies used by the project",
+  "description": "The CMake targets file specifies build targets, their configuration, and dependencies used by the project. All properties are required by default, unless explicitly marked as optional under certain conditions.",
   "type": "object",
   "properties": {
     "$schema": {
@@ -14,12 +14,307 @@
       "type": "string",
       "format": "uri-reference"
     },
+    "externalDeps": {
+      "description": "The list of third party dependencies usable by the project's targets, whether resolved from outside the project directories or vendored within it",
+      "type": "object",
+      "properties": {
+        "remotes": {
+          "description": "Third party dependencies whose sources or binaries are not stored in the project directories and must be located or fetched by the build system",
+          "type": "object",
+          "patternProperties": {
+            "^[^\\s]+$": {
+              "description": "The name of the dependency (also called 'PackageName' in CMake) used to find the file 'Find<PackageName>.cmake' with find_package(). It must be compatible with CMake's PackageName requirements.",
+              "type": "object",
+              "properties": {
+                "rulesFile": {
+                  "description": "The CMake file that defines how to integrate the dependency into the build system. Must be either 'generic', to use a predefined rules file, or a relative path to a file ending with '.cmake'",
+                  "oneOf": [
+                    {
+                      "const": "generic"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "(.+/)?[^/]+\\.cmake$"
+                    }
+                  ]
+                },
+                "optional": {
+                  "description": "Indicates whether the dependency is optional (true) or required (false) (only required if rulesFile is 'generic')",
+                  "type": "boolean"
+                },
+                "minVersion": {
+                  "description": "The minimum acceptable version of the dependency (only required if rulesFile is 'generic'). Can be empty to indicate no minimum version.",
+                  "type": "string"
+                },
+                "integrationMethod": {
+                  "description": "The method used to find the dependency between 'FIND_PACKAGE', 'FETCH_CONTENT', 'FIND_THEN_FETCH' and 'EXTERNAL_PROJECT' (only required if rulesFile is 'generic')",
+                  "type": "string",
+                  "enum": [
+                    "FIND_PACKAGE",
+                    "FETCH_CONTENT",
+                    "FIND_THEN_FETCH",
+                    "EXTERNAL_PROJECT"
+                  ]
+                },
+                "packageLocation": {
+                  "description": "Additional location to search for the dependency package (only required if rulesFile is 'generic' and integrationMethod is 'FIND_PACKAGE' or 'FIND_THEN_FETCH')",
+                  "type": "object",
+                  "properties": {
+                    "windows": {
+                      "description": "Additional search path to the directory containing the package for Windows (never required). Must be absolute.",
+                      "type": "string",
+                      "pattern": "^[A-Za-z]:[/](?:[^<>:\"/\\\\|?*]+[/]?)*$"
+                    },
+                    "unix": {
+                      "description": "Additional search path to the directory containing the package for Unix (never required). Must be absolute, with no whitespace.",
+                      "type": "string",
+                      "pattern": "^(/[^/\\s]+)+/?$"
+                    },
+                    "macos": {
+                      "description": "Additional search path to the directory containing the package for MacOS (never required). Must be absolute, with no whitespace.",
+                      "type": "string",
+                      "pattern": "^(/[^/\\s]+)+/?$"
+                    }
+                  },
+                  "required": [],
+                  "additionalProperties": false
+                },
+                "downloadInfo": {
+                  "description": "The information required to download the dependency package (only required if rulesFile is 'generic' and integrationMethod is 'FETCH_CONTENT', 'FIND_THEN_FETCH' or 'EXTERNAL_PROJECT')",
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "description": "The download method to use (only required if rulesFile is 'generic')",
+                      "type": "string",
+                      "enum": [
+                        "url",
+                        "git",
+                        "svn",
+                        "mercurial"
+                      ]
+                    },
+                    "repository": {
+                      "description": "URL of the repository (only required if rulesFile is 'generic')",
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "tag": {
+                      "description": "Branch name, tag, commit hash or id (only required if rulesFile is 'generic' and kind is 'git' or 'mercurial'). Can be empty to indicate no tag.",
+                      "type": "string"
+                    },
+                    "hash": {
+                      "description": "Hash of the file to be downloaded (only required if rulesFile is 'generic' and kind is 'url'). Can be empty to indicate no hash.",
+                      "type": "string"
+                    },
+                    "revision": {
+                      "description": "Revision to checkout from the repository (only required if rulesFile is 'generic' and kind is 'svn'). Can be empty to indicate no revision.",
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "build": {
+                  "description": "Additional dependency settings for building (only required if rulesFile is 'generic')",
+                  "type": "object",
+                  "properties": {
+                    "compileFeatures": {
+                      "description": "List of optional compile features that must be enabled or disabled when compiling code that consumes the dependency (e.g. [\"cxx_std_20\", \"cxx_thread_local\", \"cxx_trailing_return_types\"]) (only required if rulesFile is 'generic')",
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "compileDefinitions": {
+                      "description": "List of optional compile definitions that must be defined when compiling code that consumes the dependency (e.g. [\"DEFINE_ONE=1\", \"DEFINE_TWO=2\", \"OPTION_1\"]) (only required if rulesFile is 'generic')",
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "compileOptions": {
+                      "description": "List of optional compiler options that must be supplied to the compiler when compiling code that consumes the dependency (e.g. [\"-Wall\", \"-Wextra\", \"/W4\"]) (only required if rulesFile is 'generic')",
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "linkOptions": {
+                      "description": "List of optional linker options that must be enabled or disabled when linking code that consumes the dependency (e.g. [\"-s\", \"-z\", \"/INCREMENTAL:NO\"]) (only required if rulesFile is 'generic')",
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "required": [],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "rulesFile"
+              ],
+              "allOf": [
+                {
+                  "if": {
+                    "properties": {
+                      "rulesFile": {
+                        "const": "generic"
+                      }
+                    }
+                  },
+                  "then": {
+                    "required": [
+                      "minVersion",
+                      "integrationMethod",
+                      "optional",
+                      "build"
+                    ],
+                    "properties": {
+                      "build": {
+                        "required": [
+                          "compileFeatures",
+                          "compileDefinitions",
+                          "compileOptions",
+                          "linkOptions"
+                        ]
+                      },
+                      "downloadInfo": {
+                        "required": [
+                          "kind",
+                          "repository"
+                        ],
+                        "allOf": [
+                          {
+                            "if": {
+                              "required": [
+                                "kind"
+                              ],
+                              "properties": {
+                                "kind": {
+                                  "enum": [
+                                    "git",
+                                    "mercurial"
+                                  ]
+                                }
+                              }
+                            },
+                            "then": {
+                              "required": [
+                                "tag"
+                              ]
+                            }
+                          },
+                          {
+                            "if": {
+                              "required": [
+                                "kind"
+                              ],
+                              "properties": {
+                                "kind": {
+                                  "const": "url"
+                                }
+                              }
+                            },
+                            "then": {
+                              "required": [
+                                "hash"
+                              ]
+                            }
+                          },
+                          {
+                            "if": {
+                              "required": [
+                                "kind"
+                              ],
+                              "properties": {
+                                "kind": {
+                                  "const": "svn"
+                                }
+                              }
+                            },
+                            "then": {
+                              "required": [
+                                "revision"
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "rulesFile": {
+                        "const": "generic"
+                      },
+                      "integrationMethod": {
+                        "enum": [
+                          "FIND_PACKAGE",
+                          "FIND_THEN_FETCH"
+                        ]
+                      }
+                    }
+                  },
+                  "then": {
+                    "required": [
+                      "packageLocation"
+                    ]
+                  }
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "rulesFile": {
+                        "const": "generic"
+                      },
+                      "integrationMethod": {
+                        "enum": [
+                          "FETCH_CONTENT",
+                          "FIND_THEN_FETCH",
+                          "EXTERNAL_PROJECT"
+                        ]
+                      }
+                    }
+                  },
+                  "then": {
+                    "required": [
+                      "downloadInfo"
+                    ]
+                  }
+                }
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        },
+        "vendoredBinaries": {
+          "description": "Third party dependencies whose precompiled binaries are stored within the project directories and integrated into the project as imported targets",
+          "type": "object",
+          "patternProperties": {},
+          "required": [],
+          "additionalProperties": false
+        },
+        "vendoredSources": {
+          "description": "Third party dependencies whose source files are stored within the project directories and must be built as part of the project",
+          "type": "object",
+          "patternProperties": {},
+          "required": [],
+          "additionalProperties": false
+        }
+      },
+      "required": ["remotes","vendoredBinaries","vendoredSources"],
+      "additionalProperties": false
+    },
     "targets": {
-      "description": "The list of build targets defined in the project",
+      "description": "The list of binary targets for the project that will need to be built",
       "type": "object",
       "patternProperties": {
         "^\\w+(/.+)?$": {
-          "description": "The path to the directory where the target is defined. It must be unique and there cannot be more than one target per directory",
+          "description": "The path to the directory where the target is defined. It must be unique and there cannot be more than one target per directory.",
           "type": "object",
           "properties": {
             "name": {
@@ -79,12 +374,12 @@
               "additionalProperties": false
             },
             "mainFile": {
-              "description": "The main source file (.cpp) that serves as the entry point or primary compilation unit for this target. Must be a path to a file ending with .cpp, .cc, or .cxx",
+              "description": "The main source file (.cpp) that serves as the entry point or primary compilation unit for this target. Must be a path to a file ending with .cpp, .cc, or .cxx.",
               "type": "string",
               "pattern": "(.+/)?[^/]+\\.(cpp|cc|cxx)$"
             },
             "pchFile": {
-              "description": "The header file used as precompiled header (PCH) for this target (optional). Must be a path to a file ending with .h, .hpp, .hxx, .inl or .tpp",
+              "description": "The header file used as precompiled header (PCH) for this target (optional). Must be a path to a file ending with .h, .hpp, .hxx, .inl or .tpp.",
               "type": "string",
               "pattern": "(.+/)?[^/]+\\.(h|hpp|hxx|inl|tpp)$"
             },
@@ -125,277 +420,12 @@
               },
               "additionalProperties": false
             },
-            "extDependencies": {
-              "description": "The external packages or modules this target depends on",
-              "type": "object",
-              "patternProperties": {
-                "^[^\\s]+$": {
-                  "description": "The name of the dependency (also called 'PackageName' in CMake) used to find the file 'Find<PackageName>.cmake' with find_package(). It must be compatible with CMake's PackageName requirements.",
-                  "type": "object",
-                  "properties": {
-                    "rulesFile": {
-                      "description": "The CMake file that defines how to integrate the dependency into the build system. Must be either 'generic', to use a predefined  rules file, or a relative path to a file ending with '.cmake'",
-                      "oneOf": [
-                        {
-                          "const": "generic"
-                        },
-                        {
-                          "type": "string",
-                          "pattern": "(.+/)?[^/]+\\.cmake$"
-                        }
-                      ]
-                    },
-                    "minVersion": {
-                      "description": "The minimum acceptable version of the dependency (only required if rulesFile is 'generic')",
-                      "type": "string"
-                    },
-                    "integrationMethod": {
-                      "description": "The method used to find the dependency between 'FIND_PACKAGE', 'FETCH_CONTENT', 'FIND_AND_FETCH' and 'EXTERNAL_PROJECT' (only required if rulesFile is 'generic')",
-                      "type": "string",
-                      "enum": [
-                        "FIND_PACKAGE",
-                        "FETCH_CONTENT",
-                        "FIND_AND_FETCH",
-                        "EXTERNAL_PROJECT"
-                      ]
-                    },
-                    "packageLocation": {
-                      "description": "Additional location to search for the dependency package (only required if rulesFile is 'generic')",
-                      "type": "object",
-                      "properties": {
-                        "windows": {
-                          "description": "Path to a directory containing the package for Windows. Must be absolute",
-                          "type": "string",
-                          "pattern": "^[A-Za-z]:[/](?:[^<>:\"/\\\\|?*]+[/]?)*$"
-                        },
-                        "unix": {
-                          "description": "Path to a directory containing the package for Unix. Must be absolute, with no whitespace",
-                          "type": "string",
-                          "pattern": "^(/[^/\\s]+)+/?$"
-                        },
-                        "macos": {
-                          "description": "Path to a directory containing the package for MacOS. Must be absolute, with no whitespace",
-                          "type": "string",
-                          "pattern": "^(/[^/\\s]+)+/?$"
-                        }
-                      },
-                      "required": [],
-                      "additionalProperties": false
-                    },
-                    "downloadInfo": {
-                      "description": "The information required to download the dependency package (only required if rulesFile is 'generic')",
-                      "type": "object",
-                      "properties": {
-                        "kind": {
-                          "description": "The download method to use (only required if rulesFile is 'generic')",
-                          "type": "string",
-                          "enum": [
-                            "url",
-                            "git",
-                            "svn",
-                            "mercurial"
-                          ]
-                        },
-                        "repository": {
-                          "description": "URL of the repository (only required if rulesFile is 'generic')",
-                          "type": "string",
-                          "format": "uri"
-                        },
-                        "tag": {
-                          "description": "Branch name, tag or commit hash or id (only required if kind is 'git' or 'mercurial')",
-                          "type": "string"
-                        },
-                        "hash": {
-                          "description": "Hash of the file to be downloaded (only required if kind is 'url')",
-                          "type": "string"
-                        },
-                        "revision": {
-                          "description": "Revision to checkout from the repository (only required if kind is 'svn')",
-                          "type": "string"
-                        }
-                      },
-                      "additionalProperties": false
-                    },
-                    "optional": {
-                      "description": "Indicates whether the dependency is optional (true) or required (false) (only required if rulesFile is 'generic')",
-                      "type": "boolean"
-                    },
-                    "build": {
-                      "description": "Additional dependency settings for building (only required if rulesFile is 'generic')",
-                      "type": "object",
-                      "properties": {
-                        "compileFeatures": {
-                          "description": "List of optional compile features that must be enabled or disabled when compiling code that consumes the dependency (e.g. [\"cxx_std_20\", \"cxx_thread_local\", \"cxx_trailing_return_types\"])",
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          }
-                        },
-                        "compileDefinitions": {
-                          "description": "List of optional compile definitions that must be defined when compiling code that consumes the dependency (e.g. [\"DEFINE_ONE=1\", \"DEFINE_TWO=2\", \"OPTION_1\"])",
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          }
-                        },
-                        "compileOptions": {
-                          "description": "List of optional compiler options that must be supplied to the compiler when compiling code that consumes the dependency (e.g. [\"-Wall\", \"-Wextra\", \"/W4\"])",
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          }
-                        },
-                        "linkOptions": {
-                          "description": "List of optional linker options that must be enabled or disabled when linking code that consumes the dependency (e.g. [\"-s\", \"-z\", \"/INCREMENTAL:NO\"])",
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          }
-                        }
-                      },
-                      "required": [],
-                      "additionalProperties": false
-                    }
-                  },
-                  "required": [
-                    "rulesFile"
-                  ],
-                  "allOf": [
-                    {
-                      "if": {
-                        "properties": {
-                          "rulesFile": {
-                            "const": "generic"
-                          }
-                        }
-                      },
-                      "then": {
-                        "required": [
-                          "minVersion",
-                          "integrationMethod",
-                          "optional",
-                          "build"
-                        ],
-                        "properties": {
-                          "build": {
-                            "required": [
-                              "compileFeatures",
-                              "compileDefinitions",
-                              "compileOptions",
-                              "linkOptions"
-                            ]
-                          },
-                          "downloadInfo": {
-                            "required": [
-                              "kind",
-                              "repository"
-                            ],
-                            "allOf": [
-                              {
-                                "if": {
-                                  "required": [
-                                    "kind"
-                                  ],
-                                  "properties": {
-                                    "kind": {
-                                      "enum": [
-                                        "git",
-                                        "mercurial"
-                                      ]
-                                    }
-                                  }
-                                },
-                                "then": {
-                                  "required": [
-                                    "tag"
-                                  ]
-                                }
-                              },
-                              {
-                                "if": {
-                                  "required": [
-                                    "kind"
-                                  ],
-                                  "properties": {
-                                    "kind": {
-                                      "const": "url"
-                                    }
-                                  }
-                                },
-                                "then": {
-                                  "required": [
-                                    "hash"
-                                  ]
-                                }
-                              },
-                              {
-                                "if": {
-                                  "required": [
-                                    "kind"
-                                  ],
-                                  "properties": {
-                                    "kind": {
-                                      "const": "svn"
-                                    }
-                                  }
-                                },
-                                "then": {
-                                  "required": [
-                                    "revision"
-                                  ]
-                                }
-                              }
-                            ]
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "if": {
-                        "properties": {
-                          "rulesFile": {
-                            "const": "generic"
-                          },
-                          "integrationMethod": {
-                            "enum": [
-                              "FIND_PACKAGE",
-                              "FIND_AND_FETCH"
-                            ]
-                          }
-                        }
-                      },
-                      "then": {
-                        "required": [
-                          "packageLocation"
-                        ]
-                      }
-                    },
-                    {
-                      "if": {
-                        "properties": {
-                          "rulesFile": {
-                            "const": "generic"
-                          },
-                          "integrationMethod": {
-                            "enum": [
-                              "FETCH_CONTENT",
-                              "FIND_AND_FETCH",
-                              "EXTERNAL_PROJECT"
-                            ]
-                          }
-                        }
-                      },
-                      "then": {
-                        "required": [
-                          "downloadInfo"
-                        ]
-                      }
-                    }
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "additionalProperties": false
+            "dependencies": {
+              "description": "List of internal and external dependency names this target depends on",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           },
           "required": [
@@ -404,7 +434,7 @@
             "build",
             "mainFile",
             "headerPolicy",
-            "extDependencies"
+            "dependencies"
           ],
           "additionalProperties": false
         }
@@ -413,6 +443,7 @@
     }
   },
   "required": [
+    "externalDeps",
     "targets"
   ],
   "additionalProperties": false

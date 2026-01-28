@@ -1,6 +1,64 @@
 {
   "$schema": "schema.json",
   "$id": "schema.json",
+  "externalDeps": {
+    "remotes": {
+      "AppleLib": {
+        "rulesFile": "generic",
+        "optional": false,
+        "minVersion": "1.15.0",
+        "integrationMethod": "FIND_THEN_FETCH",
+        "packageLocation": {
+          "windows": "C:/Program Files/libs/apple/1.15.0",
+          "unix": "/opt/apple/1.15.0",
+          "macos": "/opt/apple/1.15.0"
+        },
+        "downloadInfo": {
+          "kind": "git",
+          "repository": "https://github.com/lib/apple.git",
+          "tag": "1234567"
+        },
+        "build": {
+          "compileFeatures": ["cxx_std_20"],
+          "compileDefinitions": ["DEFINE_ONE=1"],
+          "compileOptions": ["-Wall"],
+          "linkOptions": ["-s"]
+        }
+      },
+      "BananaLib": {
+        "rulesFile": "cmake/rules/RulesBananaLib.cmake",
+        "optional": true,
+        "minVersion": "4",
+        "downloadInfo": {}
+      },
+      "CarrotLib": {
+        "rulesFile": "cmake/rules/RulesCarrotLib.cmake",
+        "downloadInfo": {
+          "kind": "svn",
+          "repository": "svn://svn.carrot.lib.org/links/trunk",
+          "revision": "1234567"
+        }
+      },
+      "OrangeLib": {
+        "rulesFile": "cmake/rules/RulesOrangeLib.cmake",
+        "downloadInfo": {
+          "kind": "mercurial",
+          "repository": "https://hg.example.com/RulesOrangeLib",
+          "tag": "1234567"
+        }
+      },
+      "PineappleLib": {
+        "rulesFile": "cmake/rules/RulesPineappleLib.cmake",
+        "downloadInfo": {
+          "kind": "url",
+          "repository": "https://example.com/PineappleLib.zip",
+          "hash": "1234567"
+        }
+      }
+    },
+    "vendoredBinaries": {},
+    "vendoredSources": {}
+  },
   "targets": {
     "src": {
       "name": "fruit-salad",
@@ -17,113 +75,10 @@
         "mode": "split",
         "includeDir": "include"
       },
-      "extDependencies": {
-        "AppleLib": {
-          "rulesFile": "generic",
-          "minVersion": "1.15.0",
-          "integrationMethod": "FIND_AND_FETCH",
-          "packageLocation": {
-            "windows": "C:/Program Files/libs/apple/1.15.0",
-            "unix": "/opt/apple/1.15.0",
-            "macos": "/opt/apple/1.15.0"
-          },
-          "downloadInfo": {
-            "kind": "git",
-            "repository": "https://github.com/lib/apple.git",
-            "tag": "1234567"
-          },
-          "optional": false,
-          "build": {
-            "compileFeatures": ["cxx_std_20"],
-            "compileDefinitions": ["DEFINE_ONE=1"],
-            "compileOptions": ["-Wall"],
-            "linkOptions": ["-s"]
-          }
-        },
-        "BananaLib": {
-          "rulesFile": "cmake/rules/RulesBananaLib.cmake",
-          "minVersion": "4",
-          "downloadInfo": {},
-          "optional": true
-        },
-        "CarrotLib": {
-          "rulesFile": "cmake/rules/RulesCarrotLib.cmake",
-          "downloadInfo": {
-            "kind": "svn",
-            "repository": "svn://svn.carrot.lib.org/links/trunk",
-            "revision": "1234567"
-          }
-        },
-        "OrangeLib": {
-          "rulesFile": "cmake/rules/RulesOrangeLib.cmake",
-          "downloadInfo": {
-            "kind": "mercurial",
-            "repository": "https://hg.example.com/RulesOrangeLib",
-            "tag": "1234567"
-          }
-        },
-        "PineappleLib": {
-          "rulesFile": "cmake/rules/RulesPineappleLib.cmake",
-          "downloadInfo": {
-            "kind": "url",
-            "repository": "https://example.com/PineappleLib.zip",
-            "hash": "1234567"
-          }
-        }
-      },
-      "prebuiltDependencies": {
-        "StrawberryLib": {
-          "rulesFile": "generic",
-          "rootDir": "lib/strawberry",
-          "fileBasenames": {
-            "sharedRelease": "strawberry_shared_1.15.0",
-            "sharedDebug": "strawberryd_shared_1.15.0",
-            "staticRelease": "strawberry_static_1.15.0",
-            "staticDebug": "strawberryd_static_1.15.0"
-          },
-          "targetName": "strawberry-lib",
-          "includeDir": "include",
-          "optional": false
-        },
-        "GrapeLib": {
-          "rulesFile": "cmake/rules/RulesGrapeLib.cmake",
-          "optional": true
-        }
-      },
-      "sourceDependencies": {
-        "LemonLib": { # A human-readable name for the library or package. This does not affect usage of the pkg-config tool, which uses the name of the .pc file.
-          "rulesFile": "generic",
-          "useCMakeLists": false,
-          "rootDir": "lib/lemon",
-          "target" : {
-            "name": "strawberry-lib",
-            "type": "staticLib",
-            "build": {
-              "compileFeatures": ["cxx_std_20"],
-              "compileDefinitions": ["DEFINE_ONE=1"],
-              "compileOptions": ["-Wall"],
-              "linkOptions": ["-s"]
-            },
-            "sourceFiles": ["*"],
-            "headerFiles": ["*"],
-            "includeDirs": ["include"],
-            "linkLibraries": [],
-            "dependencies": [],
-            "export": {
-              "headerFiles": ["*"], # Export into /{install-prefix}/include all headers found in includeDirs or in rootDir if no includeDir is defined
-              "extraSourceFiles": ["*"]
-            }
-          },
-          "optional": false
-        },
-        "WatermelonLib": {
-          "rulesFile": "cmake/rules/RulesWatermelonLib.cmake",
-          "optional": true
-        }
-      }
+      "dependencies": ["grape", "lemon", "AppleLib", "BananaLib", "CarrotLib", "OrangeLib", "PineappleLib"]
     },
-    "src/apple": {
-      "name": "apple",
+    "src/grape": {
+      "name": "grape",
       "type": "staticLib",
       "build": {
         "compileFeatures": [],
@@ -131,14 +86,14 @@
         "compileOptions": [],
         "linkOptions": []
       },
-      "mainFile": "src/apple/main.cpp",
+      "mainFile": "src/grape/main.cpp",
       "headerPolicy": {
         "mode": "merged"
       },
-      "extDependencies": {}
+      "dependencies": []
     },
-    "src/banana": {
-      "name": "banana",
+    "src/lemon": {
+      "name": "lemon",
       "type": "staticLib",
       "build": {
         "compileFeatures": [],
@@ -146,11 +101,11 @@
         "compileOptions": [],
         "linkOptions": []
       },
-      "mainFile": "src/banana/main.cpp",
+      "mainFile": "src/lemon/main.cpp",
       "headerPolicy": {
         "mode": "merged"
       },
-      "extDependencies": {}
+      "dependencies": []
     }
   }
 }

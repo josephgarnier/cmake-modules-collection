@@ -367,15 +367,16 @@ Synopsis
     cmake_targets_file(`GET_LOADED_FILE`_ <output-var>)
 
   `Querying`_
-    cmake_targets_file(`HAS_CONFIG`_ <output-var> TARGET <target-dir-path>)
-    cmake_targets_file(`GET_SETTINGS`_ <output-map-var> TARGET <target-dir-path>)
-    cmake_targets_file(`HAS_SETTING`_ <output-var> TARGET <target-dir-path> KEY <setting-name>)
-    cmake_targets_file(`GET_KEYS`_ <output-list-var> TARGET <target-dir-path>)
-    cmake_targets_file(`GET_VALUE`_ <output-var> TARGET <target-dir-path> KEY <setting-name>)
-    cmake_targets_file(`TRY_GET_VALUE`_ <output-var> TARGET <target-dir-path> KEY <setting-name>)
+    cmake_targets_file(`HAS_CONFIG`_ <output-var> DEP <dep-name>|TARGET <target-dir-path>)
+    cmake_targets_file(`GET_SETTINGS`_ <output-map-var> DEP <dep-name>|TARGET <target-dir-path>)
+    cmake_targets_file(`HAS_SETTING`_ <output-var> DEP <dep-name>|TARGET <target-dir-path> KEY <setting-name>)
+    cmake_targets_file(`GET_KEYS`_ <output-list-var> DEP <dep-name>|TARGET <target-dir-path>)
+    cmake_targets_file(`GET_VALUE`_ <output-var> DEP <dep-name>|TARGET <target-dir-path> KEY <setting-name>)
+    cmake_targets_file(`TRY_GET_VALUE`_ <output-var> DEP <dep-name>|TARGET <target-dir-path> KEY <setting-name>)
 
   `Debugging`_
     cmake_targets_file(`PRINT_CONFIGS`_ [])
+    cmake_targets_file(`PRINT_DEP_CONFIG`_ <dep-name>)
     cmake_targets_file(`PRINT_TARGET_CONFIG`_ <target-dir-path>)
 
 Loading
@@ -530,10 +531,11 @@ Querying
 ^^^^^^^^
 
 .. signature::
-  cmake_targets_file(HAS_CONFIG <output-var> TARGET <target-dir-path>)
+  cmake_targets_file(HAS_CONFIG <output-var> DEP <dep-name>|TARGET <target-dir-path>)
 
-  Set ``<output-var>`` to ``true`` if a configuration exists for the given
-  target directory path ``<target-dir-path>``, or ``false`` otherwise.
+  Set ``<output-var>`` to ``true`` if a requested configuration exists for the
+  given target directory path ``<target-dir-path>`` or dependency ``<dep-name>``
+  , or ``false`` otherwise.
 
   Example usage :
 
@@ -545,10 +547,17 @@ Querying
     #   is_target_configured (src): true
 
 .. signature::
-  cmake_targets_file(GET_SETTINGS <output-map-var> TARGET <target-dir-path>)
+  cmake_targets_file(GET_SETTINGS <output-map-var> DEP <dep-name>|TARGET <target-dir-path>)
 
-  Retrieves the list of all settings defined for a given target configuration
-  in the global property ``TARGETS_CONFIG_<target-dir-path>``.
+  Retrieves the list of all settings defined for a given dependency or target
+  configuration in the global property, respectively,
+  ``TARGETS_CONFIG_DEP_<dep-name>`` or ``TARGETS_CONFIG_<target-dir-path>``.
+
+  The ``<dep-name>`` specifies the name of the dependency whose configuration
+  settings should be retrieved. This must correspond to a name listed in the
+  global property ``TARGETS_CONFIG_REMOTE_DEPS``, and must match one of the
+  keys in the ``externalDeps/remotes`` JSON object of the loaded configuration
+  file.
 
   The ``<target-dir-path>`` specifies the directory path of the target whose
   configuration settings should be retrieved. This must correspond to a path
@@ -561,8 +570,8 @@ Querying
   the values.
 
   An error is raised if no configuration file has been previously loaded with
-  the :command:`cmake_targets_file(LOAD)` command or if the ``TARGET`` does not
-  exist in the loaded configuration file.
+  the :command:`cmake_targets_file(LOAD)` command or if the ``DEP`` or the
+  ``TARGET`` does not exist in the loaded configuration file.
 
   Example usage:
 
@@ -575,10 +584,11 @@ Querying
     #   src/main.cpp;pchFile:include/fruit_salad_pch.h;...
 
 .. signature::
-  cmake_targets_file(HAS_SETTING <output-var> TARGET <target-dir-path> KEY <setting-name>)
+  cmake_targets_file(HAS_SETTING <output-var> DEP <dep-name>|TARGET <target-dir-path> KEY <setting-name>)
 
-  Set ``<output-var>`` to ``true`` if the configuration of the given target
-  contains the specified setting key ``<setting-name>``, or ``false`` otherwise.
+  Set ``<output-var>`` to ``true`` if the configuration of the given dependency
+  or target contains the specified setting key ``<setting-name>``, or ``false``
+  otherwise.
 
   Example usage:
 
@@ -590,10 +600,17 @@ Querying
     #   has_setting_key (type): true
 
 .. signature::
-  cmake_targets_file(GET_KEYS <output-list-var> TARGET <target-dir-path>)
+  cmake_targets_file(GET_KEYS <output-list-var> DEP <dep-name>|TARGET <target-dir-path>)
 
-  Retrieves the list of all setting keys defined for a given target
-  configuration in the global property ``TARGETS_CONFIG_<target-dir-path>``.
+  Retrieves the list of all setting keys defined for a given dependency or target
+  configuration in the global property, respectively,
+  ``TARGETS_CONFIG_DEP_<dep-name>`` or ``TARGETS_CONFIG_<target-dir-path>``.
+
+  The ``<dep-name>`` specifies the name of the dependency whose configuration
+  settings should be retrieved. This must correspond to a name listed in the
+  global property ``TARGETS_CONFIG_REMOTE_DEPS``, and must match one of the
+  keys in the ``externalDeps/remotes`` JSON object of the loaded configuration
+  file.
 
   The ``<target-dir-path>`` specifies the directory path of the target whose
   configuration settings should be retrieved. This must correspond to a path
@@ -603,8 +620,8 @@ Querying
   The result is stored in ``<output-var>`` as a semicolon-separated list.
 
   An error is raised if no configuration file has been previously loaded with
-  the :command:`cmake_targets_file(LOAD)` command or if the ``TARGET`` does not
-  exist in the loaded configuration file.
+  the :command:`cmake_targets_file(LOAD)` command or if the ``DEP`` or the
+  ``TARGET`` does not exist in the loaded configuration file.
 
   Example usage:
 
@@ -618,11 +635,18 @@ Querying
     #   mode;headerPolicy.includeDir...
 
 .. signature::
-  cmake_targets_file(GET_VALUE <output-var> TARGET <target-dir-path> KEY <setting-name>)
+  cmake_targets_file(GET_VALUE <output-var> DEP <dep-name>|TARGET <target-dir-path> KEY <setting-name>)
 
   Retrieves the value associated to a specific setting key ``<setting-name>``
-  defined for a given target configuration in the global property
+  defined for a given dependency or target configuration in the global property
+  , respectively, ``TARGETS_CONFIG_DEP_<dep-name>`` or
   ``TARGETS_CONFIG_<target-dir-path>``.
+
+  The ``<dep-name>`` specifies the name of the dependency whose configuration
+  settings should be retrieved. This must correspond to a name listed in the
+  global property ``TARGETS_CONFIG_REMOTE_DEPS``, and must match one of the
+  keys in the ``externalDeps/remotes`` JSON object of the loaded configuration
+  file.
 
   The ``<target-dir-path>`` specifies the directory path of the target whose
   configuration setting should be retrieved. This must correspond to a path
@@ -630,16 +654,16 @@ Querying
   of the keys in the ``targets`` JSON object of the loaded configuration file.
 
   The ``<setting-name>`` specifies the flattened key name as stored in the
-  :module:`Map` ``TARGETS_CONFIG_<target-dir-path>``. Nested JSON properties
-  are concatenated using a dot (``.``) separator (e.g.,
-  ``build.compileDefinitions``).
+  :module:`Map` ``TARGETS_CONFIG_DEP_<dep-name>`` or
+  ``TARGETS_CONFIG_<target-dir-path>``. Nested JSON properties are concatenated
+  using a dot (``.``) separator (e.g., ``build.compileDefinitions``).
 
   The result is stored in ``<output-var>`` as a value or a deserialized list.
 
   An error is raised if no configuration file has been previously loaded with
-  the :command:`cmake_targets_file(LOAD)` command or if the ``TARGET`` does not
-  exist in the loaded configuration file or if the ``KEY`` does not exist in
-  the target configuration.
+  the :command:`cmake_targets_file(LOAD)` command or if the ``DEP`` or the
+  ``TARGET`` does not exist in the loaded configuration file or if the ``KEY``
+  does not exist in the target configuration.
 
   Example usage:
 
@@ -654,20 +678,27 @@ Querying
     # Output:
     #   setting_value (build.compileDefinitions): DEFINE_ONE=1;DEFINE_TWO=2;
     #   OPTION_1
-    cmake_targets_file(GET_VALUE setting_value TARGET "src" KEY "externalDeps.remotes")
-    message("setting_value (externalDeps.remotes): ${setting_value}")
+    cmake_targets_file(GET_VALUE setting_value TARGET "src" KEY "dependencies")
+    message("setting_value (dependencies): ${setting_value}")
     # Output:
-    #   setting_value (externalDeps.remotes): AppleLib;BananaLib;CarrotLib;OrangeLib;
-    #   PineappleLib
+    #   setting_value (dependencies): grape;lemon;AppleLib;BananaLib;CarrotLib;
+    #   OrangeLib;PineappleLib
 
 .. signature::
-  cmake_targets_file(TRY_GET_VALUE <output-var> TARGET <target-dir-path> KEY <setting-name>)
+  cmake_targets_file(TRY_GET_VALUE <output-var> DEP <dep-name>|TARGET <target-dir-path> KEY <setting-name>)
 
   Try to retrieve the value associated to a specific setting key
   ``<setting-name>`` defined for a given target configuration in the global
-  property ``TARGETS_CONFIG_<target-dir-path>``. Contrary to
+  property, respectively, ``TARGETS_CONFIG_DEP_<dep-name>`` or
+  ``TARGETS_CONFIG_<target-dir-path>``. Contrary to
   :command:`cmake_targets_file(GET_VALUE)`, no error is raised if the ``KEY``
-  does not exist in the target configuration.
+  does not exist in the configuration.
+
+  The ``<dep-name>`` specifies the name of the dependency whose configuration
+  settings should be retrieved. This must correspond to a name listed in the
+  global property ``TARGETS_CONFIG_REMOTE_DEPS``, and must match one of the
+  keys in the ``externalDeps/remotes`` JSON object of the loaded configuration
+  file.
 
   The ``<target-dir-path>`` specifies the directory path of the target whose
   configuration setting should be retrieved. This must correspond to a path
@@ -675,17 +706,17 @@ Querying
   of the keys in the ``targets`` JSON object of the loaded configuration file.
 
   The ``<setting-name>`` specifies the flattened key name as stored in the
-  :module:`Map` ``TARGETS_CONFIG_<target-dir-path>``. Nested JSON properties
-  are concatenated using a dot (``.``) separator (e.g.,
-  ``build.compileDefinitions``).
+  :module:`Map` ``TARGETS_CONFIG_DEP_<dep-name>`` or 
+  ``TARGETS_CONFIG_<target-dir-path>``. Nested JSON properties are concatenated
+  using a dot (``.``) separator (e.g., ``build.compileDefinitions``).
 
   The result is stored in ``<output-var>`` as a value or a deserialized list.
   If the ``KEY`` does not exist in the target configuration, ``<output-var>``
   is set to ``<setting-name>-NOTFOUND``.
 
   An error is raised if no configuration file has been previously loaded with
-  the :command:`cmake_targets_file(LOAD)` command or if the ``TARGET`` does not
-  exist in the loaded configuration file.
+  the :command:`cmake_targets_file(LOAD)` command or if the ``DEP`` or the
+  ``TARGET`` does not exist in the loaded configuration file.
 
   Example usage:
 
@@ -700,11 +731,11 @@ Querying
     # Output:
     #   setting_value (build.compileDefinitions): DEFINE_ONE=1;DEFINE_TWO=2;
     #   OPTION_1
-    cmake_targets_file(TRY_GET_VALUE setting_value TARGET "src" KEY "externalDeps")
-    message("setting_value (externalDeps): ${setting_value}")
+    cmake_targets_file(TRY_GET_VALUE setting_value TARGET "src" KEY "dependencies")
+    message("setting_value (dependencies): ${setting_value}")
     # Output:
-    #   setting_value (externalDeps): AppleLib;BananaLib;CarrotLib;OrangeLib;
-    #   PineappleLib
+    #   setting_value (dependencies): grape;lemon;AppleLib;BananaLib;CarrotLib;
+    #   OrangeLib;PineappleLib
     cmake_targets_file(TRY_GET_VALUE setting_value TARGET "src" KEY "nonexistent.setting")
     message("setting_value (nonexistent.setting): ${setting_value}")
     # Output:
@@ -738,6 +769,46 @@ Debugging
     #   --   mainFile: src/main.cpp
     #   --   pchFile: include/fruit_salad_pch.h
     #   ...
+
+.. signature::
+  cmake_targets_file(PRINT_DEP_CONFIG <dep-name>)
+
+  Prints the configuration of a given dependency configuration in the global
+  property ``TARGETS_CONFIG_DEP_<dep-name>``. It is primarily intended for
+  debugging or inspecting a parsed target settings after loading a
+  configuration file.
+
+  The ``<dep-name>`` specifies the name of the dependency whose configuration
+  settings should be retrieved. This must correspond to a name listed in the
+  global property ``TARGETS_CONFIG_REMOTE_DEPS``, and must match one of the
+  keys in the ``externalDeps/remotes`` JSON object of the loaded configuration
+  file.
+
+  An error is raised if no configuration file has been previously loaded with
+  the :command:`cmake_targets_file(LOAD)` command or if the ``DEP`` does not
+  exist in the loaded configuration file.
+
+  Example usage:
+
+  .. code-block:: cmake
+
+    cmake_targets_file(PRINT_DEP_CONFIG "AppleLib")
+    # Output:
+    #   -- Dependency: AppleLib
+    #   --   rulesFile: generic
+    #   --   optional: OFF
+    #   --   minVersion: 1.15.0
+    #   --   integrationMethod: FIND_THEN_FETCH
+    #   --   packageLocation.windows: C:/Program Files/libs/apple/1.15.0
+    #   --   packageLocation.unix: /opt/apple/1.15.0
+    #   --   packageLocation.macos: /opt/apple/1.15.0
+    #   --   downloadInfo.kind: git
+    #   --   downloadInfo.repository: https://github.com/lib/apple.git
+    #   --   downloadInfo.tag: 1234567
+    #   --   build.compileFeatures: cxx_std_20
+    #   --   build.compileDefinitions: DEFINE_ONE=1
+    #   --   build.compileOptions: -Wall
+    #   --   build.linkOptions: -s
 
 .. signature::
   cmake_targets_file(PRINT_TARGET_CONFIG <target-dir-path>)
@@ -781,7 +852,7 @@ include(Map)
 # Public function of this module
 function(cmake_targets_file)
   set(options PRINT_CONFIGS)
-  set(one_value_args LOAD IS_LOADED GET_LOADED_FILE GET_VALUE TRY_GET_VALUE TARGET KEY GET_SETTINGS GET_KEYS PRINT_TARGET_CONFIG HAS_CONFIG HAS_SETTING)
+  set(one_value_args LOAD IS_LOADED GET_LOADED_FILE GET_VALUE TRY_GET_VALUE DEP TARGET KEY GET_SETTINGS GET_KEYS PRINT_TARGET_CONFIG PRINT_DEP_CONFIG HAS_CONFIG HAS_SETTING)
   set(multi_value_args "")
   cmake_parse_arguments(PARSE_ARGV 0 arg
     "${options}" "${one_value_args}" "${multi_value_args}"
@@ -820,6 +891,9 @@ function(cmake_targets_file)
   elseif(${arg_PRINT_CONFIGS})
     set(current_command "cmake_targets_file(PRINT_CONFIGS)")
     _cmake_targets_file_print_configs()
+  elseif(DEFINED arg_PRINT_DEP_CONFIG)
+    set(current_command "cmake_targets_file(PRINT_DEP_CONFIG)")
+    _cmake_targets_file_print_dep_config()
   elseif(DEFINED arg_PRINT_TARGET_CONFIG)
     set(current_command "cmake_targets_file(PRINT_TARGET_CONFIG)")
     _cmake_targets_file_print_target_config()
@@ -1824,13 +1898,29 @@ macro(_cmake_targets_file_has_config)
       OR ("${arg_HAS_CONFIG}" STREQUAL ""))
     message(FATAL_ERROR "${current_command} requires the keyword HAS_CONFIG to be provided with a non-empty string value!")
   endif()
-  if((NOT DEFINED arg_TARGET)
-      OR ("${arg_TARGET}" STREQUAL ""))
-    message(FATAL_ERROR "${current_command} requires the keyword TARGET to be provided with a non-empty string value!")
+  if((NOT DEFINED arg_DEP)
+      AND (NOT DEFINED arg_TARGET))
+    message(FATAL_ERROR "${current_command} requires the keyword DEP or TARGET to be provided!")
+  endif()
+  if((DEFINED arg_DEP) AND ("${arg_DEP}" STREQUAL ""))
+    message(FATAL_ERROR "${current_command} requires DEP to be a non-empty string value!")
+  endif()
+  if((DEFINED arg_TARGET) AND ("${arg_TARGET}" STREQUAL ""))
+    message(FATAL_ERROR "${current_command} requires TARGET to be a non-empty string value!")
+  endif()
+  if((DEFINED arg_DEP) AND (DEFINED arg_TARGET))
+    message(FATAL_ERROR "${current_command} requires DEP and TARGET not to be used together, they are mutually exclusive!")
   endif()
   _assert_config_file_loaded()
 
-  get_property(does_config_exist GLOBAL PROPERTY "TARGETS_CONFIG_${arg_TARGET}" SET)
+  if(DEFINED arg_DEP)
+    get_property(does_config_exist GLOBAL PROPERTY "TARGETS_CONFIG_DEP_${arg_DEP}" SET)
+  elseif(DEFINED arg_TARGET)
+    get_property(does_config_exist GLOBAL PROPERTY "TARGETS_CONFIG_${arg_TARGET}" SET)
+  else()
+    message(FATAL_ERROR "${current_command} called with invalid arguments: expected TARGET or DEP!")
+  endif()
+
   if(${does_config_exist})
     set(${arg_HAS_CONFIG} true)
   else()
@@ -1846,27 +1936,46 @@ macro(_cmake_targets_file_get_value)
       OR ("${arg_GET_VALUE}" STREQUAL ""))
     message(FATAL_ERROR "${current_command} requires the keyword GET_VALUE to be provided with a non-empty string value!")
   endif()
-  if((NOT DEFINED arg_TARGET)
-      OR ("${arg_TARGET}" STREQUAL ""))
-    message(FATAL_ERROR "${current_command} requires the keyword TARGET to be provided with a non-empty string value!")
+  if((NOT DEFINED arg_DEP)
+      AND (NOT DEFINED arg_TARGET))
+    message(FATAL_ERROR "${current_command} requires the keyword DEP or TARGET to be provided!")
+  endif()
+  if((DEFINED arg_DEP) AND ("${arg_DEP}" STREQUAL ""))
+    message(FATAL_ERROR "${current_command} requires DEP to be a non-empty string value!")
+  endif()
+  if((DEFINED arg_TARGET) AND ("${arg_TARGET}" STREQUAL ""))
+    message(FATAL_ERROR "${current_command} requires TARGET to be a non-empty string value!")
+  endif()
+  if((DEFINED arg_DEP) AND (DEFINED arg_TARGET))
+    message(FATAL_ERROR "${current_command} requires DEP and TARGET not to be used together, they are mutually exclusive!")
   endif()
   if((NOT DEFINED arg_KEY)
       OR ("${arg_KEY}" STREQUAL ""))
     message(FATAL_ERROR "${current_command} requires the keyword KEY to be provided with a non-empty string value!")
   endif()
   _assert_config_file_loaded()
-  _assert_target_config_exists("${arg_TARGET}")
-
-  get_property(target_config_map GLOBAL PROPERTY "TARGETS_CONFIG_${arg_TARGET}")
 
   # Check if the key exists
-  map(HAS_KEY target_config_map "${arg_KEY}" has_setting_key)
-  if(NOT ${has_setting_key})
-    message(FATAL_ERROR "${current_command}: target ${arg_TARGET} has no setting key '${arg_KEY}'!")
+  if(DEFINED arg_DEP)
+    _assert_dependency_config_exists("${arg_DEP}")
+    get_property(config_map GLOBAL PROPERTY "TARGETS_CONFIG_DEP_${arg_DEP}")
+    map(HAS_KEY config_map "${arg_KEY}" has_setting_key)
+    if(NOT ${has_setting_key})
+      message(FATAL_ERROR "${current_command}: dependency ${arg_DEP} has no setting key '${arg_KEY}'!")
+    endif()
+  elseif(DEFINED arg_TARGET)
+    _assert_target_config_exists("${arg_TARGET}")
+    get_property(config_map GLOBAL PROPERTY "TARGETS_CONFIG_${arg_TARGET}")
+    map(HAS_KEY config_map "${arg_KEY}" has_setting_key)
+    if(NOT ${has_setting_key})
+      message(FATAL_ERROR "${current_command}: target ${arg_TARGET} has no setting key '${arg_KEY}'!")
+    endif()
+  else()
+    message(FATAL_ERROR "${current_command} called with invalid arguments: expected TARGET or DEP!")
   endif()
 
   # Get the value
-  map(GET target_config_map "${arg_KEY}" setting_value)
+  map(GET config_map "${arg_KEY}" setting_value)
 
   # Deserialize the value if needed
   _is_serialized_list("${setting_value}" is_serialized)
@@ -1884,22 +1993,41 @@ macro(_cmake_targets_file_try_get_value)
       OR ("${arg_TRY_GET_VALUE}" STREQUAL ""))
     message(FATAL_ERROR "${current_command} requires the keyword TRY_GET_VALUE to be provided with a non-empty string value!")
   endif()
-  if((NOT DEFINED arg_TARGET)
-      OR ("${arg_TARGET}" STREQUAL ""))
-    message(FATAL_ERROR "${current_command} requires the keyword TARGET to be provided with a non-empty string value!")
+  if((NOT DEFINED arg_DEP)
+      AND (NOT DEFINED arg_TARGET))
+    message(FATAL_ERROR "${current_command} requires the keyword DEP or TARGET to be provided!")
+  endif()
+  if((DEFINED arg_DEP) AND ("${arg_DEP}" STREQUAL ""))
+    message(FATAL_ERROR "${current_command} requires DEP to be a non-empty string value!")
+  endif()
+  if((DEFINED arg_TARGET) AND ("${arg_TARGET}" STREQUAL ""))
+    message(FATAL_ERROR "${current_command} requires TARGET to be a non-empty string value!")
+  endif()
+  if((DEFINED arg_DEP) AND (DEFINED arg_TARGET))
+    message(FATAL_ERROR "${current_command} requires DEP and TARGET not to be used together, they are mutually exclusive!")
   endif()
   if((NOT DEFINED arg_KEY)
       OR ("${arg_KEY}" STREQUAL ""))
     message(FATAL_ERROR "${current_command} requires the keyword KEY to be provided with a non-empty string value!")
   endif()
   _assert_config_file_loaded()
-  _assert_target_config_exists("${arg_TARGET}")
 
-  get_property(target_config_map GLOBAL PROPERTY "TARGETS_CONFIG_${arg_TARGET}")
+  # Check if the key exists
+  if(DEFINED arg_DEP)
+    _assert_dependency_config_exists("${arg_DEP}")
+    get_property(config_map GLOBAL PROPERTY "TARGETS_CONFIG_DEP_${arg_DEP}")
+  elseif(DEFINED arg_TARGET)
+    _assert_target_config_exists("${arg_TARGET}")
+    get_property(config_map GLOBAL PROPERTY "TARGETS_CONFIG_${arg_TARGET}")
+  else()
+    message(FATAL_ERROR "${current_command} called with invalid arguments: expected TARGET or DEP!")
+  endif()
 
-  map(FIND target_config_map "${arg_KEY}" setting_value)
+  # Try to get the value
+  map(FIND config_map "${arg_KEY}" setting_value)
+
+  # Deserialize the value if needed
   if(NOT "${setting_value}" MATCHES "-NOTFOUND$")
-    # Deserialize the value if needed
     _is_serialized_list("${setting_value}" is_serialized)
     if(${is_serialized})
       _deserialize_list("${setting_value}" setting_value)
@@ -1916,14 +2044,31 @@ macro(_cmake_targets_file_get_settings)
       OR ("${arg_GET_SETTINGS}" STREQUAL ""))
     message(FATAL_ERROR "${current_command} requires the keyword GET_SETTINGS to be provided with a non-empty string value!")
   endif()
-  if((NOT DEFINED arg_TARGET)
-      OR ("${arg_TARGET}" STREQUAL ""))
-    message(FATAL_ERROR "${current_command} requires the keyword TARGET to be provided with a non-empty string value!")
+  if((NOT DEFINED arg_DEP)
+      AND (NOT DEFINED arg_TARGET))
+    message(FATAL_ERROR "${current_command} requires the keyword DEP or TARGET to be provided!")
+  endif()
+  if((DEFINED arg_DEP) AND ("${arg_DEP}" STREQUAL ""))
+    message(FATAL_ERROR "${current_command} requires DEP to be a non-empty string value!")
+  endif()
+  if((DEFINED arg_TARGET) AND ("${arg_TARGET}" STREQUAL ""))
+    message(FATAL_ERROR "${current_command} requires TARGET to be a non-empty string value!")
+  endif()
+  if((DEFINED arg_DEP) AND (DEFINED arg_TARGET))
+    message(FATAL_ERROR "${current_command} requires DEP and TARGET not to be used together, they are mutually exclusive!")
   endif()
   _assert_config_file_loaded()
-  _assert_target_config_exists("${arg_TARGET}")
 
-  get_property(${arg_GET_SETTINGS} GLOBAL PROPERTY "TARGETS_CONFIG_${arg_TARGET}")
+  if(DEFINED arg_DEP)
+    _assert_dependency_config_exists("${arg_DEP}")
+    get_property(${arg_GET_SETTINGS} GLOBAL PROPERTY "TARGETS_CONFIG_DEP_${arg_DEP}")
+  elseif(DEFINED arg_TARGET)
+    _assert_target_config_exists("${arg_TARGET}")
+    get_property(${arg_GET_SETTINGS} GLOBAL PROPERTY "TARGETS_CONFIG_${arg_TARGET}")
+  else()
+    message(FATAL_ERROR "${current_command} called with invalid arguments: expected TARGET or DEP!")
+  endif()
+
   return(PROPAGATE "${arg_GET_SETTINGS}")
 endmacro()
 
@@ -1934,24 +2079,47 @@ macro(_cmake_targets_file_has_setting)
       OR ("${arg_HAS_SETTING}" STREQUAL ""))
     message(FATAL_ERROR "${current_command} requires the keyword HAS_SETTING to be provided with a non-empty string value!")
   endif()
-  if((NOT DEFINED arg_TARGET)
-      OR ("${arg_TARGET}" STREQUAL ""))
-    message(FATAL_ERROR "${current_command} requires the keyword TARGET to be provided with a non-empty string value!")
+if((NOT DEFINED arg_DEP)
+      AND (NOT DEFINED arg_TARGET))
+    message(FATAL_ERROR "${current_command} requires the keyword DEP or TARGET to be provided!")
+  endif()
+  if((DEFINED arg_DEP) AND ("${arg_DEP}" STREQUAL ""))
+    message(FATAL_ERROR "${current_command} requires DEP to be a non-empty string value!")
+  endif()
+  if((DEFINED arg_TARGET) AND ("${arg_TARGET}" STREQUAL ""))
+    message(FATAL_ERROR "${current_command} requires TARGET to be a non-empty string value!")
+  endif()
+  if((DEFINED arg_DEP) AND (DEFINED arg_TARGET))
+    message(FATAL_ERROR "${current_command} requires DEP and TARGET not to be used together, they are mutually exclusive!")
   endif()
   if((NOT DEFINED arg_KEY)
       OR ("${arg_KEY}" STREQUAL ""))
     message(FATAL_ERROR "${current_command} requires the keyword KEY to be provided with a non-empty string value!")
   endif()
   _assert_config_file_loaded()
-  _assert_target_config_exists("${arg_TARGET}")
 
-  get_property(target_config_map GLOBAL PROPERTY "TARGETS_CONFIG_${arg_TARGET}")
-  map(HAS_KEY target_config_map "${arg_KEY}" has_setting_key)
-  if(${has_setting_key})
-    set(${arg_HAS_SETTING} true)
+  if(DEFINED arg_DEP)
+    _assert_dependency_config_exists("${arg_DEP}")
+    get_property(dep_config_map GLOBAL PROPERTY "TARGETS_CONFIG_DEP_${arg_DEP}")
+    map(HAS_KEY dep_config_map "${arg_KEY}" has_setting_key)
+    if(${has_setting_key})
+      set(${arg_HAS_SETTING} true)
+    else()
+      set(${arg_HAS_SETTING} false)
+    endif()
+  elseif(DEFINED arg_TARGET)
+    _assert_target_config_exists("${arg_TARGET}")
+    get_property(target_config_map GLOBAL PROPERTY "TARGETS_CONFIG_${arg_TARGET}")
+    map(HAS_KEY target_config_map "${arg_KEY}" has_setting_key)
+    if(${has_setting_key})
+      set(${arg_HAS_SETTING} true)
+    else()
+      set(${arg_HAS_SETTING} false)
+    endif()
   else()
-    set(${arg_HAS_SETTING} false)
+    message(FATAL_ERROR "${current_command} called with invalid arguments: expected TARGET or DEP!")
   endif()
+  
   return(PROPAGATE "${arg_HAS_SETTING}")
 endmacro()
 
@@ -1962,15 +2130,33 @@ macro(_cmake_targets_file_get_keys)
       OR ("${arg_GET_KEYS}" STREQUAL ""))
     message(FATAL_ERROR "${current_command} requires the keyword GET_KEYS to be provided with a non-empty string value!")
   endif()
-  if((NOT DEFINED arg_TARGET)
-      OR ("${arg_TARGET}" STREQUAL ""))
-    message(FATAL_ERROR "${current_command} requires the keyword TARGET to be provided with a non-empty string value!")
+  if((NOT DEFINED arg_DEP)
+      AND (NOT DEFINED arg_TARGET))
+    message(FATAL_ERROR "${current_command} requires the keyword DEP or TARGET to be provided!")
+  endif()
+  if((DEFINED arg_DEP) AND ("${arg_DEP}" STREQUAL ""))
+    message(FATAL_ERROR "${current_command} requires DEP to be a non-empty string value!")
+  endif()
+  if((DEFINED arg_TARGET) AND ("${arg_TARGET}" STREQUAL ""))
+    message(FATAL_ERROR "${current_command} requires TARGET to be a non-empty string value!")
+  endif()
+  if((DEFINED arg_DEP) AND (DEFINED arg_TARGET))
+    message(FATAL_ERROR "${current_command} requires DEP and TARGET not to be used together, they are mutually exclusive!")
   endif()
   _assert_config_file_loaded()
-  _assert_target_config_exists("${arg_TARGET}")
 
-  get_property(target_config_map GLOBAL PROPERTY "TARGETS_CONFIG_${arg_TARGET}")
-  map(KEYS target_config_map ${arg_GET_KEYS})
+  if(DEFINED arg_DEP)
+    _assert_dependency_config_exists("${arg_DEP}")
+    get_property(dep_config_map GLOBAL PROPERTY "TARGETS_CONFIG_DEP_${arg_DEP}")
+    map(KEYS dep_config_map ${arg_GET_KEYS})
+  elseif(DEFINED arg_TARGET)
+    _assert_target_config_exists("${arg_TARGET}")
+    get_property(target_config_map GLOBAL PROPERTY "TARGETS_CONFIG_${arg_TARGET}")
+    map(KEYS target_config_map ${arg_GET_KEYS})
+  else()
+    message(FATAL_ERROR "${current_command} called with invalid arguments: expected TARGET or DEP!")
+  endif()
+
   return(PROPAGATE "${arg_GET_KEYS}")
 endmacro()
 
@@ -1982,10 +2168,39 @@ macro(_cmake_targets_file_print_configs)
   endif()
   _assert_config_file_loaded()
 
+  get_property(dep_names GLOBAL PROPERTY "TARGETS_CONFIG_REMOTE_DEPS")
+  foreach(dep_name IN ITEMS ${dep_names})
+    set(arg_PRINT_DEP_CONFIG "${dep_name}")
+    _cmake_targets_file_print_dep_config()
+  endforeach()
+
   get_property(target_paths GLOBAL PROPERTY "TARGETS_CONFIG_TARGETS")
   foreach(target_path IN ITEMS ${target_paths})
     set(arg_PRINT_TARGET_CONFIG "${target_path}")
     _cmake_targets_file_print_target_config()
+  endforeach()
+endmacro()
+
+#------------------------------------------------------------------------------
+# [Internal use only]
+macro(_cmake_targets_file_print_dep_config)
+  if((NOT DEFINED arg_PRINT_DEP_CONFIG)
+      OR ("${arg_PRINT_DEP_CONFIG}" STREQUAL ""))
+    message(FATAL_ERROR "${current_command} requires the keyword PRINT_DEP_CONFIG to be provided with a non-empty string value!")
+  endif()
+  _assert_config_file_loaded()
+  _assert_dependency_config_exists("${arg_PRINT_DEP_CONFIG}")
+
+  get_property(dep_config_map GLOBAL PROPERTY "TARGETS_CONFIG_DEP_${arg_PRINT_DEP_CONFIG}")
+  message(STATUS "Dependency: ${arg_PRINT_DEP_CONFIG}")
+
+  # Print all properties
+  foreach(setting_key "rulesFile" "optional" "minVersion" "integrationMethod" "packageLocation.windows" "packageLocation.unix" "packageLocation.macos" "downloadInfo.kind" "downloadInfo.repository" "downloadInfo.tag" "downloadInfo.hash" "downloadInfo.revision" "build.compileFeatures" "build.compileDefinitions" "build.compileOptions" "build.linkOptions")
+    map(HAS_KEY dep_config_map "${setting_key}" has_setting_key)
+    if(${has_setting_key})
+      map(GET dep_config_map "${setting_key}" setting_value)
+      message(STATUS "  ${setting_key}: ${setting_value}")
+    endif()
   endforeach()
 endmacro()
 
@@ -2003,28 +2218,13 @@ macro(_cmake_targets_file_print_target_config)
   map(GET target_config_map "name" target_name)
   message(STATUS "Target: ${target_name}")
 
-  # Print all top-level properties
-  foreach(setting_key "type" "build.compileFeatures" "build.compileDefinitions" "build.compileOptions" "build.linkOptions" "mainFile" "pchFile" "headerPolicy.mode" "headerPolicy.includeDir")
+  # Print all properties
+  foreach(setting_key "type" "build.compileFeatures" "build.compileDefinitions" "build.compileOptions" "build.linkOptions" "mainFile" "pchFile" "headerPolicy.mode" "headerPolicy.includeDir" "dependencies")
     map(HAS_KEY target_config_map "${setting_key}" has_setting_key)
     if(${has_setting_key})
       map(GET target_config_map "${setting_key}" setting_value)
       message(STATUS "  ${setting_key}: ${setting_value}")
     endif()
-  endforeach()
-
-  # Print nested 'externalDeps' object properties
-  message(STATUS "  externalDeps:")
-  map(GET target_config_map "externalDeps" dep_names)
-  _deserialize_list("${dep_names}" dep_names)
-  foreach(dep_name IN ITEMS ${dep_names})
-    message(STATUS "    ${dep_name}:")
-    foreach(dep_prop_key "rulesFile" "packageLocation.windows" "packageLocation.unix" "packageLocation.macos" "optional" "minVersion" "integrationMethod" "downloadInfo.kind" "downloadInfo.repository" "downloadInfo.tag" "downloadInfo.hash" "downloadInfo.revision" "build.compileFeatures" "build.compileDefinitions" "build.compileOptions" "build.linkOptions")
-      map(HAS_KEY target_config_map "externalDeps.${dep_name}.${dep_prop_key}" has_setting_key)
-      if(${has_setting_key})
-        map(GET target_config_map "externalDeps.${dep_name}.${dep_prop_key}" dep_prop_value)
-        message(STATUS "      ${dep_prop_key}: ${dep_prop_value}")
-      endif()
-    endforeach()
   endforeach()
 endmacro()
 
